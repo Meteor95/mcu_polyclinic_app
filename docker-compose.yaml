@@ -9,7 +9,9 @@ services:
       - APP_DEBUG=true
       - APP_ENV=development
       - SESSION_DRIVER=file
-    volumes:
+      - APP_URL=https://klinik.erayadigital.co.id
+      - APP_URL_SUBDOMAIN=https://mcu.erayadigital.co.id
+      - APP_VERSI_API="/api/v1"
       - ./source/storage/:/var/www/html/storage/
     # Limit default logging container
     logging:
