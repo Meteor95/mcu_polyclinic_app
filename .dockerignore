@@ -1,0 +1,5 @@
+docker-compose.yml
+source/package-lock.json
+source/composer.lock
+source/vendor
+source/node_modules

@@ -1,0 +1,20 @@
+services:
+  web_service:
+    image: artha_medica:1.0.0
+    ports:
+      - target: 8080
+        published: 10610
+        mode: ingress
+    environment:
+      - APP_DEBUG=true
+      - APP_ENV=development
+      - SESSION_DRIVER=file
+    volumes:
+      - ./source/storage/:/var/www/html/storage/
+    # Limit default logging container
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100k"
+        max-file: "10"
+        mode: non-blocking
