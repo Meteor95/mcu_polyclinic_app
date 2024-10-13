@@ -34,11 +34,6 @@
                 </div>
                 <button class="btn btn-primary btn-block w-100" id="btn_login">Kirim Data</button>
               </div>
-              <h6 class="text-muted mt-4 or">Atau Dengan</h6>
-              <div class="social mt-4">
-                <div class="btn-showcase"><a class="btn btn-light" href="https://www.linkedin.com/login" target="_blank"><i class="txt-linkedin" data-feather="linkedin"></i> LinkedIn </a><a class="btn btn-light" href="https://twitter.com/login?lang=en" target="_blank"><i class="txt-twitter" data-feather="twitter"></i>twitter</a><a class="btn btn-light" href="https://www.facebook.com/" target="_blank"><i class="txt-fb" data-feather="facebook"></i>facebook</a></div>
-              </div>
-              <p class="mt-4 mb-0 text-center">Tidak memiliki akun AMC ?<a class="ms-2" href="sign-up.html">Buat Akun Sekarang</a></p>
             </div>
           </div>
         </div>

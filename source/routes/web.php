@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 
 Route::domain(env('APP_URL'))->group(function () {
     Route::get('/', function (Request $req) {
-        $data = [ 'tipe_halaman' => 'login'];
-        return view('login', ['data' => $data]);
+       $data = [ 'tipe_halaman' => 'login'];
+       return view('login', ['data' => $data]);
     })->name('login');
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('beranda', [BerandaController::class,"dashboard"])->name('beranda');
