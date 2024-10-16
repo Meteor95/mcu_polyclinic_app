@@ -18,12 +18,12 @@
               <p>Ketikan Surel / Nama Pengguna dan Katasandi Terdaftar</p>
               <div class="form-group">
                 <label class="col-form-label">Alamat Surel / Nama Pengguna</label>
-                <input autocomplete="off" class="form-control" type="text" id="namapengguna" required="" placeholder="hallo@arthamedicalcenter.com">
+                <input autocomplete="off" value="erayadigitalstudio" class="form-control" type="text" id="namapengguna" required="" placeholder="hallo@arthamedicalcenter.com">
               </div>
               <div class="form-group">
                 <label class="col-form-label">Katasandi</label>
                 <div class="form-input position-relative">
-                  <input autocomplete="off" class="form-control" type="password" id="katasandi" required="" placeholder="*********">
+                  <input autocomplete="off" value="Salam1jiwa" class="form-control" name="password" type="password" id="katasandi" required="" placeholder="*********">
                   <div class="show-hide"><span class="show"></span></div>
                 </div>
               </div>
@@ -45,5 +45,6 @@
 @section('css_load')
 @endsection
 @section('js_load')
+<script src="{{asset('mofi/assets/js/script.js')}}"></script>
 <script src="{{asset('mofi/assets/js/system/login.js')}}"></script>
 @endsection

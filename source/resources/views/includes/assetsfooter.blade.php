@@ -15,9 +15,5 @@
 <script src="{{asset('mofi/assets/js/script1.js')}}"></script>
 <script src="{{asset('mofi/assets/js/theme-customizer/customizer.js')}}"></script>
 @endif
-@if($tipe_halaman === "login")
-<script src="{{asset('mofi/assets/js/script.js')}}"></script>
-@endif
 <script src="{{asset('mofi/assets/js/eds/globalfn.js')}}"></script>
 <script src="{{asset('mofi/assets/js/eds/eds_toast.js')}}"></script>
-<script>var baseurlapi = "{{ url(env('APP_VERSI_API')) }}";var baseurl = "{{ url('') }}";</script>

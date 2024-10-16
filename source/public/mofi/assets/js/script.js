@@ -1,10 +1,8 @@
 /*! -----------------------------------------------------------------------------------
 
-    Template Name: Mofi Admin
-    Template URI: http://admin.pixelstrap.com/mofi/theme
+    Template Name: Eraya Digital Admin
+    Template URI: https://template.erayadgital.co.id/mofi
     Description: This is Admin theme
-    Author: Pixelstrap
-    Author URI: https://themeforest.net/user/pixelstrap
 
 -----------------------------------------------------------------------------------
 
@@ -58,10 +56,10 @@
 
   $(".show-hide span").click(function () {
     if ($(this).hasClass("show")) {
-      $('input[name="login[password]"]').attr("type", "text");
+      $('input[name="password"]').attr("type", "text");
       $(this).removeClass("show");
     } else {
-      $('input[name="login[password]"]').attr("type", "password");
+      $('input[name="password"]').attr("type", "password");
       $(this).addClass("show");
     }
   });

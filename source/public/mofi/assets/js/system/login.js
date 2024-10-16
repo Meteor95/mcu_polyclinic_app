@@ -8,8 +8,8 @@ $("#btn_login" ).on( "click", function() {
             dataType: 'json',
             data: {
                 _token: response.csrf_token,
-                username: $("#username").val().trim(),
-                password: $("#password-input").val().trim(),
+                username: $("#namapengguna").val().trim(),
+                password: $("#katasandi").val().trim(),
                 access_form: "web_login",
             },
             complete: function() {
@@ -17,14 +17,14 @@ $("#btn_login" ).on( "click", function() {
             },
             success: function(response) {
                 if (response.success == false) {
-                    return toastr.error(response.message, 'Pesan Kesalahan Code : ' + response.rc);
+                    return createToast('Kesalahan Proses Login '+response.rc,'top-right', response.message, 'error', 3000);
                 }
-                localStorage.setItem("session_id_browser", response.token);
-                window.location.href = baseurl + '/beranda';
+                //localStorage.setItem('jwt_token', response.token_information.original.access_token);
+                //window.location.href = baseurl + '/hakakses';
             },
             error: function(xhr, status, error) {
                 $('#btn_login').prop("disabled", false);$('#btn_login').html('Masuk Ke Panel Beranda DocuMess');
-                toastr.error('Terjadi kesalahan proses LOGIN. Silahkan hubungi TIM Terkiat. Pesan Kesalahan : ' + xhr.responseJSON.message, 'Pesan REST API Login');
+                return createToast('Kesalahan Proses Login','top-right', xhr.responseJSON.message, 'error', 3000);
             }
         });
     });

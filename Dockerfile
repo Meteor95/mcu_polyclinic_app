@@ -1,7 +1,7 @@
 ARG ALPINE_VERSION=3.20
 FROM alpine:${ALPINE_VERSION}
-LABEL Maintainer="Ach Rozikin <geronimo794@gmail.com>"
-LABEL Description="Container for Laravel Octane, with swoole & PHP 8.3 based on Alpine Linux."
+LABEL Maintainer="Mochmad Aries Setyawan <seira@erayadigital.co.id>"
+LABEL Description="Container for Laravel Octane Artha Medica MCU"
 # Setup document root
 WORKDIR /var/www/html
 
@@ -44,6 +44,8 @@ RUN apk add --no-cache \
   libtool \
   pkgconfig \
   php83-dev
+
+RUN apk add --no-cache nginx
 
 # Add specific dev packages based on your extension (e.g., libmcrypt-dev)
 RUN pecl install openswoole

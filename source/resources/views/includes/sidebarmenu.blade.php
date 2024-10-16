@@ -35,10 +35,10 @@
                 </svg>
                 <svg class="fill-icon">
                   <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-home')}}"></use>
-                </svg><span class="lan-3">Dashboard          </span></a>
+                </svg><span>Dashboard </span></a>
               <ul class="sidebar-submenu">
-                <li><a class="lan-4" href="index.html">Default</a></li>
-                <li><a class="lan-5" href="dashboard-02.html">Project</a></li>
+                <li><a href="index.html">Default</a></li>
+                <li><a href="dashboard-02.html">Project</a></li>
                 <li><a href="dashboard-03.html">Ecommerce</a></li>
                 <li><a href="dashboard-04.html">Education</a></li>
               </ul>
@@ -61,7 +61,7 @@
                 </svg>
                 <svg class="fill-icon">
                   <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-layout')}}"></use>
-                </svg><span class="lan-7">Page layout</span></a>
+                </svg><span class="lan-7">Page layout</span></a >
               <ul class="sidebar-submenu">
                 <li><a href="box-layout.html">Boxed</a></li>
                 <li><a href="layout-rtl.html">RTL</a></li>
@@ -74,16 +74,16 @@
                 <h6>PENGATURAN</h6>
               </div>
             </li>
-            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)">
+            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title active" href="javascript:void(0)">
                 <svg class="stroke-icon">
-                  <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#stroke-gallery')}}"></use>
+                  <use href="{{asset('mofi/assets/svg/icon-sprite.svg#stroke-gallery')}}"></use>
                 </svg>
                 <svg class="fill-icon">
                   <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-gallery')}}"></use>
-                </svg><span>Pengguna</span></a>
+                </svg><span>Petugas</span></a>
               <ul class="sidebar-submenu">
-                <li><a href="gallery.html">Pengguna Aplikasi</a></li>
-                <li><a href="gallery-with-description.html">Hak Akses</a></li>
+                <li><a href="{{url('/pengguna_aplikasi')}}">Pengguna Aplikasi </a></li>
+                <li><a class="active" href="{{url('/hakakses')}}">Hak Akses</a></li>
               </ul>
             </li>
           </ul>

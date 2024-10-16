@@ -24,3 +24,4 @@
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/responsive.css')}}">
 <link id="color" rel="stylesheet" href="{{asset('mofi/assets/css/color-1.css')}}" media="screen">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/eds_custom.css')}}">
+<script>var baseurlapi = "{{ url(env('APP_VERSI_API')) }}";var baseurl = "{{ url('') }}";</script>
