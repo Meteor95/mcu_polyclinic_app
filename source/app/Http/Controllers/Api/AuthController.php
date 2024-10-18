@@ -29,9 +29,9 @@ class AuthController extends Controller
             $user = auth()->user();
             $dynamicAttributes = [
                 'user_information' => $user,
-                'token_information' => $token,
+                'token_akses' => $token,
             ];
-            $cookie_jwt = Cookie::make('jwt_token', $token, (60 * 24), '/', null, true, true, 'encrypt');
+            $cookie_jwt = Cookie::make('token_device', $token, env('COOKIE_TIME_EXPIRE'), env('COOKIE_PATH'), env('COOKIE_DOMAIN_ALLOWED'), env('COOKIE_IS_SECURE'), env('COOKIE_IS_HTTP_ONLY'));
             return ResponseHelper::success(__('auth.eds_login_successful'), $dynamicAttributes)->withCookie($cookie_jwt);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

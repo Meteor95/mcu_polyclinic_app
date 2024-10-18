@@ -54,4 +54,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    public function detailUserInformation($user_id)
+    {
+        return User::join('users_pegawai', 'users.id', '=', 'users_pegawai.id')
+            ->select(
+                'users.*',
+                'users_pegawai.*'
+            )
+            ->where('users.id', '=', $user_id)
+            ->first();
+    }
 }

@@ -19,8 +19,8 @@ $("#btn_login" ).on( "click", function() {
                 if (response.success == false) {
                     return createToast('Kesalahan Proses Login '+response.rc,'top-right', response.message, 'error', 3000);
                 }
-                //localStorage.setItem('jwt_token', response.token_information.original.access_token);
-                //window.location.href = baseurl + '/hakakses';
+                localStorage.setItem('token_ajax', response.token_akses);
+                window.location.href = baseurl + '/admin/beranda';
             },
             error: function(xhr, status, error) {
                 $('#btn_login').prop("disabled", false);$('#btn_login').html('Masuk Ke Panel Beranda DocuMess');

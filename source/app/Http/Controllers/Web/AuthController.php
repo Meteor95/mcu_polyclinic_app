@@ -9,15 +9,12 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    public function login(Request $req)
+    public function logout(Request $request)
     {
-       $cookie_jwt = Cookie::make('jwt_token', "PIGYMARU", (60 * 24), '/', null, true, true);
-       return response()->json(['message' => 'Login successful'])->withCookie($cookie_jwt);
+      $token = $request->attributes->get('token_device');
+      if ($token) JWTAuth::setToken($token)->invalidate();
+      $request->attributes->remove('user_details');
+      $request->attributes->remove('token_device');
+      return redirect('/')->withCookie(Cookie::forget('token_device'));
     }
-    public function logout(Request $req)
-    {
-       $jwt_token = $req->cookie('jwt_token');
-       echo $jwt_token;
-    }
-    
 }

@@ -12,8 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'jwt.cookie' => \App\Http\Middleware\JWTFromCookieMiddleware::class,
+        ]);
         $middleware->encryptCookies(except: [
-            'jwt_token',
+            'token_device',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
