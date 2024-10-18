@@ -10,7 +10,6 @@ use App\Models\{User};
 use App\Helpers\{ResponseHelper,GlobalHelper};
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-
 class AuthController extends Controller
 {
     public function login(Request $req){
@@ -30,33 +29,12 @@ class AuthController extends Controller
             $user = auth()->user();
             $dynamicAttributes = [
                 'user_information' => $user,
-                'token_information' => $this->respondWithToken($token),
+                'token_information' => $token,
             ];
-            $cookie1 = Cookie::make('HashCookieUUID', base64_encode(Hash::make($token)), 60 * 24, '/', 'dev.erayadigital.co.id', true, true);
-            $cookie2 = Cookie::make('CookieID', "OKE", 60 * 24, '/', 'dev.erayadigital.co.id', true, true);
-            $response = ResponseHelper::success(__('auth.ino_login_success', ['username' => $req->input('username')]), $dynamicAttributes);
-            $response->withCookie($cookie1)->withCookie($cookie2);
-            return $response;
+            $cookie_jwt = Cookie::make('jwt_token', $token, (60 * 24), '/', null, true, true, 'encrypt');
+            return ResponseHelper::success(__('auth.eds_login_successful'), $dynamicAttributes)->withCookie($cookie_jwt);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
-    }
-    public function logout(Request $req)
-    {
-        auth('api')->logout();
-        $cookie = Cookie::forget('jwt_token');
-        return ResponseHelper::success(__('auth.eds_logout_success', ['username' => $req->input('username')]))->withCookie($cookie);
-    }
-    public function refreshToken()
-    {
-        return $this->respondWithToken(auth()->refresh());
-    }
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
-        ]);
     }
 }

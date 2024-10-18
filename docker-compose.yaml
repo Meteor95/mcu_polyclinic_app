@@ -8,12 +8,6 @@ services:
         published: 10610
         mode: ingress
     environment:
-      - APP_DEBUG=true
-      - APP_ENV=development
-      - SESSION_DRIVER=file
-      - APP_URL=klinik.arthamedica.local
-      - APP_URL_SUBDOMAIN=mcu.arthamedica.local
-      - APP_VERSI_API="/api/v1"
       - ./source/storage/:/var/www/html/storage/
     # Limit default logging container
     logging:

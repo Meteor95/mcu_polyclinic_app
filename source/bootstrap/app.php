@@ -3,7 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\JwtFromCookie;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,14 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias([
-            'jwtfromcookie' => JwtFromCookie::class,
-            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        $middleware->encryptCookies(except: [
+            'jwt_token',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })
-    ->create();
+    })->create();

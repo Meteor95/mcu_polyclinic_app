@@ -2,8 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController,RoleAndPermissionController};
-use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
