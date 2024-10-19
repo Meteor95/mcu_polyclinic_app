@@ -1,0 +1,1 @@
+<link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/datatables.css') }}">

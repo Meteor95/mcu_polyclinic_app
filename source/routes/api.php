@@ -13,4 +13,10 @@ Route::prefix('v1')->group(function () {
         Route::post('keluar', [AuthController::class,"logout"]);
         Route::post('tambahakses', [RoleAndPermissionController::class,"addpermission"]);
     });
+    Route::middleware('jwt.auth')->group(function () {
+        Route::prefix('permission')->group(function () {
+            Route::post('tambahpermission', [RoleAndPermissionController::class,"addpermission"]);
+            Route::get('daftarhakakses', [RoleAndPermissionController::class,"getpermission"]);
+        });
+    });
 });

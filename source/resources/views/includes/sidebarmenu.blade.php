@@ -1,6 +1,9 @@
-<div class="sidebar-wrapper" data-layout="stroke-svg">
+<div class="sidebar-wrapper" id="sidebar-wrapper" data-layout="stroke-svg">
     <div>
-      <div class="logo-wrapper"><a href="index.html"><img class="img-fluid" src="{{ asset('mofi/assets/images/logo/logo_light.png')}}" alt=""></a>
+      <div class="logo-wrapper">
+        <a href="{{ url('/admin/beranda') }}">
+          <img class="img-fluid" src="{{ asset('mofi/assets/images/logo/logo_light.png')}}" alt="Logo">
+        </a>
         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
         <div class="toggle-sidebar">
           <svg class="stroke-icon sidebar-toggle status_toggle middle">
@@ -74,7 +77,7 @@
                 <h6>PENGATURAN</h6>
               </div>
             </li>
-            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title active" href="javascript:void(0)">
+            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title {{ $data['menu_aktif'] == 'petugas' ? 'active' : '' }}" href="javascript:void(0)">
                 <svg class="stroke-icon">
                   <use href="{{asset('mofi/assets/svg/icon-sprite.svg#stroke-gallery')}}"></use>
                 </svg>
@@ -83,7 +86,7 @@
                 </svg><span>Petugas</span></a>
               <ul class="sidebar-submenu">
                 <li><a href="{{url('/pengguna_aplikasi')}}">Pengguna Aplikasi </a></li>
-                <li><a class="active" href="{{url('/hakakses')}}">Hak Akses</a></li>
+                <li><a class="{{ $data['sub_menu_aktif'] == 'daftar_hakakses' ? 'active' : '' }}" href="{{url('/admin/hakakses')}}">Hak Akses</a></li>
               </ul>
             </li>
           </ul>

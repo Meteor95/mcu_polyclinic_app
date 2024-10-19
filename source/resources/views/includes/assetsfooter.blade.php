@@ -3,6 +3,7 @@
 <script src="{{asset('mofi/assets/js/icons/feather-icon/feather.min.js')}}"></script>
 <script src="{{asset('mofi/assets/js/icons/feather-icon/feather-icon.js')}}"></script>
 <script src="{{asset('mofi/assets/js/config.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if($tipe_halaman === "admin")
 <script src="{{asset('mofi/assets/js/scrollbar/simplebar.js')}}"></script>
 <script src="{{asset('mofi/assets/js/scrollbar/custom.js')}}"></script>
@@ -17,3 +18,4 @@
 @endif
 <script src="{{asset('mofi/assets/js/eds/globalfn.js')}}"></script>
 <script src="{{asset('mofi/assets/js/eds/eds_toast.js')}}"></script>
+<script>var baseurlapi = "{{ url(env('APP_VERSI_API')) }}";var baseurl = "{{ url('') }}";</script>

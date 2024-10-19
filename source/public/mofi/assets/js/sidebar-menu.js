@@ -1,58 +1,112 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const sidebarLinks = document.querySelectorAll('.sidebar-link.sidebar-title');
-  
-  sidebarLinks.forEach(link => {
-    const submenu = link.nextElementSibling;
-    if (submenu && submenu.classList.contains('sidebar-submenu')) {
-      // Create and append arrow icon
-      const arrowIcon = document.createElement('div');
-      arrowIcon.className = 'according-menu';
-      arrowIcon.innerHTML = '<i class="fa fa-angle-right"></i>';
-      link.appendChild(arrowIcon);
+(function ($) {
+  "use strict";
 
-      // Set initial styles for smooth transitions
-      submenu.style.maxHeight = '0px';
-      submenu.style.overflow = 'hidden';
-      submenu.style.transition = 'max-height 0.3s ease-out';
-      arrowIcon.querySelector('i').style.transition = 'transform 0.3s';
+  // Toggle sidebar
+  $(".toggle-nav").click(function () {
+    $("#sidebar-links .nav-menu").css("left", "0px");
+    $(".page-wrapper").toggleClass("sidebar-close");
+  });
+
+  $(".mobile-back").click(function () {
+    $("#sidebar-links .nav-menu").css("left", "-410px");
+  });
+
+  // Set page wrapper class from localStorage
+  $(".page-wrapper").attr(
+    "class",
+    "page-wrapper " + localStorage.getItem("page-wrapper")
+  );
+  if (localStorage.getItem("page-wrapper") === null) {
+    $(".page-wrapper").addClass("compact-wrapper");
+  }
+
+  // Sidebar menu functionality
+  if ($("#pageWrapper").hasClass("compact-wrapper")) {
+    $(".sidebar-title").append(
+      '<div class="according-menu"><i class="fa fa-angle-right"></i></div>'
+    );
+    
+    $(".sidebar-title").click(function () {
+      $(".sidebar-title").removeClass("active");
+      $(".sidebar-submenu, .menu-content").slideUp("normal");
       
-      // If the link or any of its children have the 'active' class, show the submenu
-      if (link.classList.contains('active') || submenu.querySelector('.active')) {
-        submenu.style.maxHeight = submenu.scrollHeight + 'px';
-        arrowIcon.innerHTML = '<i class="fa fa-angle-down"></i>';
+      if ($(this).next().is(":hidden")) {
+        $(this).addClass("active");
+        $(this).find(".according-menu i").removeClass("fa-angle-right").addClass("fa-angle-down");
+        $(this).next().slideDown("normal");
+      } else {
+        $(this).find(".according-menu i").removeClass("fa-angle-down").addClass("fa-angle-right");
       }
+    });
+    
+    $(".sidebar-submenu, .menu-content").hide();
+    
+    $(".submenu-title").append(
+      '<div class="according-menu"><i class="fa fa-angle-right"></i></div>'
+    );
+    
+    $(".submenu-title").click(function () {
+      $(".submenu-title").removeClass("active");
+      $(".submenu-content").slideUp("normal");
       
-      // Add click event listener
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Close all other submenus
-        sidebarLinks.forEach(otherLink => {
-          if (otherLink !== link) {
-            const otherSubmenu = otherLink.nextElementSibling;
-            const otherArrow = otherLink.querySelector('.according-menu i');
-            if (otherSubmenu && otherSubmenu.classList.contains('sidebar-submenu')) {
-              otherSubmenu.style.maxHeight = '0px';
-              otherLink.classList.remove('active');
-              if (otherArrow) {
-                otherArrow.className = 'fa fa-angle-right';
-              }
-            }
-          }
-        });
-        
-        // Toggle the clicked submenu
-        const arrow = arrowIcon.querySelector('i');
-        if (submenu.style.maxHeight === '0px') {
-          submenu.style.maxHeight = submenu.scrollHeight + 'px';
-          arrow.className = 'fa fa-angle-down';
-          link.classList.add('active');
-        } else {
-          submenu.style.maxHeight = '0px';
-          arrow.className = 'fa fa-angle-right';
-          link.classList.remove('active');
-        }
-      });
+      if ($(this).next().is(":hidden")) {
+        $(this).addClass("active");
+        $(this).find(".according-menu i").removeClass("fa-angle-right").addClass("fa-angle-down");
+        $(this).next().slideDown("normal");
+      } else {
+        $(this).find(".according-menu i").removeClass("fa-angle-down").addClass("fa-angle-right");
+      }
+    });
+    
+    $(".submenu-content").hide();
+  }
+
+  // Toggle sidebar
+  $(".toggle-sidebar").click(function () {
+    $(".sidebar-wrapper").toggleClass("close_icon");
+    $(".page-header").toggleClass("close_icon");
+    $(window).trigger("overlay");
+  });
+
+  // Overlay functionality
+  $(window).on("overlay", function () {
+    var $bgOverlay = $(".bg-overlay");
+    var $nav = $(".sidebar-wrapper");
+    var isHidden = $nav.hasClass("close_icon");
+    
+    if ($(window).width() <= 1184 && !isHidden && $bgOverlay.length === 0) {
+      $('<div class="bg-overlay active"></div>').appendTo($("body"));
+    }
+
+    if (isHidden && $bgOverlay.length > 0) {
+      $bgOverlay.remove();
     }
   });
-});
+
+  // Responsive sidebar
+  function responsiveSidebar() {
+    if ($(window).width() <= 1184) {
+      $(".sidebar-wrapper").addClass("close_icon");
+      $(".page-header").addClass("close_icon");
+    } else {
+      $(".sidebar-wrapper").removeClass("close_icon");
+      $(".page-header").removeClass("close_icon");
+    }
+  }
+
+  $(window).resize(responsiveSidebar);
+  responsiveSidebar();
+
+  // Active link highlighting
+  var current = window.location.pathname;
+  $(".sidebar-wrapper nav ul li a").each(function () {
+    var $this = $(this);
+    if ($this.attr("href").indexOf(current) !== -1) {
+      $this.addClass("active");
+      $this.parents("li").addClass("active");
+      $this.parents(".sidebar-submenu").prev().addClass("active").children(".according-menu").find("i").removeClass("fa-angle-right").addClass("fa-angle-down");
+      $this.parents(".sidebar-submenu").slideDown();
+    }
+  });
+
+})(jQuery);

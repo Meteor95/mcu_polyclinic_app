@@ -12,6 +12,8 @@ class BerandaController extends Controller
         $data = [
             'tipe_halaman' => 'admin',
             'menu_utama_aktif' => 'dashboard',
+            'menu_aktif' => 'beranda',
+            'sub_menu_aktif' => 'beranda',
         ];
         return view('paneladmin.beranda.main_konten', ['data' => $data]);
     }

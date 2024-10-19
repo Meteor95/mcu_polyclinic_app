@@ -4,6 +4,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="PT. Eraya Digital Solusindo">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="icon" href="{{asset('mofi/assets/images/favicon.png')}}" type="image/x-icon">
 <link rel="shortcut icon" href="{{asset('mofi/assets/images/favicon.png')}}" type="image/x-icon">
 <title>Aplikasi MCU - Artha Medical Clinic</title>
@@ -24,4 +25,3 @@
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/responsive.css')}}">
 <link id="color" rel="stylesheet" href="{{asset('mofi/assets/css/color-1.css')}}" media="screen">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/eds_custom.css')}}">
-<script>var baseurlapi = "{{ url(env('APP_VERSI_API')) }}";var baseurl = "{{ url('') }}";</script>

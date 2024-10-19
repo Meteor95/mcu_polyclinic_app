@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\{AuthController, BerandaController};
+use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController};
 use Illuminate\Http\Request;
 
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
@@ -11,6 +11,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     Route::get('pintukeluar', [AuthController::class, "logout"]);
     Route::prefix('admin')->group(function () {
         Route::get('beranda', [BerandaController::class,"index"]);
+        Route::get('hakakses', [HakaksesController::class,"index"]);
     });
 });
 
