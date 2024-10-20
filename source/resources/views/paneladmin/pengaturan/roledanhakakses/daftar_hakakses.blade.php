@@ -49,7 +49,7 @@
 @component('komponen.js.datatables')
 @endcomponent
 <script>
- $(document).ready(function () {
+$(document).ready(function () {
   tabel_hakakses();
 });
 function tabel_hakakses(){
@@ -118,7 +118,7 @@ function tabel_hakakses(){
                 title: "Nama Hak Akses",
                 render: function(data, type, row, meta) {
                     if (type === 'display') {
-                        return "<a href=\"javascript:void(0)\" id=\"detailinformasi"+row.id_user+"\" onclick=\"detailinformasi('"+row.username+"','"+row.id_user+"')\">"+row.nip+"</a>";
+                        return row.name;
                     }
                     return data;
                 }
@@ -127,17 +127,18 @@ function tabel_hakakses(){
                 title: "Keterangan",
                 render: function(data, type, row, meta) {
                     if (type === 'display') {
-                        return "<a href=\"javascript:void(0)\" id=\"detailinformasi"+row.id_user+"\" onclick=\"detailinformasi('"+row.username+"','"+row.id_user+"')\">"+row.nama_lengkap+"</a>";
+                        return row.description;
                     }
-                    return '';
-                }
+                    return data;
+                } 
+            },
             {
                 title: "Aksi",
                 render: function(data, type, row, meta) {
                     if (type === 'display') {
-                        return "<div class=\"d-flex justify-content-between gap-2\"><button id=\"editinformasi"+row.id_user+"\" onclick=\"editinformasi('"+row.username+"','"+row.id_user+"')\" class=\"btn btn-outline-success w-100\"><i class=\"ri-shield-user-line\"></i> Ubah Data</button ></div>";
+                        return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-outline-success w-100\"><i class=\"ri-shield-user-line\"></i> LihatRole</button ></div>";
                     }
-                    return '';
+                    return data;
                 }
             },
         ],
