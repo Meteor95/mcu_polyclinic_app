@@ -10,8 +10,9 @@ Route::get('403', function () { return view('error.403_error'); });
 Route::group(['middleware' => ['jwt.cookie']], function () {
     Route::get('pintukeluar', [AuthController::class, "logout"]);
     Route::prefix('admin')->group(function () {
-        Route::get('beranda', [BerandaController::class,"index"]);
-        Route::get('hakakses', [HakaksesController::class,"index"]);
+        Route::get('beranda', [BerandaController::class,"index"])->name('admin.beranda');
+        Route::get('permission', [HakaksesController::class,"permission"])->name('admin.permission');
+        Route::get('role', [HakaksesController::class,"role"])->name('admin.role');
     });
 });
 

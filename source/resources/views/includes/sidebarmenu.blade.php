@@ -86,7 +86,7 @@
                 </svg><span>Petugas</span></a>
               <ul class="sidebar-submenu">
                 <li><a href="{{url('/pengguna_aplikasi')}}">Pengguna Aplikasi </a></li>
-                <li><a class="{{ $data['sub_menu_aktif'] == 'daftar_hakakses' ? 'active' : '' }}" href="{{url('/admin/hakakses')}}">Hak Akses</a></li>
+                <li><a class="{{ $data['sub_menu_aktif'] == 'daftar_hakakses' ? 'active' : '' }}" href="{{url('/admin/role')}}">Hak Akses</a></li>
               </ul>
             </li>
           </ul>

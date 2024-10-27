@@ -2,12 +2,13 @@
     <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="{{ asset('mofi/assets/images/logo/logo.png')}}" alt=""/><img class="img-fluid for-dark" src="{{ asset('mofi/assets/images/logo/logo_light.png')}}" alt=""/></a></div>
   </div>
   <div class="col-4 col-xl-4 page-title">
-    <h4 class="f-w-700">Sample Page</h4>
+    <h4 class="f-w-700">{{ $data['title'] }}</h4>
     <nav>
       <ol class="breadcrumb justify-content-sm-start align-items-center mb-0">
-        <li class="breadcrumb-item"><a href="index.html"> <i data-feather="home"> </i></a></li>
-        <li class="breadcrumb-item f-w-400">Pages</li>
-        <li class="breadcrumb-item f-w-400 active">Sample Page</li>
+        <li class="breadcrumb-item"><a href="{{ url('admin/beranda') }}"> <i data-feather="home"> </i></a></li>
+        @foreach ($data['breadcrumb'] as $key => $value)
+          <li class="breadcrumb-item f-w-400"><a href="{{ $value }}">{{ $key }}</a></li>
+        @endforeach
       </ol>
     </nav>
   </div>

@@ -15,8 +15,17 @@ Route::prefix('v1')->group(function () {
     });
     Route::middleware('jwt.auth')->group(function () {
         Route::prefix('permission')->group(function () {
-            Route::post('tambahpermission', [RoleAndPermissionController::class,"addpermission"]);
+            Route::post('tambahhakakses', [RoleAndPermissionController::class,"addpermission"]);
             Route::get('daftarhakakses', [RoleAndPermissionController::class,"getpermission"]);
+            Route::get('hapushakakses', [RoleAndPermissionController::class,"deletepermission"]);
+            Route::post('edithakakses', [RoleAndPermissionController::class,"editpermission"]);
+        });
+        Route::prefix('role')->group(function () {
+            Route::post('tambahrole', [RoleAndPermissionController::class,"addrole"]);
+            Route::get('daftarrole', [RoleAndPermissionController::class,"getrole"]);
+            Route::get('hapusrole', [RoleAndPermissionController::class,"deleterole"]);
+            Route::get('detailrole', [RoleAndPermissionController::class,"detailrole"]);
+            Route::post('editrole', [RoleAndPermissionController::class,"editrole"]);
         });
     });
 });

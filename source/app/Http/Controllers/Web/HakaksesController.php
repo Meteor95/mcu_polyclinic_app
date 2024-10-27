@@ -7,14 +7,28 @@ use Illuminate\Http\Request;
 
 class HakaksesController extends Controller
 {
-    public function index()
-    {
-        $data = [
-            'tipe_halaman' => 'admin',
-            'menu_utama_aktif' => 'dashboard',
-            'menu_aktif' => 'petugas',
-            'sub_menu_aktif' => 'daftar_hakakses',
+    private function getData($title, $tipe_halaman, $menu_utama_aktif, $menu_aktif, $sub_menu_aktif, $breadcrumb) {
+        return [
+            'title' => $title,
+            'tipe_halaman' => $tipe_halaman,
+            'menu_utama_aktif' => $menu_utama_aktif,
+            'menu_aktif' => $menu_aktif,
+            'sub_menu_aktif' => $sub_menu_aktif,
+            'breadcrumb' => $breadcrumb,
         ];
-        return view('paneladmin.pengaturan.roledanhakakses.daftar_hakakses', ['data' => $data]);
+    }
+    public function permission(Request $req){
+        $data = $this->getData('Daftar Hak Akses', 'admin', 'dashboard', 'petugas', 'daftar_hakakses', [
+            'Role' => route('admin.role'),
+            'Permission' => route('admin.permission'),
+        ]);
+        return view('paneladmin.pengaturan.roledanhakakses.daftar_permission', ['data' => $data]);
+    }
+    public function role(Request $req){
+        $data = $this->getData('Daftar Role', 'admin', 'dashboard', 'petugas', 'daftar_hakakses', [
+            'Role' => route('admin.role'),
+            'Permission' => route('admin.permission'),
+        ]);
+        return view('paneladmin.pengaturan.roledanhakakses.daftar_role', ['data' => $data]);
     }
 }

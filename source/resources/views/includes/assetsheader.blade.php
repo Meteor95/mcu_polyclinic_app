@@ -20,8 +20,9 @@
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/slick-theme.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/scrollbar.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/animate.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/datatables.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/bootstrap.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/style.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/responsive.css')}}">
 <link id="color" rel="stylesheet" href="{{asset('mofi/assets/css/color-1.css')}}" media="screen">
+<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/responsive.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/eds_custom.css')}}">
