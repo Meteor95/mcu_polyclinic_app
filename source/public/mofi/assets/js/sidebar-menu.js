@@ -70,9 +70,9 @@
 
   // Overlay functionality
   $(window).on("overlay", function () {
-    var $bgOverlay = $(".bg-overlay");
-    var $nav = $(".sidebar-wrapper");
-    var isHidden = $nav.hasClass("close_icon");
+    let $bgOverlay = $(".bg-overlay");
+    let $nav = $(".sidebar-wrapper");
+    let isHidden = $nav.hasClass("close_icon");
     
     if ($(window).width() <= 1184 && !isHidden && $bgOverlay.length === 0) {
       $('<div class="bg-overlay active"></div>').appendTo($("body"));
@@ -98,10 +98,10 @@
   responsiveSidebar();
 
   // Active link highlighting
-  var current = window.location.pathname;
+  let current = window.location.pathname;
   $(".sidebar-wrapper nav ul li a").each(function () {
-    var $this = $(this);
-    if ($this.attr("href").indexOf(current) !== -1) {
+    let $this = $(this);
+    if ($this.hasClass('active') || $this.attr("href").indexOf(current) !== -1) {
       $this.addClass("active");
       $this.parents("li").addClass("active");
       $this.parents(".sidebar-submenu").prev().addClass("active").children(".according-menu").find("i").removeClass("fa-angle-right").addClass("fa-angle-down");

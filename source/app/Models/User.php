@@ -7,20 +7,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-
+use Illuminate\Support\Facades\DB;
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
-
-    /**
+     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'uuid',
+        'username',
         'email',
+        'email_verified_at',
         'password',
     ];
 
@@ -64,5 +65,41 @@ class User extends Authenticatable implements JWTSubject
             )
             ->where('users.id', '=', $user_id)
             ->first();
+    }
+    public static function userInformation($request, $perHalaman, $offset){
+        $parameterpencarian = $request->parameter_pencarian;
+        $fecthdata = User::join('users_pegawai', 'users.id', '=', 'users_pegawai.id')
+        ->select(
+            'users.*',
+            'users_pegawai.*',
+            'users_pegawai.id as id_user_pegawai',
+        )
+        ->where(function ($query) use ($parameterpencarian) {
+            $query->where('users.username', 'like', '%' . $parameterpencarian . '%')
+                ->orWhere('users.email', 'like', '%' . $parameterpencarian . '%')
+                ->orWhere('users_pegawai.id', 'like', '%' . $parameterpencarian . '%')
+                ->orWhere('users_pegawai.nip', 'like', '%' . $parameterpencarian . '%')
+                ->orWhere('users_pegawai.nama_pegawai', 'like', '%' . $parameterpencarian . '%');
+        })
+        ->take($perHalaman)
+        ->skip($offset)
+        ->get();
+        $jumlahdata = $fecthdata->count();
+        return [
+            'data' => $fecthdata,
+            'total' => $jumlahdata
+        ];
+    }
+    public static function assignRole($role, $user_id)
+    {
+       return DB::table('model_has_roles')->insert([
+            'role_id' => $role,
+            'model_type' => self::class,
+            'model_id' => $user_id,
+            'team_id' => 1,
+        ]);
+    }
+    public static function deleteRole($user_id){
+        return DB::table('model_has_roles')->where('model_id', '=', $user_id)->delete();
     }
 }

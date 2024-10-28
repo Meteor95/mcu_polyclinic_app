@@ -53,11 +53,12 @@ class RouteAndPermission extends Model
             ->skip($offset)
             ->orderBy('roles.id', 'ASC')
             ->get();
-        $jumlahdata = DB::table('roles')->count();
+        $jumlahdata = $result->count();
         return [
             'data' => $result,
             'total' => $jumlahdata
         ];
     }
+    
 }
 

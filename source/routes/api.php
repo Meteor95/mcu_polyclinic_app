@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -14,6 +14,12 @@ Route::prefix('v1')->group(function () {
         Route::post('tambahakses', [RoleAndPermissionController::class,"addpermission"]);
     });
     Route::middleware('jwt.auth')->group(function () {
+        Route::prefix('pengguna')->group(function () {
+            Route::post('tambahpengguna', [UserController::class,"adduser"]);
+            Route::get('daftarpengguna', [UserController::class,"getuser"]);
+            Route::get('hapuspengguna', [UserController::class,"deleteuser"]);
+            Route::post('editpengguna', [UserController::class,"edituser"]);
+        });
         Route::prefix('permission')->group(function () {
             Route::post('tambahhakakses', [RoleAndPermissionController::class,"addpermission"]);
             Route::get('daftarhakakses', [RoleAndPermissionController::class,"getpermission"]);

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\RouteAndPermission;
 use App\Helpers\ResponseHelper;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\{Log, Validator};
 use Spatie\Permission\Models\Role;
 
 class RoleAndPermissionController extends Controller
@@ -14,12 +14,21 @@ class RoleAndPermissionController extends Controller
     function addpermission(Request $req)
     {
         try {
+            $validator = Validator::make($req->all(), [
+                'nama_hakakses' => 'required|string|max:255|unique:permissions,name',
+                'keterangan' => 'required|string',
+                'namagroup' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+            }
             $nama_hakakses = $req->input('nama_hakakses');
             $keterangan = $req->input('keterangan');
             $group = $req->input('namagroup');
             RouteAndPermission::create([
                 'name' => $nama_hakakses,
-                'guard_name' => 'admin',
+                'guard_name' => 'web',
                 'group' => $group,
                 'description' => $keterangan,
                 'urutan' => 0
@@ -52,6 +61,14 @@ class RoleAndPermissionController extends Controller
     }
     public function deletepermission(Request $req){
         try {
+            $validator = Validator::make($req->all(), [
+                'idhakakses' => 'required|integer',
+                'namahakakses' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+            }
             $idHakAkses = $req->idhakakses;
             $namaHakAkses = $req->namahakakses;
             $permission = RouteAndPermission::find($idHakAkses);
@@ -67,6 +84,14 @@ class RoleAndPermissionController extends Controller
     }
     public function editpermission(Request $req){
         try {
+            $validator = Validator::make($req->all(), [
+                'namahakakses' => 'required|string|max:255',
+                'keteranganhakakses' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+            }
             $idHakAkses = (int)$req->input('idhakakses');
             $namaHakAkses = $req->input('namahakakses');
             $keterangan = $req->input('keteranganhakakses');
@@ -82,14 +107,23 @@ class RoleAndPermissionController extends Controller
     }
     public function addrole(Request $req){
         try {
+            $validator = Validator::make($req->all(), [
+                'name' => 'required|string|max:255|unique:roles,name',
+                'description' => 'required|string',
+                'permissions' => 'required|array',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+            }
             $nama_role = $req->input('name');
             $keterangan_role = $req->input('description');
-            $guard_name = $req->input('guard_name');
             $permissions = $req->input('permissions');
             $role = Role::create([
+                'team_id' => 1,
                 'name' => $nama_role,
                 'description' => $keterangan_role,
-                'guard_name' => $guard_name 
+                'guard_name' => 'web' 
             ]);
             if (!empty($permissions)) {
                 $role->givePermissionTo($permissions);
@@ -121,6 +155,14 @@ class RoleAndPermissionController extends Controller
     }
     public function deleterole(Request $req){
         try {
+            $validator = Validator::make($req->all(), [
+                'idrole' => 'required|integer',
+                'namarole' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+            }
             $idRole = $req->idrole;
             $namaRole = $req->namarole;
             $role = Role::where('id', $idRole)->delete();
@@ -143,6 +185,16 @@ class RoleAndPermissionController extends Controller
     }
     function editrole(Request $req){
         try {
+            $validator = Validator::make($req->all(), [
+                'name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'guard_name' => 'required|string',
+                'permissions' => 'required|array',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+            }
             $idRole = $req->input('idrole');
             $nama_role = $req->input('name');
             $keterangan_role = $req->input('description');
