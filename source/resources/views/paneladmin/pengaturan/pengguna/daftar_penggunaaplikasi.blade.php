@@ -24,6 +24,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalTambahPenggunaLabel">Formulir Data Informasi Pengguna</h5>
+        <i onclick="clearformeditpengguna()" class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
       </div>
       <div class="modal-body">
       <form id="form_pendaftaran" class="row g-3 needs-validation custom-input" novalidate>
@@ -43,7 +44,7 @@
                   <div class="mb-3 row"> 
                     <label class="col-sm-3 mt-2">Nama Pengguna</label>
                     <div class="col-sm-9">
-                      <input class="form-control" maxlength="255" minlength="8" id="floatingInputValue" type="text" placeholder="Contoh : erayadigitalsolusindo" value="" required>
+                      <input class="form-control" maxlength="255" minlength="8" id="namapengguna" type="text" placeholder="Contoh : erayadigitalsolusindo" value="" required>
                       <div class="invalid-feedback">Nama pengguna wajib diisi, minimal 8 karakter dan maksimal 255 karakter</div>
                       <div class="valid-feedback">Terlihat bagus! Formatnya sudah benar.</div>
                     </div>
@@ -231,7 +232,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
+        <button onclick="clearformeditpengguna()" type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
         <button type="submit" class="btn btn-primary" id="btnSimpanPengguna"><i class="fa fa-save"></i> Simpan Data</button>
       </div>
       </form>

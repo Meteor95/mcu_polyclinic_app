@@ -1,4 +1,4 @@
-let formValidasi = $("#form_pendaftaran");isedit = false;
+let formValidasi = $("#form_pendaftaran");isedit = false;let user_id_pengguna = "";
 $(document).ready(function(){
     $('#tanggal_lahir, #tanggal_diterima').datepicker({
         format: 'dd-mm-yyyy',
@@ -110,7 +110,7 @@ function datatable_penggunaaplikasi(){
                 {
                     title: "ID Pengguna",
                     render: function(data, type, row, meta) {
-                        return `Nama Pengguna: ${row.username}<br>UUID: ${row.uuid}<br>Email: ${row.email}<br>Status: <span class="badge ${row.status_pegawai.toLowerCase() === 'aktif' ? 'bg-success' : 'bg-danger'}">${row.status_pegawai}</span><br>Hak Akses:`;
+                        return `Nama Pengguna: ${row.username}<br>UUID: ${row.uuid}<br>Email: ${row.email}<br>Status: <span class="badge ${row.status_pegawai === 'Tetap' ? 'bg-success' : row.status_pegawai === 'Non Aktif' ? 'bg-warning' : 'bg-danger'}">${row.status_pegawai}</span><br>Hak Akses: <span class="badge bg-warning">${row.role_name === null ? 'Super Admin' : row.role_name}</span>`;
                     }
                 },
                 {
@@ -129,7 +129,7 @@ function datatable_penggunaaplikasi(){
                     title: "Aksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"editpengguna('" + row.id + "','" + row.username + "', '" + row.email + "','"+ row.team_id+"')\"><i class=\"fa fa-edit\"></i> Edit Pengguna</button><button class=\"btn btn-danger w-100\" onclick=\"hapuspengguna('" + row.id + "','" + row.username + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Pengguna</button></div>";
+                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"editpengguna('" + row.id + "','" + row.username + "')\"><i class=\"fa fa-edit\"></i> Edit Pengguna</button><button class=\"btn btn-danger w-100\" onclick=\"hapuspengguna('" + row.id + "','" + row.username + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Pengguna</button></div>";
                         }
                         return data;
                     }
@@ -142,6 +142,7 @@ $('#kotak_pencarian_penggunaaplikasi').on('keyup', debounce(function() {
     $('#datatables_penggunaaplikasi').DataTable().ajax.reload();
 }, 500));
 $('#tambah_penggunaaplikasi').on('click', function() {
+    isedit = false;
     $('#modalTambahPengguna').modal('show');
 });
 $('#toogleshowpassword').on('click', function() {
@@ -159,7 +160,7 @@ $('#toogleshowpassword').on('click', function() {
 $('#btnSimpanPengguna').on('click', function(event) {
     event.preventDefault();
     formValidasi.addClass('was-validated');
-    if ($("#floatingInputValue").val() == "" || $("#katasandi").val() == "" || $("#select2_hak_akses").val() == "") {
+    if ($("#floatingInputValue").val() == "" || (!isedit && $("#katasandi").val() == "") || $("#select2_hak_akses").val() == "") {
         return createToast('Kesalahan Formulir', 'top-right', 'Silahkan isi semua field pada tab Kredensial terlebih dahulu.', 'error', 3000);
     }
     if ($("#nama_pegawai").val() == "" || $("#nip").val() == "" || $("#jabatan").val() == "" || 
@@ -169,12 +170,17 @@ $('#btnSimpanPengguna').on('click', function(event) {
         return createToast('Kesalahan Formulir', 'top-right', 'Silahkan isi semua field pada tab Profil terlebih dahulu.', 'error', 3000);
     }
     $.get('/generate-csrf-token', function(response) {
+        if (isedit) {
+            $("#katasandi").attr('required', false);
+            $("#katasandi").removeAttr('minlength');
+        }
         $.ajax({
-            url: baseurlapi + '/pengguna/tambahpengguna',
+            url: baseurlapi + '/pengguna/' + (isedit ? 'editpengguna' : 'tambahpengguna'),
             method: 'POST',
             data: {
                 _token: response.csrf_token,
-                username: $("#floatingInputValue").val(),
+                id_pengguna: user_id_pengguna,
+                username: $("#namapengguna").val(),
                 password: $("#katasandi").val(),
                 email: $("#email").val(),
                 idhakakses: $("#select2_hak_akses").val(),
@@ -194,6 +200,7 @@ $('#btnSimpanPengguna').on('click', function(event) {
             },
             success: function(response) {
                 createToast('Sukses', 'top-right', response.message, 'success', 3000);
+                clearformeditpengguna();
                 $("#modalTambahPengguna").modal('hide');
                 $("#datatables_penggunaaplikasi").DataTable().ajax.reload();
             },
@@ -240,4 +247,53 @@ function hapuspengguna(id, username){
             });
         }
     });
+}
+function editpengguna(id, username){
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
+            },
+            url: baseurlapi + '/pengguna/detailpengguna',
+            method: 'GET',
+            data: {
+                _token: response.csrf_token,
+                id: id,
+                username: username,
+            },
+            success: function(response) {
+                isedit = true;
+                user_id_pengguna = response.data.id;
+                $('#namapengguna').val(response.data.username);
+                $('#email').val(response.data.email);
+                $('#katasandi').val('').attr('placeholder', 'Kosongkan jika tidak ingin mengubah kata sandi');
+                let newOption = new Option(response.data.role_name || 'Super Admin', response.data.id_role || 1, true, false);
+                $('#select2_hak_akses').append(newOption).trigger('change');
+                $("#select2_hak_akses").val(response.data.id_role || 1).trigger('change');
+                $('#nama_pegawai').val(response.data.nama_pegawai);
+                $('#nip').val(response.data.nip);
+                $('#jabatan').val(response.data.jabatan);
+                $('#departemen').val(response.data.departemen);
+                $('#tanggal_lahir').val(response.data.tanggal_lahir.split('-').reverse().join('-'));
+                $('#tanggal_diterima').val(response.data.tanggal_bergabung.split('-').reverse().join('-'));
+                $('#jenis_kelamin').val(response.data.jenis_kelamin);
+                $('#alamat').val(response.data.alamat);
+                $('#no_telepon').val(response.data.no_telepon);
+                $('#status_pegawai').val(response.data.status_pegawai);
+                $('#modalTambahPengguna').modal('show');
+            },
+            error: function(xhr, status, error) {
+                createToast('Error', 'top-right', xhr.responseJSON.message, 'error', 3000);
+            }
+        });
+    });
+}
+function clearformeditpengguna(){
+    formValidasi.removeClass('was-validated');
+    const fields = ['namapengguna', 'email', 'katasandi', 'nama_pegawai', 'nip', 'jabatan', 
+                   'departemen', 'tanggal_lahir', 'tanggal_diterima', 'jenis_kelamin', 
+                   'alamat', 'no_telepon', 'status_pegawai'];
+    fields.forEach(field => $(`#${field}`).val(''));
+    $('#select2_hak_akses').val(null).trigger('change');
+    $('#j-pills-web-designer-tab').tab('show');
 }

@@ -18,6 +18,7 @@ Route::prefix('v1')->group(function () {
             Route::post('tambahpengguna', [UserController::class,"adduser"]);
             Route::get('daftarpengguna', [UserController::class,"getuser"]);
             Route::get('hapuspengguna', [UserController::class,"deleteuser"]);
+            Route::get('detailpengguna', [UserController::class,"detailuser"]);
             Route::post('editpengguna', [UserController::class,"edituser"]);
         });
         Route::prefix('permission')->group(function () {

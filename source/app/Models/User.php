@@ -69,30 +69,50 @@ class User extends Authenticatable implements JWTSubject
     public static function userInformation($request, $perHalaman, $offset){
         $parameterpencarian = $request->parameter_pencarian;
         $fecthdata = User::join('users_pegawai', 'users.id', '=', 'users_pegawai.id')
-        ->select(
-            'users.*',
-            'users_pegawai.*',
-            'users_pegawai.id as id_user_pegawai',
-        )
-        ->where(function ($query) use ($parameterpencarian) {
-            $query->where('users.username', 'like', '%' . $parameterpencarian . '%')
-                ->orWhere('users.email', 'like', '%' . $parameterpencarian . '%')
-                ->orWhere('users_pegawai.id', 'like', '%' . $parameterpencarian . '%')
-                ->orWhere('users_pegawai.nip', 'like', '%' . $parameterpencarian . '%')
-                ->orWhere('users_pegawai.nama_pegawai', 'like', '%' . $parameterpencarian . '%');
-        })
-        ->take($perHalaman)
-        ->skip($offset)
-        ->get();
+            ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->select(
+                'users.*',
+                'users_pegawai.*',
+                'users_pegawai.id as id_user_pegawai',
+                'roles.name as role_name'
+            )
+            ->where(function ($query) use ($parameterpencarian) {
+                $query->where('users.username', 'like', '%' . $parameterpencarian . '%')
+                    ->orWhere('users.email', 'like', '%' . $parameterpencarian . '%')
+                    ->orWhere('users_pegawai.id', 'like', '%' . $parameterpencarian . '%')
+                    ->orWhere('users_pegawai.nip', 'like', '%' . $parameterpencarian . '%')
+                    ->orWhere('users_pegawai.nama_pegawai', 'like', '%' . $parameterpencarian . '%');
+            })
+            ->take($perHalaman)
+            ->skip($offset)
+            ->get();
+        
         $jumlahdata = $fecthdata->count();
+        
         return [
             'data' => $fecthdata,
             'total' => $jumlahdata
         ];
+        
     }
     public static function assignRole($role, $user_id)
     {
-       return DB::table('model_has_roles')->insert([
+        $existingRole = DB::table('model_has_roles')
+            ->where('model_id', $user_id)
+            ->where('model_type', self::class)
+            ->first();
+
+        if ($existingRole) {
+            return DB::table('model_has_roles')
+                ->where('model_id', $user_id)
+                ->where('model_type', self::class)
+                ->update([
+                    'role_id' => $role,
+                    'team_id' => 1,
+                ]);
+        }
+        return DB::table('model_has_roles')->insert([
             'role_id' => $role,
             'model_type' => self::class,
             'model_id' => $user_id,
@@ -101,5 +121,13 @@ class User extends Authenticatable implements JWTSubject
     }
     public static function deleteRole($user_id){
         return DB::table('model_has_roles')->where('model_id', '=', $user_id)->delete();
+    }
+    public static function detailUser($request){
+        return User::join('users_pegawai', 'users.id', '=', 'users_pegawai.id')
+            ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->select('users.*', 'users_pegawai.*', 'roles.name as role_name', 'roles.id as id_role')
+            ->where('users.id', '=', $request->id)
+            ->first();
     }
 }

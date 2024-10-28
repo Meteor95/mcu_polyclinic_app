@@ -77,4 +77,39 @@ class UserController extends Controller
             return ResponseHelper::error($th);
         }
     }
+    public function detailuser(Request $request){
+       try {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'username' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $dynamicAttributes = ['errors' => $validator->errors()];
+            return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+        }
+        $detailuser = User::detailUser($request);
+        $dynamicAttributes = [
+            'data' => $detailuser,
+        ];
+        return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Detail Pengguna ' . $detailuser->nama_pegawai . ' Aplikasi MCU Artha Medica']), $dynamicAttributes);
+       } catch (\Throwable $th) {
+        return ResponseHelper::error($th);
+       }
+    }
+    public function edituser(UserServices $userService, Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'id_pengguna' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $data = $request->all();
+            $userService->handleTransactionEditUser($data);
+            return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil diubah. Silahkan masukkan kembali pada halaman pengguna aplikasi MCU Artha Medica.');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
 }

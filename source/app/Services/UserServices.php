@@ -56,4 +56,30 @@ class UserServices
             User::deleteRole($data['id']);
         });
     }
+    public function handleTransactionEditUser($data){
+        return DB::transaction(function () use ($data) {
+            $datauser = [
+                'username' => $data['username'] ?? '',
+                'email' => $data['email'] ?? '',
+            ];
+            if (!empty($data['password'])) {
+                $datauser['password'] = Hash::make($data['password']);
+            }
+            User::where('id', '=', $data['id_pengguna'])->update($datauser);
+            $datapegawai = [
+                'nama_pegawai' => $data['nama_pegawai'] ?? '',
+                'nip' => $data['nip'] ?? '',
+                'jabatan' => $data['jabatan'] ?? '',
+                'departemen' => $data['departemen'] ?? '',
+                'tanggal_lahir' => (!empty($data['tanggal_lahir']) ? Carbon::createFromFormat('d-m-Y', $data['tanggal_lahir'])->format('Y-m-d') : null),
+                'jenis_kelamin' => $data['jenis_kelamin'] ?? 'Laki-Laki',
+                'alamat' => $data['alamat'] ?? '',
+                'no_telepon' => $data['no_telepon'] ?? '',
+                'tanggal_bergabung' => (!empty($data['tanggal_diterima']) ? Carbon::createFromFormat('d-m-Y', $data['tanggal_diterima'])->format('Y-m-d') : null),
+                'status_pegawai' => $data['status_pegawai'] ?? '',
+            ];
+            Pegawai::where('id', '=', $data['id_pengguna'])->update($datapegawai);
+            User::assignRole($data['idhakakses'], $data['id_pengguna']);
+        });
+    }
 }
