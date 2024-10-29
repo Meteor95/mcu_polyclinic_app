@@ -22,14 +22,20 @@
 
   // Sidebar menu functionality
   if ($("#pageWrapper").hasClass("compact-wrapper")) {
-    $(".sidebar-title").append(
-      '<div class="according-menu"><i class="fa fa-angle-right"></i></div>'
-    );
-    
+
+    // Add arrow icon only if there is a submenu
+    $(".sidebar-list").each(function () {
+      if ($(this).find(".sidebar-submenu").length > 0) {
+        $(this).find(".sidebar-title").append(
+          '<div class="according-menu"><i class="fa fa-angle-right"></i></div>'
+        );
+      }
+    });
+
     $(".sidebar-title").click(function () {
       $(".sidebar-title").removeClass("active");
       $(".sidebar-submenu, .menu-content").slideUp("normal");
-      
+
       if ($(this).next().is(":hidden")) {
         $(this).addClass("active");
         $(this).find(".according-menu i").removeClass("fa-angle-right").addClass("fa-angle-down");
@@ -38,17 +44,13 @@
         $(this).find(".according-menu i").removeClass("fa-angle-down").addClass("fa-angle-right");
       }
     });
-    
+
     $(".sidebar-submenu, .menu-content").hide();
-    
-    $(".submenu-title").append(
-      '<div class="according-menu"><i class="fa fa-angle-right"></i></div>'
-    );
-    
+
     $(".submenu-title").click(function () {
       $(".submenu-title").removeClass("active");
       $(".submenu-content").slideUp("normal");
-      
+
       if ($(this).next().is(":hidden")) {
         $(this).addClass("active");
         $(this).find(".according-menu i").removeClass("fa-angle-right").addClass("fa-angle-down");
@@ -57,7 +59,7 @@
         $(this).find(".according-menu i").removeClass("fa-angle-down").addClass("fa-angle-right");
       }
     });
-    
+
     $(".submenu-content").hide();
   }
 
@@ -73,7 +75,7 @@
     let $bgOverlay = $(".bg-overlay");
     let $nav = $(".sidebar-wrapper");
     let isHidden = $nav.hasClass("close_icon");
-    
+
     if ($(window).width() <= 1184 && !isHidden && $bgOverlay.length === 0) {
       $('<div class="bg-overlay active"></div>').appendTo($("body"));
     }

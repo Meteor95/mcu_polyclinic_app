@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -33,6 +33,16 @@ Route::prefix('v1')->group(function () {
             Route::get('hapusrole', [RoleAndPermissionController::class,"deleterole"]);
             Route::get('detailrole', [RoleAndPermissionController::class,"detailrole"]);
             Route::post('editrole', [RoleAndPermissionController::class,"editrole"]);
+        });
+        Route::prefix('masterdata')->group(function () {
+            /* Master Data Perusahaan */
+            Route::get('daftarperusahaan', [MasterdataController::class,"getperusahaan"]);
+            Route::post('simpanperusahaan', [MasterdataController::class,"saveperusahaan"]);
+            Route::get('hapusperusahaan', [MasterdataController::class,"deleteperusahaan"]);
+            Route::get('detailperusahaan', [MasterdataController::class,"detailperusahaan"]);
+            Route::post('ubahperusahaan', [MasterdataController::class,"editperusahaan"]);
+            /* Master Data Paket MCU */
+            Route::get('daftarpaketmcu', [MasterdataController::class,"getpaketmcu"]);
         });
     });
 });

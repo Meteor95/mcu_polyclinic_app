@@ -49,7 +49,7 @@
           </footer>
         </div>
       </div>
-    @include('includes.assetsfooter', ['tipe_halaman' => $data['tipe_halaman']])
+    @include('includes.assetsfooter')
     @yield('js_load')
 </body>
 </html>

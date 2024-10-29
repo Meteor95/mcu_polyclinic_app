@@ -21,7 +21,7 @@ class RoleAndPermissionController extends Controller
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
-                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $nama_hakakses = $req->input('nama_hakakses');
             $keterangan = $req->input('keterangan');
@@ -67,7 +67,7 @@ class RoleAndPermissionController extends Controller
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
-                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $idHakAkses = $req->idhakakses;
             $namaHakAkses = $req->namahakakses;
@@ -90,7 +90,7 @@ class RoleAndPermissionController extends Controller
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
-                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $idHakAkses = (int)$req->input('idhakakses');
             $namaHakAkses = $req->input('namahakakses');
@@ -114,7 +114,7 @@ class RoleAndPermissionController extends Controller
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
-                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $nama_role = $req->input('name');
             $keterangan_role = $req->input('description');
@@ -161,7 +161,7 @@ class RoleAndPermissionController extends Controller
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
-                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $idRole = $req->idrole;
             $namaRole = $req->namarole;
@@ -188,17 +188,15 @@ class RoleAndPermissionController extends Controller
             $validator = Validator::make($req->all(), [
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
-                'guard_name' => 'required|string',
                 'permissions' => 'required|array',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
-                return ResponseHelper::error_validation(__('auth.ino_required_data'), $dynamicAttributes);
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $idRole = $req->input('idrole');
             $nama_role = $req->input('name');
             $keterangan_role = $req->input('description');
-            $guard_name = $req->input('guard_name');
             $permissions = $req->input('permissions');
             $role = Role::find($idRole);
             if (!$role) {
@@ -207,7 +205,7 @@ class RoleAndPermissionController extends Controller
             $role->update([
                 'name' => $nama_role,
                 'description' => $keterangan_role,
-                'guard_name' => $guard_name,
+                'guard_name' => 'web',
             ]);
             if (!empty($permissions)) {
                 $role->syncPermissions($permissions);

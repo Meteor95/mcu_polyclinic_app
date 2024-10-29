@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController};
+use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController};
 use Illuminate\Http\Request;
 
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
@@ -14,6 +14,10 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('pengguna_aplikasi', [HakaksesController::class,"pengguna_aplikasi"])->name('admin.pengguna_aplikasi');
         Route::get('permission', [HakaksesController::class,"permission"])->name('admin.permission');
         Route::get('role', [HakaksesController::class,"role"])->name('admin.role');
+    });
+    Route::prefix('masterdata')->group(function () {
+        Route::get('daftar_perusahaan', [MasterdataController::class,"daftar_perusahaan"])->name('admin.masterdata.daftar_perusahaan');
+        Route::get('daftar_paket_mcu', [MasterdataController::class,"daftar_paket_mcu"])->name('admin.masterdata.daftar_paket_mcu');
     });
 });
 

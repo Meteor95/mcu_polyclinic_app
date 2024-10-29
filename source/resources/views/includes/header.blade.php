@@ -1,5 +1,5 @@
 <div class="header-logo-wrapper col-auto">
-    <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="{{ asset('mofi/assets/images/logo/logo.png')}}" alt=""/><img class="img-fluid for-dark" src="{{ asset('mofi/assets/images/logo/logo_light.png')}}" alt=""/></a></div>
+    <div class="logo-wrapper"><a href="index.html"><img class="img-fluid" src="{{asset('mofi/assets/images/logo/Logo_AMC_Full.png')}}" alt=""/></a></div>
   </div>
   <div class="col-4 col-xl-4 page-title">
     <h4 class="f-w-700">{{ $data['title'] }}</h4>

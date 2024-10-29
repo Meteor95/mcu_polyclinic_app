@@ -2,7 +2,7 @@
     <div>
       <div class="logo-wrapper">
         <a href="{{ url('/admin/beranda') }}">
-          <img class="img-fluid" src="{{ asset('mofi/assets/images/logo/logo_light.png')}}" alt="Logo">
+          <img class="img-fluid" src="{{asset('mofi/assets/images/logo/Logo_AMC_Full.png')}}" alt="Logo MCU Artha Medical Center" style="height: 100%;width: 75%;">
         </a>
         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
         <div class="toggle-sidebar">
@@ -38,13 +38,7 @@
                 </svg>
                 <svg class="fill-icon">
                   <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-home')}}"></use>
-                </svg><span>Dashboard </span></a>
-              <ul class="sidebar-submenu">
-                <li><a href="index.html">Default</a></li>
-                <li><a href="dashboard-02.html">Project</a></li>
-                <li><a href="dashboard-03.html">Ecommerce</a></li>
-                <li><a href="dashboard-04.html">Education</a></li>
-              </ul>
+                </svg><span>Beranda</span></a>
             </li>
             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)">
                 <svg class="stroke-icon">
@@ -52,24 +46,10 @@
                 </svg>
                 <svg class="fill-icon">
                   <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-widget')}}"></use>
-                </svg><span class="lan-6">Widgets</span></a>
+                </svg><span>Master Data</span></a>
               <ul class="sidebar-submenu">
-                <li><a href="general-widget.html">General</a></li>
-                <li><a href="chart-widget.html">Chart</a></li>
-              </ul>
-            </li>
-            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)">
-                <svg class="stroke-icon">
-                  <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#stroke-layout')}}"></use>
-                </svg>
-                <svg class="fill-icon">
-                  <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-layout')}}"></use>
-                </svg><span class="lan-7">Page layout</span></a >
-              <ul class="sidebar-submenu">
-                <li><a href="box-layout.html">Boxed</a></li>
-                <li><a href="layout-rtl.html">RTL</a></li>
-                <li><a href="layout-dark.html">Dark Layout</a></li>
-                <li><a href="hide-on-scroll.html">Hide Nav Scroll</a></li>
+                <li><a href="{{url('masterdata/daftar_perusahaan')}}">Perusahaan</a></li>
+                <li><a href="{{url('masterdata/daftar_paket_mcu')}}">Paket Harga</a></li>
               </ul>
             </li>
             <li class="sidebar-main-title">
@@ -77,7 +57,7 @@
                 <h6>PENGATURAN</h6>
               </div>
             </li>
-            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title {{ $data['menu_aktif'] === 'petugas' ? 'active' : '' }}" href="javascript:void(0)">
+            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)">
                 <svg class="stroke-icon">
                   <use href="{{asset('mofi/assets/svg/icon-sprite.svg#stroke-editors')}}"></use>
                 </svg>
@@ -85,8 +65,8 @@
                   <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-editors')}}"></use>
                 </svg><span>Petugas</span></a>
               <ul class="sidebar-submenu">
-                <li><a class="{{ $data['sub_menu_aktif'] === 'pengguna_aplikasi' ? 'active' : '' }}" href="{{url('/admin/pengguna_aplikasi')}}">Pengguna Aplikasi </a></li>
-                <li><a class="{{ $data['sub_menu_aktif'] === 'daftar_hakakses' ? 'active' : '' }}" href="{{url('/admin/role')}}">Hak Akses</a></li>
+                <li><a href="{{url('/admin/pengguna_aplikasi')}}">Pengguna Aplikasi </a></li>
+                <li><a href="{{url('/admin/role')}}">Hak Akses</a></li>
               </ul>
             </li>
           </ul>

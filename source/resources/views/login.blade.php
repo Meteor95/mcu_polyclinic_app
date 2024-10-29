@@ -8,8 +8,7 @@
         <div>
           <div class="d-flex justify-content-center">
             <a class="logo text-center" href="{{url('')}}">
-                <img class="img-fluid for-light mx-auto d-block" src="{{asset('mofi/assets/images/logo/Logo_AMC_Full.png')}}" alt="looginpage">
-                <img class="img-fluid for-dark" src="{{asset('mofi/assets/images/logo/Logo_AMC_Full.png')}}" alt="looginpage">
+                <img class="img-fluid mx-auto d-block" src="{{asset('mofi/assets/images/logo/Logo_AMC_Full.png')}}" alt="looginpage">
             </a>
           </div>
           <div class="login-main"> 

@@ -14,7 +14,7 @@ class JWTFromCookieMiddleware
         $token = Cookie::get('token_device');
         $user_id = Cookie::get('user_id');
         if (!$token) {
-            return redirect('403');
+            return redirect()->route('login');
         }
         try {
             JWTAuth::setToken($token);
@@ -24,7 +24,7 @@ class JWTFromCookieMiddleware
             $request->attributes->set('user_details', $userDetails);
             $request->attributes->set('token_device', $token); 
         } catch (JWTException $e) {
-            return redirect('403');
+            return redirect()->route('login');
         }
         return $next($request);
     }
