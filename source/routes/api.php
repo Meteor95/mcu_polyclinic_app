@@ -34,6 +34,9 @@ Route::prefix('v1')->group(function () {
             Route::get('detailrole', [RoleAndPermissionController::class,"detailrole"]);
             Route::post('editrole', [RoleAndPermissionController::class,"editrole"]);
         });
+        Route::prefix('komponen')->group(function () {
+            Route::get('daftarpoli', [MasterdataController::class,"getpoli"]);
+        });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */
             Route::get('daftarperusahaan', [MasterdataController::class,"getperusahaan"]);
@@ -43,6 +46,10 @@ Route::prefix('v1')->group(function () {
             Route::post('ubahperusahaan', [MasterdataController::class,"editperusahaan"]);
             /* Master Data Paket MCU */
             Route::get('daftarpaketmcu', [MasterdataController::class,"getpaketmcu"]);
+            Route::post('simpanpaketmcu', [MasterdataController::class,"savepaketmcu"]);
+            Route::get('hapuspaketmcu', [MasterdataController::class,"deletepaketmcu"]);
+            Route::get('detailpaketmcu', [MasterdataController::class,"detailpaketmcu"]);
+            Route::post('ubahpaketmcu', [MasterdataController::class,"editpaketmcu"]);
         });
     });
 });

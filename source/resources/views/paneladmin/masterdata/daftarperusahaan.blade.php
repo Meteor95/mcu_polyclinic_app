@@ -27,7 +27,7 @@
             </div>
             <div class="modal-body">
             <form id="formulir_tambah_perusahaan_baru">
-            <div class="mb-3">
+              <div class="mb-3">
                 <label for="kodeperusahaan" class="form-label">Kode Perusahaan</label>
                 <input placeholder="Ex: EDS" type="text" class="form-control" id="kodeperusahaan" name="kodeperusahaan" required>
                 <div class="invalid-feedback">Masukan kode perusahaan yang valid</div>
@@ -68,5 +68,5 @@
 @section('js_load')
 @component('komponen.js.datatables')
 @endcomponent
-<script src="{{asset('mofi/assets/js/system/perusahaan.js')}}"></script>
+<script src="{{asset('mofi/assets/js/system/master_data/perusahaan.js')}}"></script>
 @endsection

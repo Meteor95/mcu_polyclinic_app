@@ -219,6 +219,5 @@ function hapusperusahaan(id, kode, nama){
                 });
             });
         }
-    });
-    
+    });   
 }
