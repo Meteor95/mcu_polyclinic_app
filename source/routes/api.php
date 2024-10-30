@@ -42,14 +42,22 @@ Route::prefix('v1')->group(function () {
             Route::get('daftarperusahaan', [MasterdataController::class,"getperusahaan"]);
             Route::post('simpanperusahaan', [MasterdataController::class,"saveperusahaan"]);
             Route::get('hapusperusahaan', [MasterdataController::class,"deleteperusahaan"]);
-            Route::get('detailperusahaan', [MasterdataController::class,"detailperusahaan"]);
             Route::post('ubahperusahaan', [MasterdataController::class,"editperusahaan"]);
             /* Master Data Paket MCU */
             Route::get('daftarpaketmcu', [MasterdataController::class,"getpaketmcu"]);
             Route::post('simpanpaketmcu', [MasterdataController::class,"savepaketmcu"]);
             Route::get('hapuspaketmcu', [MasterdataController::class,"deletepaketmcu"]);
-            Route::get('detailpaketmcu', [MasterdataController::class,"detailpaketmcu"]);
             Route::post('ubahpaketmcu', [MasterdataController::class,"editpaketmcu"]);
+            /* Master Data Jasa Pelayanan */
+            Route::get('daftarjasa', [MasterdataController::class,"getjasa"]);
+            Route::post('simpanjasa', [MasterdataController::class,"savejasa"]);
+            Route::get('hapusjasa', [MasterdataController::class,"deletejasa"]);
+            Route::post('ubahjasa', [MasterdataController::class,"editjasa"]);
+            /* Master Data Departemen Peserta */
+            Route::get('daftardepartemenpeserta', [MasterdataController::class,"getdepartemenpeserta"]);
+            Route::post('simpandepartemenpeserta', [MasterdataController::class,"savedepartemenpeserta"]);
+            Route::get('hapusdepartemenpeserta', [MasterdataController::class,"deletedepartemenpeserta"]);
+            Route::post('ubahdepartemenpeserta', [MasterdataController::class,"editdepartemenpeserta"]);
         });
     });
 });

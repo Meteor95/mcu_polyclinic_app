@@ -25,4 +25,16 @@ class MasterdataController extends Controller
         ]);
         return view('paneladmin.masterdata.daftarpaketmcu', ['data' => $data]);
     }
+    function daftar_jasa_pelayanan(){
+        $data = $this->getData('Daftar Jasa Pelayanan', [
+            'Jasa Pelayanan' => route('admin.masterdata.daftar_jasa_pelayanan'),
+        ]);
+        return view('paneladmin.masterdata.daftarjasapelayanan', ['data' => $data]);
+    }
+    function daftar_departemen_peserta(){
+        $data = $this->getData('Daftar Departemen Peserta', [
+            'Departemen Peserta' => route('admin.masterdata.daftar_departemen_peserta'),
+        ]);
+        return view('paneladmin.masterdata.daftardepartemenpeserta', ['data' => $data]);
+    }
 }

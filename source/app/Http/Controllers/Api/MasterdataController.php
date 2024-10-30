@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{Perusahaan, PaketMCU};
 use App\Models\Komponen\Poli;
+use App\Models\Masterdata\{Jasalayanan, DepartemenPerusahaan};
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\Validator;
 
@@ -90,18 +91,6 @@ class MasterdataController extends Controller
             }
             Perusahaan::where('id', $request->id)->delete();
             return ResponseHelper::success_delete("Informasi Perusahaan dengan nama " . $request->nama . " berhasil dihapus beserta seluruh data yang terkait dengan perusahaan ini.");
-        } catch (\Throwable $th) {
-            return ResponseHelper::error($th);
-        }
-    }
-    public function detailperusahaan(Request $request)
-    {
-        try {
-            $perusahaan = Perusahaan::where('id', $request->id)->first();
-            $dynamicAttributes = [
-                'data' => $perusahaan,
-            ];
-            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Perusahaan']), $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -214,6 +203,158 @@ class MasterdataController extends Controller
                 'keterangan' => $request->keterangan,
             ]);
             return ResponseHelper::success("Informasi dari paket MCU " . $request->nama_paket . " berhasil diubah.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    /* Master Data Jasa Pelayanan */
+    public function getjasa(Request $req)
+    {
+        try {
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 1;
+            $nomorHalaman = (int) $req->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman; 
+            $datatabel = Jasalayanan::listJasaPelayanan($req, $perHalaman, $offset);
+            $jumlahdata = $datatabel['total'];
+            $dynamicAttributes = [
+                'data' => $datatabel['data'],
+                'recordsFiltered' => $jumlahdata,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi fee atau nominal jasa pelayanan tersedia di MCU Artha Medica Clinic']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function savejasa(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'kode_jasa_pelayanan' => 'required|string',
+                'nama_jasa_pelayanan' => 'required|string',
+                'nominal_layanan' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            Jasalayanan::create([
+                'kode_jasa_pelayanan' => $request->kode_jasa_pelayanan,
+                'nama_jasa_pelayanan' => $request->nama_jasa_pelayanan,
+                'nominal_layanan' => $request->nominal_layanan,
+            ]);
+            return ResponseHelper::success("Informasi jasa pelayanan berhasil disimpan. Silahkan tentukan pada perusahaan mana jasa pelayanan ini akan digunakan.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }   
+    public function deletejasa(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            Jasalayanan::where('id', $request->id)->delete();
+            return ResponseHelper::success_delete("Informasi jasa pelayanan dengan kode " . $request->kode_jasa_pelayanan . " berhasil dihapus beserta seluruh data yang terkait dengan jasa pelayanan ini secara visual di sistem.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }   
+    public function editjasa(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            Jasalayanan::where('id', $request->id)->update([
+                'kode_jasa_pelayanan' => $request->kode_jasa_pelayanan,
+                'nama_jasa_pelayanan' => $request->nama_jasa_pelayanan,
+                'nominal_layanan' => $request->nominal_layanan,
+            ]);
+            return ResponseHelper::success("Informasi jasa pelayanan dengan kode " . $request->kode_jasa_pelayanan . " berhasil diubah.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    /* Master Data Departemen Peserta */
+    public function getdepartemenpeserta(Request $req)
+    {
+        try {
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 1;
+            $nomorHalaman = (int) $req->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman; 
+            $datatabel = DepartemenPerusahaan::listGetDepartemen($req, $perHalaman, $offset);
+            $jumlahdata = $datatabel['total'];
+            $dynamicAttributes = [
+                'data' => $datatabel['data'],
+                'recordsFiltered' => $jumlahdata,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi departemen peserta']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function savedepartemenpeserta(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'kode_departemen' => 'required|string',
+                'nama_departemen' => 'required|string',
+                'keterangan' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            DepartemenPerusahaan::create([
+                'kode_departemen' => $request->kode_departemen,
+                'nama_departemen' => $request->nama_departemen,
+                'keterangan' => $request->keterangan,
+            ]);
+            return ResponseHelper::success("Informasi departemen peserta berhasil disimpan. Silahkan tentukan pada perusahaan mana departemen peserta ini akan digunakan.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function editdepartemenpeserta(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            DepartemenPerusahaan::where('id', $request->id)->update([
+                'kode_departemen' => $request->kode_departemen,
+                'nama_departemen' => $request->nama_departemen,
+                'keterangan' => $request->keterangan,
+            ]);
+            return ResponseHelper::success("Informasi departemen peserta dengan kode " . $request->kode_departemen . " berhasil diubah.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }   
+    public function deletedepartemenpeserta(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            DepartemenPerusahaan::where('id', $request->id)->delete();
+            return ResponseHelper::success_delete("Informasi departemen peserta dengan kode " . $request->kode_departemen . " berhasil dihapus beserta seluruh data yang terkait dengan departemen peserta ini secara visual di sistem.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

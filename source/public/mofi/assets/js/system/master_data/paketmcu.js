@@ -111,12 +111,12 @@ function daftarpaketmcu() {
                     title: "Harga",
                     data: "harga_paket",
                     render: function(data) {
-                        return new Intl.NumberFormat('id-ID', { 
+                        return '<div style="text-align: right;">' + new Intl.NumberFormat('id-ID', { 
                             style: 'currency', 
                             currency: 'IDR',
                             minimumFractionDigits: 0,
                             maximumFractionDigits: 0
-                        }).format(data);
+                        }).format(data) + '</div>';
                     }
                 },
                 {
@@ -197,6 +197,8 @@ $("#simpan_paket_mcu").click(function(event) {
 });
 function clearFormulirTambahPaketMcu() {
     formValidasi.removeClass('was-validated');
+    isedit = false;
+    idpaketmcu = "";
     $("#kodepaketmcu").val("");
     $("#namapaketmcu").val("");
     $("#hargapaketmcu").val("");
