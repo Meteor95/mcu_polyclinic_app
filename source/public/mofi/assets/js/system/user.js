@@ -174,27 +174,32 @@ $('#btnSimpanPengguna').on('click', function(event) {
             $("#katasandi").attr('required', false);
             $("#katasandi").removeAttr('minlength');
         }
+        let formData = new FormData();
+        formData.append('_token', response.csrf_token);
+        formData.append('id_pengguna', user_id_pengguna);
+        formData.append('username', $("#namapengguna").val());
+        formData.append('password', $("#katasandi").val());
+        formData.append('email', $("#email").val());
+        formData.append('idhakakses', $("#select2_hak_akses").val());
+        formData.append('nama_pegawai', $("#nama_pegawai").val());
+        formData.append('nip', $("#nip").val());
+        formData.append('jabatan', $("#jabatan").val());
+        formData.append('departemen', $("#departemen").val());
+        formData.append('tanggal_lahir', $("#tanggal_lahir").val());
+        formData.append('tanggal_diterima', $("#tanggal_diterima").val());
+        formData.append('jenis_kelamin', $("#jenis_kelamin").val());
+        formData.append('alamat', $("#alamat").val());
+        formData.append('no_telepon', $("#no_telepon").val());
+        formData.append('status_pegawai', $("#status_pegawai").val());
+        if($("#tanda_tangan_pegawai")[0].files[0]) {
+            formData.append('tanda_tangan_pegawai', $("#tanda_tangan_pegawai")[0].files[0]);
+        }
         $.ajax({
             url: baseurlapi + '/pengguna/' + (isedit ? 'editpengguna' : 'tambahpengguna'),
             method: 'POST',
-            data: {
-                _token: response.csrf_token,
-                id_pengguna: user_id_pengguna,
-                username: $("#namapengguna").val(),
-                password: $("#katasandi").val(),
-                email: $("#email").val(),
-                idhakakses: $("#select2_hak_akses").val(),
-                nama_pegawai: $("#nama_pegawai").val(),
-                nip: $("#nip").val(),
-                jabatan: $("#jabatan").val(),
-                departemen: $("#departemen").val(),
-                tanggal_lahir: $("#tanggal_lahir").val(),
-                tanggal_diterima: $("#tanggal_diterima").val(),
-                jenis_kelamin: $("#jenis_kelamin").val(),
-                alamat: $("#alamat").val(),
-                no_telepon: $("#no_telepon").val(),
-                status_pegawai: $("#status_pegawai").val(),
-            },
+            data: formData,
+            processData: false,
+            contentType: false,
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
             },
@@ -280,6 +285,7 @@ function editpengguna(id, username){
                 $('#alamat').val(response.data.alamat);
                 $('#no_telepon').val(response.data.no_telepon);
                 $('#status_pegawai').val(response.data.status_pegawai);
+                $('#preview_image').attr('src', baseurl + '/image/user/signature/' + response.data.tanda_tangan_pegawai).show();
                 $('#modalTambahPengguna').modal('show');
             },
             error: function(xhr, status, error) {
@@ -295,5 +301,19 @@ function clearformeditpengguna(){
                    'alamat', 'no_telepon', 'status_pegawai'];
     fields.forEach(field => $(`#${field}`).val(''));
     $('#select2_hak_akses').val(null).trigger('change');
+    $('#tanda_tangan_pegawai').val(null);
+    $('#preview_image').attr('src', 'https://onlinepngtools.com/images/png/illustrations/transparent-png-signature-maker.png');
     $('#j-pills-web-designer-tab').tab('show');
 }
+$('#tanda_tangan_pegawai').on('change', function (event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            $('#preview_image').attr('src', e.target.result).show();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        $('#preview_image').hide();
+    }
+});

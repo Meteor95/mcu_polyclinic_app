@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController};
+use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController, FileController};
 use Illuminate\Http\Request;
 
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
@@ -20,6 +20,9 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('daftar_paket_mcu', [MasterdataController::class,"daftar_paket_mcu"])->name('admin.masterdata.daftar_paket_mcu');
         Route::get('daftar_jasa_pelayanan', [MasterdataController::class,"daftar_jasa_pelayanan"])->name('admin.masterdata.daftar_jasa_pelayanan');
         Route::get('daftar_departemen_peserta', [MasterdataController::class,"daftar_departemen_peserta"])->name('admin.masterdata.daftar_departemen_peserta');
+    });
+    Route::prefix('image')->group(function () {
+        Route::get('user/signature/{filename}', [FileController::class, 'showSignature']);
     });
 });
 

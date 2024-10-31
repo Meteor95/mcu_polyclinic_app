@@ -1,4 +1,4 @@
 #/bin/bash
 
 cd source
-php artisan octane:start
+php artisan octane:start --watch

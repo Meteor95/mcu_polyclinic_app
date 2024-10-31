@@ -52,7 +52,6 @@
                 <li><a href="{{url('masterdata/daftar_paket_mcu')}}">Paket Harga</a></li>
                 <li><a href="{{url('masterdata/daftar_jasa_pelayanan')}}">Jasa Pelayanan</a></li>
                 <li><a href="{{url('masterdata/daftar_departemen_peserta')}}">Departemen Peserta</a></li>
-                <li><a href="{{url('masterdata/daftar_petugas_pemeriksa')}}">Petugas Pemeriksa</a></li>
               </ul>
             </li>
             <li class="sidebar-main-title">

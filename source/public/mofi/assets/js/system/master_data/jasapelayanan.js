@@ -158,6 +158,7 @@ function clearFormulirTambahJasaPelayanan(){
     isedit = false;
     id_jasa_pelayanan = "";
     formValidasi.removeClass('was-validated');
+    hargajasapelayanan.set(0);
     $("#kodejasa").val("");
     $("#namajasa").val("");
     $("#nominaljasa").val("");
@@ -197,8 +198,8 @@ function hapusjasa(id, kode, nama){
 function editjasa(id, kode, nama, nominal){
     isedit = true;
     id_jasa_pelayanan = id;
+    hargajasapelayanan.set(nominal);
     $("#kodejasa").val(kode);
     $("#namajasa").val(nama);
-    $("#nominaljasa").val(nominal);
     $("#formulir_tambah_jasa_pelayanan").modal("show");
 }

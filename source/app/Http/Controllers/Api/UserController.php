@@ -55,7 +55,8 @@ class UserController extends Controller
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $data = $request->all();
-            $registerService->handleTransactionRegisterUser($data);
+            $ttd = $request->file('tanda_tangan_pegawai');
+            $registerService->handleTransactionRegisterUser($data, $ttd);
             return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil didaftarkan kedalam sistem MCU Artha Medica.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
@@ -106,7 +107,8 @@ class UserController extends Controller
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $data = $request->all();
-            $userService->handleTransactionEditUser($data);
+            $ttd = $request->file('tanda_tangan_pegawai');
+            $userService->handleTransactionEditUser($data, $ttd);
             return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil diubah. Silahkan masukkan kembali pada halaman pengguna aplikasi MCU Artha Medica.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

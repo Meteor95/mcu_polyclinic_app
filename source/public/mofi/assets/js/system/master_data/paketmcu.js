@@ -199,6 +199,7 @@ function clearFormulirTambahPaketMcu() {
     formValidasi.removeClass('was-validated');
     isedit = false;
     idpaketmcu = "";
+    hargapaketmcu.set(0);
     $("#kodepaketmcu").val("");
     $("#namapaketmcu").val("");
     $("#hargapaketmcu").val("");
