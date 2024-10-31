@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class BerandaController extends Controller
+class PendaftaranController extends Controller
 {
     private function getData($req, $title, $breadcrumb) {
         return [
@@ -14,11 +14,10 @@ class BerandaController extends Controller
             'user_details' => $req->attributes->get('user_details'),
         ];
     }
-    public function index(Request $request)
-    {
-        $data = $this->getData($request, 'Beranda MCU Arta Medica', [
-            'Dashboard' => route('admin.beranda'),
+    public function list_peserta(Request $req){
+        $data = $this->getData($req, 'Daftar Peserta', [
+            'Daftar Peserta' => route('admin.pendaftaran.daftar_peserta'),
         ]);
-        return view('paneladmin.beranda.main_konten', ['data' => $data]);
+        return view('paneladmin.pendaftaran.daftarpeserta', ['data' => $data]);
     }
 }

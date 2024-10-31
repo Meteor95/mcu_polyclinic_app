@@ -71,6 +71,7 @@
                       <div class="input-group">
                         <input class="form-control" minlength="8" id="katasandi" type="password" placeholder="Buatlah katasandi yang sulit ditebak dan mudah diingat" value="" required>
                         <button class="btn btn-outline-primary" type="button" id="toogleshowpassword"><i class="fa fa-eye"></i></button>
+                        <button class="btn btn-outline-success" type="button" id="generate_password" style="margin-left: 5px;"><i class="fa fa-refresh"></i> Buat Katasandi</button>
                         <div class="invalid-feedback">Katasandi wajib diisi, minimal 8 karakter</div>
                         <div class="valid-feedback">Terlihat bagus!Katasandi sudah terisi</div>
                       </div>
@@ -107,11 +108,11 @@
               <div class="row">
                 <div class="col">
                   <div class="mb-3 row">
-                    <label class="col-sm-3 mt-2">NIP</label>
+                    <label class="col-sm-3 mt-2">NIK</label>
                     <div class="col-sm-9">
-                      <input class="form-control" id="nip" type="text" placeholder="Nomor Induk Pegawai" value="" required>
-                      <div class="invalid-feedback">Masukan NIP yang valid</div>
-                      <div class="valid-feedback">Terlihat bagus! NIP sudah terisi</div>
+                      <input class="form-control" id="nik" type="text" placeholder="Nomor Induk Kependudukan" value="" required>
+                      <div class="invalid-feedback">Masukan NIK yang valid</div>
+                      <div class="valid-feedback">Terlihat bagus! NIK sudah terisi</div>
                     </div>
                   </div>
                 </div>
@@ -143,6 +144,18 @@
               <div class="row">
                 <div class="col">
                   <div class="mb-3 row">
+                    <label class="col-sm-3 mt-2">Tempat Lahir</label>
+                    <div class="col-sm-9">
+                      <input class="form-control" id="tempat_lahir" type="text" placeholder="Tempat Lahir" required>
+                      <div class="invalid-feedback">Masukan tempat lahir yang valid</div>
+                      <div class="valid-feedback">Terlihat bagus! Tempat lahir sudah terisi</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3 row">
                     <label class="col-sm-3 mt-2">Tanggal Lahir</label>
                     <div class="col-sm-9">
                       <input class="form-control" id="tanggal_lahir" type="text" placeholder="dd-mm-yyyy" required>
@@ -155,11 +168,23 @@
               <div class="row">
                 <div class="col">
                   <div class="mb-3 row">
-                    <label class="col-sm-3 mt-2">Tanggal Diterima</label>
+                    <label class="col-sm-3 mt-2">Tanggal Mulai Tugas</label>
                     <div class="col-sm-9">
-                      <input class="form-control" id="tanggal_diterima" type="text" placeholder="dd-mm-yyyy" required>
-                      <div class="invalid-feedback">Masukan tanggal diterima yang valid</div>
-                      <div class="valid-feedback">Terlihat bagus! Tanggal diterima sudah terisi</div>
+                      <input class="form-control" id="tanggal_diterima" type="text" placeholder="dd-mm-yyyy">
+                      <div class="invalid-feedback">Masukan tanggal mulai tugas yang valid</div>
+                      <div class="valid-feedback">Data dapat dikosongkan jika tidak disebutkan</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3 row">
+                    <label class="col-sm-3 mt-2">Tanggal Akhir Tugas</label>
+                    <div class="col-sm-9">
+                      <input class="form-control" id="tanggal_berhenti" type="text" placeholder="dd-mm-yyyy">
+                      <div class="invalid-feedback">Masukan tanggal akhir tugas yang valid</div>
+                      <div class="valid-feedback">Data dapat dikosongkan jika tidak disebutkan</div>
                     </div>
                   </div>
                 </div>
@@ -211,6 +236,7 @@
                         <option value="Tetap">Tetap</option>
                         <option value="Kontrak">Kontrak</option>
                         <option value="Magang">Magang</option>
+                        <option value="Tidak Aktif">Tidak Aktif</option>
                       </select>
                     </div>
                   </div>
