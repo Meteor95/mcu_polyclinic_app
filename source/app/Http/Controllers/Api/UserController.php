@@ -40,11 +40,11 @@ class UserController extends Controller
                 'email' => 'required|string|email|unique:users,email',
                 'idhakakses' => 'required|string',
                 'nama_pegawai' => 'required|string',
-                'nip' => 'required|string',
+                'nik' => 'required|string',
                 'jabatan' => 'required|string',
                 'departemen' => 'required|string',
                 'tanggal_lahir' => 'required|date_format:d-m-Y',
-                'tanggal_diterima' => 'required|date_format:d-m-Y',
+                'tempat_lahir' => 'required|string',
                 'jenis_kelamin' => 'required|string',
                 'alamat' => 'required',
                 'no_telepon' => 'required|string',
@@ -55,7 +55,8 @@ class UserController extends Controller
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $data = $request->all();
-            $registerService->handleTransactionRegisterUser($data);
+            $ttd = $request->file('tanda_tangan_pegawai');
+            $registerService->handleTransactionRegisterUser($data, $ttd);
             return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil didaftarkan kedalam sistem MCU Artha Medica.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
@@ -106,7 +107,8 @@ class UserController extends Controller
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $data = $request->all();
-            $userService->handleTransactionEditUser($data);
+            $ttd = $request->file('tanda_tangan_pegawai');
+            $userService->handleTransactionEditUser($data, $ttd);
             return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil diubah. Silahkan masukkan kembali pada halaman pengguna aplikasi MCU Artha Medica.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

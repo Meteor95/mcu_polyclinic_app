@@ -28,16 +28,16 @@
       </div>
       <div class="modal-body">
       <form id="form_pendaftaran" class="row g-3 needs-validation custom-input" novalidate>
-        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2 pb-2 p-0">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2 pb-2 p-1">
           <h5>Isikan Dengan Benar dan Akurat :</h5>
           <ul class="nav nav-pills nav-warning" id="j-pills-tab" role="tablist">
             <li class="nav-item"><a class="nav-link active" id="j-pills-web-designer-tab" data-bs-toggle="pill" href="#j-pills-web-designer" role="tab" aria-controls="j-pills-web-designer" aria-selected="true">Kredential</a></li>
             <li class="nav-item"><a class="nav-link" id="j-pills-UX-designer-tab" data-bs-toggle="pill" href="#j-pills-UX-designer" role="tab" aria-controls="j-pills-UX-designer" aria-selected="false">Detail Pengguna</a></li>
-            <li class="nav-item"><a class="nav-link" id="j-pills-IOT-developer-tab" data-bs-toggle="pill" href="#j-pills-IOT-developer" role="tab" aria-controls="j-pills-IOT-developer" aria-selected="false">Keterangan</a></li>
+            <li class="nav-item"><a class="nav-link" id="j-pills-IOT-developer-tab" data-bs-toggle="pill" href="#j-pills-IOT-developer" role="tab" aria-controls="j-pills-IOT-developer" aria-selected="false">Berkas Pengguna</a></li>
           </ul>
         </div>
-        <div class="card-body px-0 pb-0"> 
-          <div class="tab-content" id="j-pills-tabContent">
+        <div class="card-body p-3 px-0 pb-0"> 
+          <div class="tab-content p-2" id="j-pills-tabContent">
           <div class="tab-pane fade active show" id="j-pills-web-designer" role="tabpanel" aria-labelledby="j-pills-web-designer-tab">
               <div class="row"> 
                 <div class="col"> 
@@ -71,6 +71,7 @@
                       <div class="input-group">
                         <input class="form-control" minlength="8" id="katasandi" type="password" placeholder="Buatlah katasandi yang sulit ditebak dan mudah diingat" value="" required>
                         <button class="btn btn-outline-primary" type="button" id="toogleshowpassword"><i class="fa fa-eye"></i></button>
+                        <button class="btn btn-outline-success" type="button" id="generate_password" style="margin-left: 5px;"><i class="fa fa-refresh"></i> Buat Katasandi</button>
                         <div class="invalid-feedback">Katasandi wajib diisi, minimal 8 karakter</div>
                         <div class="valid-feedback">Terlihat bagus!Katasandi sudah terisi</div>
                       </div>
@@ -107,11 +108,11 @@
               <div class="row">
                 <div class="col">
                   <div class="mb-3 row">
-                    <label class="col-sm-3 mt-2">NIP</label>
+                    <label class="col-sm-3 mt-2">NIK</label>
                     <div class="col-sm-9">
-                      <input class="form-control" id="nip" type="text" placeholder="Nomor Induk Pegawai" value="" required>
-                      <div class="invalid-feedback">Masukan NIP yang valid</div>
-                      <div class="valid-feedback">Terlihat bagus! NIP sudah terisi</div>
+                      <input class="form-control" id="nik" type="text" placeholder="Nomor Induk Kependudukan" value="" required>
+                      <div class="invalid-feedback">Masukan NIK yang valid</div>
+                      <div class="valid-feedback">Terlihat bagus! NIK sudah terisi</div>
                     </div>
                   </div>
                 </div>
@@ -143,6 +144,18 @@
               <div class="row">
                 <div class="col">
                   <div class="mb-3 row">
+                    <label class="col-sm-3 mt-2">Tempat Lahir</label>
+                    <div class="col-sm-9">
+                      <input class="form-control" id="tempat_lahir" type="text" placeholder="Tempat Lahir" required>
+                      <div class="invalid-feedback">Masukan tempat lahir yang valid</div>
+                      <div class="valid-feedback">Terlihat bagus! Tempat lahir sudah terisi</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3 row">
                     <label class="col-sm-3 mt-2">Tanggal Lahir</label>
                     <div class="col-sm-9">
                       <input class="form-control" id="tanggal_lahir" type="text" placeholder="dd-mm-yyyy" required>
@@ -155,11 +168,23 @@
               <div class="row">
                 <div class="col">
                   <div class="mb-3 row">
-                    <label class="col-sm-3 mt-2">Tanggal Diterima</label>
+                    <label class="col-sm-3 mt-2">Tanggal Mulai Tugas</label>
                     <div class="col-sm-9">
-                      <input class="form-control" id="tanggal_diterima" type="text" placeholder="dd-mm-yyyy" required>
-                      <div class="invalid-feedback">Masukan tanggal diterima yang valid</div>
-                      <div class="valid-feedback">Terlihat bagus! Tanggal diterima sudah terisi</div>
+                      <input class="form-control" id="tanggal_diterima" type="text" placeholder="dd-mm-yyyy">
+                      <div class="invalid-feedback">Masukan tanggal mulai tugas yang valid</div>
+                      <div class="valid-feedback">Data dapat dikosongkan jika tidak disebutkan</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3 row">
+                    <label class="col-sm-3 mt-2">Tanggal Akhir Tugas</label>
+                    <div class="col-sm-9">
+                      <input class="form-control" id="tanggal_berhenti" type="text" placeholder="dd-mm-yyyy">
+                      <div class="invalid-feedback">Masukan tanggal akhir tugas yang valid</div>
+                      <div class="valid-feedback">Data dapat dikosongkan jika tidak disebutkan</div>
                     </div>
                   </div>
                 </div>
@@ -211,6 +236,7 @@
                         <option value="Tetap">Tetap</option>
                         <option value="Kontrak">Kontrak</option>
                         <option value="Magang">Magang</option>
+                        <option value="Tidak Aktif">Tidak Aktif</option>
                       </select>
                     </div>
                   </div>
@@ -218,15 +244,19 @@
               </div>
             </div>
             <div class="tab-pane fade" id="j-pills-IOT-developer" role="tabpanel" aria-labelledby="j-pills-IOT-developer-tab">
-                <p class="mb-0">
-                  <ol type="1">
-                      <li>Informasi pada tab "Kredensial" wajib diisi semua. Data ini digunakan untuk masuk ke dalam sistem Artha Medica MCU.</li>
-                      <li>Informasi pada tab "Kredensial" tersinkronisasi dengan aplikasi Artha Medica MCU Mobile. Anda dapat mendaftarkan pengguna baru melalui halaman ini.</li>
-                      <li>Penambahan kredensial aplikasi hanya dapat dilakukan melalui aplikasi website pada menu ini untuk alasan keamanan dan sifat internal aplikasi.</li>
-                      <li>Informasi pada tab "Profil" tidak wajib diisi semua. Isi sesuai dengan informasi yang dapat Anda berikan. Informasi profil digunakan untuk identitas pada log pemeriksaan MCU.</li>
-                      <li>Pastikan untuk mengisi data dengan akurat, terutama untuk informasi medis yang relevan dengan MCU.</li>
-                  </ol>  
-                </p>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3 row">
+                    <label class="col-sm-3 mt-2">Unggah TTDigital</label>
+                    <div class="col-sm-9">
+                      <div class="text-center">
+                        <img id="preview_image" src="https://onlinepngtools.com/images/png/illustrations/transparent-png-signature-maker.png" alt="Preview" class="img-fluid img-thumbnail" style="max-width: 300px;">
+                      </div>
+                      <input class="form-control mt-2" id="tanda_tangan_pegawai" type="file" accept="image/*">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

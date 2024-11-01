@@ -91,12 +91,12 @@
           </li>
           <li class="profile-nav onhover-dropdown px-0 py-0">
             <div class="d-flex profile-media align-items-center"><img class="img-30" src="{{ asset('mofi/assets/images/dashboard/profile.png')}}" alt="">
-              <div class="flex-grow-1"><span>Alen Miller</span>
-                <p class="mb-0 font-outfit">UI Designer<i class="fa fa-angle-down"></i></p>
+              <div class="flex-grow-1"><span>{{ $data['user_details']->nama_pegawai }}</span>
+                <p class="mb-0 font-outfit">{{ $data['user_details']->jabatan }} <i class="fa fa-angle-down"></i></p>
               </div>
             </div>
             <ul class="profile-dropdown onhover-show-div">
-              <li><a href="private-chat.html"><i data-feather="user"></i><span>Account </span></a></li>
+              <li><a href="{{ route('admin.akun.profile') }}"><i data-feather="user"></i><span>Profile</span></a></li>
               <li><a href="letter-box.html"><i data-feather="mail"></i><span>Inbox</span></a></li>
               <li><a href="task.html"><i data-feather="file-text"></i><span>Taskboard</span></a></li>
               <li><a href="edit-profile.html"><i data-feather="settings"></i><span>Settings</span></a></li>

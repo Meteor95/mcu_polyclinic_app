@@ -39960,10 +39960,11 @@ div:where(.swal2-container) button:where(.swal2-close):hover {
   margin: 16px 0;
 }
 .user-profile .hovercard .cardheader {
-  background: url(../images/other-images/bg-profile.png);
+  background: url(https://i.pinimg.com/originals/02/87/d3/0287d3ba8b3330fca99f69e2001d3168.gif);
   background-size: cover;
-  background-position: 10%;
-  height: 470px;
+  height: 270px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 .user-profile .hovercard .user-image {
   position: relative;

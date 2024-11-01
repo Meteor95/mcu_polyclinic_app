@@ -81,7 +81,7 @@ class User extends Authenticatable implements JWTSubject
                 $query->where('users.username', 'like', '%' . $parameterpencarian . '%')
                     ->orWhere('users.email', 'like', '%' . $parameterpencarian . '%')
                     ->orWhere('users_pegawai.id', 'like', '%' . $parameterpencarian . '%')
-                    ->orWhere('users_pegawai.nip', 'like', '%' . $parameterpencarian . '%')
+                    ->orWhere('users_pegawai.nik', 'like', '%' . $parameterpencarian . '%')
                     ->orWhere('users_pegawai.nama_pegawai', 'like', '%' . $parameterpencarian . '%');
             })
             ->take($perHalaman)

@@ -1,6 +1,6 @@
 let formValidasi = $("#form_pendaftaran");isedit = false;let user_id_pengguna = "";
 $(document).ready(function(){
-    $('#tanggal_lahir, #tanggal_diterima').datepicker({
+    $('#tanggal_lahir, #tanggal_diterima, #tanggal_berhenti').datepicker({
         format: 'dd-mm-yyyy',
         autoclose: true,
         todayHighlight: true,
@@ -116,13 +116,13 @@ function datatable_penggunaaplikasi(){
                 {
                     title: "Informasi Pegawai",
                     render: function(data, type, row, meta) {
-                        return `NIP: ${row.nip}<br>Nama Pegawai: ${row.nama_pegawai}<br>Jabatan: ${row.jabatan} (${row.departemen})<br>Jenis Kelamin: ${row.jenis_kelamin}<br>Tanggal Lahir: ${new Date(row.tanggal_lahir).toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}).split('/').join('-')}`;
+                        return `NIK: ${row.nik}<br>Nama Pegawai: ${row.nama_pegawai}<br>Jabatan: ${row.jabatan} (${row.departemen})<br>Jenis Kelamin: ${row.jenis_kelamin}<br>Tanggal Mulai Tugas: ${new Date(row.tanggal_bergabung).toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}).split('/').join('-')}<br>Tanggal Akhir Tugas: ${new Date(row.tanggal_berhenti).toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}).split('/').join('-')}`;
                     }
                 },
                 {
                     title: "Informasi Kontak",
                     render: function(data, type, row, meta) {
-                        return `Alamat: ${row.alamat}<br>No Telepon: ${row.no_telepon}<br>Tanggal Bergabung: ${new Date(row.tanggal_bergabung).toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}).split('/').join('-')}`;
+                        return `Alamat: ${row.alamat}<br>No Telepon: ${row.no_telepon}<br>Tanggal Bergabung: ${new Date(row.tanggal_bergabung).toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}).split('/').join('-')}<br>Tempat Lahir: ${row.tempat_lahir}<br>Tanggal Lahir: ${new Date(row.tanggal_lahir).toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}).split('/').join('-')}`;
                     }
                 },
                 {
@@ -163,9 +163,8 @@ $('#btnSimpanPengguna').on('click', function(event) {
     if ($("#floatingInputValue").val() == "" || (!isedit && $("#katasandi").val() == "") || $("#select2_hak_akses").val() == "") {
         return createToast('Kesalahan Formulir', 'top-right', 'Silahkan isi semua field pada tab Kredensial terlebih dahulu.', 'error', 3000);
     }
-    if ($("#nama_pegawai").val() == "" || $("#nip").val() == "" || $("#jabatan").val() == "" || 
-        $("#departemen").val() == "" || $("#tanggal_lahir").val() == "" || $("#tanggal_diterima").val() == "" ||
-        $("#jenis_kelamin").val() == "" || $("#alamat").val() == "" || $("#no_telepon").val() == "" || 
+    if ($("#nama_pegawai").val() == "" || $("#nik").val() == "" || $("#jabatan").val() == "" || 
+        $("#departemen").val() == "" || $("#tempat_lahir").val() == "" || $("#tanggal_lahir").val() == "" || $("#jenis_kelamin").val() == "" || $("#alamat").val() == "" || $("#no_telepon").val() == "" || 
         $("#status_pegawai").val() == "") {
         return createToast('Kesalahan Formulir', 'top-right', 'Silahkan isi semua field pada tab Profil terlebih dahulu.', 'error', 3000);
     }
@@ -174,27 +173,34 @@ $('#btnSimpanPengguna').on('click', function(event) {
             $("#katasandi").attr('required', false);
             $("#katasandi").removeAttr('minlength');
         }
+        let formData = new FormData();
+        formData.append('_token', response.csrf_token);
+        formData.append('id_pengguna', user_id_pengguna);
+        formData.append('username', $("#namapengguna").val());
+        formData.append('password', $("#katasandi").val());
+        formData.append('email', $("#email").val());
+        formData.append('idhakakses', $("#select2_hak_akses").val());
+        formData.append('nama_pegawai', $("#nama_pegawai").val());
+        formData.append('nik', $("#nik").val());
+        formData.append('jabatan', $("#jabatan").val());
+        formData.append('departemen', $("#departemen").val());
+        formData.append('tanggal_lahir', $("#tanggal_lahir").val());
+        formData.append('tempat_lahir', $("#tempat_lahir").val());
+        formData.append('tanggal_diterima', $("#tanggal_diterima").val());
+        formData.append('tanggal_berhenti', $("#tanggal_berhenti").val());
+        formData.append('jenis_kelamin', $("#jenis_kelamin").val());
+        formData.append('alamat', $("#alamat").val());
+        formData.append('no_telepon', $("#no_telepon").val());
+        formData.append('status_pegawai', $("#status_pegawai").val());
+        if($("#tanda_tangan_pegawai")[0].files[0]) {
+            formData.append('tanda_tangan_pegawai', $("#tanda_tangan_pegawai")[0].files[0]);
+        }
         $.ajax({
             url: baseurlapi + '/pengguna/' + (isedit ? 'editpengguna' : 'tambahpengguna'),
             method: 'POST',
-            data: {
-                _token: response.csrf_token,
-                id_pengguna: user_id_pengguna,
-                username: $("#namapengguna").val(),
-                password: $("#katasandi").val(),
-                email: $("#email").val(),
-                idhakakses: $("#select2_hak_akses").val(),
-                nama_pegawai: $("#nama_pegawai").val(),
-                nip: $("#nip").val(),
-                jabatan: $("#jabatan").val(),
-                departemen: $("#departemen").val(),
-                tanggal_lahir: $("#tanggal_lahir").val(),
-                tanggal_diterima: $("#tanggal_diterima").val(),
-                jenis_kelamin: $("#jenis_kelamin").val(),
-                alamat: $("#alamat").val(),
-                no_telepon: $("#no_telepon").val(),
-                status_pegawai: $("#status_pegawai").val(),
-            },
+            data: formData,
+            processData: false,
+            contentType: false,
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
             },
@@ -271,15 +277,18 @@ function editpengguna(id, username){
                 $('#select2_hak_akses').append(newOption).trigger('change');
                 $("#select2_hak_akses").val(response.data.id_role || 1).trigger('change');
                 $('#nama_pegawai').val(response.data.nama_pegawai);
-                $('#nip').val(response.data.nip);
+                $('#nik').val(response.data.nik);
                 $('#jabatan').val(response.data.jabatan);
-                $('#departemen').val(response.data.departemen);
+                $('#departemen').val(response.data.departemen); 
                 $('#tanggal_lahir').val(response.data.tanggal_lahir.split('-').reverse().join('-'));
-                $('#tanggal_diterima').val(response.data.tanggal_bergabung.split('-').reverse().join('-'));
+                $('#tempat_lahir').val(response.data.tempat_lahir);
+                $('#tanggal_diterima').val(response.data.tanggal_bergabung == null ? "" : response.data.tanggal_bergabung.split('-').reverse().join('-'));
+                $('#tanggal_berhenti').val(response.data.tanggal_berhenti == null ? "" : response.data.tanggal_berhenti.split('-').reverse().join('-'));
                 $('#jenis_kelamin').val(response.data.jenis_kelamin);
                 $('#alamat').val(response.data.alamat);
                 $('#no_telepon').val(response.data.no_telepon);
                 $('#status_pegawai').val(response.data.status_pegawai);
+                $('#preview_image').attr('src', baseurl + '/image/user/signature/' + response.data.tanda_tangan_pegawai).show();
                 $('#modalTambahPengguna').modal('show');
             },
             error: function(xhr, status, error) {
@@ -290,10 +299,27 @@ function editpengguna(id, username){
 }
 function clearformeditpengguna(){
     formValidasi.removeClass('was-validated');
-    const fields = ['namapengguna', 'email', 'katasandi', 'nama_pegawai', 'nip', 'jabatan', 
-                   'departemen', 'tanggal_lahir', 'tanggal_diterima', 'jenis_kelamin', 
+    const fields = ['namapengguna', 'email', 'katasandi', 'nama_pegawai', 'nik', 'jabatan', 
+                   'departemen', 'tanggal_lahir', 'tempat_lahir', 'tanggal_diterima', 'tanggal_berhenti', 'jenis_kelamin', 
                    'alamat', 'no_telepon', 'status_pegawai'];
     fields.forEach(field => $(`#${field}`).val(''));
     $('#select2_hak_akses').val(null).trigger('change');
+    $('#tanda_tangan_pegawai').val(null);
+    $('#preview_image').attr('src', 'https://onlinepngtools.com/images/png/illustrations/transparent-png-signature-maker.png');
     $('#j-pills-web-designer-tab').tab('show');
 }
+$('#tanda_tangan_pegawai').on('change', function (event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            $('#preview_image').attr('src', e.target.result).show();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        $('#preview_image').hide();
+    }
+});
+$("#generate_password").on("click", function(){
+    $("#katasandi").val(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
+});

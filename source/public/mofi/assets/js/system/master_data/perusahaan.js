@@ -88,7 +88,7 @@ function dafatarperusahaan(){
                     title: "Aksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"detailperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "')\"><i class=\"fa fa-edit\"></i> Edit Perusahaan</button><button class=\"btn btn-danger w-100\" onclick=\"hapusperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Perusahaan</button></div>";
+                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"detailperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "', '"+row.alamat+"', '"+row.keterangan+"')\"><i class=\"fa fa-edit\"></i> Edit Perusahaan</button><button class=\"btn btn-danger w-100\" onclick=\"hapusperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Perusahaan</button></div>";
                         }
                         return data;
                     }
@@ -148,32 +148,14 @@ $('#simpan_perusahaan').click(function(event){
         }
     });
 });
-function detailperusahaan(id){
+function detailperusahaan(id, kode, nama, alamat, keterangan){
     id_perusahaan = id;
-    $.get('/generate-csrf-token', function(response){
-        $.ajax({
-            url: baseurlapi + '/masterdata/detailperusahaan',
-            type: 'GET',
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
-            },
-            data: {
-                _token: response.csrf_token,
-                id: id
-            },
-            success: function(response){
-                isedit = true;
-                $('#kodeperusahaan').val(response.data.company_code);
-                $('#namaperusahaan').val(response.data.company_name);
-                $('#alamatperusahaan').val(response.data.alamat);
-                $('#keteranganperusahaan').val(response.data.keterangan);
-                $('#formulir_tambah_perusahaan').modal('show');
-            },
-            error: function(xhr, status, error){
-                return createToast('Error', 'top-right', xhr.responseJSON.message, 'error', 3000);
-            }
-        });
-    });
+    isedit = true;
+    $('#kodeperusahaan').val(kode);
+    $('#namaperusahaan').val(nama);
+    $('#alamatperusahaan').val(alamat);
+    $('#keteranganperusahaan').val(keterangan);
+    $('#formulir_tambah_perusahaan').modal('show');
 }
 function clearformperusahaan(){
     form.removeClass('was-validated');
@@ -219,6 +201,5 @@ function hapusperusahaan(id, kode, nama){
                 });
             });
         }
-    });
-    
+    });   
 }

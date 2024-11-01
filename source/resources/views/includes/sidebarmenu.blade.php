@@ -29,7 +29,7 @@
             </li>
             <li class="sidebar-main-title">
               <div>
-                <h6 class="lan-1">General</h6>
+                <h6>NAVIGASI</h6>
               </div>
             </li>
             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -46,16 +46,30 @@
                 </svg>
                 <svg class="fill-icon">
                   <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-widget')}}"></use>
-                </svg><span>Master Data</span></a>
+                </svg><span>Pendaftaran</span></a>
               <ul class="sidebar-submenu">
-                <li><a href="{{url('masterdata/daftar_perusahaan')}}">Perusahaan</a></li>
-                <li><a href="{{url('masterdata/daftar_paket_mcu')}}">Paket Harga</a></li>
+                <li><a href="{{url('pendaftaran/daftar_peserta')}}">Daftar Peserta</a></li>
+                <li><a href="{{url('pendaftaran/daftar_pasien')}}">Daftar Pasien</a></li>
               </ul>
             </li>
             <li class="sidebar-main-title">
               <div>
                 <h6>PENGATURAN</h6>
               </div>
+            </li>
+            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                <svg class="stroke-icon">
+                  <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#stroke-widget')}}"></use>
+                </svg>
+                <svg class="fill-icon">
+                  <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-widget')}}"></use>
+                </svg><span>Master Data</span></a>
+              <ul class="sidebar-submenu">
+                <li><a href="{{url('masterdata/daftar_perusahaan')}}">Perusahaan</a></li>
+                <li><a href="{{url('masterdata/daftar_paket_mcu')}}">Paket Harga</a></li>
+                <li><a href="{{url('masterdata/daftar_jasa_pelayanan')}}">Jasa Pelayanan</a></li>
+                <li><a href="{{url('masterdata/daftar_departemen_peserta')}}">Departemen Peserta</a></li>
+              </ul>
             </li>
             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)">
                 <svg class="stroke-icon">
