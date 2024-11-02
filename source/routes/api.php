@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -37,6 +37,9 @@ Route::prefix('v1')->group(function () {
         Route::prefix('komponen')->group(function () {
             Route::get('daftarpoli', [MasterdataController::class,"getpoli"]);
         });
+        Route::prefix('pendaftaran')->group(function () {
+            Route::get('daftarpeserta', [PendaftaranController::class,"getpeserta"]);
+        });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */
             Route::get('daftarperusahaan', [MasterdataController::class,"getperusahaan"]);
@@ -58,6 +61,11 @@ Route::prefix('v1')->group(function () {
             Route::post('simpandepartemenpeserta', [MasterdataController::class,"savedepartemenpeserta"]);
             Route::get('hapusdepartemenpeserta', [MasterdataController::class,"deletedepartemenpeserta"]);
             Route::post('ubahdepartemenpeserta', [MasterdataController::class,"editdepartemenpeserta"]);
+            /* Master Data Member MCU */
+            Route::get('daftarmembermcu', [MasterdataController::class,"getmembermcu"]);
+            Route::post('simpanmembermcu', [MasterdataController::class,"savemembermcu"]);
+            Route::get('hapusmembermcu', [MasterdataController::class,"deletemembermcu"]);
+            Route::post('ubahmembermcu', [MasterdataController::class,"editmembermcu"]);
         });
     });
 });

@@ -14,6 +14,15 @@ class PendaftaranController extends Controller
             'user_details' => $req->attributes->get('user_details'),
         ];
     }
+    /* Area Landing Formulir Pendaftaran */
+    public function formulir_pendaftaran(Request $req){
+        $data = [
+            'tipe_halaman' => 'landing',
+            'menu_utama_aktif' => 'formulir_pendaftaran',
+        ];
+        return view('preregister.landingpage_form', ['data' => $data]);
+    }
+    /* Area Admin Pendaftaran */
     public function list_peserta(Request $req){
         $data = $this->getData($req, 'Daftar Peserta', [
             'Daftar Peserta' => route('admin.pendaftaran.daftar_peserta'),

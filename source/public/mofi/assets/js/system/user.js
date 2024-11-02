@@ -1,14 +1,7 @@
 let formValidasi = $("#form_pendaftaran");isedit = false;let user_id_pengguna = "";
 $(document).ready(function(){
-    $('#tanggal_lahir, #tanggal_diterima, #tanggal_berhenti').datepicker({
-        format: 'dd-mm-yyyy',
-        autoclose: true,
-        todayHighlight: true,
-        orientation: "bottom auto",
-        templates: {
-            leftArrow: '<i class="fa fa-chevron-left"></i>',
-            rightArrow: '<i class="fa fa-chevron-right"></i>'
-        }
+    flatpickr("#tanggal_lahir, #tanggal_diterima, #tanggal_berhenti", {
+        dateFormat: "d-m-Y",
     });
     datatable_penggunaaplikasi(); 
     $.get('/generate-csrf-token', function(response) {

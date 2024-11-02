@@ -7,11 +7,11 @@ $('#kotak_pencarian').on('input', debounce(function() {
 function tabel_hakakses(){
 $.get('/generate-csrf-token', function(response) {
     $("#datatables_permission").DataTable({
-    dom: 'lfrtip',
-    searching: false,
-    lengthChange: false,
-    ordering: false,
-    language:{
+        dom: 'lfrtip',
+        searching: false,
+        lengthChange: false,
+        ordering: false,
+        language:{
             "paginate": {
                 "first": '<i class="fa fa-angle-double-left"></i>', 
                 "last": '<i class="fa fa-angle-double-right"></i>', 

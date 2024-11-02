@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{Perusahaan, PaketMCU};
 use App\Models\Komponen\Poli;
-use App\Models\Masterdata\{Jasalayanan, DepartemenPerusahaan};
+use App\Models\Masterdata\{Jasalayanan, DepartemenPerusahaan, MemberMCU};
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\Validator;
-
+use Carbon\Carbon;
 class MasterdataController extends Controller
 {
     /* Komponen */
@@ -355,6 +355,109 @@ class MasterdataController extends Controller
             }
             DepartemenPerusahaan::where('id', $request->id)->delete();
             return ResponseHelper::success_delete("Informasi departemen peserta dengan kode " . $request->kode_departemen . " berhasil dihapus beserta seluruh data yang terkait dengan departemen peserta ini secara visual di sistem.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    /* Master Data Member MCU */
+    public function getmembermcu(Request $req)
+    {
+        try {
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 1;
+            $nomorHalaman = (int) $req->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman;
+            $data = MemberMcu::listMemberMcu($req, $perHalaman, $offset);
+            $jumlahdata = $data['total'];
+            $dynamicAttributes = [
+                'data' => $data['data'],
+                'recordsFiltered' => $jumlahdata,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Daftar Member MCU']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function savemembermcu(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'nomor_identitas' => 'required|string',
+                'nama_peserta' => 'required|string',
+                'tempat_lahir' => 'required|string',
+                'tanggal_lahir' => 'required|date',
+                'tipe_identitas' => 'required|string',
+                'jenis_kelamin' => 'required|string',
+                'alamat' => 'required|string',
+                'status_kawin' => 'required|string',
+                'no_telepon' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            MemberMcu::create([
+                'nomor_identitas' => $request->nomor_identitas,
+                'nama_peserta' => $request->nama_peserta,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => Carbon::parse($request->tanggal_lahir)->format('Y-m-d'),
+                'tipe_identitas' => $request->tipe_identitas,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'status_kawin' => $request->status_kawin,
+                'no_telepon' => $request->no_telepon,
+            ]);
+            return ResponseHelper::success("Informasi member MCU berhasil disimpan. Silahkan lanjutkan transaksi jikala membutuhkan rekam medis MCU.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }   
+    }
+    public function deletemembermcu(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            MemberMcu::where('id', $request->id)->delete();
+            return ResponseHelper::success_delete("Informasi member MCU dengan nama " . $request->nama_peserta . " berhasil dihapus beserta seluruh data yang terkait dengan member MCU ini secara visual di sistem.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }   
+    }   
+    public function editmembermcu(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
+                'nomor_identitas' => 'required|string',
+                'nama_peserta' => 'required|string',
+                'tempat_lahir' => 'required|string',
+                'tanggal_lahir' => 'required|date',
+                'tipe_identitas' => 'required|string',
+                'jenis_kelamin' => 'required|string',
+                'alamat' => 'required|string',
+                'status_kawin' => 'required|string',
+                'no_telepon' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            MemberMcu::where('id', $request->id)->update([
+                'nomor_identitas' => $request->nomor_identitas,
+                'nama_peserta' => $request->nama_peserta,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => Carbon::parse($request->tanggal_lahir)->format('Y-m-d'),
+                'tipe_identitas' => $request->tipe_identitas,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'status_kawin' => $request->status_kawin,
+                'no_telepon' => $request->no_telepon,
+            ]);
+            return ResponseHelper::success("Informasi member MCU dengan nama " . $request->nama_peserta . " berhasil diubah.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

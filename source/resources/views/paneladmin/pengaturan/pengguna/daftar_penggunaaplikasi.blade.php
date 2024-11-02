@@ -273,6 +273,7 @@
 @section('css_load')
 @component('komponen.css.datatables')
 @endcomponent
+<link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <style>
@@ -290,6 +291,7 @@
 @section('js_load')
 @component('komponen.js.datatables')
 @endcomponent
+<script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="{{asset('mofi/assets/js/system/user.js')}}"></script>

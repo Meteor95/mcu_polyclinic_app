@@ -27,9 +27,13 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('daftar_paket_mcu', [MasterdataController::class,"daftar_paket_mcu"])->name('admin.masterdata.daftar_paket_mcu');
         Route::get('daftar_jasa_pelayanan', [MasterdataController::class,"daftar_jasa_pelayanan"])->name('admin.masterdata.daftar_jasa_pelayanan');
         Route::get('daftar_departemen_peserta', [MasterdataController::class,"daftar_departemen_peserta"])->name('admin.masterdata.daftar_departemen_peserta');
+        Route::get('daftar_member_mcu', [MasterdataController::class,"daftar_member_mcu"])->name('admin.masterdata.daftar_member_mcu');
     });
     Route::prefix('image')->group(function () {
         Route::get('user/signature/{filename}', [FileController::class, 'showSignature']);
     });
+});
+Route::prefix('landing')->group(function () {
+    Route::get('formulir', [PendaftaranController::class,"formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
 });
 

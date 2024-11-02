@@ -183,6 +183,7 @@ $("#simpan_paket_mcu").click(function(event) {
                         keterangan: $("#keteranganpaketmcu").val(),
                     },
                     success: function(response) {
+                        clearFormulirTambahPaketMcu();
                         createToast('Informasi', 'top-right', response.message, 'success', 3000);
                         $("#formulir_tambah_paket_mcu").modal("hide");
                         $("#datatable_paketmcu").DataTable().ajax.reload();

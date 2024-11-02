@@ -38,4 +38,10 @@ class MasterdataController extends Controller
         ]);
         return view('paneladmin.masterdata.daftardepartemenpeserta', ['data' => $data]);
     }
+    function daftar_member_mcu(Request $req){
+        $data = $this->getData($req, 'Daftar Member', [
+            'Member MCU' => route('admin.masterdata.daftar_member_mcu'),
+        ]);
+        return view('paneladmin.masterdata.daftarmembermcu', ['data' => $data]);
+    }
 }

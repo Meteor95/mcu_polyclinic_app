@@ -10111,9 +10111,6 @@ div .action .delete i {
   border-radius: 0;
 }
 
-.dataTables_scrollHeadInner {
-  width: 100% !important;
-}
 
 table .fixedHeader-floating {
   position: fixed !important;
