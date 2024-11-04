@@ -1,6 +1,10 @@
 let form = $('#formulir_tambah_perusahaan_baru');let isedit = false;let id_perusahaan = "";
+let quill = null;
 $(document).ready(function(){
     dafatarperusahaan();
+    quill = new Quill('#keteranganperusahaan', {
+        theme: 'snow',
+    });
 });
 function dafatarperusahaan(){
     $.get('/generate-csrf-token', function(response){
@@ -88,7 +92,7 @@ function dafatarperusahaan(){
                     title: "Aksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"detailperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "', '"+row.alamat+"', '"+row.keterangan+"')\"><i class=\"fa fa-edit\"></i> Edit Perusahaan</button><button class=\"btn btn-danger w-100\" onclick=\"hapusperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Perusahaan</button></div>";
+                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"detailperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "', '"+row.alamat+"', '"+encodeURIComponent(row.keterangan)+"')\"><i class=\"fa fa-edit\"></i> Edit Perusahaan</button><button class=\"btn btn-danger w-100\" onclick=\"hapusperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Perusahaan</button></div>";
                         }
                         return data;
                     }
@@ -107,7 +111,7 @@ $('#tambah_perusahaan_baru').click(function(){
 $('#simpan_perusahaan').click(function(event){
     event.preventDefault();
     form.addClass('was-validated');
-    if ($('#kodeperusahaan').val() == "" || $('#namaperusahaan').val() == "" || $('#alamatperusahaan').val() == "" || $('#keteranganperusahaan').val() == "") {
+    if ($('#kodeperusahaan').val() == "" || $('#namaperusahaan').val() == "" || $('#alamatperusahaan').val() == "" ) {
         return createToast('Kesalahan Formulir','top-right', 'Silahkan isi semua field pada formulir terlebih dahulu untuk menyimpan informasi perusahaan.', 'error', 3000);
     }
     Swal.fire({
@@ -132,7 +136,7 @@ $('#simpan_perusahaan').click(function(event){
                         company_code: $('#kodeperusahaan').val(),
                         company_name: $('#namaperusahaan').val(),
                         alamat: $('#alamatperusahaan').val(),
-                        keterangan: $('#keteranganperusahaan').val(),
+                        keterangan: quill.root.innerHTML.trim(),
                     },
                     success: function(response){
                         $("#datatables_perusahaan").DataTable().ajax.reload();
@@ -154,7 +158,7 @@ function detailperusahaan(id, kode, nama, alamat, keterangan){
     $('#kodeperusahaan').val(kode);
     $('#namaperusahaan').val(nama);
     $('#alamatperusahaan').val(alamat);
-    $('#keteranganperusahaan').val(keterangan);
+    quill.container.firstChild.innerHTML = decodeURIComponent(keterangan);
     $('#formulir_tambah_perusahaan').modal('show');
 }
 function clearformperusahaan(){
@@ -163,7 +167,9 @@ function clearformperusahaan(){
     $('#kodeperusahaan').val("");
     $('#namaperusahaan').val("");
     $('#alamatperusahaan').val("");
-    $('#keteranganperusahaan').val("");
+    quill.setContents([{
+        insert: ''
+    }]);
 }
 function hapusperusahaan(id, kode, nama){
     if (id == "") {

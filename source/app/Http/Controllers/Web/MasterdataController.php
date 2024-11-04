@@ -44,4 +44,10 @@ class MasterdataController extends Controller
         ]);
         return view('paneladmin.masterdata.daftarmembermcu', ['data' => $data]);
     }
+    function daftar_bank(Request $req){
+        $data = $this->getData($req, 'Daftar Bank', [
+            'Daftar Bank' => route('admin.masterdata.daftar_bank'),
+        ]);
+        return view('paneladmin.masterdata.daftarbank', ['data' => $data]);
+    }
 }

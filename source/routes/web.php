@@ -21,6 +21,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     Route::prefix('pendaftaran')->group(function () {
         Route::get('daftar_peserta', [PendaftaranController::class,"list_peserta"])->name('admin.pendaftaran.daftar_peserta');
         Route::get('daftar_pasien', [PendaftaranController::class,"list_pasien"])->name('admin.pendaftaran.daftar_pasien');
+        Route::get('formulir_tambah_peserta/{uuid?}', [PendaftaranController::class,"add_form_patien_mcu"])->name('admin.pendaftaran.formulir_tambah_peserta');
     });
     Route::prefix('masterdata')->group(function () {
         Route::get('daftar_perusahaan', [MasterdataController::class,"daftar_perusahaan"])->name('admin.masterdata.daftar_perusahaan');
@@ -28,6 +29,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('daftar_jasa_pelayanan', [MasterdataController::class,"daftar_jasa_pelayanan"])->name('admin.masterdata.daftar_jasa_pelayanan');
         Route::get('daftar_departemen_peserta', [MasterdataController::class,"daftar_departemen_peserta"])->name('admin.masterdata.daftar_departemen_peserta');
         Route::get('daftar_member_mcu', [MasterdataController::class,"daftar_member_mcu"])->name('admin.masterdata.daftar_member_mcu');
+        Route::get('daftar_bank', [MasterdataController::class,"daftar_bank"])->name('admin.masterdata.daftar_bank');
     });
     Route::prefix('image')->group(function () {
         Route::get('user/signature/{filename}', [FileController::class, 'showSignature']);

@@ -25816,7 +25816,7 @@ p.data-attributes svg {
   -webkit-text-fill-color: transparent;
   background: -o-linear-gradient(transparent, transparent);
   -webkit-background-clip: text;
-  background-image: -webkit-linear-gradient(transparent, transparent), url(../../assets/images/dashboard/1.gif);
+  background-image: -webkit-linear-gradient(transparent, transparent), url(/mofi/assets/images/dashboard/1.gif);
   background-position: left;
   background-size: 130%;
   -webkit-filter: opacity(86%);
@@ -25837,7 +25837,7 @@ p.data-attributes svg {
   text-align: end;
 }
 .default-dashboard .profile-greeting .img-overlay p {
-  width: 220px;
+  width: 420px;
   font-size: 16px;
   margin-bottom: 0;
   font-weight: 500;

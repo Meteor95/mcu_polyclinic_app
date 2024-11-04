@@ -1,7 +1,11 @@
 let formValidasi = $("#form_pendaftaran");isedit = false;let user_id_pengguna = "";
 $(document).ready(function(){
-    flatpickr("#tanggal_lahir, #tanggal_diterima, #tanggal_berhenti", {
+    flatpickr("#tanggal_diterima, #tanggal_berhenti", {
         dateFormat: "d-m-Y",
+    });
+    flatpickr("#tanggal_lahir", {
+        dateFormat: "d-m-Y",
+        maxDate: moment().subtract(15, 'years').format('DD-MM-YYYY'),
     });
     datatable_penggunaaplikasi(); 
     $.get('/generate-csrf-token', function(response) {

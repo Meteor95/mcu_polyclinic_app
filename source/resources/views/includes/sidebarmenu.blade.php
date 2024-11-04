@@ -70,6 +70,7 @@
                 <li><a href="{{url('masterdata/daftar_jasa_pelayanan')}}">Jasa Pelayanan</a></li>
                 <li><a href="{{url('masterdata/daftar_departemen_peserta')}}">Departemen Peserta</a></li>
                 <li><a href="{{url('masterdata/daftar_member_mcu')}}">Member MCU</a></li>
+                <li><a href="{{url('masterdata/daftar_bank')}}">Daftar Bank</a></li>
               </ul>
             </li>
             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)">

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Pendaftaran\Peserta;
+use App\Models\Masterdata\DaftarBank;
 
 class PendaftaranController extends Controller
 {
@@ -28,5 +30,18 @@ class PendaftaranController extends Controller
             'Daftar Peserta' => route('admin.pendaftaran.daftar_peserta'),
         ]);
         return view('paneladmin.pendaftaran.daftarpeserta', ['data' => $data]);
+    }
+    public function add_form_patien_mcu(Request $req, $uuid = null){
+        $data = $this->getData($req, 'Formulir Pendaftaran', [
+            'Daftar Peserta' => route('admin.pendaftaran.daftar_peserta'),
+        ]);
+        if($uuid != null){
+            $data['peserta'] = Peserta::where('uuid', $uuid)
+                ->selectRaw('*, TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) AS umur')
+                ->first();
+            $data['nomor_transaksi_mcu'] = "0001/MCU/NOCOMPANY/AMC/".date('m')."/".date('Y');
+        }
+        $data['bank'] = DaftarBank::all();
+        return view('paneladmin.pendaftaran.formulirtambahpeserta', ['data' => $data]);
     }
 }

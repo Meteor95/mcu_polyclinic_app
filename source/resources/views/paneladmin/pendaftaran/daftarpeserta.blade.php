@@ -19,9 +19,21 @@
 @section('css_load')
 @component('komponen.css.datatables')
 @endcomponent
+<style>
+.dtfc-fixed-right {
+    background-color: #f6f6f6 !important;
+}
+.dtfc-fixed-right_header {
+    background-color: #ffffff !important;
+}
+body.dark-only .dtfc-fixed-right_header {
+    background-color: #2a3650 !important;
+}
+</style>
 @endsection
 @section('js_load')
 @component('komponen.js.datatables')
 @endcomponent
+<script src="https://cdn.datatables.net/fixedcolumns/4.0.2/js/dataTables.fixedColumns.min.js"></script>
 <script src="{{ asset('mofi/assets/js/system/pendaftaran/peserta.js') }}"></script>
 @endsection

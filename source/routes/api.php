@@ -39,6 +39,8 @@ Route::prefix('v1')->group(function () {
         });
         Route::prefix('pendaftaran')->group(function () {
             Route::get('daftarpeserta', [PendaftaranController::class,"getpeserta"]);
+            Route::get('hapuspeserta', [PendaftaranController::class,"deletepeserta"]);
+            Route::get('getdatapeserta', [PendaftaranController::class,"getdatapeserta"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */
@@ -66,6 +68,11 @@ Route::prefix('v1')->group(function () {
             Route::post('simpanmembermcu', [MasterdataController::class,"savemembermcu"]);
             Route::get('hapusmembermcu', [MasterdataController::class,"deletemembermcu"]);
             Route::post('ubahmembermcu', [MasterdataController::class,"editmembermcu"]);
+            /* Master Data Bank Penerima */
+            Route::get('daftarbank', [MasterdataController::class,"getbank"]);
+            Route::post('simpanbank', [MasterdataController::class,"savebank"]);
+            Route::get('hapusbank', [MasterdataController::class,"deletebank"]);
+            Route::post('ubahbank', [MasterdataController::class,"editbank"]);
         });
     });
 });

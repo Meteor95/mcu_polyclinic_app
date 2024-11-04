@@ -3,10 +3,9 @@ $(document).ready(function(){
     daftarmembermcu();
     flatpickr("#tanggal_lahir", {
         dateFormat: "d-m-Y",
-        maxDate: new Date(new Date().setFullYear(new Date().getFullYear() - 15)).toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}).split('/').join('.'),
+        maxDate: moment().subtract(15, 'years').format('DD-MM-YYYY'),
     });
 });
-
 function daftarmembermcu() {
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_daftarmembermcu").DataTable({
@@ -153,7 +152,7 @@ $("#simpan_member_mcu_baru").on("click", function(event) {
         return createToast('Kesalahan Formulir', 'top-right', 'Silahkan isi semua formulir terlebih dahulu sebelum anda menyimpan data member MCU agar informasi tersebut dianggap benar dan akurat', 'error', 3000);
     }
     Swal.fire({
-        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penyimpanan Data Member MCU</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menyimpan informasi member MCU <strong>'+$(nama_peserta).val()+'</strong> ?. Jika sudah silahkan tentukan paket MCU y...',
+        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penyimpanan Data Member MCU</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menyimpan informasi member MCU <strong>'+$(nama_peserta).val()+'</strong> ?. Jika sudah silahkan tentukan paket MCU',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: 'orange',

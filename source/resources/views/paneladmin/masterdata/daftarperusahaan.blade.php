@@ -46,10 +46,8 @@
                 <div class="valid-feedback">Terlihat bagus! Alamat perusahaan sudah terisi</div>
               </div>
               <div class="mb-3">
-                <label for="keteranganperusahaan" class="form-label">Keterangan Perusahaan</label>
-                <input placeholder="Ex: Perusahaan yang bergerak di bidang IT dan Jasa" type="text" class="form-control" id="keteranganperusahaan" name="keteranganperusahaan" required>
-                <div class="invalid-feedback">Masukan keterangan perusahaan yang valid</div>
-                <div class="valid-feedback">Terlihat bagus! Keterangan perusahaan sudah terisi</div>
+                <div class="form-label">Keterangan Informasi Perusahaan</div>
+                <div id="keteranganperusahaan"></div>
               </div>
             </div>
             <div class="modal-footer">
@@ -64,9 +62,11 @@
 @section('css_load')
 @component('komponen.css.datatables')
 @endcomponent
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 @endsection
 @section('js_load')
 @component('komponen.js.datatables')
 @endcomponent
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <script src="{{asset('mofi/assets/js/system/master_data/perusahaan.js')}}"></script>
 @endsection
