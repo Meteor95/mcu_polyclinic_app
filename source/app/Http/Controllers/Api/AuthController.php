@@ -10,6 +10,7 @@ use App\Models\{User};
 use App\Helpers\{ResponseHelper,GlobalHelper};
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+
 class AuthController extends Controller
 {
     public function login(Request $req){
@@ -26,7 +27,7 @@ class AuthController extends Controller
             if (!$token = JWTAuth::attempt($credentials)) {
                 return ResponseHelper::data_not_found(__('auth.eds_invalid_credentials'));
             }
-            $user = auth()->user();
+            $user = JWTAuth::user();
             $dynamicAttributes = [
                 'user_information' => $user,
                 'token_akses' => $token,

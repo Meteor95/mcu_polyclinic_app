@@ -403,6 +403,7 @@ class MasterdataController extends Controller
                 'alamat' => $request->alamat,
                 'status_kawin' => $request->status_kawin,
                 'no_telepon' => $request->no_telepon,
+                'email' => $request->email,
             ]);
             return ResponseHelper::success("Informasi member MCU berhasil disimpan. Silahkan lanjutkan transaksi jikala membutuhkan rekam medis MCU.");
         } catch (\Throwable $th) {
@@ -454,6 +455,7 @@ class MasterdataController extends Controller
                 'alamat' => $request->alamat,
                 'status_kawin' => $request->status_kawin,
                 'no_telepon' => $request->no_telepon,
+                'email' => $request->email,
             ]);
             return ResponseHelper::success("Informasi member MCU dengan nama " . $request->nama_peserta . " berhasil diubah.");
         } catch (\Throwable $th) {

@@ -1,6 +1,7 @@
 function createToast(textheader = '', position = 'top-right', message = '', type = 'success', duration = 4000) {
     const toastContainer = document.createElement('div');
     toastContainer.className = `toast-container position-fixed p-3 toast-index`;
+    toastContainer.style.zIndex = '1060'; // Added z-index higher than modal (1050)
 
     switch (type) {
         case 'success':

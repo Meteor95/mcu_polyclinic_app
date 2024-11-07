@@ -8,6 +8,19 @@ use Illuminate\Support\Facades\DB;
 class Peserta extends Model
 {
     protected $table = 'users_member_temp';
+    protected $fillable = [
+        'uuid',
+        'nomor_identitas',
+        'nama_peserta',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'tipe_identitas',
+        'jenis_kelamin',
+        'alamat',
+        'status_kawin',
+        'no_telepon',
+        'email',
+    ];
 
     public static function listPesertaTabel($req, $perHalaman, $offset)
     {

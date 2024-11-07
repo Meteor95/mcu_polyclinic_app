@@ -5,6 +5,7 @@
       <div class="card">
         <div class="card-header">
           <h4>Daftar Peserta</h4><span>Peserta yang terdaftar pada sistem dan belum mendapatkan jadwal. Informasi yang ditampikan berasal dari pendataran via website atau pendaftaran langsung yang datang ke lokasi MCU Arta Medica Clinic. Daftar peserta akan dihapus secara otomatis setelah 7 hari dari tanggal pendaftaran agar tidak menyebabkan duplikasi data.</span>
+          <a href="{{ route('admin.pendaftaran.formulir_tambah_peserta') }}" class="btn btn-success w-100 mt-2" id="btn_tambahpeserta">Tambah Peserta MCU</a>
         </div>
         <div class="card-body">
           <input type="text" class="form-control" id="kotak_pencarian_daftarpeserta" placeholder="Cari data berdasarkan nama peserta">

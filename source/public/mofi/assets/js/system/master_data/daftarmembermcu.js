@@ -120,6 +120,10 @@ function daftarmembermcu() {
                     data: "no_telepon"
                 },
                 {
+                    title: "Alamat Surel",
+                    data: "email"
+                },
+                {
                     title: "Terdaftar Pada",
                     data: "created_at"
                 },
@@ -128,7 +132,7 @@ function daftarmembermcu() {
                     className: "dtfc-fixed-right_header",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return "<div class=\"d-flex justify-content-between gap-2 background_fixed_right_row\"><button class=\"btn btn-primary w-100\" onclick=\"editdaftarmembermcu('" + row.id + "','" + row.nomor_identitas + "','" + row.nama_peserta + "','" + row.tempat_lahir + "','" + row.tanggal_lahir + "','" + row.tipe_identitas + "','" + row.jenis_kelamin + "','" + row.alamat + "','" + row.status_kawin + "','" + row.no_telepon + "')\"><i class=\"fa fa-edit\"></i> Edit Member MCU</button><button class=\"btn btn-danger w-100\" onclick=\"hapusdaftarmembermcu('" + row.id + "','" + row.nama_peserta + "','"+row.nomor_identitas+"')\"><i class=\"fa fa-trash-o\"></i> Hapus Member MCU</button></div>";
+                            return "<div class=\"d-flex justify-content-between gap-2 background_fixed_right_row\"><button class=\"btn btn-primary w-100\" onclick=\"editdaftarmembermcu('" + row.id + "','" + row.nomor_identitas + "','" + row.nama_peserta + "','" + row.tempat_lahir + "','" + row.tanggal_lahir + "','" + row.tipe_identitas + "','" + row.jenis_kelamin + "','" + row.alamat + "','" + row.status_kawin + "','" + row.no_telepon + "', '"+row.email+"')\"><i class=\"fa fa-edit\"></i> Edit Member MCU</button><button class=\"btn btn-danger w-100\" onclick=\"hapusdaftarmembermcu('" + row.id + "','" + row.nama_peserta + "','"+row.nomor_identitas+"')\"><i class=\"fa fa-trash-o\"></i> Hapus Member MCU</button></div>";
                         }       
                         return data;
                     }
@@ -179,6 +183,7 @@ $("#simpan_member_mcu_baru").on("click", function(event) {
                         alamat: $("#alamat").val(),
                         status_kawin: $("#status_kawin").val(),
                         no_telepon: $("#no_telepon").val(),
+                        email: $("#email_member_mcu").val(),
                     },
                     success: function(response) {
                         clearformulirtambahmembermcu();
@@ -239,7 +244,7 @@ function hapusdaftarmembermcu(idmembermcu,nama_peserta,nomor_identitas) {
         }
     });
 }
-function editdaftarmembermcu(id,nomor_identitas,nama_peserta,tempat_lahir,tanggal_lahir,tipe_identitas,jenis_kelamin,alamat,status_kawin,no_telepon) {
+function editdaftarmembermcu(id,nomor_identitas,nama_peserta,tempat_lahir,tanggal_lahir,tipe_identitas,jenis_kelamin,alamat,status_kawin,no_telepon,email) {
     isedit = true;
     idmembermcu = id;
     const fields = {
@@ -251,7 +256,8 @@ function editdaftarmembermcu(id,nomor_identitas,nama_peserta,tempat_lahir,tangga
         'jenis_kelamin': jenis_kelamin,
         'alamat': alamat,
         'status_kawin': status_kawin,
-        'no_telepon': no_telepon
+        'no_telepon': no_telepon,
+        'email': email,
     };
 
     Object.entries(fields).forEach(([id, value]) => {

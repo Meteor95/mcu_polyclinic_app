@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -13,7 +13,7 @@ Route::prefix('v1')->group(function () {
         Route::post('keluar', [AuthController::class,"logout"]);
         Route::post('tambahakses', [RoleAndPermissionController::class,"addpermission"]);
     });
-    Route::middleware('jwt.auth')->group(function () {
+    Route::middleware(['jwt.auth', 'jwt.cookie'])->group(function () {  
         Route::prefix('pengguna')->group(function () {
             Route::post('tambahpengguna', [UserController::class,"adduser"]);
             Route::get('daftarpengguna', [UserController::class,"getuser"]);
@@ -41,6 +41,7 @@ Route::prefix('v1')->group(function () {
             Route::get('daftarpeserta', [PendaftaranController::class,"getpeserta"]);
             Route::get('hapuspeserta', [PendaftaranController::class,"deletepeserta"]);
             Route::get('getdatapeserta', [PendaftaranController::class,"getdatapeserta"]);
+            Route::get('daftarpasien', [TransaksiController::class,"getpasien"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */
@@ -73,6 +74,9 @@ Route::prefix('v1')->group(function () {
             Route::post('simpanbank', [MasterdataController::class,"savebank"]);
             Route::get('hapusbank', [MasterdataController::class,"deletebank"]);
             Route::post('ubahbank', [MasterdataController::class,"editbank"]);
+        });
+        Route::prefix('transaksi')->group(function () {
+            Route::post('simpanpeserta', [TransaksiController::class,"savepeserta"]);
         });
     });
 });

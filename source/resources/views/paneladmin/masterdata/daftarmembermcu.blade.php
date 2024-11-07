@@ -92,6 +92,10 @@
                     <div class="invalid-feedback">Masukan nomor telepon yang valid</div>
                     <div class="valid-feedback">Terlihat bagus! Nomor telepon sudah terisi</div>
                 </div>
+                <div class="mb-3">
+                    <label for="email_member_mcu" class="form-label">Alamat Surel</label>
+                    <input placeholder="Ex: aries@arthemedica.com" type="text" class="form-control" id="email_member_mcu" name="email_member_mcu">
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Batal</button>

@@ -25,6 +25,12 @@ class PendaftaranController extends Controller
         return view('preregister.landingpage_form', ['data' => $data]);
     }
     /* Area Admin Pendaftaran */
+    public function list_pasien(Request $req){
+        $data = $this->getData($req, 'Daftar Pasien', [
+            'Daftar Pasien' => route('admin.pendaftaran.daftar_pasien'),
+        ]);
+        return view('paneladmin.pendaftaran.daftarpasien', ['data' => $data]);
+    }
     public function list_peserta(Request $req){
         $data = $this->getData($req, 'Daftar Peserta', [
             'Daftar Peserta' => route('admin.pendaftaran.daftar_peserta'),
@@ -39,7 +45,8 @@ class PendaftaranController extends Controller
             $data['peserta'] = Peserta::where('uuid', $uuid)
                 ->selectRaw('*, TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) AS umur')
                 ->first();
-            $data['nomor_transaksi_mcu'] = "0001/MCU/NOCOMPANY/AMC/".date('m')."/".date('Y');
+        }else{
+            $data['peserta'] = null;
         }
         $data['bank'] = DaftarBank::all();
         return view('paneladmin.pendaftaran.formulirtambahpeserta', ['data' => $data]);

@@ -23,6 +23,7 @@ class JWTFromCookieMiddleware
             $userDetails = $user->detailUserInformation($user_id);
             $request->attributes->set('user_details', $userDetails);
             $request->attributes->set('token_device', $token); 
+            $request->attributes->set('user_id', $userDetails->id); 
         } catch (JWTException $e) {
             return redirect()->route('login');
         }
