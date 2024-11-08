@@ -22,6 +22,9 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('daftar_peserta', [PendaftaranController::class,"list_peserta"])->name('admin.pendaftaran.daftar_peserta');
         Route::get('daftar_pasien', [PendaftaranController::class,"list_pasien"])->name('admin.pendaftaran.daftar_pasien');
         Route::get('formulir_tambah_peserta/{uuid?}', [PendaftaranController::class,"add_form_patien_mcu"])->name('admin.pendaftaran.formulir_tambah_peserta');
+        Route::get('formulir_ubah_peserta/{uuid?}', [PendaftaranController::class,"update_form_patien_mcu"])->name('admin.pendaftaran.formulir_ubah_peserta');
+        /* Riwayat Informasi */
+        Route::get('riwayat_informasi/{uuid?}', [PendaftaranController::class,"riwayat_informasi_mcu"])->name('admin.pendaftaran.riwayat_informasi');
     });
     Route::prefix('masterdata')->group(function () {
         Route::get('daftar_perusahaan', [MasterdataController::class,"daftar_perusahaan"])->name('admin.masterdata.daftar_perusahaan');

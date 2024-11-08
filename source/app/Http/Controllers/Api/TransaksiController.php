@@ -60,4 +60,21 @@ class TransaksiController extends Controller
             return ResponseHelper::error($th);
         }
     }
+    public function deletepeserta(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'id_transaksi' => 'required',
+                'no_transaksi' => 'required',
+                'nama_peserta' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            Transaksi::where('id', $request->id_transaksi)->delete();
+            return ResponseHelper::success('Informasi pasien MCU dengan Nama ' . $request->nama_peserta . ' dengan Nomor Transaksi ' . $request->no_transaksi . ' berhasil dihapus');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
 }

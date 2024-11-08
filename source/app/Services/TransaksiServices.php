@@ -29,6 +29,7 @@ class TransaksiServices
     {
         return DB::transaction(function () use ($data, $user_id_petugas, $file) {
             $filename = "";
+            /* update data peserta jikalau dibutuhkan atau saat pendaftaran peserta baru MCU */
             if ($data['type_data_peserta'] == 1) {
                 Peserta::where('nomor_identitas', $data['nomor_identitas'])->update([
                     'nama_peserta' => $data['nama_peserta'],
@@ -44,9 +45,13 @@ class TransaksiServices
             }
             $kodeperusahaan = Perusahaan::where('id', $data['perusahaan_id'])->first()->company_code;
             $kodepdepartemen = DepartemenPerusahaan::where('id', $data['departemen_id'])->first()->kode_departemen;
-            $nomor_transaksi_mcu = str_pad((Transaksi::count() + 1), 4, '0', STR_PAD_LEFT)."/MCU/".$kodeperusahaan."-".$kodepdepartemen."/AMC/".$this->convertToRoman(date('m'))."/".date('Y');
-            /*cek member terlebih dahulu*/
+            $baseCount = Transaksi::count() + 1;
+            $nomor_transaksi_mcu = str_pad($baseCount + 1, 4, '0', STR_PAD_LEFT);
             $member = MemberMCU::where('nomor_identitas', $data['nomor_identitas'])->first();
+            if ($nomor_transaksi_mcu === $member->no_transaksi) {
+                $nomor_transaksi_mcu = str_pad($baseCount + 2, 4, '0', STR_PAD_LEFT);
+            }
+            $nomor_transaksi_mcu = $nomor_transaksi_mcu . "/MCU/" . $kodeperusahaan . "-" . $kodepdepartemen . "/AMC/" . $this->convertToRoman(date('m')) . "/" . date('Y');
             if(!$member){
                 /*jika tidak ada maka insert*/
                 $ambildaripeserta = Peserta::where('nomor_identitas', $data['nomor_identitas'])->first();
@@ -91,16 +96,22 @@ class TransaksiServices
                 'metode_pembayaran' => $data['metode_pembayaran'],
                 'nominal_pembayaran' => $data['nominal_pembayaran'],
                 'penerima_bank_id' => $data['penerima_bank'],
-                'nomor_transakasi_transfer' => $data['nomor_transaksi_transfer'] ?? null, // Ensure this can be nullable
+                'nomor_transakasi_transfer' => $data['nomor_transaksi_transfer'] ?? null,
                 'petugas_id' => $user_id_petugas,
             ];
-            $datatransaksi = Transaksi::whereDate('tanggal_transaksi', Carbon::parse($data['tanggal_transaksi'])->format('Y-m-d'))
-                ->where('user_id', $member->id)
-                ->first();
-            if($datatransaksi){
-                throw new \Exception("Dalam hari ini peserta dengan Nama ".$member->nama_peserta." sudah melakukan pendaftaran. Silahkan cek kembali pada menu pasien");
+            if (filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
+                unset($dataToInsert['no_transaksi']);           
+                Transaksi::where('id', $data['id_detail_transaksi_mcu'])->update($dataToInsert);
+            } else {
+                $datatransaksi = Transaksi::whereDate('tanggal_transaksi', Carbon::parse($data['tanggal_transaksi'])->format('Y-m-d'))
+                    ->where('user_id', $member->id)
+                    ->first();
+                if ($datatransaksi) {
+                    throw new \Exception("Dalam hari ini peserta dengan Nama ".$member->nama_peserta." sudah melakukan pendaftaran. Silahkan cek kembali pada menu pasien");
+                }
+                Transaksi::create($dataToInsert);
             }
-            Transaksi::create($dataToInsert);
+            
         });
     }
 }

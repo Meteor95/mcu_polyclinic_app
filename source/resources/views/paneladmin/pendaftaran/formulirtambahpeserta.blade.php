@@ -7,55 +7,56 @@
           <h4>Formulir Pendaftaran Peserta MCU</h4><span>Silahkan isikan informasi yang valid agar dapat melakukan pendaftaran peserta MCU. Jika ada informasi yang tidak valid maka petugas dapat melakukan koreksi sebelum data benar-benar disimpan ke dalam sistem MCU Arta Medica.</span>
         </div>
         <div class="card-body">
-            @if ($data['peserta'] != null)
+            @if (isset($data['peserta']))
             <input type="hidden" id="type_data_peserta" value="1">
             <div class="row" id="kartu_informasi_peserta">
-            <div class="col-xl-7 col-md-6 proorder-xl-1 proorder-md-1">  
-                <div class="card profile-greeting p-0">
-                    <div class="card-body">
-                    <div class="img-overlay">
-                        <h1>Good day, {{ $data['peserta']->nama_peserta }}</h1>
-                        <p>Jadikan Peserta ini sebagai keluarga MCU Arta Medica Clinic! Silahkan isi formulir pendaftaran peserta MCU dengan data yang valid.</p><button class="btn" id="btnIsiFormulirPakaiDataIni">Isi Formulir Pakai Data Ini</button>
-                    </div>
+                <div class="col-xl-7 col-md-6 proorder-xl-1 proorder-md-1">  
+                    <div class="card profile-greeting p-0">
+                        <div class="card-body">
+                            <div class="img-overlay">
+                                <h1>Good day, {{ $data['peserta']->nama_peserta }}</h1>
+                                <p>Jadikan Peserta ini sebagai keluarga MCU Arta Medica Clinic! Silahkan isi formulir pendaftaran peserta MCU dengan data yang valid.</p>
+                                <button class="btn" id="btnIsiFormulirPakaiDataIni">Isi Formulir Pakai Data Ini</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-5 col-md-6 proorder-md-5"> 
-                <div class="card">
-                  <div class="card-header card-no-border pb-0">
-                    <div class="header-top">
-                      <h4>Informasi Peserta</h4>
-                      <div class="location-menu dropdown">
-                        <button class="btn btn-danger" type="button">Dibuat pada : {{ $data['peserta']->created_at->format('d-m-Y') }}</button>
-                      </div>
+                <div class="col-xl-5 col-md-6 proorder-md-5"> 
+                    <div class="card">
+                        <div class="card-header card-no-border pb-0">
+                            <div class="header-top">
+                                <h4>Informasi Peserta</h4>
+                                <div class="location-menu dropdown">
+                                    <button class="btn btn-danger" type="button">Dibuat pada : {{ $data['peserta']->created_at->format('d-m-Y') }}</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body live-meet">
+                            <div class="row">
+                                <div class="col-4">
+                                    Nomor Identitas<br>
+                                    Nama Peserta<br>
+                                    Jenis Kelamin<br>
+                                    Alamat Peserta<br>
+                                    No. HP Peserta<br>
+                                    Email Peserta<br>
+                                    Tempat Tangga Lahir<br>
+                                    Status Perkawinan<br>
+                                </div>
+                                <div class="col-8">
+                                    : <span id="nomor_identitas_temp">{{ $data['peserta']->nomor_identitas }}</span><br>
+                                    : <span id="nama_peserta_temp">{{ $data['peserta']->nama_peserta }}</span><br>
+                                    : <span id="jenis_kelamin_temp">{{ $data['peserta']->jenis_kelamin }}</span><br>
+                                    : <span id="alamat_temp">{{ $data['peserta']->alamat }}</span><br>
+                                    : <span id="no_telepon_temp">{{ $data['peserta']->no_telepon }}</span><br>
+                                    : <span id="email_temp">{{ $data['peserta']->email }}</span><br>
+                                    : <span>{{ $data['peserta']->tempat_lahir." ".\Carbon\Carbon::parse($data['peserta']->tanggal_lahir)->format('d-m-Y') }} ( {{ $data['peserta']->umur }} Tahun)</span><br>
+                                    : <span>{{ $data['peserta']->status_kawin }}</span><br>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="card-body live-meet">
-                  <div class="row">
-                    <div class="col-4">
-                      Nomor Identitas<br>
-                      Nama Peserta<br>
-                      Jenis Kelamin<br>
-                      Alamat Peserta<br>
-                      No. HP Peserta<br>
-                      Email Peserta<br>
-                      Tempat Tangga Lahir<br>
-                      Status Perkawinan<br>
-                    </div>
-                    <div class="col-8">
-                      : <span id="nomor_identitas_temp">{{ $data['peserta']->nomor_identitas }}</span><br>
-                      : <span id="nama_peserta_temp">{{ $data['peserta']->nama_peserta }}</span><br>
-                      : <span id="jenis_kelamin_temp">{{ $data['peserta']->jenis_kelamin }}</span><br>
-                      : <span id="alamat_temp">{{ $data['peserta']->alamat }}</span><br>
-                      : <span id="no_telepon_temp">{{ $data['peserta']->no_telepon }}</span><br>
-                      : <span id="email_temp">{{ $data['peserta']->email }}</span><br>
-                      : <span>{{ $data['peserta']->tempat_lahir." ".\Carbon\Carbon::parse($data['peserta']->tanggal_lahir)->format('d-m-Y') }} ( {{ $data['peserta']->umur }} Tahun)</span><br>
-                      : <span>{{ $data['peserta']->status_kawin }}</span><br>
-                    </div>
-                  </div>
-                  </div>
                 </div>
-              </div>
             </div>
             @else
             <input type="hidden" id="type_data_peserta" value="0">
@@ -380,4 +381,48 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="{{ asset('mofi/assets/js/system/pendaftaran/formulirtambahpeserta.js') }}"></script>
+<script>
+    let isedit = false, id_detail_transaksi_mcu = null;
+    @if (!empty($data['ubah']))
+        isedit = true;
+        id_detail_transaksi_mcu = "{{ $data['uuid'] }}";
+        $("#nomor_identitas").val("{{ $data['peserta']->nomor_identitas }}");
+        $("#nama_peserta").val("{{ $data['peserta']->nama_peserta }}");
+        $("#tempat_lahir").val("{{ $data['peserta']->tempat_lahir }}");
+        $("#tanggal_lahir_peserta").val("{{ \Carbon\Carbon::parse($data['peserta']->tanggal_lahir)->format('d-m-Y') }}");
+        $("#tipe_identitas").val("{{ $data['peserta']->tipe_identitas }}").trigger('change');
+        $("#jenis_kelamin").val("{{ $data['peserta']->jenis_kelamin }}").trigger('change');
+        $("#status_kawin").val("{{ $data['peserta']->status_kawin }}").trigger('change');
+        $("#no_telepon").val("{{ $data['peserta']->no_telepon }}");
+        $("#email").val("{{ $data['peserta']->email }}");
+        $("#alamat").val("{{ $data['peserta']->alamat }}");
+    
+        let newOptionPerusahaan = new Option("[{{ $data['perusahaan']->company_code }}] - {{ $data['perusahaan']->company_name }}", "{{ $data['perusahaan']->id }}", true, false);
+        $('#select2_perusahaan').append(newOptionPerusahaan).trigger('change');
+        $("#select2_perusahaan").val("{{ $data['perusahaan']->id }}").trigger('change');
+    
+        let newOptionDepartemen = new Option("[{{ $data['departemen']->kode_departemen }}] - {{ $data['departemen']->nama_departemen }}", "{{ $data['departemen']->id }}", true, false);
+        $('#select2_departemen').append(newOptionDepartemen).trigger('change');
+        $("#select2_departemen").val("{{ $data['departemen']->id }}").trigger('change');
+    
+        let newOptionPaketMcu = new Option("[{{ $data['paket_mcu']->kode_paket }}] - {{ $data['paket_mcu']->nama_paket }} | Harga : {{ number_format($data['paket_mcu']->harga_paket, 0, ',', '.') }}", "{{ $data['paket_mcu']->id }}|{{ $data['paket_mcu']->kode_paket }}|{{ $data['paket_mcu']->nama_paket }}|{{ $data['paket_mcu']->harga_paket }}|{{ $data['paket_mcu']->akses_poli }}", true, false);
+        $('#select2_paket_mcu').append(newOptionPaketMcu).trigger('change');
+        $("#select2_paket_mcu").val("{{ $data['paket_mcu']->id }}|{{ $data['paket_mcu']->kode_paket }}|{{ $data['paket_mcu']->nama_paket }}|{{ $data['paket_mcu']->harga_paket }}|{{ $data['paket_mcu']->akses_poli }}").trigger('change');
+        const data = {
+            id: "{{ $data['paket_mcu']->id }}|{{ $data['paket_mcu']->kode_paket }}|{{ $data['paket_mcu']->nama_paket }}|{{ $data['paket_mcu']->harga_paket }}|{{ $data['paket_mcu']->akses_poli }}",
+            text: "[{{ $data['paket_mcu']->kode_paket }}] - {{ $data['paket_mcu']->nama_paket }} | Harga : {{ number_format($data['paket_mcu']->harga_paket, 0, ',', '.') }}"
+        };
+        $('#select2_paket_mcu').trigger({
+            type: 'select2:select',
+            params: { data: data }
+        });
+        let selectedProsesKerja = "[{{ $data['proses_kerja'] }}]";
+        document.querySelectorAll('input[name="proses_kerja"]').forEach((checkbox) => {
+            checkbox.checked = false;
+            if (selectedProsesKerja.includes(checkbox.value)) {
+                checkbox.checked = true;
+            }
+        });
+    @endif
+</script>    
 @endsection

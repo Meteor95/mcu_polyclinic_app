@@ -50,6 +50,16 @@
               <ul class="sidebar-submenu">
                 <li><a href="{{url('pendaftaran/daftar_peserta')}}">Daftar Peserta</a></li>
                 <li><a href="{{url('pendaftaran/daftar_pasien')}}">Daftar Pasien</a></li>
+                <li><a class="submenu-title" href="javascript:void(0)">Riwayat Informasi<div class="according-menu"><i class="fa fa-angle-right"></i></div></a>
+                  <ul class="nav-sub-childmenu submenu-content">
+                    <li><a href="{{url('pendaftaran/riwayat_informasi/pendaftaran')}}">Foto Data Diri</a></li>
+                    <li><a href="{{url('pendaftaran/riwayat_informasi/pemeriksaan')}}">Lingkungan Kerja</a></li>
+                    <li><a href="{{url('pendaftaran/riwayat_informasi/pembayaran')}}">Kecelakaan Kerja</a></li>
+                    <li><a href="{{url('pendaftaran/riwayat_informasi/pembayaran')}}">Penyakit Keluarga</a></li>
+                    <li><a href="{{url('pendaftaran/riwayat_informasi/pembayaran')}}">Kebiasaan Hidup</a></li>
+                    <li><a href="{{url('pendaftaran/riwayat_informasi/pembayaran')}}">Vaksinasi</a></li>
+                  </ul>
+                </li>
               </ul>
             </li>
             <li class="sidebar-main-title">

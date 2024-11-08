@@ -181,11 +181,6 @@ function callselect2mcu(){
         }); 
     });
 }
-$('#select2_paket_mcu').on('select2:select', function (e) {
-    const select2Container = document.querySelector('.select2-container');
-    $('#akses_poli_dipilih').text(select2Container.innerText);
-    $('#akses_poli_dipilih_konfirmasi').text(select2Container.innerText);
-});
 let selectedDataPaketMCU = [];
 $('#select2_paket_mcu').on('select2:select', function (e) {
     selectedDataPaketMCU = e.params.data.id.split('|');
@@ -246,6 +241,8 @@ $('#btnSimpanPendaftaran').on('click', function(){
             processData: false,
             data: (function() {
                 const formData = new FormData();
+                formData.append('id_detail_transaksi_mcu', id_detail_transaksi_mcu);
+                formData.append('isedit', isedit);
                 formData.append('nomor_identitas', $('#nomor_identitas').val());
                 if ($('#type_data_peserta').val() == 1) {
                     formData.append('nama_peserta', $('#nama_peserta').val());

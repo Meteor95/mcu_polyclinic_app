@@ -38,6 +38,7 @@ class Transaksi extends Model
             ->join('paket_mcu', 'paket_mcu.id', '=', 'mcu_transaksi_peserta.id_paket_mcu')
             ->join('poli_mcu', DB::raw('FIND_IN_SET(' . $tablePrefix . 'poli_mcu.kode_poli, ' . $tablePrefix . 'mcu_transaksi_peserta.fitur_paket_mcu_saat_ini)'), '>', DB::raw('0'))
             ->select(
+                'mcu_transaksi_peserta.id',
                 'mcu_transaksi_peserta.no_transaksi',
                 'users_member.nama_peserta',
                 'company.company_name',
@@ -55,6 +56,7 @@ class Transaksi extends Model
         $result = $query->take($perHalaman)
             ->skip($offset)
             ->groupBy(
+                'mcu_transaksi_peserta.id',
                 'mcu_transaksi_peserta.no_transaksi',
                 'users_member.nama_peserta',
                 'company.company_name',
@@ -71,5 +73,17 @@ class Transaksi extends Model
             'data' => $result,
             'total' => $jumlahdata
         ];
+    }
+    public static function getPasienById($id)
+    {
+        $tablePrefix = config('database.connections.mysql.prefix');
+        return self::join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+        ->where('mcu_transaksi_peserta.id', $id)
+        ->select(
+            'mcu_transaksi_peserta.*',
+            'users_member.*',
+            DB::raw( $tablePrefix . 'mcu_transaksi_peserta.*, ' . $tablePrefix . 'users_member.*, TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
+        )
+        ->first();
     }
 }
