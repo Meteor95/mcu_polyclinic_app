@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -12,6 +12,9 @@ Route::prefix('v1')->group(function () {
         Route::post('buattokenbaru', [AuthController::class,"refreshToken"]);
         Route::post('keluar', [AuthController::class,"logout"]);
         Route::post('tambahakses', [RoleAndPermissionController::class,"addpermission"]);
+    });
+    Route::prefix('file')->group(function () {
+        Route::get('unduh_foto', [FileController::class, "download_foto"]);
     });
     Route::middleware(['jwt.auth', 'jwt.cookie'])->group(function () {  
         Route::prefix('pengguna')->group(function () {
@@ -39,9 +42,14 @@ Route::prefix('v1')->group(function () {
         });
         Route::prefix('pendaftaran')->group(function () {
             Route::get('daftarpeserta', [PendaftaranController::class,"getpeserta"]);
+            Route::get('getdatapasien', [TransaksiController::class,"getdatapasien"]);
             Route::get('hapuspeserta', [PendaftaranController::class,"deletepeserta"]);
             Route::get('getdatapeserta', [PendaftaranController::class,"getdatapeserta"]);
             Route::get('daftarpasien', [TransaksiController::class,"getpasien"]);
+            /* Daftar Pasien Unggah Citra */
+            Route::get('daftarpasien_unggah_citra', [TransaksiController::class,"getpasien_unggah_citra"]);
+            Route::post('upload_citra_peserta',[TransaksiController::class,"upload_images_mcu"]);
+            Route::get('hapusunduhan_citra_peserta', [TransaksiController::class,"hapusunduhan_citra_peserta"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */

@@ -30,11 +30,11 @@ class MemberMCU extends Model
             $query->where('nomor_identitas', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');
         }
+        $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
             ->skip($offset)
             ->orderBy('nama_peserta', 'ASC')
             ->get();
-        $jumlahdata = $query->count();
         return [
             'data' => $result,
             'total' => $jumlahdata
