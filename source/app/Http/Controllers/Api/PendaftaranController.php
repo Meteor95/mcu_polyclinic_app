@@ -83,4 +83,34 @@ class PendaftaranController extends Controller
             return ResponseHelper::error($th);
         }
     }
+    public function simpanriwayatlingkungankerja(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'informasi_riwayat_lingkungan_kerja' => 'required|array',
+                'informasi_riwayat_lingkungan_kerja.*.user_id' => 'required',
+                'informasi_riwayat_lingkungan_kerja.*.transaksi_id' => 'required',
+                'informasi_riwayat_lingkungan_kerja.*.id_atribut_lk' => 'required',
+                'informasi_riwayat_lingkungan_kerja.*.status' => 'required',
+                'informasi_riwayat_lingkungan_kerja.*.nilai_jam_per_hari' => 'required',
+                'informasi_riwayat_lingkungan_kerja.*.nilai_selama_x_tahun' => 'required',
+                'informasi_riwayat_lingkungan_kerja.*.keterangan' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            foreach ($request->informasi_riwayat_lingkungan_kerja as $data) {
+                $bulkData[] = [
+                    'id' => $data['id'],
+                    'jam_hari_bising' => $data['jam_hari_bising'],
+                    'selama_tahun_bising' => $data['selama_tahun_bising'],
+                    'keterangan_bising' => $data['keterangan_bising'],
+                ];
+            }
+            LingkunganKerja::insert($bulkData);
+            return ResponseHelper::success('Data riwayat lingkungan kerja berhasil disimpan');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
 }

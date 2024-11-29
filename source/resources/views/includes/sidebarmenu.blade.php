@@ -52,12 +52,12 @@
                 <li><a href="{{url('pendaftaran/daftar_pasien')}}">Daftar Pasien</a></li>
                 <li><a class="submenu-title" href="javascript:void(0)">Riwayat Informasi<div class="according-menu"><i class="fa fa-angle-right"></i></div></a>
                   <ul class="nav-sub-childmenu submenu-content">
-                    <li><a href="{{url('pendaftaran/riwayat_informasi/pendaftaran')}}">Foto Data Diri</a></li>
-                    <li><a href="{{url('pendaftaran/riwayat_informasi/pemeriksaan')}}">Lingkungan Kerja</a></li>
-                    <li><a href="{{url('pendaftaran/riwayat_informasi/pembayaran')}}">Kecelakaan Kerja</a></li>
-                    <li><a href="{{url('pendaftaran/riwayat_informasi/pembayaran')}}">Penyakit Keluarga</a></li>
-                    <li><a href="{{url('pendaftaran/riwayat_informasi/pembayaran')}}">Kebiasaan Hidup</a></li>
-                    <li><a href="{{url('pendaftaran/riwayat_informasi/pembayaran')}}">Vaksinasi</a></li>
+                    <li><a href="{{url('pendaftaran/foto_pasien')}}">Foto Data Diri</a></li>
+                    <li><a href="{{url('pendaftaran/lingkungan_kerja')}}">Lingkungan Kerja</a></li>
+                    <li><a href="{{url('pendaftaran/kecelakaan_kerja')}}">Kecelakaan Kerja</a></li>
+                    <li><a href="{{url('pendaftaran/penyakit_keluarga')}}">Penyakit Keluarga</a></li>
+                    <li><a href="{{url('pendaftaran/kebiasaan_hidup')}}">Kebiasaan Hidup</a></li>
+                    <li><a href="{{url('pendaftaran/vaksinasi')}}">Vaksinasi</a></li>
                   </ul>
                 </li>
               </ul>

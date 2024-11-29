@@ -75,10 +75,46 @@ class PendaftaranController extends Controller
         return view('paneladmin.pendaftaran.formulirtambahpeserta', compact('data'));
     }
     /* Riwayat Informasi */
-    public function riwayat_informasi_mcu(Request $req, $uuid = null){
-        $data = $this->getData($req, 'Riwayat Informasi', [
-            'Daftar Peserta' => route('admin.pendaftaran.daftar_peserta'),
+    public function foto_pasien(Request $req){
+        $data = $this->getData($req, 'Foto Data Diri Peserta MCU', [
+            'Beranda' => route('admin.beranda'),
+            'Foto Data Diri Peserta MCU' => route('admin.pendaftaran.foto_pasien'),
         ]);
         return view('paneladmin.pendaftaran.riwayat_foto_pasien', ['data' => $data]);
+    }
+    public function lingkungan_kerja(Request $req){
+        $data = $this->getData($req, 'Lingkungan Kerja Peserta MCU', [
+            'Beranda' => route('admin.beranda'),
+            'Lingkungan Kerja Peserta MCU' => route('admin.pendaftaran.lingkungan_kerja'),
+        ]);
+        return view('paneladmin.pendaftaran.riwayat_lingkungan_kerja', ['data' => $data]);
+    }
+    public function kecelakaan_kerja(Request $req){
+        $data = $this->getData($req, 'Kecelakaan Kerja Peserta MCU', [
+            'Beranda' => route('admin.beranda'),
+            'Kecelakaan Kerja Peserta MCU' => route('admin.pendaftaran.kecelakaan_kerja'),
+        ]);
+        return view('paneladmin.pendaftaran.riwayat_kecelakaan_kerja', ['data' => $data]);
+    }
+    public function penyakit_keluarga(Request $req){
+        $data = $this->getData($req, 'Penyakit Keluarga Peserta MCU', [
+            'Beranda' => route('admin.beranda'),
+            'Penyakit Keluarga Peserta MCU' => route('admin.pendaftaran.penyakit_keluarga'),
+        ]);
+        return view('paneladmin.pendaftaran.riwayat_penyakit_keluarga', ['data' => $data]);
+    }
+    public function kebiasaan_hidup(Request $req){
+        $data = $this->getData($req, 'Kebiasaan Hidup Peserta MCU', [
+            'Beranda' => route('admin.beranda'),
+            'Kebiasaan Hidup Peserta MCU' => route('admin.pendaftaran.kebiasaan_hidup'),
+        ]);
+        return view('paneladmin.pendaftaran.riwayat_kebiasaan_hidup', ['data' => $data]);
+    }
+    public function vaksinasi(Request $req){
+        $data = $this->getData($req, 'Vaksinasi Peserta MCU', [
+            'Beranda' => route('admin.beranda'),
+            'Vaksinasi Peserta MCU' => route('admin.pendaftaran.vaksinasi'),
+        ]);
+        return view('paneladmin.pendaftaran.riwayat_vaksinasi', ['data' => $data]);
     }
 }

@@ -100,15 +100,31 @@
   responsiveSidebar();
 
   // Active link highlighting
-  let current = window.location.pathname;
-  $(".sidebar-wrapper nav ul li a").each(function () {
-    let $this = $(this);
-    if ($this.hasClass('active') || $this.attr("href").indexOf(current) !== -1) {
-      $this.addClass("active");
-      $this.parents("li").addClass("active");
-      $this.parents(".sidebar-submenu").prev().addClass("active").children(".according-menu").find("i").removeClass("fa-angle-right").addClass("fa-angle-down");
-      $this.parents(".sidebar-submenu").slideDown();
-    }
-  });
+let current = window.location.pathname;
+
+$(".sidebar-wrapper ul li a").each(function () {
+  let $this = $(this);
+  if ($this.attr("href") && $this.attr("href").indexOf(current) !== -1) {
+    $this.addClass("active");
+    $this.parents("li").addClass("active");
+    $this.parents(".sidebar-submenu").each(function () {
+      let $submenu = $(this);
+      $submenu.slideDown();
+      $submenu.prev(".sidebar-title").addClass("active");
+      $submenu.prev(".sidebar-title").children(".according-menu").find("i")
+        .removeClass("fa-angle-right")
+        .addClass("fa-angle-down");
+    });
+    $this.parents(".nav-sub-childmenu, .submenu-content").each(function () {
+      let $submenuContent = $(this);
+      $submenuContent.slideDown();
+      $submenuContent.prev(".submenu-title").addClass("active");
+      $submenuContent.prev(".submenu-title").children(".according-menu").find("i")
+        .removeClass("fa-angle-right")
+        .addClass("fa-angle-down");
+    });
+  }
+});
+
 
 })(jQuery);

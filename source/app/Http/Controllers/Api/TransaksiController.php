@@ -140,6 +140,10 @@ class TransaksiController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
+            $user_id = MemberMCU::where('nomor_identitas', $request->input('nomor_identitas'))->first();
+            if ($user_id) {
+                return ResponseHelper::data_conflict("Informasi unggahan foto peserta MCU : " . $request->input('informasimember') . " sudah terdaftar dalam sistem MCU Artha Medica. Silahkan hapus terlebih dahulu informasi peserta MCU sebelum melakukan unggahan foto");
+            }
             $uuid = (string) Str::uuid();
             $foto = $request->file('foto');
             $originalName = $foto->getClientOriginalName();
@@ -151,7 +155,6 @@ class TransaksiController extends Controller
             $filePath = storage_path('app/public/mcu/foto_peserta/' . $filename);
             imagepng($image, $filePath, $compressionQuality);
             imagedestroy($image);
-            $user_id = MemberMCU::where('nomor_identitas', $request->input('nomor_identitas'))->first();
             UnggahCitra::create([
                 'user_id' => $user_id->id,
                 'lokasi_gambar' => $filename,

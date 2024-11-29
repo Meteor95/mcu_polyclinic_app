@@ -9,7 +9,7 @@ const cropButton = $('#crop-btn');
 const previewCanvas = $('#preview_citra_pasien');
 let cropper;
 $(document).ready(function(){
-    onloadselect2();
+    callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onloadcropperjs();
     onloaddatatables();
 });
@@ -28,12 +28,7 @@ function onloaddatatables(){
                     "previous": '<i class="fa fa-angle-left"></i>',
                 },
             },
-            fixedColumns: true,
             scrollCollapse: true,
-            fixedColumns: {
-                right: 1,
-                left: 0
-            },
             bFilter: false,
             bInfo: true,
             ordering: false,
@@ -50,8 +45,6 @@ function onloaddatatables(){
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
-                    d.start = 0;
-                    d.length = 200;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -140,44 +133,6 @@ function onloaddatatables(){
         });
     });
 }
-function onloadselect2(){
-    $.get('/generate-csrf-token', function(response) {
-        $('#pencarian_member_mcu').select2({ 
-            placeholder: 'Masukan informasi member seperti Nomor Identitas / Nama',
-            allowClear: true,
-            ajax: {
-                url: baseurlapi + '/masterdata/daftarmembermcu',
-                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
-                method: 'GET',
-                dataType: 'json',
-                delay: 500,
-                data: function (params) {
-                    return {
-                        _token : response.csrf_token,
-                        parameter_pencarian : (typeof params.term === "undefined" ? "" : params.term),
-                        start : 0,
-                        length : 100,
-                    }
-                },
-                processResults: function (data) {
-                    return {
-                        results: $.map(data.data, function (item) {
-                            return {
-                                text: `[${item.nomor_identitas}] - ${item.nama_peserta}`,
-                                id: `${item.nomor_identitas}`,
-                            }
-                        })
-                    }
-                    
-                },
-                error: function(xhr, status, error) {
-                    return createToast('Kesalahan Penggunaan', 'top-right', xhr.responseJSON.message, 'error', 3000);
-                }
-            },
-        }); 
-    });   
-}
-
 function onloadcropperjs(){
     fileInput.on('change', (event) => {
         const file = event.target.files[0];
@@ -294,6 +249,9 @@ $("#simpan_foto_perserta").on('click', function() {
                         processData: false,
                         contentType: false,
                         success: function(response) {
+                            if (!response.success){
+                                return createToast('Data Conflict '+response.rc, 'top-right', response.message, 'error', 3000);
+                            }
                             clear_form();
                             $("#datatables_daftarpeserta_unggah_citra").DataTable().ajax.reload();
                             createToast('Sukses Unggah Citra', 'top-right', response.message, 'success', 3000);

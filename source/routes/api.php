@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -50,6 +50,8 @@ Route::prefix('v1')->group(function () {
             Route::get('daftarpasien_unggah_citra', [TransaksiController::class,"getpasien_unggah_citra"]);
             Route::post('upload_citra_peserta',[TransaksiController::class,"upload_images_mcu"]);
             Route::get('hapusunduhan_citra_peserta', [TransaksiController::class,"hapusunduhan_citra_peserta"]);
+            /* Riwayat Lingkungan Kerja */
+            Route::post('simpanriwayatlingkungankerja', [PendaftaranController::class,"simpanriwayatlingkungankerja"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */
@@ -82,6 +84,9 @@ Route::prefix('v1')->group(function () {
             Route::post('simpanbank', [MasterdataController::class,"savebank"]);
             Route::get('hapusbank', [MasterdataController::class,"deletebank"]);
             Route::post('ubahbank', [MasterdataController::class,"editbank"]);
+        });
+        Route::prefix('atribut')->group(function () {
+            Route::get('lingkungankerja', [AtributController::class,"getlingkungankerja"]);
         });
         Route::prefix('transaksi')->group(function () {
             Route::post('simpanpeserta', [TransaksiController::class,"savepeserta"]);
