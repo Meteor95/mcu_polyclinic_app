@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\Masterdata\MemberMCU;
+use App\Models\Transaksi\LingkunganKerjaPeserta;
 use App\Services\RegistrationMCUServices;
 use Illuminate\Support\Facades\Validator;
 
@@ -87,13 +88,6 @@ class PendaftaranController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'informasi_riwayat_lingkungan_kerja' => 'required|array',
-                'informasi_riwayat_lingkungan_kerja.*.user_id' => 'required',
-                'informasi_riwayat_lingkungan_kerja.*.transaksi_id' => 'required',
-                'informasi_riwayat_lingkungan_kerja.*.id_atribut_lk' => 'required',
-                'informasi_riwayat_lingkungan_kerja.*.status' => 'required',
-                'informasi_riwayat_lingkungan_kerja.*.nilai_jam_per_hari' => 'required',
-                'informasi_riwayat_lingkungan_kerja.*.nilai_selama_x_tahun' => 'required',
-                'informasi_riwayat_lingkungan_kerja.*.keterangan' => 'required',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -101,14 +95,18 @@ class PendaftaranController extends Controller
             }
             foreach ($request->informasi_riwayat_lingkungan_kerja as $data) {
                 $bulkData[] = [
-                    'id' => $data['id'],
-                    'jam_hari_bising' => $data['jam_hari_bising'],
-                    'selama_tahun_bising' => $data['selama_tahun_bising'],
-                    'keterangan_bising' => $data['keterangan_bising'],
+                    'user_id' => $data['user_id'],
+                    'transaksi_id' => $data['transaksi_id'],
+                    'id_atribut_lk' => $data['id_atribut_lk'],
+                    'nama_atribut_saat_ini' => $data['nama_atribut_saat_ini'],
+                    'status' => $data['status'],
+                    'nilai_jam_per_hari' => $data['nilai_jam_per_hari'],
+                    'nilai_selama_x_tahun' => $data['nilai_selama_x_tahun'],
+                    'keterangan' => $data['keterangan'],
                 ];
             }
-            LingkunganKerja::insert($bulkData);
-            return ResponseHelper::success('Data riwayat lingkungan kerja berhasil disimpan');
+            LingkunganKerjaPeserta::insert($bulkData);
+            return ResponseHelper::success('Data riwayat lingkungan kerja berhasil disimpan. Silahkan lakukan perubahan dengan cara ubah atau hapus pada tabel dibawah jikalau terdapat kesalahan dalam pengisian data');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

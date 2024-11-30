@@ -91,7 +91,7 @@ class TransaksiController extends Controller
             }
             $data = MemberMCU::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
                 ->where('users_member.nomor_identitas', $request->nomor_identitas)
-                ->select('users_member.*', 'mcu_transaksi_peserta.no_transaksi', 'mcu_transaksi_peserta.id as id_transaksi')
+                ->select('users_member.*', 'users_member.id as user_id', 'mcu_transaksi_peserta.no_transaksi', 'mcu_transaksi_peserta.id as id_transaksi')
                 ->first();
             if (!$data) {
                 return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Informasi Pasien MCU tidak ditemukan. Silahkan lakukan pendaftaran terlebih dahulu dengan cara transaksi MCU dan tentukan paket yang diinginkan']));

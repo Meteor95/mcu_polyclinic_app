@@ -9,6 +9,7 @@ use App\Models\Transaksi\Transaksi;
 use App\Models\Masterdata\DaftarBank;
 use App\Models\{Perusahaan, PaketMCU};
 use App\Models\Masterdata\DepartemenPerusahaan;
+use App\Models\Komponen\LingkunganKerja;
 use Illuminate\Support\Facades\Log;
 
 class PendaftaranController extends Controller
@@ -87,6 +88,7 @@ class PendaftaranController extends Controller
             'Beranda' => route('admin.beranda'),
             'Lingkungan Kerja Peserta MCU' => route('admin.pendaftaran.lingkungan_kerja'),
         ]);
+        $data['bahaya_paparan_kerja'] = LingkunganKerja::where('status', 1)->get();
         return view('paneladmin.pendaftaran.riwayat_lingkungan_kerja', ['data' => $data]);
     }
     public function kecelakaan_kerja(Request $req){

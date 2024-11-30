@@ -16,7 +16,7 @@
                         <div class="img-overlay">
                             <h1>LKP MCU, <span id="nama_peserta_temp"></span></h1>
                             <p>Formulir untuk kelengkapan MCU berupa informasi foto terbaru dari pasien MCU yang akan digunakan untuk laporan MCU. Foto peserta wajib diisi setiap dia melakukan pemeriksaan MCU baru.</p>
-                            <button class="btn btn-secondary" id="btnPanduanHalamanIni">Panduan Halaman Ini</button>
+                            <button class="btn btn-secondary" id="btnCekDataIni">Cek Data Ini</button>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                                 Departemen<br>
                             </div>
                             <div class="col-8">
-                                : <span id="nomor_identitas_temp"></span><br>
+                                : <span id="nomor_identitas_temp"></span> (<span id="user_id_temp"></span>)<br>
                                 : <span id="nama_peserta_temp_1"></span><br>
                                 : <span id="jenis_kelamin_temp"></span><br>
                                 : <span id="nomor_transaksi_temp"></span> (<span id="id_transaksi_mcu"></span>)<br>
@@ -61,7 +61,42 @@
         </div>
         <div class="card-body">
             <h1 class="mb-2 text-center">Formulir Bahaya Riwayat Lingkungan Kerja (Paparan Kerja)</h1>
-            <table class="table display" id="datatables_riwayat_lingkungan_kerja"></table>     
+            <table class="table display" id="datatables_riwayat_lingkungan_kerja">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Paparan Kerja</th>
+                  <th>Status</th>
+                  <th>Jam / Hari</th>
+                  <th>Selama X Tahun</th>
+                  <th>Keterangan</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach ($data['bahaya_paparan_kerja'] as $item)
+                <tr>
+                  <td>{{$item->id}}</td>
+                  <td>{{$item->nama_atribut_lk}}</td>
+                  <td>
+                    <select id="status_{{$item->id}}" class="form-select">
+                      <option value="1">Ya</option>
+                      <option value="0" selected>Tidak</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" placeholder="Harus Angka" id="jam_hari_{{$item->id}}">
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" placeholder="Harus Angka" id="selama_tahun_{{$item->id}}">
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" placeholder="Jika Ada" id="keterangan_{{$item->id}}">
+                  </td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>     
+            <!-- <table class="table display" id="datatables_riwayat_lingkungan_kerja"></table>      -->
             <button class="btn btn-success w-100 mt-3" id="simpan_riwayat_lingkungan_kerja"><i class="fa fa-save"></i> Simpan Data</button>                   
         </div>
         <div class="card-footer">
