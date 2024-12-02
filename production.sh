@@ -9,9 +9,9 @@ CURRENT_GROUP=$(eval "id -gn")
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/app
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/bootstrap
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/config
-sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/lang
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/public
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/resources
+sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/resources/lang
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/routes
 
 # Database migrations
@@ -24,7 +24,6 @@ sudo chown -R $CURRENT_USER:$CURRENT_GROUP .git
 # Pull from the repository
 ######################################
 eval $(ssh-agent)
-
 ssh-add /home/veldora/.ssh/github_eraya_digital
 git pull
 
