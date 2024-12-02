@@ -25,7 +25,8 @@ sudo chown -R $CURRENT_USER:$CURRENT_GROUP .git
 ######################################
 eval $(ssh-agent)
 
-#ssh-add /home/rozikin/.ssh/id_ed25519
+ssh-add /home/veldora/.ssh/github_eraya_digital
+git pull
 
 ######################################
 # Build Image
@@ -58,5 +59,9 @@ sudo docker image ls
 
 
 # Deploy to swarm
+echo "Deploying to Docker Swarm Stack: $DOCKER_SWARM_STACK_NAME..."
+sudo docker stack remove $DOCKER_SWARM_STACK_NAME
+sleep 10
 sudo docker stack deploy -c docker-compose.yaml $DOCKER_SWARM_STACK_NAME --with-registry-auth --detach=false
+echo "Deployment completed successfully."
 #sudo docker stack remove artha_medica

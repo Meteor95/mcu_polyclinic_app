@@ -2,17 +2,15 @@ version: '3.8'
 
 services:
   web_service:
-    image: artha_medica:1.0.0
+    image: ghcr.io/meteor95/artha_medica-ghcr:${IMAGE_TAG}
     ports:
       - target: 8080
         published: 10161
         mode: ingress
-    environment:
-      - ./source/storage/:/var/www/html/storage/
-    # Limit default logging container
+    volumes:
+      - ./source/storage:/var/www/html/storage
     logging:
       driver: "json-file"
       options:
         max-size: "100k"
         max-file: "10"
-        mode: non-blocking
