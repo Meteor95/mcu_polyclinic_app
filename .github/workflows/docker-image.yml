@@ -9,5 +9,5 @@ jobs:
       - name: Build the Docker image artha_medica
         run: |
           docker login ghcr.io --username meteor95 --password ${{ secrets.SEIRA_ERAYA_DIGITAL }}
-          docker build . --tag ghcr.io/meteor95/artha_medica:latest
-          docker push ghcr.io/meteor95/artha_medica:latest
+          docker build . --tag ghcr.io/meteor95/artha_medica-ghcr:latest
+          docker push ghcr.io/meteor95/artha_medica-ghcr:latest
