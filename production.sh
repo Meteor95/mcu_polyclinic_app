@@ -20,8 +20,13 @@ sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/database/factories
 
 # Change ownership of the entire .git directory
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP .git
-sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/storage
+sudo chown -R nobody:nogroup source/storage
+sudo chmod -R 775 source/storage
 
+# Create the storage/logs directory if it doesn't exist and set permissions
+sudo mkdir -p /var/www/html/storage/logs
+sudo chown -R nobody:nogroup /var/www/html/storage/logs
+sudo chmod -R 775 /var/www/html/storage/logs
 # Pull from the repository
 ######################################
 eval $(ssh-agent)
