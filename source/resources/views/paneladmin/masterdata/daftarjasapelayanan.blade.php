@@ -56,12 +56,8 @@
 </div>
 @endsection
 @section('css_load')
-@component('komponen.css.datatables')
-@endcomponent
 @endsection
 @section('js_load')
-@component('komponen.js.datatables')
-@endcomponent
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
 <script src="{{asset('mofi/assets/js/system/master_data/jasapelayanan.js')}}"></script>
 @endsection

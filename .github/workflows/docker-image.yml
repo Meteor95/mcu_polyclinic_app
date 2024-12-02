@@ -1,18 +1,13 @@
-name: Docker Image CI
-
+name: Docker Image CI for GHCR
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
 jobs:
-
-  build:
-
+  build_and_publish:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v4
+      - name: Build the Docker image artha_medica
+        run: |
+          docker login ghcr.io --username meteor95 --password ${{ secrets.GHCR_PAT }}
+          docker build . --tag ghcr.io/meteor95/artha_medica:$(date +%s)
+          docker push ghcr.io/meteor95/artha_medica:$(date +%s)

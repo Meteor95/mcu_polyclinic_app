@@ -53,6 +53,9 @@ class Transaksi extends Model
             $query->where('no_transaksi', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');
         }
+        $jumlahdata = $query->groupBy('mcu_transaksi_peserta.id')
+            ->get()
+            ->count();
         $result = $query->take($perHalaman)
             ->skip($offset)
             ->groupBy(
@@ -68,7 +71,6 @@ class Transaksi extends Model
             )
             ->orderBy('mcu_transaksi_peserta.tanggal_transaksi', 'DESC')
             ->get();
-        $jumlahdata = $query->count();
         return [
             'data' => $result,
             'total' => $jumlahdata

@@ -106,8 +106,6 @@
 </div>
 @endsection
 @section('css_load')
-@component('komponen.css.datatables')
-@endcomponent
 <link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}">
 <style>
 .dtfc-fixed-right {
@@ -122,8 +120,6 @@ body.dark-only .dtfc-fixed-right_header {
 </style>
 @endsection
 @section('js_load')
-@component('komponen.js.datatables')
-@endcomponent
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/4.0.2/js/dataTables.fixedColumns.min.js"></script>
 <script src="{{ asset('mofi/assets/js/system/master_data/daftarmembermcu.js') }}"></script>

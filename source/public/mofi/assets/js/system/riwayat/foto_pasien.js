@@ -16,10 +16,10 @@ $(document).ready(function(){
 function onloaddatatables(){
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_daftarpeserta_unggah_citra").DataTable({
-            dom: 'lfrtip',
             searching: false,
-            lengthChange: false,
-            ordering: false,
+            bProcessing: true,
+            serverSide: true,
+            pagingType: "full_numbers",
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -28,14 +28,6 @@ function onloaddatatables(){
                     "previous": '<i class="fa fa-angle-left"></i>',
                 },
             },
-            scrollCollapse: true,
-            bFilter: false,
-            bInfo: true,
-            ordering: false,
-            scrollX: true,
-            bPaginate: true,
-            bProcessing: true,
-            serverSide: true,
             ajax: {
                 "url": baseurlapi + '/pendaftaran/daftarpasien_unggah_citra',
                 "type": "GET",
@@ -61,11 +53,10 @@ function onloaddatatables(){
                 if (typeof settings.json !== "undefined") {
                     const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                     const recordsFiltered = settings.json.recordsFiltered;
-                    const infoString = 'Halaman ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Jumlah Data: ' + recordsFiltered + ' data';
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Dari Total : ' + recordsFiltered + ' Data';
                     return infoString;
                 }
             },
-            pagingType: "full_numbers",
             columnDefs: [{
                 defaultContent: "-",
                 targets: "_all"

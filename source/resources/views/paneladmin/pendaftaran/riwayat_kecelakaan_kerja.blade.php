@@ -17,7 +17,6 @@
                             <h1>LKP MCU, <span id="nama_peserta_temp"></span></h1>
                             <p>Formulir untuk kelengkapan MCU berupa informasi foto terbaru dari pasien MCU yang akan digunakan untuk laporan MCU. Foto peserta wajib diisi setiap dia melakukan pemeriksaan MCU baru.</p>
                         </div>
-                        <button class="mt-3 btn btn-secondary" id="btnCekDataIni">Cek Data Ini</button>
                     </div>
                 </div>
             </div>
@@ -60,85 +59,41 @@
           </div>
         </div>
         <div class="card-body">
-            <h1 class="mb-2 text-center">Formulir Bahaya Riwayat Lingkungan Kerja (Paparan Kerja)</h1>
-            <table class="table display" id="datatables_riwayat_lingkungan_kerja">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Paparan Kerja</th>
-                  <th>Status</th>
-                  <th>Jam / Hari</th>
-                  <th>Selama X Tahun</th>
-                  <th>Keterangan</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach ($data['bahaya_paparan_kerja'] as $item)
-                <tr>
-                  <td>{{$item->id}}</td>
-                  <td>{{$item->nama_atribut_lk}}</td>
-                  <td>
-                    <select id="status_{{$item->id}}" class="form-select">
-                      <option value="1">Ya</option>
-                      <option value="0" selected>Tidak</option>
-                    </select>
-                  </td>
-                  <td>
-                    <input type="text" class="form-control" placeholder="Harus Angka" id="jam_hari_{{$item->id}}">
-                  </td>
-                  <td>
-                    <input type="text" class="form-control" placeholder="Harus Angka" id="selama_tahun_{{$item->id}}">
-                  </td>
-                  <td>
-                    <input type="text" class="form-control" placeholder="Jika Ada" id="keterangan_{{$item->id}}">
-                  </td>
-                </tr>
-                @endforeach
-              </tbody>
-            </table>     
+            <h1 class="mb-2 text-center">Formulir Riwayat Kecelakaan Kerja</h1>
+            <div id="editor_kecelakaan_kerja"></div>
             <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-              <button class="btn btn-danger w-100 mt-3" id="bersihkan_data_riwayat_lingkungan_kerja"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
-              <button class="btn btn-success w-100 mt-3" id="simpan_riwayat_lingkungan_kerja"><i class="fa fa-save"></i> Simpan Data</button>                   
+                <button class="btn btn-danger w-100 mt-2" id="bersihkan_data_riwayat_kecelakaan_kerja"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
+                <button class="mt-2 btn btn-success w-100" id="btnSimpanRiwayatKecelakaanKerja">Simpan Riwayat Kecelakaan Kerja</button>
             </div>
         </div>
         <div class="card-footer">
-            <h1 class="mb-2 text-center">Daftar Bahaya Riwayat Lingkungan Kerja (Paparan Kerja)</h1>
+            <h1 class="mb-2 text-center">Daftar Kecelakaan Kerja</h1>
+            <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data...">
             <div class="table-responsive theme-scrollbar">
-              <table class="display" id="datatables_daftar_bahaya_riwayat_lingkungan_kerja"></table>
+              <table class="display" id="datatables_daftar_kecelakaan_kerja"></table>
             </div>
         </div>
       </div>
     </div>
 </div>
-<div class="modal fade" id="modalLihatParameter" tabindex="-1" role="dialog" aria-labelledby="modalLihatParameterLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title">Nama Pasien : <span id="modal_nama_peserta_parameter"></span></h5>
-              <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
-          </div>
-          <div class="modal-body">
-            <table id="datatables_riwayat_lingkungan_kerja_modal" class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Paparan Kerja</th>
-                  <th>Status</th>
-                  <th>Jam / Hari</th>
-                  <th>Selama X Tahun</th>
-                  <th>Keterangan</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-          </div>
-      </div>
+<div class="modal fade" id="modalLihatRiwayatKecelakaanKerja" tabindex="-1" role="dialog" aria-labelledby="modalLihatRiwayatKecelakaanKerjaLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nama Pasien : <span id="modal_nama_peserta_parameter"></span></h5>
+                <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
+            </div>
+            <div class="modal-body">
+              <div id="editor_riwayat_kecelakaan_kerja"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
   </div>
-</div>
 @endsection
 @section('css_load')
-<link href="https://cdn.datatables.net/keytable/2.12.1/css/keyTable.dataTables.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
 .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -157,8 +112,7 @@ table.dataTable tbody td.focus {
 </style>
 @endsection
 @section('js_load')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
-<script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{{ asset('mofi/assets/js/system/riwayat/riwayat_lingkungan_kerja.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/system/riwayat/kecelakaan_kerja.js') }}"></script>
 @endsection

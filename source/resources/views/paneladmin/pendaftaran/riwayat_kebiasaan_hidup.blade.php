@@ -60,23 +60,24 @@
           </div>
         </div>
         <div class="card-body">
-            <h1 class="mb-2 text-center">Formulir Bahaya Riwayat Lingkungan Kerja (Paparan Kerja)</h1>
-            <table class="table display" id="datatables_riwayat_lingkungan_kerja">
+            <h1 class="mb-2 text-center">Formulir Kebiasaan Hidup</h1>
+            <table class="table display" id="datatables_riwayat_kebiasaan_hidup">
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Paparan Kerja</th>
+                  <th>Kebiasaan Hidup</th>
                   <th>Status</th>
-                  <th>Jam / Hari</th>
-                  <th>Selama X Tahun</th>
+                  <th>Nilai</th>
+                  <th>Satuan</th>
                   <th>Keterangan</th>
                 </tr>
               </thead>
               <tbody>
-                @foreach ($data['bahaya_paparan_kerja'] as $item)
+                @foreach ($data['kebiasaan_hidup'] as $item)
+                @if ($item->status == 1)
                 <tr>
                   <td>{{$item->id}}</td>
-                  <td>{{$item->nama_atribut_lk}}</td>
+                  <td>{{$item->nama_atribut_kb}}</td>
                   <td>
                     <select id="status_{{$item->id}}" class="form-select">
                       <option value="1">Ya</option>
@@ -84,27 +85,68 @@
                     </select>
                   </td>
                   <td>
-                    <input type="text" class="form-control" placeholder="Harus Angka" id="jam_hari_{{$item->id}}">
+                    <input type="text" class="form-control" placeholder="Harus Angka" id="nilai_kebiasaan_{{$item->id}}">
                   </td>
                   <td>
-                    <input type="text" class="form-control" placeholder="Harus Angka" id="selama_tahun_{{$item->id}}">
+                    {{$item->nama_satuan_kb}}
                   </td>
                   <td>
                     <input type="text" class="form-control" placeholder="Jika Ada" id="keterangan_{{$item->id}}">
                   </td>
                 </tr>
+                @endif
                 @endforeach
               </tbody>
-            </table>     
+            </table> 
+            <div id="kebiasaan_hidup_perempuan">
+              <h1 class="mb-2 text-center">Khusus Perempuan</h1>  
+              <table class="table display" id="datatables_kebiasaan_hidup_perempuan">
+                  <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Kebiasaan Hidup</th>
+                        <th>Status</th>
+                        <th>Nilai</th>
+                        <th>Satuan</th>
+                        <th>Keterangan</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach ($data['kebiasaan_hidup'] as $item)
+                      @if ($item->status == 2)
+                      <tr>
+                        <td>{{$item->id}}</td>
+                        <td>{{$item->nama_atribut_kb}}</td>
+                        <td>
+                          <select id="status_{{$item->id}}" class="form-select">
+                            <option value="1">Ya</option>
+                            <option value="0" selected>Tidak</option>
+                          </select>
+                        </td>
+                        <td>
+                          <input type="text" class="form-control" placeholder="Harus Angka" id="waktu_kebiasaan_{{$item->id}}">
+                        </td>
+                        <td>
+                          {{$item->nama_satuan_kb}}
+                        </td>
+                        <td>
+                          <input type="text" class="form-control" placeholder="Jika Ada" id="keterangan_{{$item->id}}">
+                        </td>
+                      </tr>
+                      @endif
+                      @endforeach
+                  </tbody>
+              </table>
+            </div>    
             <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-              <button class="btn btn-danger w-100 mt-3" id="bersihkan_data_riwayat_lingkungan_kerja"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
-              <button class="btn btn-success w-100 mt-3" id="simpan_riwayat_lingkungan_kerja"><i class="fa fa-save"></i> Simpan Data</button>                   
+              <button class="btn btn-danger w-100 mt-3" id="bersihkan_data_riwayat_kebiasaan_hidup"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
+              <button class="btn btn-success w-100 mt-3" id="simpan_riwayat_kebiasaan_hidup"><i class="fa fa-save"></i> Simpan Data</button>                   
             </div>
         </div>
         <div class="card-footer">
-            <h1 class="mb-2 text-center">Daftar Bahaya Riwayat Lingkungan Kerja (Paparan Kerja)</h1>
+            <h1 class="mb-2 text-center">Daftar Kebiasaan Hidup</h1>
             <div class="table-responsive theme-scrollbar">
-              <table class="display" id="datatables_daftar_bahaya_riwayat_lingkungan_kerja"></table>
+              <table class="display" id="datatables_daftar_kebiasaan_hidup"></table>
             </div>
         </div>
       </div>
@@ -118,13 +160,13 @@
               <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
           </div>
           <div class="modal-body">
-            <table id="datatables_riwayat_lingkungan_kerja_modal" class="table table-bordered">
+            <table id="datatables_riwayat_kebiasaan_hidup_modal" class="table table-bordered">
               <thead>
                 <tr>
-                  <th>Paparan Kerja</th>
+                  <th>Kebiasaan Hidup</th>
                   <th>Status</th>
-                  <th>Jam / Hari</th>
-                  <th>Selama X Tahun</th>
+                  <th>Nilai</th>
+                  <th>Satuan</th>
                   <th>Keterangan</th>
                 </tr>
               </thead>
@@ -140,6 +182,7 @@
 @section('css_load')
 <link href="https://cdn.datatables.net/keytable/2.12.1/css/keyTable.dataTables.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}">
 <style>
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     margin-top: 10px;
@@ -160,5 +203,6 @@ table.dataTable tbody td.focus {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
 <script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{{ asset('mofi/assets/js/system/riwayat/riwayat_lingkungan_kerja.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/system/riwayat/riwayat_kebiasaan_hidup.js') }}"></script>
 @endsection

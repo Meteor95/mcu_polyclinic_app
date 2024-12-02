@@ -9,8 +9,9 @@
         </div>
         <div class="card-body">
           <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data berdasarkan nama peserta">
-          <div class="table">
-            <table class="table display" id="datatables_daftarpasien"></table>
+          <div class="table-responsive theme-scrollbar">
+            <table class="display" id="datatables_daftarpasien"></table>
+          </div>
           </div>
         </div>
       </div>
@@ -36,8 +37,6 @@
 </div>
 @endsection
 @section('css_load')
-@component('komponen.css.datatables')
-@endcomponent
 <style>
 .dtfc-fixed-right {
     background-color: #f6f6f6 !important;
@@ -51,8 +50,6 @@ body.dark-only .dtfc-fixed-right_header {
 </style>
 @endsection
 @section('js_load')
-@component('komponen.js.datatables')
-@endcomponent
 <script src="https://cdn.datatables.net/fixedcolumns/4.0.2/js/dataTables.fixedColumns.min.js"></script>
 <script src="{{ asset('mofi/assets/js/system/pendaftaran/pasien.js') }}"></script>
 @endsection

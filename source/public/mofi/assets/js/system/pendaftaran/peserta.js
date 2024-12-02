@@ -5,10 +5,18 @@ $(document).ready(function() {
 function loadDataPeserta() {
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_daftarpeserta").DataTable({
-            dom: 'lfrtip',
-            searching: false,
-            lengthChange: false,
             ordering: false,
+            lengthChange: false,
+            searching: false,
+            bProcessing: true,
+            serverSide: true,
+            pagingType: "full_numbers",
+            fixedColumns: true,
+            scrollCollapse: true,
+            fixedColumns: {
+                right: 1,
+                left: 0
+            },
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -17,19 +25,6 @@ function loadDataPeserta() {
                     "previous": '<i class="fa fa-angle-left"></i>',
                 },
             },
-            fixedColumns: true,
-            scrollCollapse: true,
-            fixedColumns: {
-                right: 1,
-                left: 0
-            },
-            bFilter: false,
-            bInfo: true,
-            ordering: false,
-            scrollX: true,
-            bPaginate: true,
-            bProcessing: true,
-            serverSide: true,
             ajax: {
                 "url": baseurlapi + '/pendaftaran/daftarpeserta',
                 "type": "GET",

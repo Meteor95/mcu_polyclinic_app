@@ -68,13 +68,9 @@
 </div>
 @endsection
 @section('css_load')
-@component('komponen.css.datatables')
-@endcomponent
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/tagify.css')}}">
 @endsection
 @section('js_load')
-@component('komponen.js.datatables')
-@endcomponent
 <script src="{{asset('mofi/assets/js/select2/tagify.js')}}"></script>
 <script src="{{asset('mofi/assets/js/select2/tagify.polyfills.min.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>

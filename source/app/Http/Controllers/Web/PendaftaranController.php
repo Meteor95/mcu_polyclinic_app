@@ -9,7 +9,7 @@ use App\Models\Transaksi\Transaksi;
 use App\Models\Masterdata\DaftarBank;
 use App\Models\{Perusahaan, PaketMCU};
 use App\Models\Masterdata\DepartemenPerusahaan;
-use App\Models\Komponen\LingkunganKerja;
+use App\Models\Komponen\{LingkunganKerja, KebiasaanHidup};
 use Illuminate\Support\Facades\Log;
 
 class PendaftaranController extends Controller
@@ -110,6 +110,7 @@ class PendaftaranController extends Controller
             'Beranda' => route('admin.beranda'),
             'Kebiasaan Hidup Peserta MCU' => route('admin.pendaftaran.kebiasaan_hidup'),
         ]);
+        $data['kebiasaan_hidup'] = KebiasaanHidup::where('status', '>', 0)->get();
         return view('paneladmin.pendaftaran.riwayat_kebiasaan_hidup', ['data' => $data]);
     }
     public function vaksinasi(Request $req){

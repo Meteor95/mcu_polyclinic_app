@@ -49,10 +49,9 @@ class TransaksiController extends Controller
             $nomorHalaman = (int) $request->start / $perHalaman;
             $offset = $nomorHalaman * $perHalaman;
             $data = Transaksi::listPasienTabel($request, $perHalaman, $offset);
-            $jumlahdata = $data['total'];
             $dynamicAttributes = [
                 'data' => $data['data'],
-                'recordsFiltered' => $jumlahdata,
+                'recordsFiltered' => $data['total'],
                 'pages' => [
                     'limit' => $perHalaman,
                     'offset' => $offset,

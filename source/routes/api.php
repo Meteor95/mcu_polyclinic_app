@@ -52,6 +52,14 @@ Route::prefix('v1')->group(function () {
             Route::get('hapusunduhan_citra_peserta', [TransaksiController::class,"hapusunduhan_citra_peserta"]);
             /* Riwayat Lingkungan Kerja */
             Route::post('simpanriwayatlingkungankerja', [PendaftaranController::class,"simpanriwayatlingkungankerja"]);
+            Route::get('riwayatlingkungankerja', [PendaftaranController::class,"riwayatlingkungankerja"]);
+            Route::get('daftarpasien_riwayatlingkungankerja', [PendaftaranController::class,"getpasien_riwayatlingkungankerja"]);
+            Route::get('hapusriwayatlingkungankerja', [PendaftaranController::class,"hapusriwayatlingkungankerja"]);
+            /* Riwayat Kecelakaan Kerja */
+            Route::post('simpanriwayatkecelakaankerja', [PendaftaranController::class,"simpanriwayatkecelakaankerja"]);
+            Route::get('daftarpasien_riwayatkecelakaankerja', [PendaftaranController::class,"getpasien_riwayatkecelakaankerja"]);
+            Route::get('riwayatkecelakaankerja', [PendaftaranController::class,"riwayatkecelakaankerja"]);
+            Route::delete('hapusriwayatkecelakaankerja', [PendaftaranController::class,"hapusriwayatkecelakaankerja"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */

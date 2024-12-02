@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\Masterdata\MemberMCU;
-use App\Models\Transaksi\LingkunganKerjaPeserta;
+use App\Models\Transaksi\{LingkunganKerjaPeserta,RiwayatKecelakaanKerja};
 use App\Services\RegistrationMCUServices;
 use Illuminate\Support\Facades\Validator;
 
@@ -84,7 +84,7 @@ class PendaftaranController extends Controller
             return ResponseHelper::error($th);
         }
     }
-    public function simpanriwayatlingkungankerja(Request $request){
+    public function simpanriwayatlingkungankerja(RegistrationMCUServices $registrationMCUServices, Request $request){
         try {
             $validator = Validator::make($request->all(), [
                 'informasi_riwayat_lingkungan_kerja' => 'required|array',
@@ -93,20 +93,155 @@ class PendaftaranController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            foreach ($request->informasi_riwayat_lingkungan_kerja as $data) {
-                $bulkData[] = [
-                    'user_id' => $data['user_id'],
-                    'transaksi_id' => $data['transaksi_id'],
-                    'id_atribut_lk' => $data['id_atribut_lk'],
-                    'nama_atribut_saat_ini' => $data['nama_atribut_saat_ini'],
-                    'status' => $data['status'],
-                    'nilai_jam_per_hari' => $data['nilai_jam_per_hari'],
-                    'nilai_selama_x_tahun' => $data['nilai_selama_x_tahun'],
-                    'keterangan' => $data['keterangan'],
-                ];
-            }
-            LingkunganKerjaPeserta::insert($bulkData);
+            $registrationMCUServices->handleTransactionInsertLingkunganKerjaPeserta($request);
             return ResponseHelper::success('Data riwayat lingkungan kerja berhasil disimpan. Silahkan lakukan perubahan dengan cara ubah atau hapus pada tabel dibawah jikalau terdapat kesalahan dalam pengisian data');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function riwayatlingkungankerja(Request $request){
+        try {
+            $data = LingkunganKerjaPeserta::join('users_member', 'users_member.id', '=', 'mcu_lingkungan_kerja_peserta.user_id')
+                ->where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->get();
+            if ($data->isEmpty()){
+                return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Riwayat Lingkungan Kerja']));
+            }
+            $dynamicAttributes = [
+                'data' => $data,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Data Riwayat Lingkungan Kerja'])." jikalau ada perubahan maka data yang lama akan dihapus semua dan digantikan dengan parameter baru", $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function getpasien_riwayatlingkungankerja(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 1;
+            $nomorHalaman = (int) $request->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman;
+            $data = LingkunganKerjaPeserta::listPesertaLingkuanKerjaTabel($request, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $data['data'],
+                'recordsFiltered' => $data['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta']), $dynamicAttributes);
+        }catch(\Throwable $th){
+            return ResponseHelper::error($th);
+        }
+    }
+    public function hapusriwayatlingkungankerja(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'transaksi_id' => 'required',
+                'nomor_identitas' => 'required',
+                'nama_peserta' => 'required',
+            ]); 
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            LingkunganKerjaPeserta::where('transaksi_id', $request->transaksi_id)
+                ->where('user_id', $request->user_id)
+                ->delete();
+            return ResponseHelper::success('Formulir Bahaya Riwayat Lingkungan Kerja dengan Nomor MCU <strong>'.$request->nomor_identitas.'</strong> atas nama <strong>'.$request->nama_peserta.'</strong> berhasil dihapus. Formulir ini bersifat wajib diisi oleh peserta MCU. Jadi silahkan isi kembali formulir tersebut jikalau dibutuhkan pada laporan MCU');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function getpasien_riwayatkecelakaankerja(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 1;
+            $nomorHalaman = (int) $request->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman;
+            $data = RiwayatKecelakaanKerja::listPesertaKecelakaanKerjaTabel($request, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $data['data'],
+                'recordsFiltered' => $data['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function simpanriwayatkecelakaankerja(Request $request){
+        try {
+            $user_id = RiwayatKecelakaanKerja::where('user_id', $request->input('user_id'))
+                ->where('transaksi_id', $request->input('id_transaksi'))
+                ->first();
+            if ($user_id) {
+                RiwayatKecelakaanKerja::where('user_id', $user_id->user_id)
+                    ->where('transaksi_id', $request->input('id_transaksi'))
+                    ->update([
+                        'riwayat_kecelakaan_kerja' => $request->input('informasi_riwayat_kecelakaan_kerja'),
+                        'updated_at' => now()
+                    ]);
+            }else{
+                RiwayatKecelakaanKerja::create([
+                    'user_id' => $request->input('user_id'),
+                    'transaksi_id' => $request->input('id_transaksi'),
+                    'riwayat_kecelakaan_kerja' => $request->input('informasi_riwayat_kecelakaan_kerja'),
+                ]);
+            }
+            return ResponseHelper::success('Data riwayat kecelakaan kerja berhasil disimpan. Silahkan lakukan perubahan dengan cara ubah atau hapus pada tabel dibawah jikalau terdapat kesalahan dalam pengisian data');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function riwayatkecelakaankerja(Request $request){
+        try {
+            $data = RiwayatKecelakaanKerja::where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->get();
+            $dynamicAttributes = [
+                'data' => $data,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Data Riwayat Kecelakaan Kerja'])." jikalau ada perubahan maka data yang lama akan dihapus semua dan digantikan dengan parameter baru", $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function hapusriwayatkecelakaankerja(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'transaksi_id' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            RiwayatKecelakaanKerja::where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->delete();
+            return ResponseHelper::success('Data riwayat kecelakaan kerja dengan nomor identitas <strong>'.$request->nomor_identitas.'</strong> atas nama <strong>'.$request->nama_peserta.'</strong> berhasil dihapus. Formulir ini bersifat wajib diisi oleh peserta MCU. Jadi silahkan isi kembali formulir tersebut jikalau dibutuhkan pada laporan MCU');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }   
+    }
+    public function riwayatkebiasaanhidup(Request $request){
+        try {
+            $data = RiwayatKebiasaanHidup::join('users_member', 'users_member.id', '=', 'mcu_riwayat_kebiasaan_hidup.user_id')
+                ->where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->get();
+            if ($data->isEmpty()){
+                return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Riwayat Lingkungan Kerja']));
+            }
+            $dynamicAttributes = [
+                'data' => $data,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Data Riwayat Lingkungan Kerja'])." jikalau ada perubahan maka data yang lama akan dihapus semua dan digantikan dengan parameter baru", $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

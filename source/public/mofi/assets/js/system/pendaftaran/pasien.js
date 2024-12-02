@@ -5,10 +5,18 @@ $(document).ready(function() {
 function loadDataPasien() {
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_daftarpasien").DataTable({
-            dom: 'lfrtip',
-            searching: false,
-            lengthChange: false,
             ordering: false,
+            lengthChange: false,
+            searching: false,
+            bProcessing: true,
+            serverSide: true,
+            pagingType: "full_numbers",
+            fixedColumns: true,
+            scrollCollapse: true,
+            fixedColumns: {
+                right: 1,
+                left: 0
+            },
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -17,19 +25,6 @@ function loadDataPasien() {
                     "previous": '<i class="fa fa-angle-left"></i>',
                 },
             },
-            fixedColumns: true,
-            scrollCollapse: true,
-            fixedColumns: {
-                right: 1,
-                left: 0
-            },
-            bFilter: false,
-            bInfo: true,
-            ordering: false,
-            scrollX: true,
-            bPaginate: true,
-            bProcessing: true,
-            serverSide: true,
             ajax: {
                 "url": baseurlapi + '/pendaftaran/daftarpasien',
                 "type": "GET",
@@ -39,8 +34,6 @@ function loadDataPasien() {
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
-                    d.start = 0;
-                    d.length = 200;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -57,11 +50,10 @@ function loadDataPasien() {
                 if (typeof settings.json !== "undefined") {
                     const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                     const recordsFiltered = settings.json.recordsFiltered;
-                    const infoString = 'Halaman ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Jumlah Data: ' + recordsFiltered + ' data';
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Dari Total : ' + recordsFiltered + ' Data';
                     return infoString;
                 }
             },
-            pagingType: "full_numbers",
             columnDefs: [{
                 defaultContent: "-",
                 targets: "_all"

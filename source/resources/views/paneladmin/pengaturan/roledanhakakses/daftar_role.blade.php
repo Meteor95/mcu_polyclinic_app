@@ -45,8 +45,6 @@
 </div>
 @endsection
 @section('css_load')
-@component('komponen.css.datatables')
-@endcomponent
 <style>
 #datatables_permission_tersedia tbody td,
 #datatables_role tbody td {
@@ -56,7 +54,5 @@
 </style>
 @endsection
 @section('js_load')
-@component('komponen.js.datatables')
-@endcomponent
 <script src="{{asset('mofi/assets/js/system/role.js')}}"></script>
 @endsection
