@@ -1,14 +1,18 @@
 name: Docker Image CI for GHCR
 on:
   push:
+    tags:
+      - '*'
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - name: Build the Docker image artha_medica
         run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "Building Docker image with tag: ghcr.io/meteor95/artha_medica-ghcr:$VERSION"
           docker login ghcr.io --username meteor95 --password ${{ secrets.SEIRA_ERAYA_DIGITAL }}
-          docker build . --tag ghcr.io/meteor95/artha_medica-ghcr:latest
-          docker push ghcr.io/meteor95/artha_medica-ghcr:latest
-          
+          docker build . --tag ghcr.io/meteor95/artha_medica-ghcr:$VERSION
+          docker push ghcr.io/meteor95/artha_medica-ghcr:$VERSION
