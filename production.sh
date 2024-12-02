@@ -60,8 +60,6 @@ sudo docker image ls
 
 # Deploy to swarm
 echo "Deploying to Docker Swarm Stack: $DOCKER_SWARM_STACK_NAME..."
-sudo docker stack remove $DOCKER_SWARM_STACK_NAME
-sleep 10
 sudo docker stack deploy -c docker-compose.yaml $DOCKER_SWARM_STACK_NAME --with-registry-auth --detach=false
 echo "Deployment completed successfully."
 #sudo docker stack remove artha_medica
