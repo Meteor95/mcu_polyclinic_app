@@ -45,20 +45,20 @@ else
 	exit
 fi
 set +o allexport
-
 # Hide all command and variable value again
 set +x
-
 # Build image from Docker file with var $IMAGE_REPO_NAME and tag $IMAGE_TAG
 # You can see it from .env configuration
 sudo docker build --platform=linux/amd64 --pull --rm -f "$DOCKER_FILE" -t $IMAGE_REPO_NAME:$IMAGE_TAG "."
-
 # Show all list of docker iamge
 sudo docker image ls
-
-
 # Deploy to swarm
-echo "Deploying to Docker Swarm Stack: $DOCKER_SWARM_STACK_NAME..."
+echo "Deploying to Docker Swarm Stack: ${DOCKER_SWARM_STACK_NAME} with version ${IMAGE_TAG}"
 sudo docker stack deploy -c docker-compose.yaml $DOCKER_SWARM_STACK_NAME --with-registry-auth --detach=false
-echo "Deployment completed successfully."
+if [ $? -eq 0 ]; then
+	echo "Deployment completed successfully. Have a nice day!"
+	sudo docker stack ps $DOCKER_SWARM_STACK_NAME
+else
+	echo "Deployment failed. Please check the logs."
+fi
 #sudo docker stack remove artha_medica
