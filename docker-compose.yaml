@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web_service:
-    image: "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+    image: ghcr.io/meteor95/artha_medica-ghcr:1.0.1
     ports:
       - target: 8080
         published: 10161

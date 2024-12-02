@@ -30,10 +30,8 @@ git pull
 ######################################
 # Build Image
 ######################################
-
 # Show all command and variable value
 set -x
-
 # Load configuration from .env file
 set -o allexport
 
@@ -53,8 +51,9 @@ sudo docker build --platform=linux/amd64 --pull --rm -f "$DOCKER_FILE" -t $IMAGE
 # Show all list of docker iamge
 sudo docker image ls
 # Deploy to swarm
-echo "Deploying to Docker Swarm Stack: ${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+echo "Deploying to Docker Swarm ${DOCKER_SWARM_STACK_NAME} Stack: ${IMAGE_REPO_NAME}:${IMAGE_TAG}"
 sudo docker stack deploy -c docker-compose.yaml $DOCKER_SWARM_STACK_NAME --with-registry-auth --detach=false
+
 if [ $? -eq 0 ]; then
 	echo "Deployment completed successfully. Have a nice day!"
 	sudo docker stack ps $DOCKER_SWARM_STACK_NAME
