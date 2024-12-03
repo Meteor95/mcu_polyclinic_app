@@ -44,6 +44,7 @@ set -o allexport
 # If .env not exist then use format.env
 if [ -f deploy.env ]; then
 	source deploy.env
+	export $(grep -v '^#' deploy.env | xargs)
 else
 	echo "Please populate the deploy.env file from deploy.env.format"
 	exit
@@ -57,9 +58,8 @@ sudo docker build --platform=linux/amd64 --pull --rm -f "$DOCKER_FILE" -t $IMAGE
 # Show all list of docker iamge
 sudo docker image ls
 # Deploy to swarm
-echo "Deploying to Docker Swarm ${DOCKER_SWARM_STACK_NAME} Stack: ${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-sudo docker stack deploy -c docker-compose.yaml $DOCKER_SWARM_STACK_NAME --with-registry-auth --detach=false
-
+sudo docker stack deploy --compose-file docker-compose.yaml $DOCKER_SWARM_STACK_NAME --with-registry-auth --detach=false
+sudo docker image prune -a -f
 if [ $? -eq 0 ]; then
 	echo "Deployment completed successfully. Have a nice day!"
 	sudo docker stack ps $DOCKER_SWARM_STACK_NAME
