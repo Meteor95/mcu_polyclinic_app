@@ -124,13 +124,13 @@
                           </select>
                         </td>
                         <td>
-                          <input type="text" class="form-control" placeholder="Harus Angka" id="waktu_kebiasaan_{{$item->id}}">
+                          <input type="text" class="form-control" placeholder="Harus Angka" id="waktu_kebiasaan_perempuan_{{$item->id}}">
                         </td>
                         <td>
                           {{$item->nama_satuan_kb}}
                         </td>
                         <td>
-                          <input type="text" class="form-control" placeholder="Jika Ada" id="keterangan_{{$item->id}}">
+                          <input type="text" class="form-control" placeholder="Jika Ada" id="keterangan_perempuan_{{$item->id}}">
                         </td>
                       </tr>
                       @endif
@@ -145,6 +145,7 @@
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Kebiasaan Hidup</h1>
+            <input type="text" class="form-control" placeholder="Cari Data" id="cari_data_kebiasaan_hidup">
             <div class="table-responsive theme-scrollbar">
               <table class="display" id="datatables_daftar_kebiasaan_hidup"></table>
             </div>
@@ -166,6 +167,18 @@
                   <th>Kebiasaan Hidup</th>
                   <th>Status</th>
                   <th>Nilai</th>
+                  <th>Satuan</th>
+                  <th>Keterangan</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <table id="datatables_riwayat_kebiasaan_hidup_perempuan_modal" class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Kebiasaan Hidup</th>
+                  <th>Status</th>
+                  <th>Waktu</th>
                   <th>Satuan</th>
                   <th>Keterangan</th>
                 </tr>

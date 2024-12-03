@@ -60,6 +60,11 @@ Route::prefix('v1')->group(function () {
             Route::get('daftarpasien_riwayatkecelakaankerja', [PendaftaranController::class,"getpasien_riwayatkecelakaankerja"]);
             Route::get('riwayatkecelakaankerja', [PendaftaranController::class,"riwayatkecelakaankerja"]);
             Route::delete('hapusriwayatkecelakaankerja', [PendaftaranController::class,"hapusriwayatkecelakaankerja"]);
+            /* Riwayat Kebiasaan Hidup */
+            Route::post('simpankebiasaanhidup', [PendaftaranController::class,"simpankebiasaanhidup"]);
+            Route::get('daftarpasien_riwayatkebiasaanhidup', [PendaftaranController::class,"getpasien_riwayatkebiasaanhidup"]);
+            Route::delete('hapusriwayatkebiasaanhidup', [PendaftaranController::class,"hapusriwayatkebiasaanhidup"]);
+            Route::get('riwayatkebiasaanhidup', [PendaftaranController::class,"riwayatkebiasaanhidup"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */

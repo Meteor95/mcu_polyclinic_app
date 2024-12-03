@@ -3,6 +3,7 @@
 namespace App\Models\Transaksi;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class RiwayatKebiasaanHidup extends Model
 {
@@ -10,9 +11,14 @@ class RiwayatKebiasaanHidup extends Model
     protected $fillable = [
         'user_id',
         'transaksi_id',
+        'id_atribut_kb',
         'nama_kebiasaan',
+        'status_kebiasaan',
         'nilai_kebiasaan',
-        'satuan_kebiasaan'
+        'waktu_kebiasaan',
+        'satuan_kebiasaan',
+        'jenis_kebiasaan',
+        'keterangan'
     ];
     public static function listPesertaKebiasaanHidupTabel($request, $perHalaman, $offset){
         $parameterpencarian = $request->parameter_pencarian;
@@ -28,8 +34,11 @@ class RiwayatKebiasaanHidup extends Model
             $query->where('users_member.nama_peserta', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('mcu_transaksi_peserta.no_transaksi', 'LIKE', '%' . $parameterpencarian . '%');
         }
-        $jumlahdata = $query->count();
-        $result = $query->orderBy('mcu_riwayat_kebiasaan_hidup.created_at', 'DESC')
+        $jumlahdata = $query->groupBy('mcu_riwayat_kebiasaan_hidup.user_id', 'mcu_riwayat_kebiasaan_hidup.transaksi_id')
+            ->get()
+            ->count();
+        $result = $query->groupBy('mcu_riwayat_kebiasaan_hidup.user_id', 'mcu_riwayat_kebiasaan_hidup.transaksi_id')
+            ->orderBy('mcu_riwayat_kebiasaan_hidup.created_at', 'DESC')
             ->take($perHalaman)
             ->skip($offset)
             ->get();

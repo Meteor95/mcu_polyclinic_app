@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\Masterdata\MemberMCU;
-use App\Models\Transaksi\{LingkunganKerjaPeserta,RiwayatKecelakaanKerja};
+use App\Models\Transaksi\{LingkunganKerjaPeserta,RiwayatKecelakaanKerja,RiwayatKebiasaanHidup};
 use App\Services\RegistrationMCUServices;
 use Illuminate\Support\Facades\Validator;
 
@@ -242,6 +242,58 @@ class PendaftaranController extends Controller
                 'data' => $data,
             ];
             return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Data Riwayat Lingkungan Kerja'])." jikalau ada perubahan maka data yang lama akan dihapus semua dan digantikan dengan parameter baru", $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function simpankebiasaanhidup(RegistrationMCUServices $registrationMCUServices, Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'data' => 'required|array',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $registrationMCUServices->handleTransactionInsertKebiasaanHidupPeserta($request);
+            return ResponseHelper::success('Data riwayat kebiasaan hidup berhasil disimpan. Silahkan lakukan perubahan dengan cara ubah atau hapus pada tabel dibawah jikalau terdapat kesalahan dalam pengisian data');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function getpasien_riwayatkebiasaanhidup(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 1;
+            $nomorHalaman = (int) $request->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman;
+            $data = RiwayatKebiasaanHidup::listPesertaKebiasaanHidupTabel($request, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $data['data'],
+                'recordsFiltered' => $data['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function hapusriwayatkebiasaanhidup(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'transaksi_id' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            RiwayatKebiasaanHidup::where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->delete();
+            return ResponseHelper::success('Data riwayat kebiasaan hidup dengan nomor identitas <strong>'.$request->nomor_identitas.'</strong> atas nama <strong>'.$request->nama_peserta.'</strong> berhasil dihapus. Formulir ini bersifat wajib diisi oleh peserta MCU. Jadi silahkan isi kembali formulir tersebut jikalau dibutuhkan pada laporan MCU');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
