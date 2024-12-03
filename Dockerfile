@@ -2,10 +2,11 @@ ARG ALPINE_VERSION=3.20
 FROM alpine:${ALPINE_VERSION}
 LABEL Maintainer="Mochmad Aries Setyawan <seira@erayadigital.co.id>"
 LABEL Description="Container for Laravel Octane Artha Medica MCU"
+
 # Setup document root
 WORKDIR /var/www/html
 
-# Install packages and remove default server definition
+# Install packages and PHP extensions
 RUN apk add --no-cache \
   curl \
   php83 \
@@ -33,9 +34,7 @@ RUN apk add --no-cache \
   php83-pdo \
   php83-pear \
   php83-redis \
-  supervisor
-
-RUN apk add --no-cache \
+  supervisor \
   autoconf \
   automake \
   make \
@@ -43,15 +42,17 @@ RUN apk add --no-cache \
   g++ \
   libtool \
   pkgconfig \
-  php83-dev
+  php83-dev \
+  nginx
 
-RUN apk add --no-cache nginx
+# Install Composer globally
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Add specific dev packages based on your extension (e.g., libmcrypt-dev)
+# Install OpenSwoole
 RUN pecl install openswoole
 
-RUN apk add --no-cache php83-pcntl php83-posix
-RUN apk add --no-cache php83-bcmath php83-sockets
+# Install additional PHP extensions
+RUN apk add --no-cache php83-pcntl php83-posix php83-bcmath php83-sockets
 
 # Configure PHP-FPM
 ENV PHP_INI_DIR=/etc/php83
@@ -60,37 +61,28 @@ COPY config/php.ini ${PHP_INI_DIR}/conf.d/custom.ini
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Make sure files/folders needed by the processes are accessable when they run under the nobody user
+# Ensure files/folders are accessible to the 'nobody' user
 RUN chown -R nobody.nobody /var/www/html /run
 
-# Composer depedencies
-# Install composer from the official image
-COPY --from=composer /usr/bin/composer /usr/bin/composer
-
-# Add composer json
+# Add composer.json and other application files
 COPY --chown=nobody source/composer.json /var/www/html/composer.json
-
-# Add laravel octane configuration
 COPY --chown=nobody source/artisan /var/www/html/artisan
 COPY --chown=nobody source/bootstrap/ /var/www/html/bootstrap/
 COPY --chown=nobody source/routes/ /var/www/html/routes/
 COPY --chown=nobody source/config/ /var/www/html/config/
-
-# Add application
 COPY --chown=nobody source/ /var/www/html/
 
-# Run composer install to install the dependencies
-RUN composer install --optimize-autoloader --no-interaction
+# Run composer install
+RUN composer install --optimize-autoloader --no-interaction --verbose
 
 # Switch to use a non-root user from here on
 USER nobody
 
-
-# Expose the port nginx is reachable on
+# Expose port for nginx
 EXPOSE 8080
 
 # Let supervisord start nginx & php-fpm
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
-# Configure a healthcheck to validate that everything is up&running
+# Healthcheck
 HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/up || exit 1
