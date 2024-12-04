@@ -27,9 +27,10 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('foto_pasien', [PendaftaranController::class,"foto_pasien"])->name('admin.pendaftaran.foto_pasien');
         Route::get('lingkungan_kerja', [PendaftaranController::class,"lingkungan_kerja"])->name('admin.pendaftaran.lingkungan_kerja');
         Route::get('kecelakaan_kerja', [PendaftaranController::class,"kecelakaan_kerja"])->name('admin.pendaftaran.kecelakaan_kerja');
-        Route::get('penyakit_keluarga', [PendaftaranController::class,"penyakit_keluarga"])->name('admin.pendaftaran.penyakit_keluarga');
         Route::get('kebiasaan_hidup', [PendaftaranController::class,"kebiasaan_hidup"])->name('admin.pendaftaran.kebiasaan_hidup');
-        Route::get('vaksinasi', [PendaftaranController::class,"vaksinasi"])->name('admin.pendaftaran.vaksinasi');
+        Route::get('penyakit_terdahulu', [PendaftaranController::class,"penyakit_terdahulu"])->name('admin.pendaftaran.penyakit_terdahulu');
+        Route::get('penyakit_keluarga', [PendaftaranController::class,"penyakit_keluarga"])->name('admin.pendaftaran.penyakit_keluarga');
+        Route::get('imunisasi', [PendaftaranController::class,"imunisasi"])->name('admin.pendaftaran.imunisasi');
     });
     Route::prefix('masterdata')->group(function () {
         Route::get('daftar_perusahaan', [MasterdataController::class,"daftar_perusahaan"])->name('admin.masterdata.daftar_perusahaan');

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\Masterdata\MemberMCU;
-use App\Models\Transaksi\{LingkunganKerjaPeserta,RiwayatKecelakaanKerja,RiwayatKebiasaanHidup};
+use App\Models\Transaksi\{LingkunganKerjaPeserta,RiwayatKecelakaanKerja,RiwayatKebiasaanHidup,RiwayatPenyakitKeluarga,RiwayatImunisasi,RiwayatPenyakitTerdahulu};
 use App\Services\RegistrationMCUServices;
 use Illuminate\Support\Facades\Validator;
 
@@ -294,6 +294,213 @@ class PendaftaranController extends Controller
                 ->where('transaksi_id', $request->transaksi_id)
                 ->delete();
             return ResponseHelper::success('Data riwayat kebiasaan hidup dengan nomor identitas <strong>'.$request->nomor_identitas.'</strong> atas nama <strong>'.$request->nama_peserta.'</strong> berhasil dihapus. Formulir ini bersifat wajib diisi oleh peserta MCU. Jadi silahkan isi kembali formulir tersebut jikalau dibutuhkan pada laporan MCU');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function simpanriwayatpenyakitkeluarga(RegistrationMCUServices $registrationMCUServices, Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'informasi_riwayat_penyakit_keluarga' => 'required|array',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $registrationMCUServices->handleTransactionInsertRiwayatPenyakitKeluargaPeserta($request);
+            return ResponseHelper::success('Data riwayat penyakit keluarga berhasil disimpan. Silahkan lakukan perubahan dengan cara ubah atau hapus pada tabel dibawah jikalau terdapat kesalahan dalam pengisian data');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function getpasien_riwayatpenyakitkeluarga(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 1;
+            $nomorHalaman = (int) $request->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman;
+            $data = RiwayatPenyakitKeluarga::listPesertaRiwayatPenyakitKeluargaTabel($request, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $data['data'],
+                'recordsFiltered' => $data['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function riwayatpenyakitkeluarga(Request $request){
+        try {
+            $data = RiwayatPenyakitKeluarga::join('users_member', 'users_member.id', '=', 'mcu_riwayat_penyakit_keluarga.user_id')
+                ->where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->get();
+            if ($data->isEmpty()){
+                return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Riwayat Penyakit Keluarga']));
+            }
+            $dynamicAttributes = [
+                'data' => $data,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Data Penyakit Keluarga'])." jikalau ada perubahan maka data yang lama akan dihapus semua dan digantikan dengan parameter baru", $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function hapusriwayatpenyakitkeluarga(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'transaksi_id' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            RiwayatPenyakitKeluarga::where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->delete();
+            return ResponseHelper::success('Data riwayat penyakit keluarga dengan nomor identitas <strong>'.$request->nomor_identitas.'</strong> atas nama <strong>'.$request->nama_peserta.'</strong> berhasil dihapus. Formulir ini bersifat wajib diisi oleh peserta MCU. Jadi silahkan isi kembali formulir tersebut jikalau dibutuhkan pada laporan MCU');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function simpanimunisasi(RegistrationMCUServices $registrationMCUServices, Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'informasi_imunisasi' => 'required|array',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $registrationMCUServices->handleTransactionInsertImunisasiPeserta($request);
+            return ResponseHelper::success('Data imunisasi berhasil disimpan. Silahkan lakukan perubahan dengan cara ubah atau hapus pada tabel dibawah jikalau terdapat kesalahan dalam pengisian data');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function getpasien_imunisasi(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 1;
+            $nomorHalaman = (int) $request->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman;
+            $data = RiwayatImunisasi::listPesertaRiwayatImunisasiTabel($request, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $data['data'],
+                'recordsFiltered' => $data['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function imunisasi(Request $request){
+        try {
+            $data = RiwayatImunisasi::join('users_member', 'users_member.id', '=', 'mcu_riwayat_imunisasi.user_id')
+                ->where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->get();
+            if ($data->isEmpty()){
+                return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Riwayat Imunisasi']));
+            }
+            $dynamicAttributes = [
+                'data' => $data,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Data Penyakit Keluarga'])." jikalau ada perubahan maka data yang lama akan dihapus semua dan digantikan dengan parameter baru", $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function hapusimunisasi(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'transaksi_id' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            RiwayatImunisasi::where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->delete();
+            return ResponseHelper::success('Data imunisasi dengan nomor identitas <strong>'.$request->nomor_identitas.'</strong> atas nama <strong>'.$request->nama_peserta.'</strong> berhasil dihapus. Formulir ini bersifat wajib diisi oleh peserta MCU. Jadi silahkan isi kembali formulir tersebut jikalau dibutuhkan pada laporan MCU');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function simpanriwayatpenyakitterdahulu(RegistrationMCUServices $registrationMCUServices, Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'informasi_penyakit_terdahulu' => 'required|array',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $registrationMCUServices->handleTransactionInsertRiwayatPenyakitTerdahuluPeserta($request);
+            return ResponseHelper::success('Data riwayat penyakit terdahulu berhasil disimpan. Silahkan lakukan perubahan dengan cara ubah atau hapus pada tabel dibawah jikalau terdapat kesalahan dalam pengisian data');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function getpasien_riwayatpenyakitterdahulu(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 1;
+            $nomorHalaman = (int) $request->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman;
+            $data = RiwayatPenyakitTerdahulu::listPesertaRiwayatPenyakitTerdahuluTabel($request, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $data['data'],
+                'recordsFiltered' => $data['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function riwayatpenyakitterdahulu(Request $request){
+        try {
+            $data = RiwayatPenyakitTerdahulu::join('users_member', 'users_member.id', '=', 'mcu_riwayat_penyakit_terdahulu.user_id')
+                ->where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->get();
+            if ($data->isEmpty()){
+                return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Riwayat Imunisasi']));
+            }
+            $dynamicAttributes = [
+                'data' => $data,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Data Penyakit Keluarga'])." jikalau ada perubahan maka data yang lama akan dihapus semua dan digantikan dengan parameter baru", $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function hapusriwayatpenyakitterdahulu(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'transaksi_id' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            RiwayatPenyakitTerdahulu::where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->delete();
+            return ResponseHelper::success('Data riwayat penyakit terdahulu dengan nomor identitas <strong>'.$request->nomor_identitas.'</strong> atas nama <strong>'.$request->nama_peserta.'</strong> berhasil dihapus. Formulir ini bersifat wajib diisi oleh peserta MCU. Jadi silahkan isi kembali formulir tersebut jikalau dibutuhkan pada laporan MCU');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

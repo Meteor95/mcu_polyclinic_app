@@ -9,7 +9,7 @@ use App\Models\Transaksi\Transaksi;
 use App\Models\Masterdata\DaftarBank;
 use App\Models\{Perusahaan, PaketMCU};
 use App\Models\Masterdata\DepartemenPerusahaan;
-use App\Models\Komponen\{LingkunganKerja, KebiasaanHidup};
+use App\Models\Komponen\{LingkunganKerja, KebiasaanHidup, PenyakitKeluarga, Imunisasi, PenyakitTerdahulu};
 use Illuminate\Support\Facades\Log;
 
 class PendaftaranController extends Controller
@@ -98,11 +98,20 @@ class PendaftaranController extends Controller
         ]);
         return view('paneladmin.pendaftaran.riwayat_kecelakaan_kerja', ['data' => $data]);
     }
+    public function penyakit_terdahulu(Request $req){
+        $data = $this->getData($req, 'Penyakit Terdahulu Peserta MCU', [
+            'Beranda' => route('admin.beranda'),
+            'Penyakit Terdahulu Peserta MCU' => route('admin.pendaftaran.penyakit_terdahulu'),
+        ]);
+        $data['penyakit_terdahulu'] = PenyakitTerdahulu::where('status', 1)->get();
+        return view('paneladmin.pendaftaran.riwayat_penyakit_terdahulu', ['data' => $data]);
+    }
     public function penyakit_keluarga(Request $req){
         $data = $this->getData($req, 'Penyakit Keluarga Peserta MCU', [
             'Beranda' => route('admin.beranda'),
             'Penyakit Keluarga Peserta MCU' => route('admin.pendaftaran.penyakit_keluarga'),
         ]);
+        $data['penyakit_keluarga'] = PenyakitKeluarga::where('status', 1)->get();
         return view('paneladmin.pendaftaran.riwayat_penyakit_keluarga', ['data' => $data]);
     }
     public function kebiasaan_hidup(Request $req){
@@ -113,11 +122,12 @@ class PendaftaranController extends Controller
         $data['kebiasaan_hidup'] = KebiasaanHidup::where('status', '>', 0)->get();
         return view('paneladmin.pendaftaran.riwayat_kebiasaan_hidup', ['data' => $data]);
     }
-    public function vaksinasi(Request $req){
-        $data = $this->getData($req, 'Vaksinasi Peserta MCU', [
+    public function imunisasi(Request $req){
+        $data = $this->getData($req, 'Imunisasi Peserta MCU', [
             'Beranda' => route('admin.beranda'),
-            'Vaksinasi Peserta MCU' => route('admin.pendaftaran.vaksinasi'),
+            'Imunisasi Peserta MCU' => route('admin.pendaftaran.imunisasi'),
         ]);
-        return view('paneladmin.pendaftaran.riwayat_vaksinasi', ['data' => $data]);
+        $data['imunisasi'] = Imunisasi::where('status', 1)->get();
+        return view('paneladmin.pendaftaran.riwayat_imunisasi', ['data' => $data]);
     }
 }

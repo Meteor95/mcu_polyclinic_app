@@ -65,6 +65,21 @@ Route::prefix('v1')->group(function () {
             Route::get('daftarpasien_riwayatkebiasaanhidup', [PendaftaranController::class,"getpasien_riwayatkebiasaanhidup"]);
             Route::delete('hapusriwayatkebiasaanhidup', [PendaftaranController::class,"hapusriwayatkebiasaanhidup"]);
             Route::get('riwayatkebiasaanhidup', [PendaftaranController::class,"riwayatkebiasaanhidup"]);
+            /* Riwayat Penyakit Terdahulu */
+            Route::post('simpanriwayatpenyakitterdahulu', [PendaftaranController::class,"simpanriwayatpenyakitterdahulu"]);
+            Route::get('daftarpasien_riwayatpenyakitterdahulu', [PendaftaranController::class,"getpasien_riwayatpenyakitterdahulu"]);
+            Route::get('riwayatpenyakitterdahulu', [PendaftaranController::class,"riwayatpenyakitterdahulu"]);
+            Route::delete('hapusriwayatpenyakitterdahulu', [PendaftaranController::class,"hapusriwayatpenyakitterdahulu"]);
+            /* Riwayat Penyakit Keluarga */
+            Route::post('simpanriwayatpenyakitkeluarga', [PendaftaranController::class,"simpanriwayatpenyakitkeluarga"]);
+            Route::get('daftarpasien_riwayatpenyakitkeluarga', [PendaftaranController::class,"getpasien_riwayatpenyakitkeluarga"]);
+            Route::get('riwayatpenyakitkeluarga', [PendaftaranController::class,"riwayatpenyakitkeluarga"]);
+            Route::delete('hapusriwayatpenyakitkeluarga', [PendaftaranController::class,"hapusriwayatpenyakitkeluarga"]);
+            /* Riwayat Imunisasi */
+            Route::post('simpanimunisasi', [PendaftaranController::class,"simpanimunisasi"]);
+            Route::get('daftarpasien_imunisasi', [PendaftaranController::class,"getpasien_imunisasi"]);
+            Route::get('imunisasi', [PendaftaranController::class,"imunisasi"]);
+            Route::delete('hapusimunisasi', [PendaftaranController::class,"hapusimunisasi"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */

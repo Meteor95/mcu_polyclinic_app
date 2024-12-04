@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\{DB, Hash, Storage};
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\Pendaftaran\Peserta;
-use App\Models\Transaksi\{LingkunganKerjaPeserta, RiwayatKebiasaanHidup};
+use App\Models\Transaksi\{LingkunganKerjaPeserta, RiwayatKebiasaanHidup, RiwayatPenyakitKeluarga, RiwayatImunisasi, RiwayatPenyakitTerdahulu};
 use Exception;
 use Illuminate\Support\Facades\Log;
 class RegistrationMCUServices
@@ -91,6 +91,84 @@ class RegistrationMCUServices
                 }
                 RiwayatKebiasaanHidup::insert($bulkDataPerempuan);
             }
+        });
+    }
+    public function handleTransactionInsertRiwayatPenyakitKeluargaPeserta($request)
+    {
+        return DB::transaction(function () use ($request) {
+            $bulkData = [];
+            $userIds = array_column($request->informasi_riwayat_penyakit_keluarga, 'user_id');
+            $transaksiId = array_column($request->informasi_riwayat_penyakit_keluarga, 'transaksi_id');
+            $existingRecords = RiwayatPenyakitKeluarga::whereIn('user_id', $userIds)->whereIn('transaksi_id', $transaksiId)->exists();
+            if ($existingRecords) {
+                RiwayatPenyakitKeluarga::whereIn('user_id', $userIds)->whereIn('transaksi_id', $transaksiId)->delete();
+            }
+            foreach ($request->informasi_riwayat_penyakit_keluarga as $item) {
+                $bulkData[] = [
+                    'user_id' => $item['user_id'],
+                    'transaksi_id' => $item['transaksi_id'],
+                    'id_atribut_pk' => $item['id_atribut_pk'],
+                    'nama_atribut_saat_ini' => $item['nama_atribut_saat_ini'],
+                    'status' => $item['status'],
+                    'keterangan' => $item['keterangan'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            RiwayatPenyakitKeluarga::insert($bulkData);
+            return true;
+        });
+    }
+    public function handleTransactionInsertImunisasiPeserta($request)
+    {
+        return DB::transaction(function () use ($request) {
+            $bulkData = [];
+            $userIds = array_column($request->informasi_imunisasi, 'user_id');
+            $transaksiId = array_column($request->informasi_imunisasi, 'transaksi_id');
+            $existingRecords = RiwayatImunisasi::whereIn('user_id', $userIds)->whereIn('transaksi_id', $transaksiId)->exists();
+            if ($existingRecords) {
+                RiwayatImunisasi::whereIn('user_id', $userIds)->whereIn('transaksi_id', $transaksiId)->delete();
+            }
+            foreach ($request->informasi_imunisasi as $item) {
+                $bulkData[] = [
+                    'user_id' => $item['user_id'],
+                    'transaksi_id' => $item['transaksi_id'],
+                    'id_atribut_im' => $item['id_atribut_im'],
+                    'nama_atribut_saat_ini' => $item['nama_atribut_saat_ini'],
+                    'status' => $item['status'],
+                    'keterangan' => $item['keterangan'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }   
+            RiwayatImunisasi::insert($bulkData);
+            return true;
+        });
+    }
+    public function handleTransactionInsertRiwayatPenyakitTerdahuluPeserta($request)
+    {
+        return DB::transaction(function () use ($request) {
+            $bulkData = [];
+            $userIds = array_column($request->informasi_penyakit_terdahulu, 'user_id');
+            $transaksiId = array_column($request->informasi_penyakit_terdahulu, 'transaksi_id');
+            $existingRecords = RiwayatPenyakitTerdahulu::whereIn('user_id', $userIds)->whereIn('transaksi_id', $transaksiId)->exists();
+            if ($existingRecords) {
+                RiwayatPenyakitTerdahulu::whereIn('user_id', $userIds)->whereIn('transaksi_id', $transaksiId)->delete();
+            }
+            foreach ($request->informasi_penyakit_terdahulu as $item) {
+                $bulkData[] = [
+                    'user_id' => $item['user_id'],
+                    'transaksi_id' => $item['transaksi_id'],
+                    'id_atribut_pt' => $item['id_atribut_pt'],
+                    'nama_atribut_saat_ini' => $item['nama_atribut_saat_ini'],
+                    'status' => $item['status'],
+                    'keterangan' => $item['keterangan'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }   
+            RiwayatPenyakitTerdahulu::insert($bulkData);
+            return true;
         });
     }
 }

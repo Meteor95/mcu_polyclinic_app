@@ -54,13 +54,12 @@ set +o allexport
 set +x
 # Build image from Docker file with var $IMAGE_REPO_NAME and tag $IMAGE_TAG
 # You can see it from .env configuration
+sudo docker stack remove artha_medica
 sudo docker build --platform=linux/amd64 --pull --rm -f "$DOCKER_FILE" -t $IMAGE_REPO_NAME:$IMAGE_TAG "."
-# Show all list of docker iamge
-sudo docker image ls
 # Deploy to swarm
 sudo docker stack deploy --compose-file docker-compose.yaml $DOCKER_SWARM_STACK_NAME --with-registry-auth --detach=false
-sudo docker image prune -a -f
 if [ $? -eq 0 ]; then
+	sudo docker image prune -a -f
 	echo "Deployment completed successfully. Have a nice day!"
 	sudo docker stack ps $DOCKER_SWARM_STACK_NAME
 else

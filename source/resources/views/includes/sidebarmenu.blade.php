@@ -56,8 +56,9 @@
                     <li><a href="{{url('pendaftaran/lingkungan_kerja')}}">Lingkungan Kerja</a></li>
                     <li><a href="{{url('pendaftaran/kecelakaan_kerja')}}">Kecelakaan Kerja</a></li>
                     <li><a href="{{url('pendaftaran/kebiasaan_hidup')}}">Kebiasaan Hidup</a></li>
+                    <li><a href="{{url('pendaftaran/penyakit_terdahulu')}}">Penyakit Terdahulu</a></li>
                     <li><a href="{{url('pendaftaran/penyakit_keluarga')}}">Penyakit Keluarga</a></li>
-                    <li><a href="{{url('pendaftaran/vaksinasi')}}">Vaksinasi</a></li>
+                    <li><a href="{{url('pendaftaran/imunisasi')}}">Imunisasi</a></li>
                   </ul>
                 </li>
               </ul>
