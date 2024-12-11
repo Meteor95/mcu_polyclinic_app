@@ -138,6 +138,9 @@ function loadDataPeserta() {
         });
     }); 
 }
+$("#kotak_pencarian_daftarpeserta").on('keyup', debounce(function() {
+    $("#datatables_daftarpeserta").DataTable().ajax.reload();
+}, 300));
 function hapusdaftarpeserta(idpeserta, nama_peserta, nomor_identitas) {
     Swal.fire({
         html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53a48ece-27d3-4b85-9150-8005e7c27aa4/usrEqiqrei.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penghapusan Data Member '+nama_peserta+'</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus informasi member MCU <strong>'+nama_peserta+'</strong> dengan ID <strong>'+nomor_identitas+'</strong> ? Peserta yang dihapus harus mendaftar ulang pada website jikalau ingin melanjutkan pendaftaran menjadi pasien MCU',

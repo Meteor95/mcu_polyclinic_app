@@ -46,3 +46,12 @@
     background-image: -webkit-gradient(linear, left top, right top, from(#de9069), color-stop(0%), color-stop(#ca602c), color-stop(100%), to(#fff)) !important;
     background-image: linear-gradient(to right, #de9069, 0%, #ca602c, 100%, #fff) !important;
 }
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.select2-container--open .select2-dropdown--below {
+  margin-top: -20px;
+  border-top-left-radius:2;
+  border-top-right-radius:2;
+}

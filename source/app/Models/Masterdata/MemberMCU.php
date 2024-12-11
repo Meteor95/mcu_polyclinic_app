@@ -24,8 +24,9 @@ class MemberMCU extends Model
         $parameterpencarian = $req->parameter_pencarian;
         $tablePrefix = config('database.connections.mysql.prefix');
         $query = DB::table((new self())->getTable())
+            ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
             ->select('users_member.*')
-            ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur, DATE_FORMAT(created_at, "%d-%m-%Y %H:%i:%s") as created_at ');
+            ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur, DATE_FORMAT(' . $tablePrefix . 'users_member.created_at, "%d-%m-%Y %H:%i:%s") as created_at ');
         if (!empty($parameterpencarian)) {
             $query->where('nomor_identitas', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');

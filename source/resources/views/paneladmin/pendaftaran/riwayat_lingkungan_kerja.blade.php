@@ -103,6 +103,7 @@
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Bahaya Riwayat Lingkungan Kerja (Paparan Kerja)</h1>
+            <input type="text" class="form-control" id="kotak_pencarian_daftar_bahaya_riwayat_lingkungan_kerja" placeholder="Cari Nama Bahaya">
             <div class="table-responsive theme-scrollbar">
               <table class="display" id="datatables_daftar_bahaya_riwayat_lingkungan_kerja"></table>
             </div>

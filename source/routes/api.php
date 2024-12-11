@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -80,6 +80,13 @@ Route::prefix('v1')->group(function () {
             Route::get('daftarpasien_imunisasi', [PendaftaranController::class,"getpasien_imunisasi"]);
             Route::get('imunisasi', [PendaftaranController::class,"imunisasi"]);
             Route::delete('hapusimunisasi', [PendaftaranController::class,"hapusimunisasi"]);
+        });
+        Route::prefix('pemeriksaan_fisik')->group(function () {
+            /* Tingkat Kesadaran */
+            Route::post('simpantingkatkesadaran', [PemeriksaanFisikController::class,"simpantingkatkesadaran"]);
+            Route::get('daftar_tingkat_kesadaran', [PemeriksaanFisikController::class,"gettingkatkesadaran"]);
+            Route::delete('hapus_tingkat_kesadaran', [PemeriksaanFisikController::class,"hapus_tingkat_kesadaran"]);
+            Route::get('get_tingkat_kesadaran', [PemeriksaanFisikController::class,"get_tingkat_kesadaran"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */

@@ -59,10 +59,40 @@
                     <li><a href="{{url('pendaftaran/penyakit_terdahulu')}}">Penyakit Terdahulu</a></li>
                     <li><a href="{{url('pendaftaran/penyakit_keluarga')}}">Penyakit Keluarga</a></li>
                     <li><a href="{{url('pendaftaran/imunisasi')}}">Imunisasi</a></li>
+                    <li><a href="{{url('pendaftaran/lainnya')}}">Lainnya</a></li>
                   </ul>
                 </li>
               </ul>
             </li>
+
+            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)">
+              <svg class="stroke-icon">
+                <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#stroke-widget')}}"></use>
+              </svg>
+              <svg class="fill-icon">
+                <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-widget')}}"></use>
+              </svg><span>Pemeriksaan Fisik</span></a>
+            <ul class="sidebar-submenu">
+              <li><a href="{{url('pemeriksaan_fisik/tingkat_kesadaran')}}">Tingkat Kesadaran</a></li>
+              <li><a href="{{url('pemeriksaan_fisik/tanda_vital')}}">Tanda Vital</a></li>
+              <li><a href="{{url('pemeriksaan_fisik/penglihatan')}}">Penglihatan</a></li>
+              <li><a class="submenu-title" href="javascript:void(0)">Kondisi Fisik<div class="according-menu"><i class="fa fa-angle-right"></i></div></a>
+                <ul class="nav-sub-childmenu submenu-content">
+                  <li><a href="{{url('pemeriksaan_fisik/kepala')}}">Kepala</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/telinga')}}">Telinga</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/mata')}}">Mata</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/tenggorokan')}}">Tenggorokan</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/gigi')}}">Gigi</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/leher')}}">Leher</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/thorax')}}">Thorax</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/abdomen_urogenital')}}">Abdomen & Urogenital</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/anorectal_genital')}}">Anorectal & Genital</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/ekstremitas')}}">Ekstremitas</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/neurologis')}}">Neurologis</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
             <li class="sidebar-main-title">
               <div>
                 <h6>PENGATURAN</h6>

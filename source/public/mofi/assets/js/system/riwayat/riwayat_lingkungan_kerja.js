@@ -25,6 +25,9 @@ function onload_datatables(){
         }
     });  
 }
+$("#kotak_pencarian_daftar_bahaya_riwayat_lingkungan_kerja").on('keyup', debounce(function() {
+    $("#datatables_daftar_bahaya_riwayat_lingkungan_kerja").DataTable().ajax.reload();
+}, 300));
 function applyAutoNumeric() {
     $('#datatables_riwayat_lingkungan_kerja input[id^="jam_hari"]').each(function() {
         if (!$(this).data('autoNumeric')) {
@@ -137,6 +140,7 @@ $("#simpan_riwayat_lingkungan_kerja").on('click', function(){
             $.get('/generate-csrf-token', function(response) {
                 let data = {
                     _token: response.csrf_token,
+                    parameter_pencarian: $("#kotak_pencarian_daftar_bahaya_riwayat_lingkungan_kerja").val(),
                     informasi_riwayat_lingkungan_kerja: bulkData
                 };
                 $.ajax({

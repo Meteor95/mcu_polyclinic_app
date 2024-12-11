@@ -23,7 +23,11 @@ class AuthController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            $credentials = $req->only('username', 'password');
+            $loginField = filter_var($req->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+            $credentials = [
+                $loginField => $req->username,
+                'password' => $req->password,
+            ];
             if (!$token = JWTAuth::attempt($credentials)) {
                 return ResponseHelper::data_not_found(__('auth.eds_invalid_credentials'));
             }

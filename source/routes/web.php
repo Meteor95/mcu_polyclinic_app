@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController, FileController, PendaftaranController, ProfileController};
+use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController, FileController, PendaftaranController, ProfileController, PemeriksaanFisikController};
 use Illuminate\Http\Request;
 
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
@@ -31,6 +31,9 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('penyakit_terdahulu', [PendaftaranController::class,"penyakit_terdahulu"])->name('admin.pendaftaran.penyakit_terdahulu');
         Route::get('penyakit_keluarga', [PendaftaranController::class,"penyakit_keluarga"])->name('admin.pendaftaran.penyakit_keluarga');
         Route::get('imunisasi', [PendaftaranController::class,"imunisasi"])->name('admin.pendaftaran.imunisasi');
+    });
+    Route::prefix('pemeriksaan_fisik')->group(function () {
+        Route::get('tingkat_kesadaran', [PemeriksaanFisikController::class,"tingkat_kesadaran"])->name('admin.pemeriksaan_fisik.tingkat_kesadaran');
     });
     Route::prefix('masterdata')->group(function () {
         Route::get('daftar_perusahaan', [MasterdataController::class,"daftar_perusahaan"])->name('admin.masterdata.daftar_perusahaan');

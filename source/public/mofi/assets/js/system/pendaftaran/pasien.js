@@ -122,6 +122,9 @@ function loadDataPasien() {
         });
     });
 }
+$("#kotak_pencarian_daftarpasien").on('keyup', debounce(function() {
+    $("#datatables_daftarpasien").DataTable().ajax.reload();
+}, 300));
 function lihatDetailPaket(akses_poli) {
     const poliList = akses_poli.split(',');
     let buttons = '';

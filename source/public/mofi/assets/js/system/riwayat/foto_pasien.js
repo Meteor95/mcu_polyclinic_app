@@ -124,6 +124,9 @@ function onloaddatatables(){
         });
     });
 }
+$("#kotak_pencarian_daftarpeserta").on('keyup', debounce(function() {
+    $("#datatables_daftarpeserta_unggah_citra").DataTable().ajax.reload();
+}, 300));
 function onloadcropperjs(){
     fileInput.on('change', (event) => {
         const file = event.target.files[0];
