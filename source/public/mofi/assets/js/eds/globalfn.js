@@ -57,3 +57,33 @@ function callGlobalSelect2SearchByMember(namaid){
         }); 
     });  
 }
+$("#pencarian_member_mcu").on('change', function() {
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/pendaftaran/getdatapasien',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+            data: {
+                _token : response.csrf_token,
+                nomor_identitas : $("#pencarian_member_mcu").val()
+            },
+            success: function(response) {
+                if (!response.success) {
+                    clear_tanda_vital();
+                    return createToast('Data tidak ditemukan', 'top-right', response.message, 'error', 3000);
+                }
+                $("#id_transaksi_mcu").text(response.data.id_transaksi);
+                $("#user_id_temp").text(response.data.user_id);
+                $("#nomor_identitas_temp").text(response.data.nomor_identitas);
+                $("#nama_peserta_temp_1").text(response.data.nama_peserta);
+                $("#nama_peserta_temp").text(response.data.nama_peserta);
+                $("#no_telepon_temp").text(response.data.no_telepon);
+                $("#jenis_kelamin_temp").text(response.data.jenis_kelamin);
+                $("#nomor_transaksi_temp").text(response.data.no_transaksi);
+                $("#email_temp").text(response.data.email);
+                $("#tempat_lahir_temp").text(response.data.tempat_lahir);
+                $("#status_kawin_temp").text(response.data.status_kawin);
+            }
+        });
+    });
+});

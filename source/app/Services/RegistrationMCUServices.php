@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\Transaksi\{LingkunganKerjaPeserta, RiwayatKebiasaanHidup, RiwayatPenyakitKeluarga, RiwayatImunisasi, RiwayatPenyakitTerdahulu};
+use App\Models\PemeriksaanFisik\TandaVital;
 use Exception;
 use Illuminate\Support\Facades\Log;
 class RegistrationMCUServices
@@ -168,6 +169,34 @@ class RegistrationMCUServices
                 ];
             }   
             RiwayatPenyakitTerdahulu::insert($bulkData);
+            return true;
+        });
+    }
+    public function handleTransactionInsertTandaVitalPeserta($request)
+    {
+        return DB::transaction(function () use ($request) {
+            $bulkData = [];
+            $userIds = array_column($request->informasi_tanda_vital, 'user_id');
+            $transaksiId = array_column($request->informasi_tanda_vital, 'transaksi_id');
+            $existingRecords = TandaVital::whereIn('user_id', $userIds)->whereIn('transaksi_id', $transaksiId)->exists();
+            if ($existingRecords) {
+                TandaVital::whereIn('user_id', $userIds)->whereIn('transaksi_id', $transaksiId)->delete();
+            }
+            foreach ($request->informasi_tanda_vital as $item) {
+                $bulkData[] = [
+                    'user_id' => $item['user_id'],
+                    'transaksi_id' => $item['transaksi_id'],
+                    'id_atribut_lv' => $item['id_atribut_lv'],
+                    'nama_atribut_saat_ini' => $item['nama_atribut_saat_ini'],
+                    'nilai_tanda_vital' => $item['nilai_tanda_vital'],
+                    'satuan_tanda_vital' => $item['satuan_tanda_vital'],
+                    'keterangan_tanda_vital' => $item['keterangan_tanda_vital'],
+                    'jenis_tanda_vital' => $item['jenis_tanda_vital'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            TandaVital::insert($bulkData);
             return true;
         });
     }

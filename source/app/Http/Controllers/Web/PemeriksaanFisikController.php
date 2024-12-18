@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Komponen\TingkatKesadaran;
+use App\Models\Komponen\{TingkatKesadaran, TandaVital};
 
 class PemeriksaanFisikController extends Controller
 {
@@ -22,5 +22,20 @@ class PemeriksaanFisikController extends Controller
         ]);
         $data['tingkat_kesadaran'] = TingkatKesadaran::where('status', 1)->get();
         return view('paneladmin.pemeriksaan_fisik.tingkat_kesadaran', ['data' => $data]);
+    }
+    public function tanda_vital(Request $req){
+        $data = $this->getData($req, 'Tanda Vital dan Gizi', [
+            'Beranda' => route('admin.beranda'),
+            'Tanda Vital' => route('admin.pemeriksaan_fisik.tanda_vital'),
+        ]);
+        $data['tanda_vital'] = TandaVital::where('status', 1)->get();
+        return view('paneladmin.pemeriksaan_fisik.tanda_vital', ['data' => $data]);
+    }
+    public function penglihatan(Request $req){
+        $data = $this->getData($req, 'Penglihatan', [
+            'Beranda' => route('admin.beranda'),
+            'Penglihatan' => route('admin.pemeriksaan_fisik.penglihatan'),
+        ]);
+        return view('paneladmin.pemeriksaan_fisik.penglihatan', ['data' => $data]);
     }
 }

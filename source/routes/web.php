@@ -34,6 +34,8 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     });
     Route::prefix('pemeriksaan_fisik')->group(function () {
         Route::get('tingkat_kesadaran', [PemeriksaanFisikController::class,"tingkat_kesadaran"])->name('admin.pemeriksaan_fisik.tingkat_kesadaran');
+        Route::get('tanda_vital', [PemeriksaanFisikController::class,"tanda_vital"])->name('admin.pemeriksaan_fisik.tanda_vital');
+        Route::get('penglihatan', [PemeriksaanFisikController::class,"penglihatan"])->name('admin.pemeriksaan_fisik.penglihatan');
     });
     Route::prefix('masterdata')->group(function () {
         Route::get('daftar_perusahaan', [MasterdataController::class,"daftar_perusahaan"])->name('admin.masterdata.daftar_perusahaan');

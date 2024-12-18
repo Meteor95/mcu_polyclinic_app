@@ -87,6 +87,16 @@ Route::prefix('v1')->group(function () {
             Route::get('daftar_tingkat_kesadaran', [PemeriksaanFisikController::class,"gettingkatkesadaran"]);
             Route::delete('hapus_tingkat_kesadaran', [PemeriksaanFisikController::class,"hapus_tingkat_kesadaran"]);
             Route::get('get_tingkat_kesadaran', [PemeriksaanFisikController::class,"get_tingkat_kesadaran"]);
+            /* Tanda Vital */
+            Route::post('simpantandavital', [PemeriksaanFisikController::class,"simpantandavital"]);
+            Route::get('daftar_tanda_vital', [PemeriksaanFisikController::class,"daftar_tanda_vital"]);
+            Route::delete('hapustandavital', [PemeriksaanFisikController::class,"hapustandavital"]);
+            Route::get('get_tandavital', [PemeriksaanFisikController::class,"get_tandavital"]);
+            /* Penglihatan */
+            Route::post('simpanpenglihatan', [PemeriksaanFisikController::class,"simpanpenglihatan"]);
+            Route::get('daftar_penglihatan', [PemeriksaanFisikController::class,"daftar_penglihatan"]);
+            Route::delete('hapus_penglihatan', [PemeriksaanFisikController::class,"hapus_penglihatan"]);
+            Route::get('get_penglihatan', [PemeriksaanFisikController::class,"get_penglihatan"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */
