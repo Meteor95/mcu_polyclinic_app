@@ -25,6 +25,7 @@ class TransaksiController extends Controller
                 'proses_kerja' => 'required',
                 'nominal_bayar_konfirmasi' => 'required_if:tipe_pembayaran,1|numeric',
                 'tipe_pembayaran' => 'required',
+                'jenis_transaksi_pendaftaran' => 'required',
                 'metode_pembayaran' => 'required',
                 'nominal_pembayaran' => 'required|numeric',
                 'penerima_bank' => 'required_if:metode_pembayaran,1',

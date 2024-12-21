@@ -28,15 +28,16 @@
 <script src="{{ asset('mofi/assets/js/script.js') }}"></script>
 <script src="{{ asset('mofi/assets/js/theme-customizer/customizer.js') }}"></script>
 
-<!-- Custom Scripts -->
-<script src="{{ asset('mofi/assets/js/eds/globalfn.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/eds/eds_toast.js') }}"></script>
-
 <!-- External CDN Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.lordicon.com/lordicon.js"></script>
 <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 <script src="https://momentjs.com/downloads/moment.js"></script>
+
+<!-- Custom Scripts -->
+<script src="{{ asset('mofi/assets/js/eds/globalfn.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/eds/eds_toast.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/eds_custom.js') }}"></script>
 
 <!-- Global Variables -->
 <script>

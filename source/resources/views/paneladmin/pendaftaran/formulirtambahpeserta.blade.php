@@ -166,10 +166,24 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="tanggal_pendaftaran" class="form-label mt-2">Tentukan Tanggal Pendaftaran</label>
+                        <label for="tanggal_pendaftaran" class="form-label mt-2">Jenis Transaksi Pendaftaran</label>
                     </div>
                     <div class="col-md-6">
-                    <input class="form-control" id="tanggal_pendaftaran" type="text" placeholder="dd-mm-yyyy">
+                        <input class="form-control" id="tanggal_pendaftaran" type="text" placeholder="dd-mm-yyyy">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="jenis_transaksi_pendaftaran" class="form-label mt-2">Jenis Transaksi Pendaftaran</label>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-select" id="jenis_transaksi_pendaftaran" name="jenis_transaksi_pendaftaran" required>
+                            <option value="MCU">MCU</option>
+                            <option value="Follow_Up">Follow Up</option>
+                            <option value="Berobat">Berobat</option>
+                            <option value="MCU-Threadmill">MCU-Threadmill</option>
+                            <option value="Threadmill">Threadmill</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -380,9 +394,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/system/pendaftaran/formulirtambahpeserta.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/pendaftaran/formulirtambahpeserta.js') }}"></script>
 <script>
     let isedit = false, id_detail_transaksi_mcu = null;
+    $('#tanggal_pendaftaran').val(moment().format("DD-MM-YYYY"));
     @if (!empty($data['ubah']))
         isedit = true;
         id_detail_transaksi_mcu = "{{ $data['uuid'] }}";
@@ -396,6 +411,8 @@
         $("#no_telepon").val("{{ $data['peserta']->no_telepon }}");
         $("#email").val("{{ $data['peserta']->email }}");
         $("#alamat").val("{{ $data['peserta']->alamat }}");
+        $("#jenis_transaksi_pendaftaran").val("{{ $data['peserta']->jenis_transaksi_pendaftaran }}").trigger('change');
+        $("#tanggal_pendaftaran").val("{{ \Carbon\Carbon::parse($data['peserta']->tanggal_transaksi)->format('d-m-Y') }}");
     
         let newOptionPerusahaan = new Option("[{{ $data['perusahaan']->company_code }}] - {{ $data['perusahaan']->company_name }}", "{{ $data['perusahaan']->id }}", true, false);
         $('#select2_perusahaan').append(newOptionPerusahaan).trigger('change');

@@ -68,13 +68,18 @@ function loadDataPasien() {
                 },
                 {
                     title: "Nomor MCU",
-                    data: "no_transaksi"
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `${row.no_transaksi}<br><span class="badge bg-primary">${row.jenis_transaksi_pendaftaran}</span>`;
+                        }
+                        return data;
+                    }
                 },
                 {
                     title: "Nama Peserta",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `${row.nama_peserta} (${row.umur}Th)`;
+                            return `${row.nama_peserta} (${row.umur}Th)<br><span class="badge ${row.tipe_pembayaran == '0' ? 'bg-danger' : 'bg-success'}">${row.tipe_pembayaran == '0' ? 'Invoice' : 'Tunai'}</span>`;
                         }
                         return data;
                     }

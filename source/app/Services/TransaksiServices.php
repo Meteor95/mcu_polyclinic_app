@@ -98,6 +98,7 @@ class TransaksiServices
                 'penerima_bank_id' => $data['penerima_bank'],
                 'nomor_transakasi_transfer' => $data['nomor_transaksi_transfer'] ?? null,
                 'petugas_id' => $user_id_petugas,
+                'jenis_transaksi_pendaftaran' => $data['jenis_transaksi_pendaftaran'],
             ];
             if (filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
                 unset($dataToInsert['no_transaksi']);           

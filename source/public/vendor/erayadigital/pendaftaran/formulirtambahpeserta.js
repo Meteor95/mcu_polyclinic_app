@@ -9,11 +9,10 @@ $(document).ready(function() {
     
 });
 function onload(){
-    flatpickr("#tanggal_lahir", {
+    flatpickr("#tanggal_lahir_peserta", {
         dateFormat: "d-m-Y",
         maxDate: moment().subtract(15, 'years').format('DD-MM-YYYY'),
     });
-    $('#tanggal_pendaftaran').val(moment().format("DD-MM-YYYY"));
     flatpickr("#tanggal_pendaftaran", {
         dateFormat: "d-m-Y",
         maxDate: "today",
@@ -258,6 +257,7 @@ $('#btnSimpanPendaftaran').on('click', function(){
                 formData.append('_token', response.csrf_token);
                 formData.append('type_data_peserta', $('#type_data_peserta').val());
                 formData.append('tanggal_transaksi', $('#tanggal_pendaftaran').val());
+                formData.append('jenis_transaksi_pendaftaran', $('#jenis_transaksi_pendaftaran').val());
                 formData.append('perusahaan_id', $('#select2_perusahaan').val());
                 formData.append('departemen_id', $('#select2_departemen').val());
                 formData.append('id_paket_mcu', selectedDataPaketMCU[0]);

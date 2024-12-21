@@ -83,12 +83,11 @@
             </div>
           </li>
           <li>
-            <div class="mode">
-              <svg>
-                <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#moon')}}"></use>
-              </svg>
+            <div class="mode" id="mode-toggle">
+              <i id="moon-icon" data-feather="moon"></i>
+              <i id="sun-icon" data-feather="sun" style="display: none;"></i> 
             </div>
-          </li>
+          </li>          
           <li class="profile-nav onhover-dropdown px-0 py-0">
             <div class="d-flex profile-media align-items-center"><img class="img-30" src="{{ asset('mofi/assets/images/dashboard/profile.png')}}" alt="">
               <div class="flex-grow-1"><span>{{ $data['user_details']->nama_pegawai }}</span>

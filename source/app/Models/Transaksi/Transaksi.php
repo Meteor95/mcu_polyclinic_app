@@ -24,7 +24,8 @@ class Transaksi extends Model
         'nominal_pembayaran',
         'penerima_bank_id',
         'nomor_transakasi_transfer',
-        'petugas_id'
+        'petugas_id',
+        'jenis_transaksi_pendaftaran'
     ];
     public static function listPasienTabel($request, $perHalaman, $offset)
     {
@@ -45,6 +46,8 @@ class Transaksi extends Model
                 'departemen_peserta.nama_departemen',
                 'users_pegawai.nama_pegawai',
                 'paket_mcu.nama_paket',
+                'mcu_transaksi_peserta.jenis_transaksi_pendaftaran',
+                'mcu_transaksi_peserta.tipe_pembayaran',
                 DB::raw("DATE_FORMAT(" . $tablePrefix . "mcu_transaksi_peserta.tanggal_transaksi, '%d-%m-%Y %H:%i:%s') as tanggal_transaksi"),
                 DB::raw("TIMESTAMPDIFF(YEAR, " . $tablePrefix . "users_member.tanggal_lahir, CURDATE()) AS umur"),
                 DB::raw("GROUP_CONCAT(" . $tablePrefix . "poli_mcu.nama_poli ORDER BY " . $tablePrefix . "poli_mcu.kode_poli) AS akses_poli")
