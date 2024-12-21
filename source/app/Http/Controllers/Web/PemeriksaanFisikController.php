@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Komponen\{TingkatKesadaran, TandaVital};
+use App\Models\Komponen\{TingkatKesadaran, TandaVital, KondisiFisik};
 
 class PemeriksaanFisikController extends Controller
 {
@@ -38,4 +38,14 @@ class PemeriksaanFisikController extends Controller
         ]);
         return view('paneladmin.pemeriksaan_fisik.penglihatan', ['data' => $data]);
     }
+    public function kondisi_fisik(Request $req, $lokasi_fisik){
+        $data = $this->getData($req, 'Kondisi Fisik '.ucwords($lokasi_fisik), [
+            'Beranda' => route('admin.beranda'),
+            'Kondisi Fisik '.ucwords($lokasi_fisik) => route('admin.pemeriksaan_fisik.kondisi_fisik', ['lokasi_fisik' => strtolower($lokasi_fisik)]),
+        ]);
+        $data['kondisi_fisik'] = KondisiFisik::where('status', 1)->where('nama_atribut_fisik', ucwords(str_replace("_", " & ", $lokasi_fisik)))->get();
+        $data['lokasi_fisik'] = ucwords($lokasi_fisik);
+        return view('paneladmin.pemeriksaan_fisik.kondisi_fisik.'.strtolower($lokasi_fisik), ['data' => $data]);
+    }
 }
+

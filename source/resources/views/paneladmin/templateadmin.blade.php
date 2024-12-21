@@ -42,6 +42,7 @@
                   <p class="mb-0 f-w-600">Hand crafted & made with <svg class="footer-icon">
                       <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#footer-heart')}}"> </use>
                     </svg>
+                    by <a href="https://erayadigital.co.id" target="_blank">Eraya Digital Solusindo</a>
                   </p>
                 </div>
               </div>

@@ -97,6 +97,11 @@ Route::prefix('v1')->group(function () {
             Route::get('daftar_penglihatan', [PemeriksaanFisikController::class,"daftar_penglihatan"]);
             Route::delete('hapus_penglihatan', [PemeriksaanFisikController::class,"hapus_penglihatan"]);
             Route::get('get_penglihatan', [PemeriksaanFisikController::class,"get_penglihatan"]);
+            /* Kondisi Fisik */
+            Route::post('simpankondisifisik', [PemeriksaanFisikController::class,"simpan_kondisi_fisik"]);
+            Route::get('daftar_kondisi_fisik', [PemeriksaanFisikController::class,"daftar_kondisi_fisik"]);
+            Route::delete('hapus_kondisi_fisik', [PemeriksaanFisikController::class,"hapus_kondisi_fisik"]);
+            Route::get('get_kondisi_fisik', [PemeriksaanFisikController::class,"get_kondisi_fisik"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */

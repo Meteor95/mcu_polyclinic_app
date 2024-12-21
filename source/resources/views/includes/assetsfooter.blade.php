@@ -1,7 +1,8 @@
 <!-- Essential Libraries -->
 <script src="{{ asset('mofi/assets/js/jquery.min.js') }}"></script>
 <script src="{{ asset('mofi/assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
 
 <!-- Icon Libraries -->
 <script src="{{ asset('mofi/assets/js/icons/feather-icon/feather.min.js') }}"></script>

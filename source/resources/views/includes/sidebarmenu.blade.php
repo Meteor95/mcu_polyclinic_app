@@ -78,17 +78,18 @@
               <li><a href="{{url('pemeriksaan_fisik/penglihatan')}}">Penglihatan</a></li>
               <li><a class="submenu-title" href="javascript:void(0)">Kondisi Fisik<div class="according-menu"><i class="fa fa-angle-right"></i></div></a>
                 <ul class="nav-sub-childmenu submenu-content">
-                  <li><a href="{{url('pemeriksaan_fisik/kepala')}}">Kepala</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/telinga')}}">Telinga</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/mata')}}">Mata</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/tenggorokan')}}">Tenggorokan</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/gigi')}}">Gigi</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/leher')}}">Leher</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/thorax')}}">Thorax</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/abdomen_urogenital')}}">Abdomen & Urogenital</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/anorectal_genital')}}">Anorectal & Genital</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/ekstremitas')}}">Ekstremitas</a></li>
-                  <li><a href="{{url('pemeriksaan_fisik/neurologis')}}">Neurologis</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/kepala')}}">Kepala</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/telinga')}}">Telinga</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/mata')}}">Mata</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/tenggorokan')}}">Tenggorokan</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/mulut')}}">Mulut</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/gigi')}}">Gigi</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/leher')}}">Leher</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/thorax')}}">Thorax</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/abdomen_urogenital')}}">Abdomen & Urogenital</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/anorectal_genital')}}">Anorectal & Genital</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/ekstremitas')}}">Ekstremitas</a></li>
+                  <li><a href="{{url('pemeriksaan_fisik/kondisi_fisik/neurologis')}}">Neurologis</a></li>
                 </ul>
               </li>
             </ul>

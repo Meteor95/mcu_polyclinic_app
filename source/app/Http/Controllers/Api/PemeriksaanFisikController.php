@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
+use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik};
 use App\Services\RegistrationMCUServices;
 
 class PemeriksaanFisikController extends Controller
@@ -279,6 +280,154 @@ class PemeriksaanFisikController extends Controller
                 'data' => $data,
             ];
             return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Penglihatan']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    /* kondisi Fisik */
+    private function determineTableName($lokasiFisik)
+    {
+        $tables = [
+            'kepala' => 'mcu_pf_kepala',
+            'telinga' => 'mcu_pf_telinga',
+            'mata' => 'mcu_pf_mata',
+            'tenggorokan' => 'mcu_pf_tenggorokan',
+            'mulut' => 'mcu_pf_mulut',
+            'gigi' => 'mcu_pf_gigi',
+            'leher' => 'mcu_pf_leher',
+            'thorax' => 'mcu_pf_thorax',
+            'abdomen_urogenital' => 'mcu_pf_abdomen_urogenital',
+            'anorectal_genital' => 'mcu_pf_anorectal_genital',
+            'ekstremitas' => 'mcu_pf_ekstremitas',
+            'neurologis' => 'mcu_pf_neurologis',
+        ];
+        return $tables[strtolower($lokasiFisik)] ?? null;
+    }
+
+    private function validateRequest($request, $rules)
+    {
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $dynamicAttributes = ['errors' => $validator->errors()];
+            return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+        }
+        return null;
+    }
+
+    public function simpan_kondisi_fisik(Request $request)
+    {
+        try {
+            $validationError = $this->validateRequest($request, [
+                'kondisi_fisik' => 'required|array',
+            ]);
+            if ($validationError) return $validationError;
+
+            $data = collect($request->kondisi_fisik)->map(function ($kondisi) {
+                return [
+                    'user_id' => $kondisi['user_id'],
+                    'transaksi_id' => $kondisi['transaksi_id'],
+                    'id_atribut' => $kondisi['id_atribut'],
+                    'nama_atribut' => $kondisi['nama_atribut'],
+                    'kategori_atribut' => $kondisi['kategori_atribut'],
+                    'jenis_atribut' => $kondisi['jenis_atribut'],
+                    'status_atribut' => $kondisi['status_atribut'] === 'abnormal' ? "abnormal" : "normal",
+                    'keterangan_atribut' => $kondisi['keterangan_atribut'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            })->toArray();
+
+            $model = new KondisiFisik();
+            $tableName = $this->determineTableName($request->kondisi_fisik[0]['nama_atribut']);
+            if (!$tableName) return ResponseHelper::error('Invalid attribute name.');
+
+            $model->setTableName($tableName);
+
+            $isEdit = filter_var($request->isedit, FILTER_VALIDATE_BOOLEAN);
+            $query = $model->newQuery()->where('user_id', $request->kondisi_fisik[0]['user_id'])
+                ->where('transaksi_id', $request->kondisi_fisik[0]['transaksi_id']);
+
+            if ($isEdit) {
+                $query->delete();
+            } else {
+                if ($query->exists()) {
+                    return ResponseHelper::data_conflict('Data kondisi fisik sudah ada. Silahkan ubah atau hapus data sebelumnya.');
+                }
+            }
+
+            $model->newQuery()->insert($data);
+            return ResponseHelper::success('Data kondisi fisik berhasil disimpan.');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+
+    public function daftar_kondisi_fisik(Request $request)
+    {
+        try {
+            $model = new KondisiFisik();
+            $tableName = $this->determineTableName($request->lokasi_fisik);
+            if (!$tableName) return ResponseHelper::error('Invalid location.');
+
+            $model->setTableName($tableName);
+
+            $perHalaman = max((int)$request->length, 1);
+            $offset = (int)($request->start / $perHalaman) * $perHalaman;
+
+            $datatabel = $model->listKondisiFisik($request, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $datatabel['data'],
+                'recordsFiltered' => $datatabel['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Penglihatan']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+
+    public function hapus_kondisi_fisik(Request $request)
+    {
+        try {
+            $validationError = $this->validateRequest($request, [
+                'user_id' => 'required',
+                'transaksi_id' => 'required',
+                'nama_peserta' => 'required',
+            ]);
+            if ($validationError) return $validationError;
+
+            $model = new KondisiFisik();
+            $tableName = $this->determineTableName($request->lokasi_fisik);
+            if (!$tableName) return ResponseHelper::error('Invalid location.');
+
+            $model->setTableName($tableName);
+            $model->newQuery()->where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->delete();
+
+            return ResponseHelper::success('Data kondisi fisik berhasil dihapus.');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+
+    public function get_kondisi_fisik(Request $request)
+    {
+        try {
+            $model = new KondisiFisik();
+            $tableName = $this->determineTableName($request->lokasi_fisik);
+            if (!$tableName) return ResponseHelper::error('Invalid location.');
+
+            $model->setTableName($tableName);
+            $data = $model->newQuery()->where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->get();
+
+            $dynamicAttributes = ['data' => $data];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Kondisi Fisik']), $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
