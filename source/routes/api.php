@@ -102,6 +102,9 @@ Route::prefix('v1')->group(function () {
             Route::get('daftar_kondisi_fisik', [PemeriksaanFisikController::class,"daftar_kondisi_fisik"]);
             Route::delete('hapus_kondisi_fisik', [PemeriksaanFisikController::class,"hapus_kondisi_fisik"]);
             Route::get('get_kondisi_fisik', [PemeriksaanFisikController::class,"get_kondisi_fisik"]);
+            /* Detail Atribut Kondisi Fisik */
+            /* Lokasi Gigi */
+            Route::get('get_kondisi_fisik_gigi', [PemeriksaanFisikController::class,"get_kondisi_fisik_gigi"]);
         });
         Route::prefix('masterdata')->group(function () {
             /* Master Data Perusahaan */

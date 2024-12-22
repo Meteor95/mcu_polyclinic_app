@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
-use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik};
+use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik,Gigi};
 use App\Services\RegistrationMCUServices;
 
 class PemeriksaanFisikController extends Controller
@@ -313,7 +313,6 @@ class PemeriksaanFisikController extends Controller
         }
         return null;
     }
-
     public function simpan_kondisi_fisik(Request $request)
     {
         try {
@@ -336,7 +335,6 @@ class PemeriksaanFisikController extends Controller
                     'updated_at' => now(),
                 ];
             })->toArray();
-
             $model = new KondisiFisik();
             $tableName = $this->determineTableName($request->kondisi_fisik[0]['nama_atribut']);
             if (!$tableName) return ResponseHelper::error('Invalid attribute name.');
@@ -355,7 +353,10 @@ class PemeriksaanFisikController extends Controller
                 }
             }
 
-            $model->newQuery()->insert($data);
+            $donesave = $model->newQuery()->insert($data);
+            if(strtolower($request->kondisi_fisik[0]['nama_atribut']) === 'gigi' && $donesave){
+                $this->simpan_gigi_lokasi($request);
+            }
             return ResponseHelper::success('Data kondisi fisik berhasil disimpan.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
@@ -428,6 +429,72 @@ class PemeriksaanFisikController extends Controller
 
             $dynamicAttributes = ['data' => $data];
             return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Kondisi Fisik']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    private function simpan_gigi_lokasi($request){
+        try {
+            $data = [
+                'user_id' => $request->kondisi_fisik[0]['user_id'],
+                'transaksi_id' => $request->kondisi_fisik[0]['transaksi_id'],
+                'atas_kanan_8' => $request->kondisi_fisik_tambahan[0]['atas_kanan_8'],
+                'atas_kanan_7' => $request->kondisi_fisik_tambahan[0]['atas_kanan_7'],
+                'atas_kanan_6' => $request->kondisi_fisik_tambahan[0]['atas_kanan_6'],
+                'atas_kanan_5' => $request->kondisi_fisik_tambahan[0]['atas_kanan_5'],
+                'atas_kanan_4' => $request->kondisi_fisik_tambahan[0]['atas_kanan_4'],
+                'atas_kanan_3' => $request->kondisi_fisik_tambahan[0]['atas_kanan_3'],
+                'atas_kanan_2' => $request->kondisi_fisik_tambahan[0]['atas_kanan_2'],
+                'atas_kanan_1' => $request->kondisi_fisik_tambahan[0]['atas_kanan_1'],
+                'atas_kiri_1' => $request->kondisi_fisik_tambahan[0]['atas_kiri_1'],
+                'atas_kiri_2' => $request->kondisi_fisik_tambahan[0]['atas_kiri_2'],
+                'atas_kiri_3' => $request->kondisi_fisik_tambahan[0]['atas_kiri_3'],
+                'atas_kiri_4' => $request->kondisi_fisik_tambahan[0]['atas_kiri_4'],
+                'atas_kiri_5' => $request->kondisi_fisik_tambahan[0]['atas_kiri_5'],
+                'atas_kiri_6' => $request->kondisi_fisik_tambahan[0]['atas_kiri_6'],
+                'atas_kiri_7' => $request->kondisi_fisik_tambahan[0]['atas_kiri_7'],
+                'atas_kiri_8' => $request->kondisi_fisik_tambahan[0]['atas_kiri_8'],
+                'bawah_kanan_8' => $request->kondisi_fisik_tambahan[0]['bawah_kanan_8'],
+                'bawah_kanan_7' => $request->kondisi_fisik_tambahan[0]['bawah_kanan_7'],
+                'bawah_kanan_6' => $request->kondisi_fisik_tambahan[0]['bawah_kanan_6'],
+                'bawah_kanan_5' => $request->kondisi_fisik_tambahan[0]['bawah_kanan_5'],
+                'bawah_kanan_4' => $request->kondisi_fisik_tambahan[0]['bawah_kanan_4'],
+                'bawah_kanan_3' => $request->kondisi_fisik_tambahan[0]['bawah_kanan_3'],
+                'bawah_kanan_2' => $request->kondisi_fisik_tambahan[0]['bawah_kanan_2'],
+                'bawah_kanan_1' => $request->kondisi_fisik_tambahan[0]['bawah_kanan_1'],
+                'bawah_kiri_1' => $request->kondisi_fisik_tambahan[0]['bawah_kiri_1'],
+                'bawah_kiri_2' => $request->kondisi_fisik_tambahan[0]['bawah_kiri_2'],
+                'bawah_kiri_3' => $request->kondisi_fisik_tambahan[0]['bawah_kiri_3'],
+                'bawah_kiri_4' => $request->kondisi_fisik_tambahan[0]['bawah_kiri_4'],
+                'bawah_kiri_5' => $request->kondisi_fisik_tambahan[0]['bawah_kiri_5'],
+                'bawah_kiri_6' => $request->kondisi_fisik_tambahan[0]['bawah_kiri_6'],
+                'bawah_kiri_7' => $request->kondisi_fisik_tambahan[0]['bawah_kiri_7'],
+                'bawah_kiri_8' => $request->kondisi_fisik_tambahan[0]['bawah_kiri_8'],
+            ];
+            $existingData = Gigi::where('user_id', $request->kondisi_fisik[0]['user_id'])
+                ->where('transaksi_id', $request->kondisi_fisik[0]['transaksi_id'])
+                ->first();
+            if ($existingData) {
+                Gigi::where('user_id', $request->kondisi_fisik[0]['user_id'])
+                    ->where('transaksi_id', $request->kondisi_fisik[0]['transaksi_id'])
+                    ->update($data);
+            }else{
+                Gigi::create($data);
+            }
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+    public function get_kondisi_fisik_gigi(Request $request){
+        try {
+            $data = Gigi::where('user_id', $request->user_id)
+                ->where('transaksi_id', $request->transaksi_id)
+                ->first();
+            $dynamicAttributes = [  
+                'data' => $data,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Kondisi Fisik Lokasi Gigi']), $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web_service:
-    image: ghcr.io/meteor95/artha_medica-ghcr:1.0.3
+    image: ghcr.io/meteor95/artha_medica-ghcr:1.1.0
     ports:
       - target: 8080
         published: 10161

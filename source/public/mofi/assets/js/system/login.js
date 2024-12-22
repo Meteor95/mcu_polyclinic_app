@@ -1,3 +1,17 @@
+let visitorId = '';
+$(document).ready(function() {
+    loadFingerprint();
+});
+async function loadFingerprint() {
+    FingerprintJS.load().then(fp => {
+        fp.get().then(result => {
+          visitorId = result.visitorId;
+          $('#visitor_id').text(`Visitor ID: ${visitorId}`);
+        });
+      }).catch(error => {
+        console.error('Error loading FingerprintJS:', error);
+    });
+}
 $("#btn_login" ).on( "click", function() {
     if ($("#namapengguna").val() == "" || $("#katasandi").val() == "") return  createToast('Kesalahan Formulir','top-right', 'Nama Pengguna / Surel serta kata sandi wajib diisi sebagai data!', 'error', 3000);
     $('#btn_login').prop("disabled",true);$('#btn_login').html('<i class="fa fa-spin fa-refresh"></i> Proses Autentifikasi');

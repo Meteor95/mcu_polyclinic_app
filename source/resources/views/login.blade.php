@@ -27,12 +27,10 @@
                 </div>
               </div>
               <div class="form-group mb-0">
-                <div class="checkbox p-0">
-                  <input id="checkbox1" type="checkbox">
-                  <label class="text-muted" for="checkbox1">Ingat Katasandi</label>
-                </div>
                 <button class="btn btn-primary btn-block w-100" id="btn_login">Kirim Data</button>
               </div>
+              <p class="mt-4 mb-0 text-center">Versi Aplikasi : 1.1.0</p>
+              <p class="mb-0 text-center" id="visitor_id" class="text-muted"></p>
             </div>
           </div>
         </div>
@@ -44,6 +42,7 @@
 @section('css_load')
 @endsection
 @section('js_load')
+<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4.5.1/dist/fp.min.js"></script>
 <script src="{{asset('mofi/assets/js/script.js')}}"></script>
 <script src="{{asset('mofi/assets/js/system/login.js')}}"></script>
 @endsection

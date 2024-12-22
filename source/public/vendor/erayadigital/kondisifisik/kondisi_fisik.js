@@ -167,6 +167,7 @@ $("#simpan_kondisi_fisik").click(function(){
         if (result.isConfirmed) {
             $.get('/generate-csrf-token', function(response) {
                 let bulkData = [];
+                let bulkDataTambahan = [];
                 $("#datatables_kondisi_fisik").DataTable().rows().every(function() {
                     let row = this.data();
                     let rowId = row[0];
@@ -191,6 +192,18 @@ $("#simpan_kondisi_fisik").click(function(){
                     };
                     bulkData.push(rowData);
                 });
+                if (lokasi_fisik_let.toLowerCase() === 'gigi') {
+                    let rowDataTambahan = {};
+                    ['atas', 'bawah'].forEach(posisi => {
+                        ['kanan', 'kiri'].forEach(sisi => {
+                            for (let i = 1; i <= 8; i++) {
+                                const key = `${posisi}_${sisi}_${i}`;
+                                rowDataTambahan[key] = $(`#${key}`).val();
+                            }
+                        });
+                    });
+                    bulkDataTambahan.push(rowDataTambahan);
+                }
                 $.ajax({
                     url: baseurlapi + '/pemeriksaan_fisik/simpankondisifisik',
                     type: 'POST',
@@ -198,6 +211,7 @@ $("#simpan_kondisi_fisik").click(function(){
                     data: {
                         isedit:isedit,
                         kondisi_fisik:bulkData,
+                        kondisi_fisik_tambahan:bulkDataTambahan,
                     },
                     success: function(response) {
                         if (response.success == false){
@@ -235,6 +249,9 @@ function clear_kondisi_fisik(){
         $(this).val('');
     });
     $('#datatables_kondisi_fisik input[type="checkbox"]').prop('checked', false);
+    $('#datatables_gigi input').each(function() {
+        $(this).val('');
+    });
 }
 function hapus_kondisi_fisik(transaksi_id,nomor_identitas,nama_peserta,user_id){
     Swal.fire({
@@ -260,6 +277,7 @@ function hapus_kondisi_fisik(transaksi_id,nomor_identitas,nama_peserta,user_id){
                     },
                     success: function(response) {
                         if (response.success){
+                            clear_kondisi_fisik();
                             $("#datatables_kondisi_fisik_log").DataTable().ajax.reload();
                             return createToast('Hapus Data Formulir Kondisi Fisik '+lokasi_fisik_let.charAt(0).toUpperCase() + lokasi_fisik_let.slice(1), 'top-right', response.message, 'success', 3000);
                         }
@@ -323,6 +341,9 @@ function fill_detail_kondisi_fisik(user_id,transaksi_id,nama_peserta,detail=fals
                             row.find('td:eq(1)').text(item.nama_atribut_saat_ini);
                         }
                     });
+                }
+                if (typeof detail_addons_kondisi_fisik === "function") {
+                    detail_addons_kondisi_fisik(lokasi_fisik_let, response.data, detail);
                 }
             },
             error: function(xhr, status, error) {
