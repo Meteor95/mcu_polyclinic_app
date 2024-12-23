@@ -81,8 +81,8 @@ $("#pencarian_member_mcu").on('change', function() {
                 $("#jenis_kelamin_temp").text(response.data.jenis_kelamin);
                 $("#nomor_transaksi_temp").text(response.data.no_transaksi);
                 $("#email_temp").text(response.data.email);
-                $("#tempat_lahir_temp").text(response.data.tempat_lahir);
-                $("#status_kawin_temp").text(response.data.status_kawin);
+                $("#tempat_lahir_temp").text(response.data.company_name);
+                $("#status_kawin_temp").text(response.data.nama_departemen);
             }
         });
     });

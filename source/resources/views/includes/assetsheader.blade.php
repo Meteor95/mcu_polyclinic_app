@@ -11,6 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{asset('mofi/assets/css/color-1.css')}}" media="screen" id="color" >
+<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/fonts/fontawesome-free-6.7.2/css/all.min.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/font-awesome.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/icofont.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/themify.css')}}">
@@ -23,6 +25,5 @@
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/datatables.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/bootstrap.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/style.css')}}">
-<link id="color" rel="stylesheet" href="{{asset('mofi/assets/css/color-1.css')}}" media="screen">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/responsive.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/eds_custom.css')}}">

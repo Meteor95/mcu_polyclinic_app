@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController, FileController, PendaftaranController, ProfileController, PemeriksaanFisikController};
+use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController, FileController, PendaftaranController, ProfileController, PemeriksaanFisikController, LaboratoriumController, PoliklinikController};
 use Illuminate\Http\Request;
 
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
@@ -38,6 +38,13 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('penglihatan', [PemeriksaanFisikController::class,"penglihatan"])->name('admin.pemeriksaan_fisik.penglihatan');
         Route::get('kondisi_fisik/{lokasi_fisik}', [PemeriksaanFisikController::class,"kondisi_fisik"])->name('admin.pemeriksaan_fisik.kondisi_fisik');
     });
+    Route::prefix('poliklinik')->group(function () {
+        Route::get('spirometri', [PoliklinikController::class,"spirometri"])->name('admin.poliklinik.spirometri');
+        Route::get('audiometri', [PoliklinikController::class,"audiometri"])->name('admin.poliklinik.audiometri');
+        Route::get('ekg', [PoliklinikController::class,"ekg"])->name('admin.poliklinik.ekg');
+        Route::get('threadmill', [PoliklinikController::class,"threadmill"])->name('admin.poliklinik.threadmill');
+        Route::get('ronsen', [PoliklinikController::class,"ronsen"])->name('admin.poliklinik.ronsen');
+    });
     Route::prefix('masterdata')->group(function () {
         Route::get('daftar_perusahaan', [MasterdataController::class,"daftar_perusahaan"])->name('admin.masterdata.daftar_perusahaan');
         Route::get('daftar_paket_mcu', [MasterdataController::class,"daftar_paket_mcu"])->name('admin.masterdata.daftar_paket_mcu');
@@ -45,6 +52,14 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('daftar_departemen_peserta', [MasterdataController::class,"daftar_departemen_peserta"])->name('admin.masterdata.daftar_departemen_peserta');
         Route::get('daftar_member_mcu', [MasterdataController::class,"daftar_member_mcu"])->name('admin.masterdata.daftar_member_mcu');
         Route::get('daftar_bank', [MasterdataController::class,"daftar_bank"])->name('admin.masterdata.daftar_bank');
+    });
+    Route::prefix('laboratorium')->group(function () {
+        Route::get('kategori', [LaboratoriumController::class,"kategori"])->name('admin.laboratorium.kategori');
+        Route::get('satuan', [LaboratoriumController::class,"satuan"])->name('admin.laboratorium.satuan');
+        Route::get('tindakan', [LaboratoriumController::class,"tindakan"])->name('admin.laboratorium.tindakan');
+        Route::get('template', [LaboratoriumController::class,"template"])->name('admin.laboratorium.template');
+        Route::get('rentang_kenormalan', [LaboratoriumController::class,"rentang_kenormalan"])->name('admin.laboratorium.rentang_kenormalan');
+        Route::get('transaksi', [LaboratoriumController::class,"transaksi"])->name('admin.laboratorium.transaksi');
     });
     Route::prefix('image')->group(function () {
         Route::get('user/signature/{filename}', [FileController::class, 'showSignature']);

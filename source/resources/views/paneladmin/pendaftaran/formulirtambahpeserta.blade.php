@@ -166,7 +166,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="tanggal_pendaftaran" class="form-label mt-2">Jenis Transaksi Pendaftaran</label>
+                        <label for="tanggal_pendaftaran" class="form-label mt-2">Waktu Transaksi Pendaftaran</label>
                     </div>
                     <div class="col-md-6">
                         <input class="form-control" id="tanggal_pendaftaran" type="text" placeholder="dd-mm-yyyy">
@@ -174,7 +174,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="jenis_transaksi_pendaftaran" class="form-label mt-2">Jenis Transaksi Pendaftaran</label>
+                        <label for="jenis_transaksi_pendaftaran" class="form-label mt-2">Jenis Layanan Pendaftaran</label>
                     </div>
                     <div class="col-md-6">
                         <select class="form-select" id="jenis_transaksi_pendaftaran" name="jenis_transaksi_pendaftaran" required>
@@ -204,7 +204,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="no_telepon" class="form-label mt-3">Tentukan Paket MCU</label>
+                        <label for="no_telepon" class="form-label mt-3">Tentukan Paket Layanan</label>
                     </div>
                     <div class="col-md-6">
                     <div id="pilih_paket_mcu"><select class="form-select" id="select2_paket_mcu" name="select2_paket_mcu" required></select></div>

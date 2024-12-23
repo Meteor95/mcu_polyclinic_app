@@ -50069,7 +50069,7 @@ table.table-bordered thead tr th p {
   position: fixed;
   top: 0;
   z-index: 9;
-  height: auto;
+  height: 100%;
   line-height: inherit;
   background: #2A3650;
   width: 252px;
@@ -50307,7 +50307,7 @@ table.table-bordered thead tr th p {
   position: relative;
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li.sidebar-main-title {
-  padding: 25px 0 12px 20px;
+  padding: 5px 0 5px 5px;
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li.sidebar-main-title div {
   padding: 6px 10px;
@@ -50389,7 +50389,7 @@ table.table-bordered thead tr th p {
   transition: all 0.3s ease;
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li a {
-  padding: 12px 20px;
+  padding: 10px 20px;
   position: relative;
   color: #222222;
   -webkit-transition: all 0.3s ease;

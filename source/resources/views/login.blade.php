@@ -29,7 +29,7 @@
               <div class="form-group mb-0">
                 <button class="btn btn-primary btn-block w-100" id="btn_login">Kirim Data</button>
               </div>
-              <p class="mt-4 mb-0 text-center">Versi Aplikasi : 1.1.0</p>
+              <p class="mt-4 mb-0 text-center">Versi Aplikasi : {{env('APP_VERSION')}}</p>
               <p class="mb-0 text-center" id="visitor_id" class="text-muted"></p>
             </div>
           </div>

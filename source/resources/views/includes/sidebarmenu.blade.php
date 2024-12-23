@@ -54,7 +54,19 @@
                 <span>Beranda</span>
               </a>
             </li>
-      
+            <li class="sidebar-list">
+              <i class="fa fa-thumb-tack"></i>
+              <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                <i class="fa-solid fa-cash-register" style="padding-right: 10px;font-size: 18px;color: #fff;"></i>
+                <span>Kasir</span>
+              </a>
+            </li>
+            <!-- Doctor Section -->
+            <li class="sidebar-main-title">
+              <div>
+                <h6>Area Dokter</h6>
+              </div>
+            </li>
             <!-- Medical Check Up Section -->
             <li class="sidebar-main-title">
               <div>
@@ -122,10 +134,56 @@
                 </li>
               </ul>
             </li>
+            <li class="sidebar-list">
+              <i class="fa fa-thumb-tack"></i>
+              <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                <i class="fa-solid fa-hospital-user" style="padding-right: 5px;font-size: 18px;color: #fff;"></i>
+                <span>Poliklinik</span>
+              </a>
+              <ul class="sidebar-submenu">
+                <li><a href="{{ url('poliklinik/spirometri') }}">Spirometri</a></li>
+                <li><a href="{{ url('poliklinik/audiometri') }}">Audiometri</a></li>
+                <li><a href="{{ url('poliklinik/ekg') }}">EKG</a></li>
+                <li><a href="{{ url('poliklinik/threadmill') }}">Threadmill</a></li>
+                <li><a href="{{ url('poliklinik/ronsen') }}">Ronsen</a></li>
+              </ul>
+            </li>
             <li class="sidebar-main-title">
               <div>
                 <h6>LABORATORIUM</h6>
               </div>
+            </li>
+            <li class="sidebar-list">
+              <i class="fa fa-thumb-tack"></i>
+              <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                <i class="fa fa-bars" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+                <span>Paramter</span>
+              </a>
+              <ul class="sidebar-submenu">
+                <li><a href="{{ route('admin.laboratorium.kategori') }}">Kategori</a></li>
+                <li><a href="{{ route('admin.laboratorium.satuan') }}">Satuan</a></li>
+                <li><a href="{{ route('admin.laboratorium.template') }}">Template</a></li>
+                <li><a href="{{ route('admin.laboratorium.rentang_kenormalan') }}">Rentang Kenormalan</a></li>
+              </ul>
+            </li>
+            <li class="sidebar-list">
+              <i class="fa fa-thumb-tack"></i>
+              <a class="sidebar-link sidebar-title" href="{{ route('admin.laboratorium.tindakan') }}">
+                <i class="fa fa-flask" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+                <span>Tindakan</span>
+              </a>
+            </li>
+            <li class="sidebar-main-title">
+              <div>
+                <h6>LAPORAN</h6>
+              </div>
+            </li>
+            <li class="sidebar-list">
+              <i class="fa fa-thumb-tack"></i>
+              <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                <i class="fa fa-file-pdf-o" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+                <span>Validasi MCU</span>
+              </a>
             </li>
             <!-- Pengaturan Section -->
             <li class="sidebar-main-title">

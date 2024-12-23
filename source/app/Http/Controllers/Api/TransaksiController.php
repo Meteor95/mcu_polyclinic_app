@@ -90,8 +90,10 @@ class TransaksiController extends Controller
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $data = MemberMCU::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
+                ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
+                ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
                 ->where('users_member.nomor_identitas', $request->nomor_identitas)
-                ->select('users_member.*', 'users_member.id as user_id', 'mcu_transaksi_peserta.no_transaksi', 'mcu_transaksi_peserta.id as id_transaksi')
+                ->select('users_member.*', 'users_member.id as user_id', 'mcu_transaksi_peserta.no_transaksi', 'mcu_transaksi_peserta.id as id_transaksi', 'departemen_peserta.nama_departemen', 'company.company_name')
                 ->first();
             if (!$data) {
                 return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Informasi Pasien MCU tidak ditemukan. Silahkan lakukan pendaftaran terlebih dahulu dengan cara transaksi MCU dan tentukan paket yang diinginkan']));

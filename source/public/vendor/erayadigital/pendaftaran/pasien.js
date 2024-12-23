@@ -112,6 +112,7 @@ function loadDataPasien() {
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             return `<div class="d-flex justify-content-between gap-2 background_fixed_right_row">
+                                <button class="btn btn-primary w-100"><i class="fa fa-share"></i></button>
                                 <a href="${baseurl}/pendaftaran/formulir_ubah_peserta/${row.id}">
                                     <button class="btn btn-success w-100"><i class="fa fa-edit"></i></button>
                                 </a>
