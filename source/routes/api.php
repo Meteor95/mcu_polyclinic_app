@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController, PoliklinikController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -137,6 +137,9 @@ Route::prefix('v1')->group(function () {
             Route::post('simpanbank', [MasterdataController::class,"savebank"]);
             Route::get('hapusbank', [MasterdataController::class,"deletebank"]);
             Route::post('ubahbank', [MasterdataController::class,"editbank"]);
+        });
+        Route::prefix('poliklinik')->group(function () {
+            Route::post('simpan/{poliklinik}', [PoliklinikController::class,"simpan_poliklinik"]);
         });
         Route::prefix('atribut')->group(function () {
             Route::get('lingkungankerja', [AtributController::class,"getlingkungankerja"]);

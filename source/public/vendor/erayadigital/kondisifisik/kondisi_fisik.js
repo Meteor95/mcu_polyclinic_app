@@ -109,8 +109,8 @@ function onload_kondisi_fisik(){
                         if (type === 'display') {
                             return `Nomor MCU : ${row.no_transaksi}<br>
                             Nama Peserta : ${row.nama_peserta} (${row.umur}Th)<br>
-                            Tanggal Transaksi MCU: ${row.tanggal_transaksi}<br>
-                            Tanggal Transaksi Penglihatan: ${row.tanggal_transaksi}<br>
+                            Tanggal Transaksi MCU: ${row.tanggal_transaksi_mcu}<br>
+                            Tanggal Transaksi ${lokasi_fisik_let.charAt(0).toUpperCase() + lokasi_fisik_let.slice(1)}: ${row.tanggal_transaksi_lokasi_fisik}<br>
                             `;
                         }
                         return data;

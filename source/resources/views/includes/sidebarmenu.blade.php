@@ -45,12 +45,7 @@
             <li class="sidebar-list">
               <i class="fa fa-thumb-tack"></i>
               <a class="sidebar-link sidebar-title" href="javascript:void(0)">
-                <svg class="stroke-icon">
-                  <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#stroke-home') }}"></use>
-                </svg>
-                <svg class="fill-icon">
-                  <use href="{{ asset('mofi/assets/svg/icon-sprite.svg#fill-home') }}"></use>
-                </svg>
+                <i class="fa-solid fa-house" style="padding-right: 8px;font-size: 18px;color: #fff;"></i>
                 <span>Beranda</span>
               </a>
             </li>
@@ -76,7 +71,7 @@
             <li class="sidebar-list">
               <i class="fa fa-thumb-tack"></i>
               <a class="sidebar-link sidebar-title" href="javascript:void(0)">
-                <i data-feather="book-open" class="stroke-icon"></i> <span>Pendaftaran</span></a>
+                <i class="fa-solid fa-book-open" style="padding-right: 5px;font-size: 18px;color: #fff;"></i> <span>Pendaftaran</span></a>
               <ul class="sidebar-submenu">
                 <li><a href="{{ url('pendaftaran/daftar_peserta') }}">Daftar Peserta</a></li>
                 <li><a href="{{ url('pendaftaran/daftar_pasien') }}">Daftar Pasien</a></li>

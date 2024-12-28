@@ -365,15 +365,6 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}">
 <style>
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    margin-top: 10px;
-    margin-right: 10px;
-}
-.select2-container--open .select2-dropdown--below {
-  margin-top: -20px;
-  border-top-left-radius:2;
-  border-top-right-radius:2;
-}
 #nominal_bayar, #nominal_kembalian, #nominal_bayar_konfirmasi{
     text-align: right;
     font-family: 'DS-Digital', sans-serif;

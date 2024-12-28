@@ -55,3 +55,36 @@
   border-top-left-radius:2;
   border-top-right-radius:2;
 }
+body.dark-only .choices__inner {
+    display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    background-color: #374462;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.6);
+}
+body.dark-only .choices[data-type*=select-one] .choices__input {
+    display:block;
+    width:100%;
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    background-color:#374462;
+    margin:0;
+    color: rgba(255, 255, 255, 0.6);
+}
+body.dark-only .choices__list--single {
+    display: inline-block;
+    padding: 4px 16px 4px 4px;
+    width: 100%;
+}
+body.dark-only .choices__list {
+    display: inline-block;
+    padding: 4px 16px 4px 4px;
+    width: 100%;
+    color: rgba(255, 255, 255, 0.6);
+    background-color: #374462;
+}
+body.dark-only .choices__list--dropdown .choices__item--selectable.is-highlighted, .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+    background-color: rgba(255, 255, 255, 0.6);;
+    color: #374462;
+}

@@ -79,15 +79,6 @@
 <link href="https://cdn.datatables.net/keytable/2.12.1/css/keyTable.dataTables.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    margin-top: 10px;
-    margin-right: 10px;
-}
-.select2-container--open .select2-dropdown--below {
-  margin-top: -20px;
-  border-top-left-radius:2;
-  border-top-right-radius:2;
-}
 table.dataTable tbody td.focus {
   outline: 1px dotted rgb(255, 153, 0);
   outline-offset: -2px;

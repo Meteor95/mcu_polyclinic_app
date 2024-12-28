@@ -80,7 +80,8 @@ class KondisiFisik extends Model
                 'mcu_transaksi_peserta.*'
             )
             ->selectRaw(
-                'DATE_FORMAT(' . $tablePrefix . $lokasiFisik . '.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi, ' .
+                'DATE_FORMAT(' . $tablePrefix . $lokasiFisik . '.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_lokasi_fisik, ' .
+                'DATE_FORMAT(' . $tablePrefix . 'mcu_transaksi_peserta.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_mcu, ' .
                 'TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur'
             );
 
