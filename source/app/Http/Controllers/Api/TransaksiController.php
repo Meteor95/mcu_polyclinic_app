@@ -114,7 +114,7 @@ class TransaksiController extends Controller
             $data = UnggahCitra::listPasienUnggahCitra($request, $perHalaman, $offset);
             $jumlahdata = $data['total'];
             $dataWithFoto = collect($data['data'])->map(function ($item) {
-                $item->data_foto = url("/api/v1/file/unduh_foto?file_name=" . $item->lokasi_gambar);
+                $item->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $item->lokasi_gambar);
                 return $item;
             });
             $dynamicAttributes = [

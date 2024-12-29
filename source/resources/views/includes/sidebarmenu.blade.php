@@ -136,11 +136,11 @@
                 <span>Poliklinik</span>
               </a>
               <ul class="sidebar-submenu">
-                <li><a href="{{ url('poliklinik/spirometri') }}">Spirometri</a></li>
-                <li><a href="{{ url('poliklinik/audiometri') }}">Audiometri</a></li>
-                <li><a href="{{ url('poliklinik/ekg') }}">EKG</a></li>
-                <li><a href="{{ url('poliklinik/threadmill') }}">Threadmill</a></li>
-                <li><a href="{{ url('poliklinik/ronsen') }}">Ronsen</a></li>
+                <li><a href="{{ url('poli/spirometri') }}">Spirometri</a></li>
+                <li><a href="{{ url('poli/audiometri') }}">Audiometri</a></li>
+                <li><a href="{{ url('poli/ekg') }}">EKG</a></li>
+                <li><a href="{{ url('poli/threadmill') }}">Threadmill</a></li>
+                <li><a href="{{ url('poli/ronsen') }}">Ronsen</a></li>
               </ul>
             </li>
             <li class="sidebar-main-title">

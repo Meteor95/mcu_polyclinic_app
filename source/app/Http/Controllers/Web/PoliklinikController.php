@@ -18,39 +18,15 @@ class PoliklinikController extends Controller
             'jenis_poli' => $jenis_poli,
         ];
     }
-    public function spirometri(Request $req)
+    public function poliklinik(Request $req, $jenis_poli)
     {
-        $data = $this->getData($req, 'Poliklinik Spirometri', [
-            'Spirometri' => route('admin.poliklinik.spirometri'),
-        ], "Angka Pada kolom prediksi, % prediksi, dan LLN telah diproyeksi menggunakan acuan Penumobile Project Indonesia (nilai fungsi paru normal orang indonesia) sehingga nilai berbeda dengan yang tercantum pada spirogram.", "spirometri", "poli_spirometri");
-        return view('paneladmin.pemeriksaan_fisik.poliklinik.spirometri', ['data' => $data]);
-    }
-    public function audiometri(Request $req)
-    {
-        $data = $this->getData($req, 'Poliklinik Audiometri', [
-            'Audiometri' => route('admin.poliklinik.audiometri'),
-        ], "", "audiometri", "poli_audiometri");
-        return view('paneladmin.pemeriksaan_fisik.poliklinik.audiometri', ['data' => $data]);
-    }
-    public function ekg(Request $req)
-    {
-        $data = $this->getData($req, 'Poliklinik EKG', [
-            'EKG' => route('admin.poliklinik.ekg'),
-        ], "", "ekg", "poli_ekg");
-        return view('paneladmin.pemeriksaan_fisik.poliklinik.ekg', ['data' => $data]);
-    }
-    public function threadmill(Request $req)
-    {
-        $data = $this->getData($req, 'Poliklinik Threadmill', [
-            'Threadmill' => route('admin.poliklinik.threadmill'),
-        ], "", "threadmill", "poli_threadmill");
-        return view('paneladmin.pemeriksaan_fisik.poliklinik.threadmill', ['data' => $data]);
-    }
-    public function ronsen(Request $req)
-    {
-        $data = $this->getData($req, 'Poliklinik Ronsen', [
-            'Ronsen' => route('admin.poliklinik.ronsen'),
-        ], "", "ronsen", "poli_ronsen");
-        return view('paneladmin.pemeriksaan_fisik.poliklinik.ronsen', ['data' => $data]);
+        $catatan_kaki = "";
+        if ($jenis_poli == "spirometri") {
+            $catatan_kaki = "Angka Pada kolom prediksi, % prediksi, dan LLN telah diproyeksi menggunakan acuan Penumobile Project Indonesia (nilai fungsi paru normal orang indonesia) sehingga nilai berbeda dengan yang tercantum pada spirogram.";
+        }
+        $data = $this->getData($req, 'Poliklinik ' . $jenis_poli, [
+            $jenis_poli => route('admin.poliklinik', $jenis_poli),
+        ], $catatan_kaki, $jenis_poli, "poli_" . $jenis_poli);
+        return view('paneladmin.pemeriksaan_fisik.poliklinik.'.$jenis_poli, ['data' => $data]);
     }
 }

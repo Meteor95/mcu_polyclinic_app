@@ -4,7 +4,7 @@
         <div>
           <i class="fa fa-info-circle"></i>
         </div>
-        <span class="txt-light"> Jika ingin memasukan foto lebih dari 1, maka silahkan pilih ID pasien yang sama. Jika ingin menghapus foto yang sudah ada silahkan klik detail pada tabel dibawah.
+        <span class="txt-light"> Anda dapat menambahkan foto lebih dari 1. Maksimal kapasitas yang diizinkan adalah 20Mb untuk keseluruhan foto.
         </span>
       </div>
     </div>
@@ -12,10 +12,6 @@
       <h3>Citra Sebelum</h3>
       <input type="file" id="citra_pasien" class="form-control mt-2 mb-2" accept="image/*">
       <div id="cropper-container">
-        <div id="panggil_webcame" style="display:none">
-          <video id="webcam-preview" autoplay playsinline></video>
-          <button class="btn btn-primary w-100 mt-2 mb-2" id="tangkap_citra_cropper_js"> Tangkap Citra </button>
-        </div>
         <div id="citra_proses_crop"><img id="tampilan_citra_unggahan" style="display: none;"></div>
       </div>
     </div>
@@ -39,29 +35,29 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <h3>Hasil Scan {{$data['title']}}</h3>
+    <h3>Hasil Scan {{ucwords($data['title'])}}</h3>
     <div id="preview-list" class="row g-1"></div>
   </div>
 </div>
 <div class="row mt-2">
   <div class="col-md-12">
-    <h3>Formuli informasi {{$data['title']}}</h3>
+    <h3>Formulir informasi {{ucwords($data['title'])}}</h3>
   </div>
   <div class="col-md-12">
-      <label>Judul Citra {{$data['title']}}</label>
+      <label>Judul Citra {{ucwords($data['title'])  }}</label>
       <input type="text" id="judul_citra_unggah_poli" class="form-control" placeholder="Hasil scan citra {{$data['title']}} pasien MCU">
   </div>
   <div class="col-md-12">
-    <label>Kesimpulan {{$data['title']}}</label>
-    <select class="form-control" data-trigger name="kesimpulan_citra_unggah_poli" id="kesimpulan_citra_unggah_poli">
+    <label>Kesimpulan {{ucwords($data['title'])  }}</label>
+    <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli" id="kesimpulan_citra_unggah_poli">
       @foreach ($data['kesimpulan'] as $item)
         <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
       @endforeach
     </select>
   </div>
   <div class="col-md-12">
-    <label>Detail Penjelasan {{$data['title']}}</label>
-    <select class="form-control" data-trigger name="detail_penjelasan_citra_unggah_poli" id="detail_penjelasan_citra_unggah_poli">
+    <label>Detail Penjelasan {{ucwords($data['title'])  }}</label>
+    <select class="form-control" data-choices name="detail_penjelasan_citra_unggah_poli" id="detail_penjelasan_citra_unggah_poli">
       @foreach ($data['detail_kesimpulan'] as $item)
         <option value="{{$item->id}}">{{$item->keterangan}}</option>
       @endforeach
@@ -73,12 +69,15 @@
     </div>
   </div>
   <div class="col-md-12">
-    <label>Catatan Kaki {{$data['title']}}</label>
+    <label>Catatan Kaki {{ucwords($data['title'])  }}</label>
     <textarea class="form-control" id="catatan_kaki_citra_unggah_poli" placeholder="Isikan catatan kaki pada laporan {{$data['title']}} jika memungkinkan">{{$data['catatan_kaki']}}</textarea>
   </div>
 </div>
 <div class="row">
-  <div class="col-md-12">
-    <button class="btn btn-primary w-100 mt-2 mb-2" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Foto {{$data['title']}} </button>
+  <div class="col-md-6">
+    <button class="btn btn-danger w-100 mt-2 mb-2" id="bersihkan_formulir_unggah_citra"><i class="fa fa-trash"></i> Bersihkan Formulir </button>
+  </div>
+  <div class="col-md-6">
+    <button class="btn btn-primary w-100 mt-2 mb-2" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Foto {{ucwords($data['title'])}} </button>
   </div>
 </div>

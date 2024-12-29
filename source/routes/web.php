@@ -38,13 +38,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('penglihatan', [PemeriksaanFisikController::class,"penglihatan"])->name('admin.pemeriksaan_fisik.penglihatan');
         Route::get('kondisi_fisik/{lokasi_fisik}', [PemeriksaanFisikController::class,"kondisi_fisik"])->name('admin.pemeriksaan_fisik.kondisi_fisik');
     });
-    Route::prefix('poliklinik')->group(function () {
-        Route::get('spirometri', [PoliklinikController::class,"spirometri"])->name('admin.poliklinik.spirometri');
-        Route::get('audiometri', [PoliklinikController::class,"audiometri"])->name('admin.poliklinik.audiometri');
-        Route::get('ekg', [PoliklinikController::class,"ekg"])->name('admin.poliklinik.ekg');
-        Route::get('threadmill', [PoliklinikController::class,"threadmill"])->name('admin.poliklinik.threadmill');
-        Route::get('ronsen', [PoliklinikController::class,"ronsen"])->name('admin.poliklinik.ronsen');
-    });
+    Route::get('poli/{jenis_poli}', [PoliklinikController::class,"poliklinik"])->name('admin.poliklinik');
     Route::prefix('masterdata')->group(function () {
         Route::get('daftar_perusahaan', [MasterdataController::class,"daftar_perusahaan"])->name('admin.masterdata.daftar_perusahaan');
         Route::get('daftar_paket_mcu', [MasterdataController::class,"daftar_paket_mcu"])->name('admin.masterdata.daftar_paket_mcu');

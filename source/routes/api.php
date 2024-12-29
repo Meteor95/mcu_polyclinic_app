@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function () {
     });
     Route::prefix('file')->group(function () {
         Route::get('unduh_foto', [FileController::class, "download_foto"]);
+        Route::get('unduh_citra_poliklinik', [FileController::class, "downlad_citra_poliklinik"]);
     });
     Route::middleware(['jwt.auth', 'jwt.cookie'])->group(function () {  
         Route::prefix('pengguna')->group(function () {
@@ -140,6 +141,10 @@ Route::prefix('v1')->group(function () {
         });
         Route::prefix('poliklinik')->group(function () {
             Route::post('simpan/{poliklinik}', [PoliklinikController::class,"simpan_poliklinik"]);
+            Route::get('daftar_citra_unggahan_poliklinik', [PoliklinikController::class,"daftar_citra_unggahan_poliklinik"]);
+            Route::get('detail_citra_unggahan_poliklinik', [PoliklinikController::class,"detail_citra_unggahan_poliklinik"]);
+            Route::get('hapus_citra_unggahan_poliklinik', [PoliklinikController::class,"hapus_citra_unggahan_poliklinik"]);
+            Route::get('hapus_foto_unggahan_satuan', [PoliklinikController::class,"hapus_foto_unggahan_satuan"]);
         });
         Route::prefix('atribut')->group(function () {
             Route::get('lingkungankerja', [AtributController::class,"getlingkungankerja"]);
