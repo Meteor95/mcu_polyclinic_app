@@ -8,10 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\DB;
+
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
+    protected $guard_name = 'web';
+    protected function getDefaultGuardName(): string { return 'web'; }
      /**
      * The attributes that are mass assignable.
      *
@@ -24,7 +27,6 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at',
         'password',
     ];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -95,32 +97,6 @@ class User extends Authenticatable implements JWTSubject
             'total' => $jumlahdata
         ];
         
-    }
-    public static function assignRole($role, $user_id)
-    {
-        $existingRole = DB::table('model_has_roles')
-            ->where('model_id', $user_id)
-            ->where('model_type', self::class)
-            ->first();
-
-        if ($existingRole) {
-            return DB::table('model_has_roles')
-                ->where('model_id', $user_id)
-                ->where('model_type', self::class)
-                ->update([
-                    'role_id' => $role,
-                    'team_id' => 1,
-                ]);
-        }
-        return DB::table('model_has_roles')->insert([
-            'role_id' => $role,
-            'model_type' => self::class,
-            'model_id' => $user_id,
-            'team_id' => 1,
-        ]);
-    }
-    public static function deleteRole($user_id){
-        return DB::table('model_has_roles')->where('model_id', '=', $user_id)->delete();
     }
     public static function detailUser($request){
         return User::join('users_pegawai', 'users.id', '=', 'users_pegawai.id')

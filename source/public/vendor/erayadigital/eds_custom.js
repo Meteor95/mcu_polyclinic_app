@@ -35,4 +35,15 @@ function dataURLToBlob(dataURL) {
 
     return new Blob([arrayBuffer], { type: mimeString });
 }
-  
+function capitalizeFirstLetter(input, split = '_', join = ' ') {
+    return input
+        .split(split)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(join);
+}
+function revertStringToLowerCase(input, split = ' ', join = '_') {
+    return input
+        .split(split)
+        .map(word => word.toLowerCase())
+        .join(join);
+}

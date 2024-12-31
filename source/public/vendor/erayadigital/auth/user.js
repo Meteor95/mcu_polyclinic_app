@@ -30,8 +30,8 @@ $(document).ready(function(){
                     return {
                         results: $.map(data.data, function (item) {
                             return {
-                                text: `Berikan Hak Akses : ${item.name}`,
-                                id: item.id,
+                                text: `Berikan Hak Akses : ${capitalizeFirstLetter(item.name)}`,
+                                id: revertStringToLowerCase(item.name),
                             }
                         })
                     }
@@ -107,7 +107,7 @@ function datatable_penggunaaplikasi(){
                 {
                     title: "ID Pengguna",
                     render: function(data, type, row, meta) {
-                        return `Nama Pengguna: ${row.username}<br>UUID: ${row.uuid}<br>Email: ${row.email}<br>Status: <span class="badge ${row.status_pegawai === 'Tetap' ? 'bg-success' : row.status_pegawai === 'Non Aktif' ? 'bg-warning' : 'bg-danger'}">${row.status_pegawai}</span><br>Hak Akses: <span class="badge bg-warning">${row.role_name === null ? 'Super Admin' : row.role_name}</span>`;
+                        return `Nama Pengguna: ${row.username}<br>UUID: ${row.uuid}<br>Email: ${row.email}<br>Status: <span class="badge ${row.status_pegawai === 'Tetap' ? 'bg-success' : row.status_pegawai === 'Non Aktif' ? 'bg-warning' : 'bg-danger'}">${row.status_pegawai}</span><br>Hak Akses: <span class="badge bg-warning">${row.role_name === null ? 'Super Admin' : capitalizeFirstLetter(row.role_name)}</span>`;
                     }
                 },
                 {
@@ -270,9 +270,9 @@ function editpengguna(id, username){
                 $('#namapengguna').val(response.data.username);
                 $('#email').val(response.data.email);
                 $('#katasandi').val('').attr('placeholder', 'Kosongkan jika tidak ingin mengubah kata sandi');
-                let newOption = new Option(response.data.role_name || 'Super Admin', response.data.id_role || 1, true, false);
+                let newOption = new Option('Berikan Hak Akses: '+capitalizeFirstLetter(response.data.role_name) || 'Super Admin', revertStringToLowerCase(response.data.role_name) || 1, true, false);
                 $('#select2_hak_akses').append(newOption).trigger('change');
-                $("#select2_hak_akses").val(response.data.id_role || 1).trigger('change');
+                $("#select2_hak_akses").val(revertStringToLowerCase(response.data.role_name) || 1).trigger('change');
                 $('#nama_pegawai').val(response.data.nama_pegawai);
                 $('#nik').val(response.data.nik);
                 $('#jabatan').val(response.data.jabatan);

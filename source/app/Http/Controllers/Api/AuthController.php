@@ -37,7 +37,8 @@ class AuthController extends Controller
                 'token_akses' => $token,
             ];
             $cookie_jwt = Cookie::make('token_device', $token, env('COOKIE_TIME_EXPIRE'), env('COOKIE_PATH'), env('COOKIE_DOMAIN_ALLOWED'), env('COOKIE_IS_SECURE'), env('COOKIE_IS_HTTP_ONLY'));
-            return ResponseHelper::success(__('auth.eds_login_successful'), $dynamicAttributes)->withCookie($cookie_jwt);
+            $cookie_user_id = Cookie::make('user_id', $user->id, env('COOKIE_TIME_EXPIRE'), env('COOKIE_PATH'), env('COOKIE_DOMAIN_ALLOWED'), env('COOKIE_IS_SECURE'), env('COOKIE_IS_HTTP_ONLY'));
+            return ResponseHelper::success(__('auth.eds_login_successful'), $dynamicAttributes)->withCookie($cookie_jwt)->withCookie($cookie_user_id);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

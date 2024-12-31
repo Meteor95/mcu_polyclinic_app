@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\RouteAndPermission;
 use App\Helpers\ResponseHelper;
-use Illuminate\Support\Facades\{Log, Validator};
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\{Log, Validator, Session, DB};
+use Spatie\Permission\Models\{Role, Permission};
+
 
 class RoleAndPermissionController extends Controller
 {
@@ -26,8 +27,8 @@ class RoleAndPermissionController extends Controller
             $nama_hakakses = $req->input('nama_hakakses');
             $keterangan = $req->input('keterangan');
             $group = $req->input('namagroup');
-            RouteAndPermission::create([
-                'name' => $nama_hakakses,
+            Permission::create([
+                'name' => strtolower(str_replace(' ', '_', $nama_hakakses)),
                 'guard_name' => 'web',
                 'group' => $group,
                 'description' => $keterangan,
@@ -71,7 +72,7 @@ class RoleAndPermissionController extends Controller
             }
             $idHakAkses = $req->idhakakses;
             $namaHakAkses = $req->namahakakses;
-            $permission = RouteAndPermission::find($idHakAkses);
+            $permission = Permission::where('name', $namaHakAkses)->delete();
             if (!$permission) {
                 return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Hak Akses']));
             }
@@ -94,9 +95,9 @@ class RoleAndPermissionController extends Controller
             $idHakAkses = (int)$req->input('idhakakses');
             $namaHakAkses = $req->input('namahakakses');
             $keterangan = $req->input('keteranganhakakses');
-            $permission = RouteAndPermission::find($idHakAkses);
+            $permission = Permission::where('id', $idHakAkses)->first();
             $permission->update([
-                'name' => $namaHakAkses,
+                'name' => strtolower(str_replace(' ', '_', $namaHakAkses)),
                 'description' => $keterangan
             ]);
             return ResponseHelper::success('Hak akses '.$namaHakAkses.' dengan keterangan '.$keterangan.' berhasil diubah.');
@@ -118,15 +119,19 @@ class RoleAndPermissionController extends Controller
             $nama_role = $req->input('name');
             $keterangan_role = $req->input('description');
             $permissions = $req->input('permissions');
-            $role = Role::create([
-                'team_id' => 1,
-                'name' => $nama_role,
-                'description' => $keterangan_role,
-                'guard_name' => 'web' 
-            ]);
-            if (!empty($permissions)) {
-                $role->givePermissionTo($permissions);
+            $permissions = array_map(function($permission) {
+                return strtolower(str_replace(' ', '_', $permission));
+            }, $permissions);
+            $validPermissions = Permission::whereIn('name', $permissions)->pluck('id');
+            if ($validPermissions->isEmpty()) {
+                return ResponseHelper::error_validation('Invalid permissions provided. Please select at least one permission.');
             }
+            $role = Role::create([
+                'name' => strtolower(str_replace(' ', '_', $nama_role)),
+                'description' => $keterangan_role,
+                'guard_name' => 'web'
+            ]);
+            $role->givePermissionTo($validPermissions);
             return ResponseHelper::success('Role ' . $nama_role . ' berhasil dibuat.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
@@ -136,12 +141,12 @@ class RoleAndPermissionController extends Controller
         try {
             $perHalaman = (int) $req->length > 0 ? (int) $req->length : 1;
             $nomorHalaman = (int) $req->start / $perHalaman;
-            $offset = $nomorHalaman * $perHalaman; 
+            $offset = $nomorHalaman * $perHalaman;
+            $parameterpencarian = $req->parameter_pencarian;
             $datatabel = RouteAndPermission::listRoleTabel($req, $perHalaman, $offset);
-            $jumlahdata = $datatabel['total'];
             $dynamicAttributes = [  
                 'data' => $datatabel['data'],
-                'recordsFiltered' => $jumlahdata,
+                'recordsFiltered' => $datatabel['total'],
                 'pages' => [
                     'limit' => $perHalaman,
                     'offset' => $offset,
@@ -184,35 +189,41 @@ class RoleAndPermissionController extends Controller
     }
     function editrole(Request $req){
         try {
+            Session::flush(); 
             $validator = Validator::make($req->all(), [
+                'idrole' => 'required|integer|exists:roles,id',
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
                 'permissions' => 'required|array',
             ]);
+        
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
+        
             $idRole = $req->input('idrole');
             $nama_role = $req->input('name');
             $keterangan_role = $req->input('description');
             $permissions = $req->input('permissions');
+            $formattedPermissions = array_map(function($permission) {
+                return strtolower(str_replace(' ', '_', $permission));
+            }, $permissions);
             $role = Role::find($idRole);
             if (!$role) {
-                throw new \Exception("Role not found");
+                return ResponseHelper::error_validation('Role tidak ditemukan');
             }
             $role->update([
-                'name' => $nama_role,
+                'name' => strtolower(str_replace(' ', '_', $nama_role)),
                 'description' => $keterangan_role,
                 'guard_name' => 'web',
             ]);
-            if (!empty($permissions)) {
-                $role->syncPermissions($permissions);
-            }
-        
+            $role->syncPermissions($formattedPermissions);
+            DB::table('sessions')->truncate();
             return ResponseHelper::success('Role ' . $nama_role . ' berhasil diubah.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
-        }        
+        }
+               
     }
 }

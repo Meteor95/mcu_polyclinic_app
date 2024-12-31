@@ -65,7 +65,12 @@ function tabel_role_tersedia(){
             columns: [
                 {
                     title: "Nama Role",
-                    data: "name"
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return capitalizeFirstLetter(row.name);
+                        }
+                        return data;
+                    }
                 },
                 {
                     title: "Hak Akses",
@@ -75,7 +80,7 @@ function tabel_role_tersedia(){
                             return `<span class="badge bg-danger me-1">Akses Semua Fitur MCU Artha Medica</span>`;
                         }
                         return data.split(',')
-                                .map(permission => `<span class="badge bg-primary me-1">${permission.trim()}</span>`)
+                                .map(permission => `<span class="badge bg-primary me-1">${capitalizeFirstLetter(permission.trim())}</span>`)
                                 .join('');
                     }
                 },
@@ -95,10 +100,19 @@ function tabel_role_tersedia(){
 function tabel_role(){
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_permission_tersedia").DataTable({
-            dom: 'lfrtip',
             searching: false,
             lengthChange: false,
             ordering: false,
+            bFilter: false,
+            bProcessing: true,
+            serverSide: true,
+            scrollX: $(window).width() < 768 ? true : false,
+            pageLength: $('#data_ditampilkan').val(),
+            pagingType: "full_numbers",
+            columnDefs: [{
+                defaultContent: "-",
+                targets: "_all"
+            }],
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -107,14 +121,6 @@ function tabel_role(){
                     "previous": '<i class="fa fa-angle-left"></i>',
                 },
             },
-            scrollCollapse: true,
-            scrollX: true,
-            bFilter: false,
-            bInfo: true,
-            ordering: false,
-            bPaginate: true,
-            bProcessing: true,
-            serverSide: true,
             ajax: {
                 "url": baseurlapi + '/permission/daftarhakakses',
                 "type": "GET",
@@ -124,8 +130,7 @@ function tabel_role(){
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $('#kotak_pencarian').val();
-                    d.start = 0;
-                    d.length = 10;
+                    d.length = $('#data_ditampilkan').val();
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -142,11 +147,10 @@ function tabel_role(){
                 if (typeof settings.json !== "undefined") {
                     const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                     const recordsFiltered = settings.json.recordsFiltered;
-                    const infoString = 'Halaman ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Jumlah Data: ' + recordsFiltered + ' data';
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + $('#data_ditampilkan').val() + ' Dari Total : ' + recordsFiltered + ' Data';
                     return infoString;
                 }
             },
-            pagingType: "full_numbers",
             columnDefs: [{
                 defaultContent: "-",
                 targets: "_all"
@@ -161,13 +165,14 @@ function tabel_role(){
                     title: "Nama Perizinan",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return row.name;
+                            return capitalizeFirstLetter(row.name);
                         }
                         return data;
                     }
                 },
                 {
                     title: "Keterangan",
+                    className: $(window).width() < 768 ? 'dt-nowrap' : '',
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             return row.description;
@@ -177,13 +182,15 @@ function tabel_role(){
                 },
                 {
                     title: "Pilih Role",
+                    width: "200px",
+                    className: $(window).width() < 768 ? 'dt-nowrap' : '',
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             let buttonText = row.isSelected ? 'Jangan Pilih' : 'Pilih';
                             let buttonClass = row.isSelected ? 'btn-secondary' : 'btn-primary';
                             return '<button class="btn ' + buttonClass + ' btn-sm role-button" data-id="' + row.id + '" onclick="toggleRowSelection(this.closest(\'tr\'))">' +
                                 buttonText +
-                                '</button><input type="checkbox" class="form-check-input group-' + row.group + '" id="checkbox_'+row.id+'" name="checkbox_roles[]" onclick="toggleRowSelection(this.closest(\'tr\'))" style="display:none;">';
+                                '</button><input type="checkbox" class="form-check-input group-' + revertStringToLowerCase(row.group) + '" id="checkbox_'+row.id+'" name="checkbox_roles[]" onclick="toggleRowSelection(this.closest(\'tr\'))" style="display:none;">';
                         }
                         return data;
                     }
@@ -208,7 +215,7 @@ function tabel_role(){
                                 '<td colspan="1"><strong>Kelompok Izin</strong></td>' +
                                 '<td colspan="1"><strong>' + group + '</strong></td>' +
                                 '<td colspan="1">' +
-                                    '<button class="btn btn-primary btn-sm" onclick="selectAllInGroup(\'' + group + '\')">Pilih Grup '+group+'</button>' +
+                                    '<button class="btn btn-primary btn-sm" onclick="selectAllInGroup(\'' + revertStringToLowerCase(group) + '\')">Pilih Grup '+group+'</button>' +
                                 '</td>' +
                             '</tr>'
                         );
@@ -219,6 +226,9 @@ function tabel_role(){
         });
     });
 }
+$("#data_ditampilkan").on('change', function() {
+    $("#datatables_permission_tersedia").DataTable().ajax.reload();
+});
 $('#kotak_pencarian').on('input', debounce(function() {
   $("#datatables_permission_tersedia").DataTable().ajax.reload();
 }, 500));
@@ -279,7 +289,7 @@ function hapusrole(idrole,namarole, hakaskes){
     }  
     isedit = false;
     Swal.fire({ 
-        html: '<div class="mt-3"><lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f06548,secondary:#f7b84b" style="width:120px;height:120px"></lord-icon><div class="pt-2 fs-15"><h4>Konfirmasi Hapus Role '+namarole+'</h4><p class="text-muted mx-4 mb-0">Seluruh role '+hakaskes+' akan dihapus, pastikan anda telah mengubah role pengguna yang terkait dengan role ini menjadi role lainnya</p></div></div>',
+        html: '<div class="mt-3"><lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f06548,secondary:#f7b84b" style="width:120px;height:120px"></lord-icon><div class="pt-2 fs-15"><h4>Konfirmasi Hapus Role '+capitalizeFirstLetter(namarole)+'</h4><p class="text-muted mx-4 mb-0">Daftar role <b>'+capitalizeFirstLetter(hakaskes)+'</b> akan dihapus, pastikan anda telah mengubah role pengguna yang terkait dengan role ini menjadi role lainnya. Jikalau tidak penggunak tidak dapat masuk kedalam sistem</p></div></div>',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: 'orange',
@@ -354,14 +364,14 @@ $('#tabel-role tbody').on('click', '.role-button', function(e) {
 
 function selectAllInGroup(group) {
     let allSelected = true;
-    $('.group-' + group).each(function() {
+    $('.group-' + revertStringToLowerCase(group)).each(function() {
         let row = $(this).closest('tr');
         if (!row.hasClass('selected')) {
             allSelected = false;
             return false;
         }
     });
-    $('.group-' + group).each(function() {
+    $('.group-' + revertStringToLowerCase(group)).each(function() {
         let row = $(this).closest('tr');
         if (allSelected) {
             if (row.hasClass('selected')) {
@@ -395,7 +405,7 @@ function editrole(idrole, namarole, keteranganrole, group){
            permissions.forEach(function(permission) {
             $('#datatables_permission_tersedia tbody tr').each(function() {
                 let row = $(this);
-                if (row.find('td:first').text().trim() === permission.name) {
+                if (revertStringToLowerCase(row.find('td:first').text()).trim() === revertStringToLowerCase(permission.name).trim()) {
                     toggleRowSelection(row);
                 }
             });

@@ -7,26 +7,27 @@ $('#kotak_pencarian').on('input', debounce(function() {
 function tabel_hakakses(){
 $.get('/generate-csrf-token', function(response) {
     $("#datatables_permission").DataTable({
-        dom: 'lfrtip',
         searching: false,
         lengthChange: false,
         ordering: false,
-        language:{
+        bFilter: false,
+        bProcessing: true,
+        serverSide: true,
+        scrollX: $(window).width() < 768 ? true : false,
+        pageLength: $('#data_ditampilkan').val(),
+        pagingType: "full_numbers",
+        columnDefs: [{
+            defaultContent: "-",
+            targets: "_all"
+        }],
+        language: {
             "paginate": {
-                "first": '<i class="fa fa-angle-double-left"></i>', 
-                "last": '<i class="fa fa-angle-double-right"></i>', 
-                "next": '<i class="fa fa-angle-right"></i>', 
+                "first": '<i class="fa fa-angle-double-left"></i>',
+                "last": '<i class="fa fa-angle-double-right"></i>',
+                "next": '<i class="fa fa-angle-right"></i>',
                 "previous": '<i class="fa fa-angle-left"></i>',
             },
         },
-        scrollCollapse: true,
-        scrollX: true,
-        bFilter: false,
-        bInfo : true,
-        ordering: false,
-        bPaginate: true,
-        bProcessing: true, 
-        serverSide: true,
         ajax: {
             "url": baseurlapi + '/permission/daftarhakakses',
             "type": "GET",
@@ -34,8 +35,7 @@ $.get('/generate-csrf-token', function(response) {
             "data": function (d) {
                 d._token = response.csrf_token;
                 d.parameter_pencarian = $('#kotak_pencarian').val();
-                d.start = 0;
-                d.length = 10;
+                d.length = $('#data_ditampilkan').val();
             },
             "dataSrc": function (json) {
                 let detailData = json.data;
@@ -48,11 +48,11 @@ $.get('/generate-csrf-token', function(response) {
                 return mergedData;
             }
         },
-        infoCallback: function (settings) {
-            if (typeof settings.json !== "undefined"){
+        infoCallback: function(settings) {
+            if (typeof settings.json !== "undefined") {
                 const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                 const recordsFiltered = settings.json.recordsFiltered;
-                const infoString = 'Halaman ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Jumlah Data: ' + recordsFiltered+ ' data';
+                const infoString = 'Hal ke: ' + currentPage + ' Ditampilkan: ' + ($('#data_ditampilkan').val() < 0 ? 'Semua' : $('#data_ditampilkan').val()) + ' Baris dari Total : ' + recordsFiltered + ' Data';
                 return infoString;
             }
         },
@@ -75,7 +75,7 @@ $.get('/generate-csrf-token', function(response) {
                 title: "Nama Perizinan",
                 render: function(data, type, row, meta) {
                     if (type === 'display') {
-                        return row.name;
+                        return capitalizeFirstLetter(row.name);
                     }
                     return data;
                 }
@@ -91,6 +91,7 @@ $.get('/generate-csrf-token', function(response) {
             }, 
             {
                 title: "Keterangan",
+                className: $(window).width() < 768 ? 'dt-nowrap' : '',
                 render: function(data, type, row, meta) {
                     if (type === 'display') {
                         return row.description;
@@ -100,6 +101,8 @@ $.get('/generate-csrf-token', function(response) {
             },
             {
                 title: "Aksi",
+                width: "300px",
+                className: $(window).width() < 768 ? 'dt-nowrap' : '',
                 render: function(data, type, row, meta) {
                     if (type === 'display') {
                         return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"edithakakses('" + row.id + "','" + row.name + "', '" + row.description + "','"+ row.group+"')\"><i class=\"fa fa-edit\"></i> Edit Izin</button><button class=\"btn btn-danger w-100\" onclick=\"hapushakakses('" + row.id + "','" + row.name + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Izin</button></div>";
@@ -111,9 +114,12 @@ $.get('/generate-csrf-token', function(response) {
     });
 });
 }
+$("#data_ditampilkan").change(function(){
+    $("#datatables_permission").DataTable().ajax.reload();
+});
 function edithakakses(idhakakses,namahakakses,keteranganhakakses,nama_group){
     $('#idhakakses').val(idhakakses);
-    $('#namahakakses').val(namahakakses);
+    $('#namahakakses').val(capitalizeFirstLetter(namahakakses));
     $('#keteranganhakakses').val(keteranganhakakses);
     $('#nama_group').val(nama_group);
     $('#editRoleModal').modal('show');
@@ -176,29 +182,29 @@ Swal.fire({
     cancelButtonText: "Batal"
 }).then((result) => {
     if (result.isConfirmed) {
-    $.ajax({
-        url: baseurlapi + '/permission/edithakakses',
-        type: "POST",
-        headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-        'Authorization': 'Bearer ' + localStorage.getItem('token_ajax')
-        }, 
-        data: {
-        idhakakses: $("#idhakakses").val(),
-        namahakakses: $("#namahakakses").val(),
-        keteranganhakakses: $("#keteranganhakakses").val()
-        },
-        success: function(response){
-        createToast('Sukses Eksekusi Proses','top-right', response.message, 'success', 3000);
-        $("#datatables_permission").DataTable().ajax.reload();
-        $("#editRoleModal").modal('hide');
-        $("#update_hakakses").html('Simpan Data');
-        },
-        error: function(xhr, status, error) {
-        createToast('Gagal Eksekusi Proses','top-right', "Pesan Kesalahan : "+xhr.responseJSON.message, 'error', 3000);
-        $("#update_hakakses").html('Simpan Data');
-        }
-    });
+        $.ajax({
+            url: baseurlapi + '/permission/edithakakses',
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Authorization': 'Bearer ' + localStorage.getItem('token_ajax')
+            }, 
+            data: {
+            idhakakses: $("#idhakakses").val(),
+            namahakakses: $("#namahakakses").val(),
+            keteranganhakakses: $("#keteranganhakakses").val()
+            },
+            success: function(response){
+                createToast('Sukses Eksekusi Proses','top-right', response.message, 'success', 3000);
+                $("#datatables_permission").DataTable().ajax.reload();
+                $("#editRoleModal").modal('hide');
+                $("#update_hakakses").html('Simpan Data');
+            },
+            error: function(xhr, status, error) {
+                createToast('Gagal Eksekusi Proses','top-right', "Pesan Kesalahan : "+xhr.responseJSON.message, 'error', 3000);
+                $("#update_hakakses").html('Simpan Data');
+            }
+        });
     }
 });
 });

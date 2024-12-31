@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\{Cookie,Session};
+
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -15,6 +16,8 @@ class AuthController extends Controller
       if ($token) JWTAuth::setToken($token)->invalidate();
       $request->attributes->remove('user_details');
       $request->attributes->remove('token_device');
-      return redirect('/')->withCookie(Cookie::forget('token_device'));
+      $request->attributes->remove('user_id');
+      Session::flush();
+      return redirect('/')->withCookie(Cookie::forget('token_device'))->withCookie(Cookie::forget('user_id'));
     }
 }

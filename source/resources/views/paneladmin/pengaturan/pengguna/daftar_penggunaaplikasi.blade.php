@@ -279,5 +279,5 @@
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-<script src="{{asset('mofi/assets/js/system/user.js')}}"></script>
+<script src="{{asset('vendor/erayadigital/auth/user.js')}}"></script>
 @endsection

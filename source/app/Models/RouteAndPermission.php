@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RouteAndPermission extends Model
 {
@@ -24,11 +25,11 @@ class RouteAndPermission extends Model
             $query->where('name', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('group', 'LIKE', '%' . $parameterpencarian . '%');
         }
+        $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
             ->skip($offset)
             ->orderBy('urutan', 'ASC')
             ->get();
-        $jumlahdata = $query->count();
         return [
             'data' => $result,
             'total' => $jumlahdata
@@ -48,12 +49,12 @@ class RouteAndPermission extends Model
                   ->orWhere('roles.description', 'LIKE', '%' . $parameterpencarian . '%');
             });
         }
+        $jumlahdata = $query->groupBy('roles.id')->count();
         $result = $query->groupBy('roles.id')
             ->take($perHalaman)
             ->skip($offset)
             ->orderBy('roles.id', 'ASC')
             ->get();
-        $jumlahdata = $result->count();
         return [
             'data' => $result,
             'total' => $jumlahdata

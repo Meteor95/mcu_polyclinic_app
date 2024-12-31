@@ -22,8 +22,21 @@
             <h2 class="sub-title">Tabel Informasi Hak Akses Sistem</h2>
           </div>
           <div class="col-md-12">
-            <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan nama hak akses">
-            <div class="table">
+            <div class="row">
+              <div class="col-md-2">
+                <select id="data_ditampilkan" class="form-select">
+                  <option value="10">10 Data</option>
+                  <option value="25">25 Data</option>
+                  <option value="50">50 Data</option>
+                  <option value="100">100 Data</option>
+                  <option value="500">500 Data</option>
+              </select>
+              </div>
+              <div class="col-md-10">
+                <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan nama hak akses">
+              </div>
+            </div>
+            <div class="col-md-12">
               <table class="table display" id="datatables_permission"></table>
             </div>
           </div>
@@ -60,5 +73,5 @@
 @section('css_load')
 @endsection
 @section('js_load')
-<script src="{{asset('mofi/assets/js/system/permission.js')}}"></script>
+<script src="{{asset('vendor/erayadigital/auth/permission.js')}}"></script>
 @endsection

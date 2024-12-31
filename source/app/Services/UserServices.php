@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\{User, Pegawai};
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Log;
 
 use Exception;
 
@@ -37,11 +39,17 @@ class UserServices
                 'email_verified_at' => now(),
                 'password' => Hash::make($data['password']),
             ];
-            User::create($users);
-            $userdata = User::where('username', $data['username'])->first();
-            User::assignRole($data['idhakakses'], $userdata->id);
+            $orm_user = User::create($users);
+            $user = User::find($orm_user->id);
+            $role = Role::where('name', 'owner')->first();
+            if ($role) {
+                Log::info($user);
+                $user->assignRole($role);
+            } else {
+                dd('Role "owner" tidak ditemukan');
+            }
             $employed = [
-                'id' => $userdata->id,
+                'id' => $orm_user->id,
                 'nama_pegawai' => $data['nama_pegawai'] ?? '',
                 'nik' => $data['nik'] ?? '',
                 'jabatan' => $data['jabatan'] ?? '',
@@ -66,9 +74,10 @@ class UserServices
     public function handleTransactionDeleteUser($data){
         return DB::transaction(function () use ($data) {
             $tanda_tangan = Pegawai::where('id', '=', $data['id'])->first();
+            $user = User::where('id', '=', $data['id'])->first();
             User::where('id', '=', $data['id'])->delete();
             Pegawai::where('id', '=', $data['id'])->delete();
-            User::deleteRole($data['id']);
+            $user->removeRole($user->roles->first()->name);
             Storage::disk('public')->delete('user/ttd/' . $tanda_tangan->tanda_tangan_pegawai);
         });
     }
@@ -105,7 +114,9 @@ class UserServices
             }
             $tanda_tangan = Pegawai::where('id', '=', $data['id_pengguna'])->first();
             Pegawai::where('id', '=', $data['id_pengguna'])->update($datapegawai);
-            User::assignRole($data['idhakakses'], $data['id_pengguna']);
+            $user_assign = User::find($data['id_pengguna']);
+            Log::info(strtolower(str_replace(' ', '_', $data['idhakakses'])));
+            $user_assign->syncRoles(strtolower(str_replace(' ', '_', $data['idhakakses'])));
             if (isset($ttd)) {
                 Storage::disk('public')->delete('user/ttd/' . $tanda_tangan->tanda_tangan_pegawai);
                 Storage::disk('public')->putFileAs('user/ttd/', $ttd, $filename);

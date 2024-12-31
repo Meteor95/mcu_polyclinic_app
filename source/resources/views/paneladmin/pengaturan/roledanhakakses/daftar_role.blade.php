@@ -31,9 +31,22 @@
             <h2 class="sub-title">Role Yang Tersedia Pada Sistem MCU Artha Medica</h2>
           </div>
           <div class="col-md-12">
-            <div class="input-group">
-                <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan nama akses permission yang tersedia">
-                <button class="btn btn-success" id="simpan_role" type="button"><i class="fa fa-save"></i> Simpan Data</button>
+            <div class="row">
+              <div class="col-md-2">
+                <select id="data_ditampilkan" class="form-select">
+                  <option value="10">10 Data</option>
+                  <option value="25">25 Data</option>
+                  <option value="50">50 Data</option>
+                  <option value="100">100 Data</option>
+                  <option selected value="500">500 Data</option>
+              </select>
+              </div>
+              <div class="col-md-10">
+                <div class="input-group">
+                  <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan nama akses permission yang tersedia">
+                  <button class="btn btn-success" id="simpan_role" type="button"><i class="fa fa-save"></i> Simpan Data</button>
+                </div>
+              </div>
             </div>
             <div class="table">
               <table class="display" id="datatables_permission_tersedia"></table>
@@ -54,5 +67,5 @@
 </style>
 @endsection
 @section('js_load')
-<script src="{{asset('mofi/assets/js/system/role.js')}}"></script>
+<script src="{{asset('vendor/erayadigital/auth/role.js')}}"></script>
 @endsection

@@ -18,7 +18,7 @@ return [
     'throttle' => 'Terlalu banyak melakukan percobaan kredential. Silahkan coba lagi dalam :seconds detik.',
     'eds_required_data' => 'Terjadi Kesalahan Dalam Validasi Atribut',
     'eds_prosess_saving' => 'Data Pengguna',
-    'eds_login_successful' => 'Nama pengguna :username berhasil login',
+    'eds_login_success' => 'Nama pengguna :username berhasil login',
     'eds_logout_success' => 'Nama pengguna :username berhasil keluar dari sistem',
     'eds_invalid_credentials' => 'Informasi kombinasi kredensial yang anda berikan tidak terdaftar pada database kami',
     'eds_update_credentials' => 'Silahkan masuk dengan kredential yang baru. Lupakan yang lama',
