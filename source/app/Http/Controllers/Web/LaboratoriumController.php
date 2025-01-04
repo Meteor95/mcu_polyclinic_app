@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Laboratorium\{Kategori, JasaPetugas, Satuan, Kenormalan};
 
 class LaboratoriumController extends Controller
 {
@@ -14,34 +15,12 @@ class LaboratoriumController extends Controller
             'user_details' => $req->attributes->get('user_details'),
         ];
     }
-    public function kategori(Request $req){
-        $data = $this->getData($req, 'Daftar Kategori', [
-            'Kategori' => route('admin.laboratorium.kategori'),
+    public function tarif(Request $req){
+        $data = $this->getData($req, 'Daftar Tarif Laboratorium dan Pengobatan', [
+            'Tarif' => route('admin.laboratorium.tarif'),
         ]);
-        return view('paneladmin.laboratorium.kategori', ['data' => $data]);
-    }
-    public function satuan(Request $req){
-        $data = $this->getData($req, 'Daftar Satuan', [
-            'Satuan' => route('admin.laboratorium.satuan'),
-        ]);
-        return view('paneladmin.laboratorium.satuan', ['data' => $data]);
-    }
-    public function tindakan(Request $req){
-        $data = $this->getData($req, 'Daftar Pemeriksaan Lab', [
-            'Pemeriksaan Lab' => route('admin.laboratorium.tindakan'),
-        ]);
-        return view('paneladmin.laboratorium.tindakan', ['data' => $data]);
-    }
-    public function template(Request $req){
-        $data = $this->getData($req, 'Daftar Template', [
-            'Template' => route('admin.laboratorium.template'),
-        ]);
-        return view('paneladmin.laboratorium.template', ['data' => $data]);
-    }
-    public function transaksi(Request $req){
-        $data = $this->getData($req, 'Daftar Transaksi', [
-            'Transaksi' => route('admin.laboratorium.transaksi'),
-        ]);
-        return view('paneladmin.laboratorium.transaksi', ['data' => $data]);
+        $data['tarif_laboratorium'] = JasaPetugas::all();
+        $data['kenormalan'] = Kenormalan::all();
+        return view('paneladmin.laboratorium.daftar_tarif', ['data' => $data]);
     }
 }

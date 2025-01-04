@@ -182,7 +182,7 @@
           @endif
           <li class="sidebar-main-title">
             <div>
-              <h6>LABORATORIUM</h6>
+              <h6>LAB & OBAT</h6>
             </div>
           </li>
           <li class="sidebar-list">
@@ -192,15 +192,12 @@
               <span>Paramter</span>
             </a>
             <ul class="sidebar-submenu">
-              <li><a href="{{ route('admin.laboratorium.kategori') }}">Kategori</a></li>
-              <li><a href="{{ route('admin.laboratorium.satuan') }}">Satuan</a></li>
-              <li><a href="{{ route('admin.laboratorium.template') }}">Template</a></li>
-              <li><a href="{{ route('admin.laboratorium.rentang_kenormalan') }}">Rentang Kenormalan</a></li>
+              <li><a href="{{ route('admin.laboratorium.tarif') }}">Daftar Tarif</a></li>
             </ul>
           </li>
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
-            <a class="sidebar-link sidebar-title" href="{{ route('admin.laboratorium.tindakan') }}">
+            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
               <i class="fa fa-flask" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
               <span>Tindakan</span>
             </a>

@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController, PoliklinikController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController, PoliklinikController, LaboratoriumController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -146,8 +146,16 @@ Route::prefix('v1')->group(function () {
             Route::get('hapus_citra_unggahan_poliklinik', [PoliklinikController::class,"hapus_citra_unggahan_poliklinik"]);
             Route::get('hapus_foto_unggahan_satuan', [PoliklinikController::class,"hapus_foto_unggahan_satuan"]);
         });
+        Route::prefix('laboratorium')->group(function () {
+            Route::post('simpan_tarif_laboratorium', [LaboratoriumController::class,"simpan_tarif_laboratorium"]);
+            Route::get('daftar_tarif', [LaboratoriumController::class,"daftar_tarif"]);
+            Route::get('detail_tarif_laboratorium', [LaboratoriumController::class,"detail_tarif_laboratorium"]);
+            Route::delete('hapus_tarif_laboratorium', [LaboratoriumController::class,"hapus_tarif_laboratorium"]);
+        });
         Route::prefix('atribut')->group(function () {
             Route::get('lingkungankerja', [AtributController::class,"getlingkungankerja"]);
+            Route::get('kategori', [LaboratoriumController::class,"getkategori_laboratorium"]);
+            Route::get('satuan', [LaboratoriumController::class,"getsatuan_laboratorium"]);
         });
         Route::prefix('transaksi')->group(function () {
             Route::post('simpanpeserta', [TransaksiController::class,"savepeserta"]);

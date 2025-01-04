@@ -112,25 +112,7 @@
                             <div class="row mt-2 g-1">
                                 <div class="col-md-6">
                                     <select class="form-control" id="rentang_kenormalan" name="rentang_kenormalan" required>
-                                        <option value="">Rentang Kenormalan</option>
-                                        <option value="1">Laki-laki 1-5 Tahun</option>
-                                        <option value="2">Laki-laki 6-10 Tahun</option>
-                                        <option value="3">Laki-laki 11-15 Tahun</option>
-                                        <option value="4">Laki-laki 16-20 Tahun</option>
-                                        <option value="5">Laki-laki 21-25 Tahun</option>
-                                        <option value="6">Laki-laki 26-30 Tahun</option>
-                                        <option value="7">Laki-laki 31-35 Tahun</option>
-                                        <option value="8">Laki-laki 36-40 Tahun</option>
-                                        <option value="9">Laki-laki 41-45 Tahun</option>
-                                        <option value="10">Perempuan 1-5 Tahun</option>
-                                        <option value="11">Perempuan 6-10 Tahun</option>
-                                        <option value="12">Perempuan 11-15 Tahun</option>
-                                        <option value="13">Perempuan 16-20 Tahun</option>
-                                        <option value="14">Perempuan 21-25 Tahun</option>
-                                        <option value="15">Perempuan 26-30 Tahun</option>
-                                        <option value="16">Perempuan 31-35 Tahun</option>
-                                        <option value="17">Perempuan 36-40 Tahun</option>
-                                        <option value="18">Perempuan 41-45 Tahun</option>
+                                        
                                     </select>
                                 </div>
                                 <div class="col-md-6">
