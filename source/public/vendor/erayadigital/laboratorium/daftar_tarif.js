@@ -177,33 +177,6 @@ function load_kategori_dinamis() {
         });
     });
 }
-function buildHierarchy(flatList) {
-    const map = {};
-    const roots = [];
-    flatList.forEach(category => {
-        map[category.id] = { ...category, children: [] };
-    });
-    flatList.forEach(category => {
-        if (category.parent_id) {
-            map[category.parent_id]?.children.push(map[category.id]);
-        } else {
-            roots.push(map[category.id]);
-        }
-    });
-    return roots;
-}
-function addCategoryOptions(categories, depth = 0) {
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.id;
-        option.textContent = `${'—'.repeat(depth)} ${category.nama_kategori}`;
-        selectElementKategori.appendChild(option);
-        if (category.children && category.children.length > 0) {
-            addCategoryOptions(category.children, depth + 1);
-        }
-    });
-}
-
 $("#grup_item").change(function(){
     load_kategori_dinamis();
     load_satuan_dinamis();
@@ -500,6 +473,13 @@ $("#btn_simpan_tarif_laboratorium").click(function(e){
 $("#btn_bersihkan_formulir").click(function(e){
     e.preventDefault();
     clear_formulir();
+});
+$("#kotak_pencarian").on("keyup", debounce(function(){
+    $("#table_tindakan_lab").DataTable().ajax.reload();
+}, 300));
+$("#data_ditampilkan").change(function(){
+    $("#table_tindakan_lab").DataTable().page.len($(this).val()).draw();
+    $("#table_tindakan_lab").DataTable().ajax.reload();
 });
 function clear_formulir() {
     isedit = false;

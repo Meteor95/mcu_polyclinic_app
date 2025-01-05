@@ -192,9 +192,19 @@
               <span>Paramter</span>
             </a>
             <ul class="sidebar-submenu">
-              <li><a href="{{ route('admin.laboratorium.tarif') }}">Daftar Tarif</a></li>
+              @foreach([
+                ['condition' => $hasAccessTarifLaboratorium, 'url' => 'laboratorium/tarif', 'label' => 'Daftar Tarif'],
+                ['condition' => $hasAccessKategoriLaboratorium, 'url' => 'laboratorium/kategori', 'label' => 'Kategori'],
+                ['condition' => $hasAccessSatuanLaboratorium, 'url' => 'laboratorium/satuan', 'label' => 'Satuan'],
+                ['condition' => $hasAccessRentangKenormalanLaboratorium, 'url' => 'laboratorium/rentang_kenormalan', 'label' => 'Rentang Kenormalan']
+              ] as $menuItem)
+                @if ($menuItem['condition'])
+                  <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
+                @endif
+              @endforeach
             </ul>
           </li>
+          @if ($hasAccessTindakanLaboratorium)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -202,6 +212,7 @@
               <span>Tindakan</span>
             </a>
           </li>
+          @endif
           <li class="sidebar-main-title">
             <div>
               <h6>LAPORAN</h6>

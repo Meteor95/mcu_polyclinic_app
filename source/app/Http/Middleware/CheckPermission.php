@@ -59,6 +59,12 @@ class CheckPermission
             'hasAccessEkg' => 'akses_ekg',
             'hasAccessThreadmill' => 'akses_threadmill',
             'hasAccessRonsen' => 'akses_ronsen',
+            /* Laboratorium */
+            'hasAccessTarifLaboratorium' => 'akses_tarif_laboratorium',
+            'hasAccessKategoriLaboratorium' => 'akses_kategori_laboratorium',
+            'hasAccessSatuanLaboratorium' => 'akses_satuan_laboratorium',
+            'hasAccessRentangKenormalanLaboratorium' => 'akses_rentang_kenormalan_laboratorium',
+            'hasAccessTindakanLaboratorium' => 'akses_tindakan_laboratorium',
             /* Master Data */
             'hasAccessMasterData' => 'akses_master_data',
             'hasAccessMasterPerusahaan' => 'akses_master_perusahaan',

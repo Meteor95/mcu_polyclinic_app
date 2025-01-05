@@ -154,8 +154,23 @@ Route::prefix('v1')->group(function () {
         });
         Route::prefix('atribut')->group(function () {
             Route::get('lingkungankerja', [AtributController::class,"getlingkungankerja"]);
+            /* Kategori Laboratorium */
             Route::get('kategori', [LaboratoriumController::class,"getkategori_laboratorium"]);
+            Route::get('daftar_kategori', [LaboratoriumController::class,"daftar_kategori_laboratorium"]);
+            Route::post('simpan_kategori', [LaboratoriumController::class,"simpan_kategori_laboratorium"]);
+            Route::delete('hapus_kategori', [LaboratoriumController::class,"hapus_kategori_laboratorium"]);
+            Route::get('detail_kategori', [LaboratoriumController::class,"detail_kategori_laboratorium"]);
+            /* Satuan Laboratorium */
             Route::get('satuan', [LaboratoriumController::class,"getsatuan_laboratorium"]);
+            Route::get('daftar_satuan', [LaboratoriumController::class,"daftar_satuan_laboratorium"]);
+            Route::post('simpan_satuan', [LaboratoriumController::class,"simpan_satuan_laboratorium"]);
+            Route::delete('hapus_satuan', [LaboratoriumController::class,"hapus_satuan_laboratorium"]);
+            Route::get('detail_satuan', [LaboratoriumController::class,"detail_satuan_laboratorium"]);
+            /* Nilai Rentang Kenormalan */
+            Route::get('daftar_rentang_kenormalan', [LaboratoriumController::class,"daftar_rentang_kenormalan"]);
+            Route::post('simpan_rentang_kenormalan', [LaboratoriumController::class,"simpan_rentang_kenormalan"]);
+            Route::delete('hapus_rentang_kenormalan', [LaboratoriumController::class,"hapus_rentang_kenormalan"]);
+            Route::get('detail_rentang_kenormalan', [LaboratoriumController::class,"detail_rentang_kenormalan"]);
         });
         Route::prefix('transaksi')->group(function () {
             Route::post('simpanpeserta', [TransaksiController::class,"savepeserta"]);

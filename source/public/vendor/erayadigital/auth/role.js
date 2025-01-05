@@ -227,6 +227,7 @@ function tabel_role(){
     });
 }
 $("#data_ditampilkan").on('change', function() {
+    $("#datatables_permission_tersedia").DataTable().page.len($(this).val()).draw();
     $("#datatables_permission_tersedia").DataTable().ajax.reload();
 });
 $('#kotak_pencarian').on('input', debounce(function() {

@@ -49,6 +49,9 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     });
     Route::prefix('laboratorium')->group(function () {
         Route::get('tarif', [LaboratoriumController::class,"tarif"])->middleware('permission_cache:akses_tarif_laboratorium')->name('admin.laboratorium.tarif');
+        Route::get('kategori', [LaboratoriumController::class,"kategori"])->middleware('permission_cache:akses_kategori_laboratorium')->name('admin.laboratorium.kategori');
+        Route::get('satuan', [LaboratoriumController::class,"satuan"])->middleware('permission_cache:akses_satuan_laboratorium')->name('admin.laboratorium.satuan');
+        Route::get('rentang_kenormalan', [LaboratoriumController::class,"rentang_kenormalan"])->middleware('permission_cache:akses_rentang_kenormalan_laboratorium')->name('admin.laboratorium.rentang_kenormalan');
     });
     Route::prefix('image')->group(function () {
         Route::get('user/signature/{filename}', [FileController::class, 'showSignature']);

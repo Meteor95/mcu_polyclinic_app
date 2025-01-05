@@ -23,4 +23,22 @@ class LaboratoriumController extends Controller
         $data['kenormalan'] = Kenormalan::all();
         return view('paneladmin.laboratorium.daftar_tarif', ['data' => $data]);
     }
+    public function kategori(Request $req){
+        $data = $this->getData($req, 'Daftar Kategori Laboratorium', [
+            'Kategori' => route('admin.laboratorium.kategori'),
+        ]);
+        return view('paneladmin.laboratorium.daftar_kategori', ['data' => $data]);
+    }
+    public function satuan(Request $req){
+        $data = $this->getData($req, 'Daftar Satuan Laboratorium', [
+            'Satuan' => route('admin.laboratorium.satuan'),
+        ]);
+        return view('paneladmin.laboratorium.daftar_satuan', ['data' => $data]);
+    }
+    public function rentang_kenormalan(Request $req){
+        $data = $this->getData($req, 'Daftar Nilai Rentang Kenormalan', [
+            'Nilai Rentang Kenormalan' => route('admin.laboratorium.rentang_kenormalan'),
+        ]);
+        return view('paneladmin.laboratorium.nilai_rentang_kenormalan', ['data' => $data]);
+    }
 }

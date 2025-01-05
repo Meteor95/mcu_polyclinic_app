@@ -33,11 +33,11 @@ class PaketMCU extends Model
                 ->orWhere('paket_mcu.nama_paket', 'LIKE', '%' . $parameterpencarian . '%')
                 ->orWhere('paket_mcu.keterangan', 'LIKE', '%' . $parameterpencarian . '%');
         }
+        $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
             ->skip($offset)
             ->orderBy('paket_mcu.nama_paket', 'ASC')
             ->get();
-        $jumlahdata = $result->count();
         return [
             'data' => $result,
             'total' => $jumlahdata

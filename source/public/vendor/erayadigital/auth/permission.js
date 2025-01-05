@@ -115,6 +115,7 @@ $.get('/generate-csrf-token', function(response) {
 });
 }
 $("#data_ditampilkan").change(function(){
+    $("#datatables_permission").DataTable().page.len($(this).val()).draw();
     $("#datatables_permission").DataTable().ajax.reload();
 });
 function edithakakses(idhakakses,namahakakses,keteranganhakakses,nama_group){

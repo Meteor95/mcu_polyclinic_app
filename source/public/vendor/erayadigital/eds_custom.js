@@ -47,3 +47,29 @@ function revertStringToLowerCase(input, split = ' ', join = '_') {
         .map(word => word.toLowerCase())
         .join(join);
 }
+function buildHierarchy(flatList) {
+    const map = {};
+    const roots = [];
+    flatList.forEach(category => {
+        map[category.id] = { ...category, children: [] };
+    });
+    flatList.forEach(category => {
+        if (category.parent_id) {
+            map[category.parent_id]?.children.push(map[category.id]);
+        } else {
+            roots.push(map[category.id]);
+        }
+    });
+    return roots;
+}
+function addCategoryOptions(categories, depth = 0) {
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = `${'—'.repeat(depth)} ${category.nama_kategori}`;
+        selectElementKategori.appendChild(option);
+        if (category.children && category.children.length > 0) {
+            addCategoryOptions(category.children, depth + 1);
+        }
+    });
+}
