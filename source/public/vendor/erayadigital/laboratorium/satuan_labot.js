@@ -144,10 +144,10 @@ $("#btn_simpan_satuan").click(function(){
                     success: function(response) {
                         clear_form();
                         $("#datatables_satuan").DataTable().ajax.reload();
-                        createToast('Informasi Satuan Laboratorium', 'top-right', response.message, 'success', 3000);
+                        return createToast('Informasi Satuan Laboratorium', 'top-right', response.message, 'success', 3000);
                     },
                     error: function(xhr, status, error) {
-                        createToast('Kesalahan Pengambilan Data', 'top-right', error, 'error', 3000);
+                        return createToast('Kesalahan Pengambilan Data', 'top-right', error, 'error', 3000);
                     },
                 });
             });

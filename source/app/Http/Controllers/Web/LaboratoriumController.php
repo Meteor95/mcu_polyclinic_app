@@ -41,4 +41,10 @@ class LaboratoriumController extends Controller
         ]);
         return view('paneladmin.laboratorium.nilai_rentang_kenormalan', ['data' => $data]);
     }
+    public function templating(Request $req){
+        $data = $this->getData($req, 'Daftar Templat Laboratorium', [
+            'Templat' => route('admin.laboratorium.templating'),
+        ]);
+        return view('paneladmin.laboratorium.templating', ['data' => $data]);
+    }
 }

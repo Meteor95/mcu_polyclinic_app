@@ -196,7 +196,8 @@
                 ['condition' => $hasAccessTarifLaboratorium, 'url' => 'laboratorium/tarif', 'label' => 'Daftar Tarif'],
                 ['condition' => $hasAccessKategoriLaboratorium, 'url' => 'laboratorium/kategori', 'label' => 'Kategori'],
                 ['condition' => $hasAccessSatuanLaboratorium, 'url' => 'laboratorium/satuan', 'label' => 'Satuan'],
-                ['condition' => $hasAccessRentangKenormalanLaboratorium, 'url' => 'laboratorium/rentang_kenormalan', 'label' => 'Rentang Kenormalan']
+                ['condition' => $hasAccessRentangKenormalanLaboratorium, 'url' => 'laboratorium/rentang_kenormalan', 'label' => 'Rentang Kenormalan'],
+                ['condition' => $hasAccessRentangTemplating, 'url' => 'laboratorium/templating', 'label' => 'Templating']
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>

@@ -122,7 +122,7 @@ class MasterdataController extends Controller
     public function getpaketmcu(Request $req)
     {
         try {
-            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 1;
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 0;
             $nomorHalaman = (int) $req->start / $perHalaman;
             $offset = $nomorHalaman * $perHalaman; 
             $datatabel = PaketMcu::listPaketMcu($req, $perHalaman, $offset);
@@ -132,6 +132,18 @@ class MasterdataController extends Controller
                 'recordsFiltered' => $jumlahdata,
             ];
             return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi paket tersedia di MCU Artha Medica Clinic']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function getpaketmcu_non_dt(Request $req)
+    {
+        try {
+            $paket = PaketMcu::all();
+            $dynamicAttributes = [
+                'data' => $paket,
+            ];
+            return ResponseHelper::data('Informasi paket MCU tersedia', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

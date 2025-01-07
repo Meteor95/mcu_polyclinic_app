@@ -548,17 +548,15 @@ function getTableDataAsJson(kondisi) {
         });
     } else if (kondisi == 'jasa') {
         const data = table_tarif_laboratorium.rows().indexes().toArray();
-        harga_jual_tarif_laboratorium.set(0);
         let hargaJasaSum = 0;
         hargaJasaSum = hargaJasaSum + harga_dasar_tarif_laboratorium.getNumber();
         return data.map(index => {
             const trElement = $('#table_tarif_laboratorium tbody tr').eq(index);
             const inputElement = trElement.find(`#tarif_laboratorium_${index + 1}`);
             const autoNumericInstance = AutoNumeric.getAutoNumericElement(inputElement[0]);
-            const hargaJasa = autoNumericInstance ? autoNumericInstance.getNumericString() : null;
+            const hargaJasa = autoNumericInstance ? autoNumericInstance.get() : null;
             const rowData = table_tarif_laboratorium.row(index).data();
             hargaJasaSum += parseInt(hargaJasa);
-            harga_jual_tarif_laboratorium.set(hargaJasaSum);
             return {
                 tujuan_jasa: rowData[1],
                 harga_rekomendasi: rowData[2],

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
-use App\Models\Laboratorium\{Tarif, Kategori, Satuan, Kenormalan};
+use App\Models\Laboratorium\{Tarif, Kategori, Satuan, Kenormalan, TemplateLab};
 use Illuminate\Support\Facades\Log;
 
 
@@ -82,7 +82,7 @@ class LaboratoriumController extends Controller
     public function daftar_tarif(Request $req)
     {
         try {
-            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 1;
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : -1;
             $nomorHalaman = (int) $req->start / $perHalaman;
             $offset = $nomorHalaman * $perHalaman; 
             $datatabel = Tarif::listTarifTabel($req, $perHalaman, $offset);
@@ -365,6 +365,81 @@ class LaboratoriumController extends Controller
             }
             $rentang = Kenormalan::where('id', $req->id)->delete();
             return ResponseHelper::success("Informasi Nilai Rentang Kenormalan '".$req->nama_rentang_kenormalan."' berhasil dihapus.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    /* Template Laboratorium */
+    public function daftar_template_laboratorium(Request $req){
+        try {
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : -1;
+            $nomorHalaman = (int) $req->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman; 
+            $datatabel = TemplateLab::listTemplateTabel($req, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $datatabel['data'],
+                'recordsFiltered' => $datatabel['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Hak Akses']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function simpan_template_laboratorium(Request $req){
+        try {
+            $validator = Validator::make($req->all(), [
+                'used_paket_mcu' => 'required',
+                'id_paket_mcu' => 'required',
+                'nama_template' => 'required',
+                'meta_data_template' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $data = [
+                'used_paket_mcu' => $req->used_paket_mcu,
+                'id_paket_mcu' => $req->id_paket_mcu,
+                'nama_template' => $req->nama_template,
+                'meta_data_template' => json_encode($req->meta_data_template),
+            ];
+            if (filter_var($req->isedit, FILTER_VALIDATE_BOOLEAN)) {
+                $template = TemplateLab::where('id', $req->id)->update($data);
+            }else{
+                $template = TemplateLab::create($data);
+            }
+            return ResponseHelper::success("Informasi Template Laboratorium '".$req->nama_template."' berhasil disimpan. Silahkan lakukan transaksi pada menu Transaksi Laboratorium");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function hapus_template_laboratorium(Request $req){
+        try {
+            $validator = Validator::make($req->all(), [
+                'id' => 'required',
+                'nama_template' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            TemplateLab::where('id', $req->id)->delete();
+            return ResponseHelper::success("Informasi Template Laboratorium '".$req->nama_template."' berhasil dihapus. Silahkan buat template baru untuk mempermudah proses transaksi lab pada fitur transaksi lab.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function detail_template_laboratorium(Request $req){
+        try {
+            $template = TemplateLab::where('id', $req->id)->first();
+            $dynamicAttributes = [  
+                'data' => $template,
+            ];
+            return ResponseHelper::data('Informasi Template Laboratorium', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

@@ -115,6 +115,7 @@ Route::prefix('v1')->group(function () {
             Route::post('ubahperusahaan', [MasterdataController::class,"editperusahaan"]);
             /* Master Data Paket MCU */
             Route::get('daftarpaketmcu', [MasterdataController::class,"getpaketmcu"]);
+            Route::get('daftarpaketmcu_non_dt', [MasterdataController::class,"getpaketmcu_non_dt"]);
             Route::post('simpanpaketmcu', [MasterdataController::class,"savepaketmcu"]);
             Route::get('hapuspaketmcu', [MasterdataController::class,"deletepaketmcu"]);
             Route::post('ubahpaketmcu', [MasterdataController::class,"editpaketmcu"]);
@@ -151,6 +152,11 @@ Route::prefix('v1')->group(function () {
             Route::get('daftar_tarif', [LaboratoriumController::class,"daftar_tarif"]);
             Route::get('detail_tarif_laboratorium', [LaboratoriumController::class,"detail_tarif_laboratorium"]);
             Route::delete('hapus_tarif_laboratorium', [LaboratoriumController::class,"hapus_tarif_laboratorium"]);
+            /* Template Laboratorium */
+            Route::get('daftar_template_laboratorium', [LaboratoriumController::class,"daftar_template_laboratorium"]);
+            Route::post('simpan_template_laboratorium', [LaboratoriumController::class,"simpan_template_laboratorium"]);
+            Route::delete('hapus_template_laboratorium', [LaboratoriumController::class,"hapus_template_laboratorium"]);
+            Route::get('detail_template_laboratorium', [LaboratoriumController::class,"detail_template_laboratorium"]);
         });
         Route::prefix('atribut')->group(function () {
             Route::get('lingkungankerja', [AtributController::class,"getlingkungankerja"]);

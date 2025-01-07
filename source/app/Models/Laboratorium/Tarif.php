@@ -44,10 +44,15 @@ class Tarif extends Model
             $query->where('A.group_item', '=', $req->jenis_item_tampilkan);
         }
         $jumlahdata = $query->count();
-        $result = $query->take($perHalaman)
-            ->skip($offset)
-            ->orderBy('A.nama_item', 'ASC')
-            ->get();
+        if ($perHalaman > 0) { 
+            $result = $query->take($perHalaman)
+                ->skip($offset)
+                ->orderBy('A.nama_item', 'ASC')
+                ->get();
+        } else {
+            $result = $query->orderBy('A.nama_item', 'ASC')
+                ->get();
+        }
         return [
             'data' => $result,
             'total' => $jumlahdata
