@@ -185,26 +185,7 @@
                 </div>  
                 <div class="col-sm-12">
                     <label for="table_tarif_laboratorium">Jasa Laboratorium Per Transaksi</label>
-                    <table id="table_tarif_laboratorium" class="table table-striped table-bordered table-hover table-padding-sm">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Jasa Laboratorium</th>
-                                <th style="text-align: right;">Harga Rekomendasi</th>
-                                <th style="width: 300px;">Tentukan Nominal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($data['tarif_laboratorium'] as $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->nama_jasa }}</td>
-                                    <td class="text-end">{{ number_format($item->nominal_jasa, 0, ',', '.') }}</td>
-                                    <td><input class="form-control" type="text" id="tarif_laboratorium_{{ $loop->iteration }}" name="tarif_laboratorium[]" placeholder="Tentukan harga jasa laboratorium"></td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <table id="table_tarif_laboratorium" class="table table-striped table-bordered table-hover table-padding-sm"></table>
                 </div>
                 <div class="col-sm-12">
                     <label for="harga_jual">Harga Jual</label>
@@ -347,6 +328,7 @@
     </style>
 @endsection
 @section('js_load')
+<script src="https://cdn.jsdelivr.net/npm/numbro@2.5.0/dist/numbro.min.js"></script>
 <script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>

@@ -12,7 +12,8 @@ class Jasalayanan extends Model
     protected $fillable = [
         'kode_jasa_pelayanan',
         'nama_jasa_pelayanan',
-        'nominal_layanan'
+        'nominal_layanan',
+        'kategori_layanan'
     ];
     public static function listJasaPelayanan($req, $perHalaman, $offset)
     {
@@ -22,11 +23,19 @@ class Jasalayanan extends Model
             $query->where('kode_jasa_pelayanan', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_jasa_pelayanan', 'LIKE', '%' . $parameterpencarian . '%');
         }
-        $result = $query->take($perHalaman)
+        if ($req->kategori_layanan != "") {
+            $query->where('kategori_layanan', $req->kategori_layanan);
+        }
+        $jumlahdata = $query->count();
+        if ($req->length > 0) {
+            $result = $query->take($perHalaman)
             ->skip($offset)
             ->orderBy('nama_jasa_pelayanan', 'ASC')
             ->get();
-        $jumlahdata = $query->count();
+        }else{
+            $result = $query->orderBy('nama_jasa_pelayanan', 'ASC')
+            ->get();
+        }
         return [
             'data' => $result,
             'total' => $jumlahdata

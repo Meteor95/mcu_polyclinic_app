@@ -64,8 +64,10 @@ class CheckPermission
             'hasAccessKategoriLaboratorium' => 'akses_kategori_laboratorium',
             'hasAccessSatuanLaboratorium' => 'akses_satuan_laboratorium',
             'hasAccessRentangKenormalanLaboratorium' => 'akses_rentang_kenormalan_laboratorium',
-            'hasAccessTindakanLaboratorium' => 'akses_tindakan_laboratorium',
             'hasAccessRentangTemplating' => 'akses_rentang_templating',
+            /* Pemeriksaan */
+            'hasAccessTindakanLaboratorium' => 'akses_tindakan_laboratorium',
+            'hasAccessTindakanObat' => 'akses_tindakan_obat',
             /* Master Data */
             'hasAccessMasterData' => 'akses_master_data',
             'hasAccessMasterPerusahaan' => 'akses_master_perusahaan',

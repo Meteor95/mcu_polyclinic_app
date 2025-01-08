@@ -18,16 +18,6 @@ let harga_dasar_tarif_laboratorium = new AutoNumeric('#harga_dasar_tarif_laborat
     modifyValueOnWheel: false
 });
 let autoNumericFields = [];
-$('input[name="tarif_laboratorium[]"]').each(function () {
-    autoNumericFields.push(new AutoNumeric(this, {
-        decimal: '.',
-        digit: ',',
-        allowDecimalPadding: false,
-        minimumValue: '0',
-        modifyValueOnUpDownArrow: false,
-        modifyValueOnWheel: false
-    }));
-});
 const selectElementKategori = document.getElementById('kategori');
 const selectElementSatuan = document.getElementById('satuan');
 const selectElementRentangKenormalanKualitatif = document.getElementById('rentang_kenormalan_kualitatif');
@@ -49,27 +39,6 @@ $(document).ready(function(){
         shouldSort: false,
         placeholder: true,
         placeholderValue: 'Silahkan Pilih Rentang Kenormalan Kuantitatif',
-    });
-    let tables = [];
-    table_tarif_laboratorium = $("#table_tarif_laboratorium").DataTable({
-        "paging": false,
-        "ordering": false,
-        "info": false,
-        "searching": false,
-        "lengthChange": false,
-        "keys": true,
-    }).on('key-focus', function(e, datatable, cell, originalEvent) {
-        $('input', cell.node()).focus();
-    }).on("focus", "td input", function() {
-        $(this).select();
-    });
-    tables.push(table_tarif_laboratorium);
-    tables.forEach(function(table) {
-        table.on('key', function(e, dt, code) {
-            if (code === 13) {
-                table.keys.move('down');
-            }
-        });
     });
     table_jasa_laboratorium_tarif_modal = $("#table_jasa_laboratorium_tarif_modal").DataTable({
         "paging": false,
@@ -115,7 +84,136 @@ $(document).ready(function(){
     onload_table_tindakan_lab();
     load_satuan_dinamis();
     load_kategori_dinamis();
+    load_table_tarif_laboratorium();
 });
+function load_table_tarif_laboratorium() {
+    let tables = [];
+    $.get('/generate-csrf-token', function(response) {
+        table_tarif_laboratorium = $("#table_tarif_laboratorium").DataTable({
+            searching: false,
+            lengthChange: false,
+            ordering: false,
+            bFilter: false,
+            bProcessing: true,
+            info: false,
+            paging: false,
+            serverSide: true,
+            scrollX: $(window).width() < 768 ? true : false,
+            columnDefs: [{
+                defaultContent: "-",
+                targets: "_all"
+            }],
+            keys: true,
+            language: {
+                "paginate": {
+                    "first": '<i class="fa fa-angle-double-left"></i>',
+                    "last": '<i class="fa fa-angle-double-right"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>',
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                },
+            },
+            ajax: {
+                "url": baseurlapi + '/masterdata/daftarjasa_laboratorium',
+                "type": "GET",
+                "beforeSend": function(xhr) {
+                    xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
+                },
+                "data": function(d) {
+                    d._token = response.csrf_token;
+                    d.grup_item = $('#grup_item').val();
+                },
+                "dataSrc": function(json) {
+                    return json.data.map(item => ({
+                        ...item,
+                        recordsFiltered: json.recordsFiltered,
+                    }));
+                },
+            },
+            infoCallback: function(settings) {
+                if (typeof settings.json !== "undefined") {
+                    const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
+                    const recordsFiltered = settings.json.recordsFiltered;
+                    return `Hal ke: ${currentPage} Ditampilkan: ${$('#data_ditampilkan').val() < 0 ? 'Semua' : $('#data_ditampilkan').val()} Baris dari Total: ${recordsFiltered} Data`;
+                }
+            },
+            columns: [
+                {
+                    title: "No",
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    title: "Jasa Laboratorium",
+                    data: "nama_jasa_pelayanan"
+                },
+                {
+                    title: "Harga Rekomendasi",
+                    render: function(data, type, row) {
+                        return `<div class="text-end">${row.nominal_layanan.toLocaleString('id-ID')}</div>`;
+                    }
+                },
+                {
+                    title: "Tentukan Nominal",
+                    render: function(data, type, row) {
+                        return `<input class="form-control nominal_pembayaran" type="text" name="tarif_laboratorium[]" placeholder="Tentukan harga jasa laboratorium" value="${row.nominal_layanan}">`;
+                    }
+                },
+                {
+                    title: "Aksi",
+                    className: "text-center",
+                    width: "280px",
+                    render: function(data, type, row, meta) {
+                        return `<div class="d-flex justify-content-between gap-2">
+                                    <button onclick="hapusBarisTarif('${meta.row}','${row.nama_jasa_pelayanan}')" class="btn btn-danger w-100">
+                                        <i class="fa fa-trash-o"></i> Hapus
+                                    </button>
+                                </div>`;
+                    }
+                }
+            ],
+            drawCallback: function() {
+                autoNumericFields = [];
+                $(".nominal_pembayaran").each(function() {
+                    let autoNumericInstance = new AutoNumeric(this, {
+                        decimal: '.',
+                        digit: ',',
+                        allowDecimalPadding: false,
+                        minimumValue: '0',
+                        modifyValueOnUpDownArrow: false,
+                        modifyValueOnWheel: false
+                    });
+                    autoNumericFields.push(autoNumericInstance);
+                });
+            }
+        }).on('key-focus', function ( e, datatable, cell, originalEvent ) {
+            $('input', cell.node()).focus();
+        }).on("focus", "td input", function(){
+            $(this).select();
+        }) 
+        tables.push(table_tarif_laboratorium);
+        table_tarif_laboratorium.on('key', function(e, dt, code) {
+            if (code === 13) {
+                table_tarif_laboratorium.keys.move('down');
+            }
+        });
+    });
+}
+function hapusBarisTarif(rowIndex, nama_jasa_pelayanan) {
+    Swal.fire({
+        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Hapus Perkaitan Jasa Ini</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus perkaitan jasa laboratorium Nama : <strong>' + nama_jasa_pelayanan + '</strong> ?</p></div></div>',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: 'orange',
+        confirmButtonText: 'Simpan Data',
+        cancelButtonText: 'Nanti Dulu!!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $("#table_tarif_laboratorium tbody tr:eq(" + rowIndex + ")").remove();
+        }
+    });
+}
+
 function load_satuan_dinamis() {
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
@@ -180,6 +278,7 @@ function load_kategori_dinamis() {
 $("#grup_item").change(function(){
     load_kategori_dinamis();
     load_satuan_dinamis();
+    $("#table_tarif_laboratorium").DataTable().ajax.reload();
     if ($("#grup_item").val() === 'laboratorium') {
         $("#section_nilai_kenormalan").show();
     } else {
@@ -400,7 +499,7 @@ $("#collapse_formulir").on("click", function(event) {
     }
 })
 function calculateTotal() {
-    let hargaDasar = harga_dasar_tarif_laboratorium.get() || 0;
+    let hargaDasar = harga_dasar_tarif_laboratorium.get();
     hargaDasar = parseFloat(hargaDasar);
     let totalJasa = 0;
     autoNumericFields.forEach(function (autoNumericInstance) {
@@ -410,7 +509,10 @@ function calculateTotal() {
     let hargaJual = hargaDasar + totalJasa;
     harga_jual_tarif_laboratorium.set(hargaJual);
 }
-$("#harga_dasar_tarif_laboratorium, input[name='tarif_laboratorium[]']").on("change, keyup, input", function(){
+$("#harga_dasar_tarif_laboratorium").on("change keyup input", function(){
+    calculateTotal();
+});
+$(document).on("change keyup input", "input[name='tarif_laboratorium[]']", function() {
     calculateTotal();
 });
 $("#btn_simpan_tarif_laboratorium").click(function(e){
@@ -491,22 +593,15 @@ function clear_formulir() {
     $("#keterangan_kualitatif_positif").val('');
     $("#keterangan_kualitatif_negatif").val('');
     choiceGrupItem.setChoiceByValue("laboratorium");
-    choiceKategori.setChoiceByValue(selectElementKategori.options[0].value);
-    choiceSatuan.setChoiceByValue(selectElementSatuan.options[0].value);
+    load_kategori_dinamis();
+    load_satuan_dinamis();
     choiceRentangKenormalanKualitatif.setChoiceByValue(selectElementRentangKenormalanKualitatif.options[0].value);
     choiceRentangKenormalanKuantitatif.setChoiceByValue(selectElementRentangKenormalanKuantitatif.options[0].value);
     harga_dasar_tarif_laboratorium.set('');
     harga_jual_tarif_laboratorium.set('');
     table_rentang_nilai_kenormalan_kualitatif.clear().draw();
     table_rentang_nilai_kenormalan_kuantitatif.clear().draw();
-    $('#table_tarif_laboratorium input').each(function() {
-        let autoNumericInstance = AutoNumeric.getAutoNumericElement(this);
-        if (autoNumericInstance) {
-            autoNumericInstance.set('');
-        } else {
-            $(this).val('');
-        }
-    });
+    table_tarif_laboratorium.clear().draw();
 }
 function hapus_tarif_tabel(button, type) {
     let row = $(button).closest('tr');
@@ -547,20 +642,16 @@ function getTableDataAsJson(kondisi) {
             };
         });
     } else if (kondisi == 'jasa') {
-        const data = table_tarif_laboratorium.rows().indexes().toArray();
-        let hargaJasaSum = 0;
-        hargaJasaSum = hargaJasaSum + harga_dasar_tarif_laboratorium.getNumber();
-        return data.map(index => {
-            const trElement = $('#table_tarif_laboratorium tbody tr').eq(index);
-            const inputElement = trElement.find(`#tarif_laboratorium_${index + 1}`);
-            const autoNumericInstance = AutoNumeric.getAutoNumericElement(inputElement[0]);
-            const hargaJasa = autoNumericInstance ? autoNumericInstance.get() : null;
-            const rowData = table_tarif_laboratorium.row(index).data();
-            hargaJasaSum += parseInt(hargaJasa);
+        const data = table_tarif_laboratorium.data().toArray();
+        const harga_baru = document.querySelectorAll('.nominal_pembayaran');
+        const data_harga = Array.from(harga_baru).map(input => input.value);
+        return data.map((row, index) => {
             return {
-                tujuan_jasa: rowData[1],
-                harga_rekomendasi: rowData[2],
-                harga_jasa: hargaJasa,
+                id_jasa: row.id_jasa,
+                kode_jasa: row.kode_jasa_pelayanan,
+                tujuan_jasa: row.nama_jasa_pelayanan,
+                harga_jasa: numbro.unformat(data_harga[index]),
+                kategori_layanan: row.kategori_layanan,
             };
         });
     }
@@ -596,14 +687,15 @@ function detail_informasi_tarif_tabel(kode_item, group_item) {
                 $("#collapse_formulir").text("Sembunyikan Formulir");
                 $("#kode_item").val(response.data.kode_item);
                 $("#nama_item").val(response.data.nama_item);
-                $("#kategori").val(response.data.id_kategori.toString());
-                $("#satuan").val(response.data.satuan);
                 choiceGrupItem.setChoiceByValue(response.data.group_item);
-                choiceKategori.setChoiceByValue(response.data.id_kategori.toString());
-                choiceSatuan.setChoiceByValue(response.data.satuan);
+                setTimeout(() => {
+                    choiceKategori.setChoiceByValue(response.data.id_kategori.toString());
+                    choiceSatuan.setChoiceByValue(response.data.satuan);
+                    $("#kategori").val(response.data.id_kategori.toString());
+                    $("#satuan").val(response.data.satuan);
+                }, 500);
                 table_rentang_nilai_kenormalan_kuantitatif.clear().draw();
                 table_rentang_nilai_kenormalan_kualitatif.clear().draw();
-                table_tarif_laboratorium.clear().draw();
                 if (response.data.group_item === 'laboratorium'){
                     $("#section_nilai_kenormalan").show();
                     if (response.data.jenis_item == 'kuantitatif'){
@@ -650,30 +742,18 @@ function detail_informasi_tarif_tabel(kode_item, group_item) {
                 $("#harga_dasar_tarif_laboratorium").val(response.data.harga_dasar);
                 $("#harga_jual_tarif_laboratorium").val(response.data.harga_jual);
                 harga_dasar_tarif_laboratorium.set(response.data.harga_dasar);
-                harga_jual_tarif_laboratorium.set(response.data.harga_jual);
-                table_tarif_laboratorium.clear().draw();
                 const data = JSON.parse(response.data.meta_data_jasa);
-                let nomor_jasa = 1;
-                data.forEach(function(row, index) {
-                    table_tarif_laboratorium.row.add([
-                        nomor_jasa,
-                        row.tujuan_jasa,
-                        `<div class="text-end">${row.harga_rekomendasi}</div>`,
-                        `<input class="form-control" type="text" id="tarif_laboratorium_${nomor_jasa}" name="tarif_laboratorium[]" placeholder="Tentukan harga jasa laboratorium" value="${row.harga_jasa ? row.harga_jasa : ''}">`,
-                    ]);
-                    nomor_jasa++;
+                table_tarif_laboratorium.rows().every(function() {
+                    const row = this.data();
+                    const kodeJasaPelayanan = row.kode_jasa_pelayanan;
+                    const matchingData = data.find(item => item.kode_jasa === kodeJasaPelayanan);
+                    if (matchingData) {
+                        const input = this.node().querySelector('input[name="tarif_laboratorium[]"]');
+                        const autoNumericInstance = autoNumericFields.find(instance => instance.domElement === input);
+                        autoNumericInstance.set(matchingData.harga_jasa);
+                    }
                 });
-                table_tarif_laboratorium.draw();
-                $('input[name="tarif_laboratorium[]"]').each(function () {
-                    autoNumericFields.push(new AutoNumeric(this, {
-                        decimal: '.',
-                        digit: ',',
-                        allowDecimalPadding: false,
-                        minimumValue: '0',
-                        modifyValueOnUpDownArrow: false,
-                        modifyValueOnWheel: false
-                    }));
-                });
+                calculateTotal();
             },
             error: function(xhr, status, error) {
                 return createToast('Kesalahan Pembacaan Data', 'top-right', error, 'error', 3000);

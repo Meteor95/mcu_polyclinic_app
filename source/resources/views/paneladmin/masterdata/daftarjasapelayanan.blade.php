@@ -4,14 +4,36 @@
     <div class="col-sm-12">
     <div class="card">
         <div class="card-header">
-          <h4>Daftar Jasa Layanan Pegawai MCU</h4><span>Silahkan tentukan jasa pelayanan yang akan digunakan oleh pegawai MCU Artha Medica Clinic pada setiap tindakan. Jasa layanan akan direkam pada setiap tindakan yang dilakukan oleh pegawai MCU.</span>
+          <h4>Daftar Jasa Layanan Tindakan</h4><span>Silahkan tentukan jasa pelayanan yang akan digunakan oleh pegawai MCU Artha Medica Clinic pada setiap tindakan. Jasa layanan akan direkam pada setiap tindakan yang dilakukan oleh pegawai MCU.</span>
           <button class="mt-2 btn btn-outline-success w-100" id="tambah_jasa_pelayanan_baru" type="button"><i class="fa fa-plus"></i> Formulir Tambah Jasa Layanan MCU Baru</button>
         </div>
         <div class="card-body">
           <div class="col-md-12">
-            <input type="text" class="form-control" id="kotak_pencarian_jasa_pelayanan" placeholder="Cari data berdasarkan nama jasa pelayanan yang terdaftar di MCU Artha Medica Clinic">
+            <div class="row">
+                <div class="col-md-2">
+                  <select id="data_ditampilkan" class="form-select">
+                    <option value="0">Semua</option>
+                    <option value="10" selected>10 Data</option>
+                    <option value="25">25 Data</option>
+                    <option value="50">50 Data</option>
+                    <option value="100">100 Data</option>
+                    <option value="500">500 Data</option>
+                </select>
+                </div>
+                <div class="col-md-2">
+                  <select id="kategori_layanan" class="form-select">
+                    <option value="">Semua</option>
+                    <option value="mcu">MCU</option>
+                    <option value="laboratorium">Laboratorium</option>
+                    <option value="non_laboratorium">Non Laboratorium</option>
+                </select>
+                </div>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan nama jasa pelayanan yang terdaftar di MCU Artha Medica Clinic">
+                </div>
+            </div>
             <div class="table">
-              <table class="display" id="datatable_jasapelayanan"></table>
+              <table class="display table-padding-sm" id="datatable_jasapelayanan"></table>
             </div>
           </div>
         </div>
@@ -44,6 +66,16 @@
                         <input placeholder="Ex: 1.500.000" type="text" class="form-control" id="nominaljasa" name="nominaljasa" required>
                         <div class="invalid-feedback">Masukan nominal jasa pelayanan yang valid</div>
                         <div class="valid-feedback">Terlihat bagus! Nominal jasa pelayanan sudah terisi</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jenisjasa" class="form-label">Kategori Jasa Pelayanan</label>
+                        <select class="form-select" id="jenisjasa" name="jenisjasa" required>
+                            <option value="mcu">MCU</option>
+                            <option value="laboratorium">Laboratorium</option>
+                            <option value="non_laboratorium">Non Laboratorium</option>
+                        </select>
+                        <div class="invalid-feedback">Masukan jenis jasa pelayanan yang valid</div>
+                        <div class="valid-feedback">Terlihat bagus! Keterangan jasa pelayanan sudah terisi</div>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -121,6 +121,7 @@ Route::prefix('v1')->group(function () {
             Route::post('ubahpaketmcu', [MasterdataController::class,"editpaketmcu"]);
             /* Master Data Jasa Pelayanan */
             Route::get('daftarjasa', [MasterdataController::class,"getjasa"]);
+            Route::get('daftarjasa_laboratorium', [MasterdataController::class,"getjasa_laboratorium"]);
             Route::post('simpanjasa', [MasterdataController::class,"savejasa"]);
             Route::get('hapusjasa', [MasterdataController::class,"deletejasa"]);
             Route::post('ubahjasa', [MasterdataController::class,"editjasa"]);

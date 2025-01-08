@@ -210,7 +210,16 @@
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
               <i class="fa fa-flask" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
-              <span>Tindakan</span>
+              <span>Pemeriksaan Lab</span>
+            </a>
+          </li>
+          @endif
+          @if ($hasAccessTindakanObat)
+          <li class="sidebar-list">
+            <i class="fa fa-thumb-tack"></i>
+            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+              <i class="fa fa-flask" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+              <span>Pengobatan</span>
             </a>
           </li>
           @endif

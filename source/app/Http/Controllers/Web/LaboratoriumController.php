@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Laboratorium\{Kategori, JasaPetugas, Satuan, Kenormalan};
+use App\Models\Laboratorium\{Kategori, Satuan, Kenormalan};
+use App\Models\Masterdata\Jasalayanan;
 
 class LaboratoriumController extends Controller
 {
@@ -19,7 +20,6 @@ class LaboratoriumController extends Controller
         $data = $this->getData($req, 'Daftar Tarif Laboratorium dan Pengobatan', [
             'Tarif' => route('admin.laboratorium.tarif'),
         ]);
-        $data['tarif_laboratorium'] = JasaPetugas::all();
         $data['kenormalan'] = Kenormalan::all();
         return view('paneladmin.laboratorium.daftar_tarif', ['data' => $data]);
     }

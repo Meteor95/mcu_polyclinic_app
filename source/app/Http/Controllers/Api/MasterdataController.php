@@ -221,7 +221,7 @@ class MasterdataController extends Controller
     public function getjasa(Request $req)
     {
         try {
-            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 1;
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 0;
             $nomorHalaman = (int) $req->start / $perHalaman;
             $offset = $nomorHalaman * $perHalaman; 
             $datatabel = Jasalayanan::listJasaPelayanan($req, $perHalaman, $offset);
@@ -235,6 +235,19 @@ class MasterdataController extends Controller
             return ResponseHelper::error($th);
         }
     }
+    public function getjasa_laboratorium(Request $req)
+    {
+        try {
+            $jasa = Jasalayanan::where('kategori_layanan', $req->grup_item)->get();
+            $dynamicAttributes = [
+                'data' => $jasa,
+                'recordsFiltered' => $jasa->count(),
+            ];
+            return ResponseHelper::data('Informasi jasa laboratorium tersedia', $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
     public function savejasa(Request $request)
     {
         try {
@@ -242,6 +255,7 @@ class MasterdataController extends Controller
                 'kode_jasa_pelayanan' => 'required|string',
                 'nama_jasa_pelayanan' => 'required|string',
                 'nominal_layanan' => 'required|integer',
+                'kategori_layanan' => 'required|string',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -251,6 +265,7 @@ class MasterdataController extends Controller
                 'kode_jasa_pelayanan' => $request->kode_jasa_pelayanan,
                 'nama_jasa_pelayanan' => $request->nama_jasa_pelayanan,
                 'nominal_layanan' => $request->nominal_layanan,
+                'kategori_layanan' => $request->kategori_layanan,
             ]);
             return ResponseHelper::success("Informasi jasa pelayanan berhasil disimpan. Silahkan tentukan pada perusahaan mana jasa pelayanan ini akan digunakan.");
         } catch (\Throwable $th) {
@@ -287,6 +302,7 @@ class MasterdataController extends Controller
                 'kode_jasa_pelayanan' => $request->kode_jasa_pelayanan,
                 'nama_jasa_pelayanan' => $request->nama_jasa_pelayanan,
                 'nominal_layanan' => $request->nominal_layanan,
+                'kategori_layanan' => $request->kategori_layanan,
             ]);
             return ResponseHelper::success("Informasi jasa pelayanan dengan kode " . $request->kode_jasa_pelayanan . " berhasil diubah.");
         } catch (\Throwable $th) {
