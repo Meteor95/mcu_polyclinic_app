@@ -17,8 +17,8 @@
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
     <!-- page-wrapper Start-->
-    <div class="page-wrapper compact-wrapper" id="pageWrapper">
-        <div class="page-header row">
+    <div class="page-wrapper compact-wrapper" id="pageWrapper" data-state="default">
+        <div class="page-header row" data-state="default">
             @include('includes.header')
         </div>
         <!-- Page Body Start-->

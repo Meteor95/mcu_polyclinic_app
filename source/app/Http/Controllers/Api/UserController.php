@@ -12,6 +12,22 @@ use App\Services\UserServices;
 
 class UserController extends Controller
 {
+    public function load_data_dokter_bertugas(Request $request){
+        try {
+            $data = User::when($request->role, function ($query, $role) {
+                return $query->role($role);
+            })
+            ->join('users_pegawai', 'users.id', '=', 'users_pegawai.id')
+            ->select('users.id', 'users_pegawai.nama_pegawai')
+            ->get();
+            $dynamicAttributes = [
+                'data' => $data,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Data Dokter Bertugas']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
     public function getuser(Request $request){
         try {   
             $perHalaman = (int) $request->length > 0 ? (int) $request->length : 1;

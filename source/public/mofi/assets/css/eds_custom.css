@@ -55,6 +55,29 @@
   border-top-left-radius:2;
   border-top-right-radius:2;
 }
+input.readonly-input[readonly] {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+}
+
+input.readonly-input[readonly]:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+input.disabled-input:disabled {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+}
+
 body.dark-only .choices__inner {
     display: inline-block;
     vertical-align: top;

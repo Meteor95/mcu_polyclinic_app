@@ -29,7 +29,8 @@ const toolbarOptions = [
 let quill,quill_informasi;
 let croppedImages = []; 
 let originalFileNames = [];
-let kesimpulan_citra_unggah_poli,detail_penjelasan_citra_unggah_poli;
+let kesimpulan_citra_unggah_poli,detail_penjelasan_citra_unggah_poli,dokter_citra_unggah_poli;
+let dokter_citra_unggah_poliElement = document.getElementById('dokter_citra_unggah_poli');
 $(document).ready(function(){
     isedit = false;
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
@@ -38,6 +39,12 @@ $(document).ready(function(){
     kesimpulan_citra_unggah_poli = new Choices('#kesimpulan_citra_unggah_poli',{
         placeholder: true,
         placeholderValue: 'Pilih kesimpulan yang sesuai dengan kondisi pasien',
+    });
+    dokter_citra_unggah_poli = new Choices(dokter_citra_unggah_poliElement,{
+        searchEnabled: true,
+        shouldSort: false,
+        placeholder: true,
+        placeholderValue: 'Pilih dokter yang bertugas',
     });
     detail_penjelasan_citra_unggah_poli = new Choices('#detail_penjelasan_citra_unggah_poli',{
         placeholder: true,
@@ -254,6 +261,9 @@ $(document).on('click', '.btn-lihat', function () {
     $('#imageModal').modal('show');
 });
 $("#simpan_foto_perserta").on('click', function() {
+    if ($("#dokter_citra_unggah_poli").val() == null){
+        return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan dokter yang bertugas terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
+    }
     if ($("#pencarian_member_mcu").val() == null){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
@@ -281,6 +291,7 @@ $("#simpan_foto_perserta").on('click', function() {
                 detail_kesimpulan = JSON.stringify(quillContent.ops);
             }
             formData.append('isedit', isedit);
+            formData.append('pegawai_id', $("#dokter_citra_unggah_poli").val());
             formData.append('user_id', $("#user_id_temp").text());
             formData.append('transaksi_id', $("#id_transaksi_mcu").text());
             formData.append('judul_laporan', $("#judul_citra_unggah_poli").val());
@@ -350,6 +361,7 @@ function clear_form(){
     previewCanvas.hide();
     $("#citra_pasien").val(null);
     $("#preview_citra_pasien_img").hide();
+    dokter_citra_unggah_poli.setChoiceByValue(dokter_citra_unggah_poliElement.options[0].value);
 }
 function unduhFoto(lokasi_gambar){
     window.open(lokasi_gambar, '_blank');
@@ -488,6 +500,8 @@ function ubah_informasi(id_trx_poli,nomor_identitas,nama_peserta){
                 $("#judul_citra_unggah_poli").val(response.data[0].judul_laporan);
                 kesimpulan_citra_unggah_poli.setChoiceByValue(response.data[0].id_kesimpulan.toString());
                 $("#kesimpulan_citra_unggah_poli").val(response.data[0].id_kesimpulan.toString());
+                dokter_citra_unggah_poli.setChoiceByValue(response.data[0].pegawai_id.toString());
+                $("#dokter_citra_unggah_poli").val(response.data[0].pegawai_id.toString());
                 quill.setContents(JSON.parse(response.data[0].detail_kesimpulan));
                 $("#catatan_kaki_citra_unggah_poli").val(response.data[0].catatan_kaki);
                 /* load gallery images */

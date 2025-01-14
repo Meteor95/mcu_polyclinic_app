@@ -38,6 +38,7 @@ class PoliklinikServices
             }
             $isedit = filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN);
             $data = [
+                'pegawai_id' => $data['pegawai_id'],
                 'user_id' => $data['user_id'],
                 'transaksi_id' => $data['transaksi_id'],
                 'judul_laporan' => $data['judul_laporan'],
@@ -129,7 +130,7 @@ class PoliklinikServices
             foreach ($unggahan_citra as $item) {
                 Storage::disk('public')->delete('mcu/poliklinik/' . $namafolder . '/' . $item->nama_file);
             }
-            UnggahanCitra::where('id_trx_poli', $data['id_trx_poli'])->delete();
+            UnggahanCitra::where('id_trx_poli', $data['id_trx_poli'])->where('jenis_poli', 'poli_'.$data['jenis_poli'])->delete();
         });
     }
 }

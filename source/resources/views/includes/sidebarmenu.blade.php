@@ -1,4 +1,4 @@
-<div class="sidebar-wrapper" id="sidebar-wrapper" data-layout="stroke-svg">
+<div class="sidebar-wrapper" id="sidebar-wrapper" data-layout="stroke-svg" data-state="default">
   <div>
     <div class="logo-wrapper">
       <a href="{{ url('/admin/beranda') }}">
@@ -14,7 +14,9 @@
         </svg>
       </div>
     </div>
-    <div class="logo-icon-wrapper"><a href="index.html"><img class="img-fluid" src="{{ asset('mofi/assets/images/logo/logo-icon.png')}}" alt=""></a></div>
+    <div class="logo-icon-wrapper">
+      <a href="{{url('/admin/beranda')}}"><img class="img-fluid" style="height: 32px;width: 32px;" src="{{ asset('mofi/assets/images/logo/logo_amc.png')}}" alt=""></a>
+    </div>
     <nav class="sidebar-main">
       <div class="left-arrow" id="left-arrow">
         <i data-feather="arrow-left"></i>
@@ -208,18 +210,9 @@
           @if ($hasAccessTindakanLaboratorium)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
-            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+            <a class="sidebar-link sidebar-title" href="{{ route('admin.laboratorium.daftar_tindakan') }}">
               <i class="fa fa-flask" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
-              <span>Pemeriksaan Lab</span>
-            </a>
-          </li>
-          @endif
-          @if ($hasAccessTindakanObat)
-          <li class="sidebar-list">
-            <i class="fa fa-thumb-tack"></i>
-            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
-              <i class="fa fa-flask" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
-              <span>Pengobatan</span>
+              <span>Tindakan</span>
             </a>
           </li>
           @endif

@@ -4,11 +4,13 @@ namespace App\Models\Poliklinik;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Poliklinik extends Model
 {
     protected $table;
     protected $fillable = [
+        'pegawai_id',
         'user_id',
         'transaksi_id',
         'judul_laporan',
@@ -77,7 +79,7 @@ class Poliklinik extends Model
                 'DATE_FORMAT(' . $tablePrefix . 'mcu_transaksi_peserta.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_mcu, ' .
                 'TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur'
             );
-
+        $query->where('mcu_poli_citra.jenis_poli', str_replace("mcu_", "", $jenis_poli));
         if (!empty($parameterPencarian)) {
             $query->where(function ($query) use ($parameterPencarian) {
                 $query->where('users_member.nama_peserta', 'LIKE', '%' . $parameterPencarian . '%')
@@ -87,3 +89,4 @@ class Poliklinik extends Model
         return $query->groupBy($jenis_poli . '.user_id', $jenis_poli . '.transaksi_id');
     }
 }
+

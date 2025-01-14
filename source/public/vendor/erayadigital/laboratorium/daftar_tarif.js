@@ -618,6 +618,9 @@ function hapus_tarif_tabel(button, type) {
 function getTableDataAsJson(kondisi) {
     if (kondisi == 'kuantitatif') {
         const data = table_rentang_nilai_kenormalan_kuantitatif.data().toArray();
+        if (data.length == 0) {
+            return [];
+        }
         return data.map(row => {
             return {
                 id_nilai_kenormalan: row[1], 
@@ -630,6 +633,9 @@ function getTableDataAsJson(kondisi) {
         });
     } else if (kondisi == 'kualitatif') {
         const data = table_rentang_nilai_kenormalan_kualitatif.data().toArray();
+        if (data.length == 0) {
+            return [];
+        }
         return data.map(row => {
             return {
                 id_nilai_kenormalan: row[1], 
@@ -643,6 +649,9 @@ function getTableDataAsJson(kondisi) {
         });
     } else if (kondisi == 'jasa') {
         const data = table_tarif_laboratorium.data().toArray();
+        if (data.length == 0) {
+            return [];
+        }
         const harga_baru = document.querySelectorAll('.nominal_pembayaran');
         const data_harga = Array.from(harga_baru).map(input => input.value);
         return data.map((row, index) => {

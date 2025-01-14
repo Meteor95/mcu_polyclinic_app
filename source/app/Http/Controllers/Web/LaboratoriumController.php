@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Laboratorium\{Kategori, Satuan, Kenormalan};
-use App\Models\Masterdata\Jasalayanan;
+use App\Models\Masterdata\{Jasalayanan, DaftarBank};
+
 
 class LaboratoriumController extends Controller
 {
@@ -46,5 +47,20 @@ class LaboratoriumController extends Controller
             'Templat' => route('admin.laboratorium.templating'),
         ]);
         return view('paneladmin.laboratorium.templating', ['data' => $data]);
+    }
+    public function daftar_tindakan(Request $req){
+        $data = $this->getData($req, 'Transaksi Tindakan Lab & Pengobatan', [
+            'Beranda' => route('admin.beranda'),
+            'Tindakan' => route('admin.laboratorium.daftar_tindakan'),
+        ]);
+        return view('paneladmin.laboratorium.daftar_tindakan', ['data' => $data]);
+    }
+    public function tindakan(Request $req){
+        $data = $this->getData($req, 'Daftar Tindakan Lab & Pengobatan', [
+            'Beranda' => route('admin.beranda'),
+            'Tindakan' => route('admin.laboratorium.tindakan'),
+        ]);
+        $data['bank'] = DaftarBank::all();
+        return view('paneladmin.laboratorium.transaksi_tindakan', ['data' => $data]);
     }
 }

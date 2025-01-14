@@ -17,6 +17,7 @@ class PoliklinikController extends Controller
     {
         try {
             $validator = Validator::make($req->all(), [
+                'pegawai_id' => 'required',
                 'user_id' => 'required',
                 'transaksi_id' => 'required',
                 'judul_laporan' => 'required',

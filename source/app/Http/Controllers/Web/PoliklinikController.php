@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Komponen\{PoliKesumpulan, PoliDetailKesimpulan};
-
+use App\Models\User;
 class PoliklinikController extends Controller
 {
     private function getData($req, $title, $breadcrumb, $catatan_kaki = "", $jenis_poli, $jenis_poli_db = "") {
@@ -28,6 +28,7 @@ class PoliklinikController extends Controller
         $data = $this->getData($req, 'Poliklinik ' . $jenis_poli, [
             $jenis_poli => route('admin.poliklinik', $jenis_poli),
         ], $catatan_kaki, $jenis_poli, "poli_" . $jenis_poli);
+        $data['daftar_dokter'] = User::role('dokter')->join('users_pegawai', 'users.id', '=', 'users_pegawai.id')->get()->toArray();
         return view('paneladmin.pemeriksaan_fisik.poliklinik.'.$jenis_poli, ['data' => $data]);
     }
 }

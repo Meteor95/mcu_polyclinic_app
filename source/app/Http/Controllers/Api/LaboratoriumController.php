@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
-use App\Models\Laboratorium\{Tarif, Kategori, Satuan, Kenormalan, TemplateLab};
+use App\Models\Laboratorium\{Tarif, Kategori, Satuan, Kenormalan, TemplateLab, Transaksi};
 use Illuminate\Support\Facades\Log;
-
+use App\Services\LaboratoriumServices;
 
 class LaboratoriumController extends Controller
 {
@@ -96,6 +96,22 @@ class LaboratoriumController extends Controller
                 ],
             ];
             return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Hak Akses']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function pencarian_tarif_laboratorium(Request $req)
+    {
+        try {
+            $tarif = Tarif::where('kode_item', 'like', '%'.$req->parameter_pencarian.'%')
+            ->orWhere('nama_item', 'like', '%'.$req->parameter_pencarian.'%')
+            ->orWhere('harga_jual', 'like', '%'.$req->parameter_pencarian.'%')
+            ->limit($req->limit)
+            ->get();
+            $dynamicAttributes = [
+                'data' => $tarif,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Tarif Laboratorium']), $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -440,6 +456,74 @@ class LaboratoriumController extends Controller
                 'data' => $template,
             ];
             return ResponseHelper::data('Informasi Template Laboratorium', $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function pilih_template_tindakan_mcu(Request $req){
+        try {
+            $template = TemplateLab::where('id', $req->id_template_tindakan)->first();
+            $metaData = json_decode($template->meta_data_template, true);
+            $kodeItems = array_column($metaData, 'kode_item');
+            $tarifItems = Tarif::whereIn('kode_item', $kodeItems)->get();
+            $dynamicAttributes = [
+                'id_template_tindakan' => $template->id,
+                'nama_template' => $template->nama_template,
+                'data' => $tarifItems,
+            ];
+            return ResponseHelper::data('Informasi Template Laboratorium', $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    /* Transaksi Tindakan */
+    public function simpan_tindakan(LaboratoriumServices $laboratoriumService, Request $req){
+        try {
+            $validator = Validator::make($req->all(), [
+                'no_mcu' => 'required',
+                'no_nota' => 'required',
+                'waktu_trx' => 'required',
+                'waktu_trx_sample' => 'required',
+                'id_dokter' => 'required',
+                'nama_dokter' => 'required',
+                'id_pj' => 'required',
+                'nama_pj' => 'required',
+                'total_bayar' => 'required',
+                'total_transaksi' => 'required',
+                'total_tindakan' => 'required',
+                'jenis_transaksi' => 'required',
+                'status_pembayaran' => 'required',
+                'is_paket_mcu' => 'required',
+                'nama_paket_mcu' => 'required',
+                'keranjang_tindakan' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $data = $req->all();
+            $file = $req->file('nama_file_surat_pengantar');
+            $iserrir = $laboratoriumService->handleTransactionLaboratorium($data,$req->attributes->get('user_id'),$file);
+            return ResponseHelper::success('Informasi transaksi tindakan dengan No. Nota ' . $req->no_nota . ' [MCU : ' . $req->no_mcu . '] berhasil disimpan. Silahkan lakukan validasi transaksi dengan hak akses kasir atau yang sesuai.');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function daftar_tindakan(Request $req){
+        try {
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : -1;
+            $nomorHalaman = (int) $req->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman; 
+            $datatabel = Transaksi::listTabelTindakan($req, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $datatabel['data'],
+                'recordsFiltered' => $datatabel['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Hak Akses']), $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

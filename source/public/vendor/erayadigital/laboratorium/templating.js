@@ -89,11 +89,18 @@ function load_template_laboratorium() {
                 {
                     title: "Nama Tindakan",
                     render: function(data, type, row, meta) {
-                        if (type === 'display' && row.meta_data_template) {
-                            const namaItems = row.meta_data_template.map(template => 
-                                `<span class="badge bg-primary me-1">${template.tarif.nama_item}</span>`
-                            );
-                            return namaItems.join(' ');
+                        if (type === 'display') {
+                            if (row.meta_data_template && Array.isArray(row.meta_data_template)) {
+                                const namaItems = row.meta_data_template.map(template => {
+                                    const namaItem = template?.tarif?.nama_item;
+                                    return namaItem 
+                                        ? `<span class="badge bg-primary me-1">${namaItem}</span>` 
+                                        : '';
+                                });
+                                return namaItems.join(' ');
+                            } else {
+                                return '';
+                            }                            
                         }
                         return data;
                     }

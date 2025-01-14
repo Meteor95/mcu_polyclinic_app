@@ -181,6 +181,7 @@
                             <option value="MCU">MCU</option>
                             <option value="Follow_Up">Follow Up</option>
                             <option value="Berobat">Berobat</option>
+                            <option value="MCU-Tambahan">MCU-Tambahan</option>
                             <option value="MCU-Threadmill">MCU-Threadmill</option>
                             <option value="Threadmill">Threadmill</option>
                         </select>

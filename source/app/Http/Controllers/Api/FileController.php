@@ -45,6 +45,7 @@ class FileController extends Controller
             $fileName = $req->file_name;
             $jenis_poli = str_replace('poli_', '', $req->jenis_poli);
             $filePath = 'mcu/poliklinik/'.$jenis_poli.'/' . $fileName;
+            Log::info($filePath);
             if (!Storage::disk('public')->exists($filePath)) {
                 return response()->json([
                     'error' => 'File not found.'

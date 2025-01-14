@@ -95,8 +95,6 @@
       $(".page-header").removeClass("close_icon");
     }
   }
-
-  $(window).resize(responsiveSidebar);
   responsiveSidebar();
 
   // Active link highlighting

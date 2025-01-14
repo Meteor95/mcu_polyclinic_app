@@ -8,6 +8,14 @@
         </span>
       </div>
     </div>
+    <div class="col-md-12">
+      <h3>Tentukan Dokter Bertugas</h3>
+      <select class="form-select" data-choices name="dokter_citra_unggah_poli" id="dokter_citra_unggah_poli">
+        @foreach ($data['daftar_dokter'] as $item)
+          <option value="{{$item['id']}}">{{$item['nama_pegawai']}}</option>
+        @endforeach
+      </select>
+    </div>
     <div class="col-md-6">
       <h3>Citra Sebelum</h3>
       <input type="file" id="citra_pasien" class="form-control mt-2 mb-2" accept="image/*">

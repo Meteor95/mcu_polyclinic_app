@@ -47,8 +47,7 @@ class TemplateLab extends Model
         }
         $template_tindakan = [];
         if (!empty($kodeItems)) {
-            $template_tindakan = DB::table('lab_tarif')
-                ->whereIn('kode_item', $kodeItems)
+            $template_tindakan = Tarif::whereIn('kode_item', $kodeItems)
                 ->get();
             $tarifData = $template_tindakan->keyBy('kode_item');
         }

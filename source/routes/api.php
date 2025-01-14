@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function () {
             Route::get('hapuspengguna', [UserController::class,"deleteuser"]);
             Route::get('detailpengguna', [UserController::class,"detailuser"]);
             Route::post('editpengguna', [UserController::class,"edituser"]);
+            Route::get('load_data_dokter_bertugas', [UserController::class,"load_data_dokter_bertugas"]);
         });
         Route::prefix('permission')->group(function () {
             Route::post('tambahhakakses', [RoleAndPermissionController::class,"addpermission"]);
@@ -151,6 +152,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('laboratorium')->group(function () {
             Route::post('simpan_tarif_laboratorium', [LaboratoriumController::class,"simpan_tarif_laboratorium"]);
             Route::get('daftar_tarif', [LaboratoriumController::class,"daftar_tarif"]);
+            Route::get('pencarian_tarif_laboratorium', [LaboratoriumController::class,"pencarian_tarif_laboratorium"]);
             Route::get('detail_tarif_laboratorium', [LaboratoriumController::class,"detail_tarif_laboratorium"]);
             Route::delete('hapus_tarif_laboratorium', [LaboratoriumController::class,"hapus_tarif_laboratorium"]);
             /* Template Laboratorium */
@@ -158,6 +160,10 @@ Route::prefix('v1')->group(function () {
             Route::post('simpan_template_laboratorium', [LaboratoriumController::class,"simpan_template_laboratorium"]);
             Route::delete('hapus_template_laboratorium', [LaboratoriumController::class,"hapus_template_laboratorium"]);
             Route::get('detail_template_laboratorium', [LaboratoriumController::class,"detail_template_laboratorium"]);
+            Route::get('pilih_template_tindakan_mcu', [LaboratoriumController::class,"pilih_template_tindakan_mcu"]);
+            /* Transaksi Tindakan */
+            Route::post('simpan_tindakan', [LaboratoriumController::class,"simpan_tindakan"]);
+            Route::get('daftar_tindakan', [LaboratoriumController::class,"daftar_tindakan"]);
         });
         Route::prefix('atribut')->group(function () {
             Route::get('lingkungankerja', [AtributController::class,"getlingkungankerja"]);
