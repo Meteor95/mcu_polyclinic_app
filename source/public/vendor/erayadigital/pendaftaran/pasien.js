@@ -5,18 +5,14 @@ $(document).ready(function() {
 function loadDataPasien() {
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_daftarpasien").DataTable({
-            ordering: false,
-            lengthChange: false,
             searching: false,
+            lengthChange: false,
+            ordering: false,
+            bFilter: false,
             bProcessing: true,
             serverSide: true,
+            scrollX: $(window).width() < 768 ? true : false,
             pagingType: "full_numbers",
-            fixedColumns: true,
-            scrollCollapse: true,
-            fixedColumns: {
-                right: 1,
-                left: 0
-            },
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -70,7 +66,7 @@ function loadDataPasien() {
                     title: "Nomor MCU",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `${row.no_transaksi}<br><span class="badge bg-primary">${row.jenis_transaksi_pendaftaran}</span>`;
+                            return `${row.no_transaksi}<br><span class="badge bg-primary">${capitalizeFirstLetter(row.jenis_transaksi_pendaftaran)}</span>`;
                         }
                         return data;
                     }
@@ -79,7 +75,7 @@ function loadDataPasien() {
                     title: "Nama Peserta",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `${row.nama_peserta} (${row.umur}Th)<br><span class="badge ${row.tipe_pembayaran == '0' ? 'bg-danger' : 'bg-success'}">${row.tipe_pembayaran == '0' ? 'Invoice' : 'Tunai'}</span>`;
+                            return `${row.nama_peserta} (${row.umur}Th)</span>`;
                         }
                         return data;
                     }
@@ -88,7 +84,7 @@ function loadDataPasien() {
                     title: "Informasi MCU",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `Tanggal: ${row.tanggal_transaksi}<br>Nama Paket: <span onclick="lihatDetailPaket('${row.akses_poli}')" style="cursor: pointer;color: blue;">${row.nama_paket}</span><br>`;
+                            return `Tanggal: ${row.tanggal_transaksi}<br>Nama Paket: <span>${row.nama_paket}</span><br>`;
                         }
                         return data;
                     }
@@ -112,7 +108,6 @@ function loadDataPasien() {
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             return `<div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-                                <button class="btn btn-primary w-100"><i class="fa fa-share"></i></button>
                                 <a href="${baseurl}/pendaftaran/formulir_ubah_peserta/${row.id}">
                                     <button class="btn btn-success w-100"><i class="fa fa-edit"></i></button>
                                 </a>
@@ -131,15 +126,6 @@ function loadDataPasien() {
 $("#kotak_pencarian_daftarpasien").on('keyup', debounce(function() {
     $("#datatables_daftarpasien").DataTable().ajax.reload();
 }, 300));
-function lihatDetailPaket(akses_poli) {
-    const poliList = akses_poli.split(',');
-    let buttons = '';
-    poliList.forEach(poli => {
-        buttons += `<button class="btn btn-success m-1"><i class="fa fa-check"></i> ${poli.trim()}</button>`;
-    });
-    $("#detail_paket_mcu").html(`<div class="text-center">${buttons}</div>`);
-    $("#modal_detail_paket_mcu").modal("show");
-}
 function hapusdaftarpeserta(no_transaksi,id_transaksi, nama_pasien) {
     Swal.fire({
         html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53a48ece-27d3-4b85-9150-8005e7c27aa4/usrEqiqrei.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Hapus Data Pasien<br> '+nama_pasien+'</h4><p class="text-muted mx-4 mb-0">Apakah anda ingin menghapus informasi member MCU <strong>'+nama_pasien+'</strong> dengan No Trx:  <strong>'+no_transaksi+'</strong> ? Peserta yang dihapus harus mendaftar ulang pada website jikalau ingin melanjutkan pendaftaran menjadi pasien MCU serta data terkait dengan transaksi ini akan dihapus</p></div>',

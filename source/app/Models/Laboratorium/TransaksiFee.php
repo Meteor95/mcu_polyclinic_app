@@ -20,5 +20,6 @@ class TransaksiFee extends Model
         'nominal_fee',
         'besaran_fee',
     ];  
+    
 }
 

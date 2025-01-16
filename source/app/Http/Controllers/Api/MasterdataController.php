@@ -125,7 +125,7 @@ class MasterdataController extends Controller
             $perHalaman = (int) $req->length > 0 ? (int) $req->length : 0;
             $nomorHalaman = (int) $req->start / $perHalaman;
             $offset = $nomorHalaman * $perHalaman; 
-            $datatabel = PaketMcu::listPaketMcu($req, $perHalaman, $offset);
+            $datatabel = PaketMCU::listPaketMcu($req, $perHalaman, $offset);
             $jumlahdata = $datatabel['total'];
             $dynamicAttributes = [
                 'data' => $datatabel['data'],
@@ -139,7 +139,7 @@ class MasterdataController extends Controller
     public function getpaketmcu_non_dt(Request $req)
     {
         try {
-            $paket = PaketMcu::all();
+            $paket = PaketMCU::where('id', '>', 1)->get();
             $dynamicAttributes = [
                 'data' => $paket,
             ];
@@ -155,20 +155,16 @@ class MasterdataController extends Controller
                 'kode_paket' => 'required|string',
                 'nama_paket' => 'required|string',
                 'harga_paket' => 'required|integer',
-                'akses_poli' => 'required|string',
                 'keterangan' => 'required|string',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            PaketMcu::create([
+            PaketMCU::create([
                 'kode_paket' => $request->kode_paket,
                 'nama_paket' => $request->nama_paket,
                 'harga_paket' => $request->harga_paket,
-                'akses_poli' => implode(',', array_map(function($item) {
-                    return $item['nilai'];
-                }, json_decode($request->akses_poli, true))),
                 'keterangan' => $request->keterangan,
             ]);
             return ResponseHelper::success("Informasi paket MCU berhasil disimpan. Silahkan tentukan pada perusahaan mana paket MCU ini akan digunakan.");
@@ -187,7 +183,7 @@ class MasterdataController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            PaketMcu::where('id', $request->id)->delete();
+            PaketMCU::where('id', $request->id)->delete();
             return ResponseHelper::success_delete("Informasi paket MCU dengan nama " . $request->nama_paket . " berhasil dihapus beserta seluruh data yang terkait dengan paket MCU ini secara visual di sistem.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
@@ -203,13 +199,10 @@ class MasterdataController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            PaketMcu::where('id', $request->id)->update([
+            PaketMCU::where('id', $request->id)->update([
                 'kode_paket' => $request->kode_paket,
                 'nama_paket' => $request->nama_paket,
                 'harga_paket' => $request->harga_paket,
-                'akses_poli' => implode(',', array_map(function($item) {
-                    return $item['nilai'];
-                }, json_decode($request->akses_poli, true))),
                 'keterangan' => $request->keterangan,
             ]);
             return ResponseHelper::success("Informasi dari paket MCU " . $request->nama_paket . " berhasil diubah.");

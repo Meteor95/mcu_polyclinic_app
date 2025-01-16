@@ -21,15 +21,9 @@ class TransaksiController extends Controller
                 'tanggal_transaksi' => 'required|date',
                 'perusahaan_id' => 'required',
                 'departemen_id' => 'required',
-                'id_paket_mcu' => 'required|integer',
+                'id_paket_mcu' => 'required',
                 'proses_kerja' => 'required',
-                'nominal_bayar_konfirmasi' => 'required_if:tipe_pembayaran,1|numeric',
-                'tipe_pembayaran' => 'required',
                 'jenis_transaksi_pendaftaran' => 'required',
-                'metode_pembayaran' => 'required',
-                'nominal_pembayaran' => 'required|numeric',
-                'penerima_bank' => 'required_if:metode_pembayaran,1',
-                'nomor_transaksi_transfer' => 'required_if:metode_pembayaran,1'
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -92,8 +86,10 @@ class TransaksiController extends Controller
             $data = MemberMCU::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
                 ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
                 ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+                ->leftJoin('paket_mcu', 'paket_mcu.id', '=', 'mcu_transaksi_peserta.id_paket_mcu')
+                ->leftJoin('lab_template_tindakan', 'lab_template_tindakan.id_paket_mcu', '=', 'mcu_transaksi_peserta.id_paket_mcu')
+                ->select('users_member.*', 'users_member.id as user_id', 'mcu_transaksi_peserta.no_transaksi', 'mcu_transaksi_peserta.id as id_transaksi', 'departemen_peserta.nama_departemen', 'company.company_name','paket_mcu.id as id_paket_mcu', 'paket_mcu.nama_paket', 'paket_mcu.harga_paket', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran','lab_template_tindakan.id as id_template_tindakan')
                 ->where('users_member.nomor_identitas', $request->nomor_identitas)
-                ->select('users_member.*', 'users_member.id as user_id', 'mcu_transaksi_peserta.no_transaksi', 'mcu_transaksi_peserta.id as id_transaksi', 'departemen_peserta.nama_departemen', 'company.company_name')
                 ->first();
             if (!$data) {
                 return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Informasi Pasien MCU tidak ditemukan. Silahkan lakukan pendaftaran terlebih dahulu dengan cara transaksi MCU dan tentukan paket yang diinginkan']));

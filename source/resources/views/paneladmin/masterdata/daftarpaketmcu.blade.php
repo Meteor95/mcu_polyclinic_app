@@ -46,12 +46,6 @@
                         <div class="valid-feedback">Terlihat bagus! Harga paket MCU sudah terisi</div>
                     </div>
                     <div class="mb-3">
-                        <label for="aksespolipaketmcu" class="form-label">Akses Poli</label>
-                        <input class="form-control" id="aksespolipaketmcu" name="aksespolipakketmcu" placeholder="Ex: Poli Umum, Poli Gigi" required>
-                        <div class="invalid-feedback">Masukan akses poli yang valid</div>
-                        <div class="valid-feedback">Terlihat bagus! Akses poli sudah terisi</div>
-                    </div>
-                    <div class="mb-3">
                         <label for="keteranganpaketmcu" class="form-label">Keterangan</label>
                         <input placeholder="Ex: Paket MCU Basic untuk pemeriksaan dasar" type="text" class="form-control" id="keteranganpaketmcu" name="keteranganpaketmcu" required>
                         <div class="invalid-feedback">Masukan keterangan yang valid</div>
@@ -74,5 +68,5 @@
 <script src="{{asset('mofi/assets/js/select2/tagify.js')}}"></script>
 <script src="{{asset('mofi/assets/js/select2/tagify.polyfills.min.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
-<script src="{{asset('mofi/assets/js/system/master_data/paketmcu.js')}}"></script>
+<script src="{{asset('vendor/erayadigital/master_data/paketmcu.js')}}"></script>
 @endsection

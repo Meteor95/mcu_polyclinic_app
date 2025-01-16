@@ -16,6 +16,7 @@ Route::prefix('v1')->group(function () {
     Route::prefix('file')->group(function () {
         Route::get('unduh_foto', [FileController::class, "download_foto"]);
         Route::get('unduh_citra_poliklinik', [FileController::class, "downlad_citra_poliklinik"]);
+        Route::get('unduh_surat_pengantar', [FileController::class, "download_surat_pengantar"]);
     });
     Route::middleware(['jwt.auth', 'jwt.cookie'])->group(function () {  
         Route::prefix('pengguna')->group(function () {
@@ -164,6 +165,8 @@ Route::prefix('v1')->group(function () {
             /* Transaksi Tindakan */
             Route::post('simpan_tindakan', [LaboratoriumController::class,"simpan_tindakan"]);
             Route::get('daftar_tindakan', [LaboratoriumController::class,"daftar_tindakan"]);
+            Route::delete('hapus_tindakan', [LaboratoriumController::class,"hapus_tindakan"]);
+            Route::get('detail_tindakan', [LaboratoriumController::class,"detail_tindakan"]);
         });
         Route::prefix('atribut')->group(function () {
             Route::get('lingkungankerja', [AtributController::class,"getlingkungankerja"]);

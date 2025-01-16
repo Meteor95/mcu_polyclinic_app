@@ -181,8 +181,8 @@
                             <option value="MCU">MCU</option>
                             <option value="Follow_Up">Follow Up</option>
                             <option value="Berobat">Berobat</option>
-                            <option value="MCU-Tambahan">MCU-Tambahan</option>
-                            <option value="MCU-Threadmill">MCU-Threadmill</option>
+                            <option value="MCU_Tambahan">MCU Tambahan</option>
+                            <option value="MCU_Threadmill">MCU Threadmill</option>
                             <option value="Threadmill">Threadmill</option>
                         </select>
                     </div>
@@ -239,125 +239,6 @@
             </form>
         </div>
       </div>
-    </div>
-</div>
-<div class="modal modal-xl fade" id="modalKonfimasiPendaftaran" tabindex="-1" role="dialog" aria-labelledby="modalKonfimasiPendaftaranLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahPenggunaLabel">Konfirmasi Pembayaran Peserta MCU</h5>
-                <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-start" style="font-family: 'DS-Digital', sans-serif; font-size: 5vw; color: red;">
-                                <strong>IDR</strong>
-                            </span>
-                            <input type="text"  value="0" class="form-control text-end" id="nominal_bayar_konfirmasi" name="nominal_bayar_konfirmasi" placeholder="0.00" readonly>
-                        </div>
-                        <div id="akses_poli_dipilih_konfirmasi"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <h4 class="text-start mt-1" for="surat_pengantar">Unggah surat pengantar jika ada</h4>
-                    </div>
-                    <div class="col-md-8 mb-2">
-                        <input type="file" class="form-control" id="surat_pengantar" name="surat_pengantar">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <h4 class="text-start mt-1">Tipe Pembayaran</h4>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="mega-inline">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                <div id="card-hutang" class="card">
-                                    <div class="d-flex p-20">
-                                    <div class="form-check radio radio-primary m-0">
-                                        <input checked class="form-check-input" id="hutang" type="radio" name="tipe_pembayaran" value="0">
-                                        <label class="form-check-label" for="hutang"><span class="flex-grow-1 megaoption-space"><span class="mt-0 mega-title-badge">Invoices<span class="badge badge-primary pull-right digits">Hutang</span></span><span>Transaksi MCU ini akan dicatat sebagai hutang berdasarkan No Identitas Member</span></span></label>
-                                    </div>
-                                    </div>
-                                </div>
-                                </div>
-                                <div class="col-sm-6">
-                                <div id="card-tunai" class="card">
-                                    <div class="d-flex p-20">
-                                    <div class="form-check radio radio-secondary m-0">
-                                        <input class="form-check-input" id="tunai" type="radio" name="tipe_pembayaran" value="1">
-                                        <label class="form-check-label" for="tunai"><span class="flex-grow-1 megaoption-space"><span class="mt-0 mega-title-badge">Tunai Langsung<span class="badge badge-secondary pull-right digits">Tunai</span></span><span>Transaksi MCU ini akan dicatat sebagai Kas Kecil berdasarkan No Transaksi</span></span></label>
-                                    </div>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="pembayaran_tunai">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h4 class="text-start mt-2">Metode Pembayaran</h4>
-                        </div>
-                        <div class="col-md-8">
-                            <select class="form-select mt-2" id="select2_metode_pembayaran" name="select2_metode_pembayaran" required>
-                                <option value="0">Tunai</option>
-                                <option value="1">Transfer</option>
-                            </select>  
-                        </div>
-                    </div>
-                    <div class="row transaksi_transfer">
-                        <div class="col-md-4">
-                            <h4 class="text-start mt-2">Penerima Bank</h4>
-                        </div>
-                        <div class="col-md-8">
-                            <select class="form-select mt-2" id="beneficiary_bank" name="beneficiary_bank" required>
-                                @foreach ($data['bank'] as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nama_bank }}</option>
-                                @endforeach
-                            </select>  
-                        </div>
-                    </div>
-                    <div class="row transaksi_transfer">
-                        <div class="col-md-4">
-                            <h4 class="text-start mt-2">Nomor Transaksi Transfer</h4>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control mt-2" id="nomor_transaksi_transfer" name="nomor_transaksi_transfer" placeholder="Ex: 12002158840023654">
-                        </div>
-                    </div>
-                    <div class="row transaksi_tunai">
-                        <div class="col-md-4">
-                            <h4 class="text-start mt-2">Nominal Pembayaran</h4>
-                        </div>
-                        <div class="col-md-8">
-                        <input type="text" class="form-control mt-2" id="nominal_bayar" name="nominal_bayar" placeholder="0.00">
-                        </div>
-                    </div>
-                    <div class="row transaksi_tunai">
-                        <div class="col-md-4">
-                            <h4 class="text-start mt-2">Kembalian Pembayaran</h4>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control mt-2" id="nominal_kembalian" name="nominal_kembalian" placeholder="0.00" readonly>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-                    <i class="fa fa-times"></i> Batal
-                </button>
-                <button type="submit" class="btn btn-primary" id="btnSimpanPendaftaran">
-                    <i class="fa fa-save"></i> Simpan Data
-                </button>
-            </div>
-        </div>
     </div>
 </div>
 @endsection

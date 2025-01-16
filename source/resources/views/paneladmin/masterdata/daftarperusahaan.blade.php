@@ -64,5 +64,5 @@
 @endsection
 @section('js_load')
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-<script src="{{asset('mofi/assets/js/system/master_data/perusahaan.js')}}"></script>
+<script src="{{asset('vendor/erayadigital/master_data/perusahaan.js')}}"></script>
 @endsection

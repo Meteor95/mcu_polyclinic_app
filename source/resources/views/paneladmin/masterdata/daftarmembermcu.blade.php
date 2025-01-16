@@ -122,5 +122,5 @@ body.dark-only .dtfc-fixed-right_header {
 @section('js_load')
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/4.0.2/js/dataTables.fixedColumns.min.js"></script>
-<script src="{{ asset('mofi/assets/js/system/master_data/daftarmembermcu.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/master_data/daftarmembermcu.js') }}"></script>
 @endsection

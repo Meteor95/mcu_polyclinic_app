@@ -2,16 +2,18 @@ let isedit;
 let grup_item_tarif, kategori_tarif,rentang_kenormalan;
 let table_tarif_laboratorium, table_rentang_nilai_kenormalan_kualitatif, table_rentang_nilai_kenormalan_kuantitatif, table_jasa_laboratorium_tarif_kuantitatif, table_jasa_laboratorium_tarif_kualitatif, table_jasa_laboratorium_tarif_modal;
 let harga_jual_tarif_laboratorium = new AutoNumeric('#harga_jual_tarif_laboratorium', {
-    decimal: '.',
-    digit: ',',
+    digitGroupSeparator: '.',
+    decimalCharacter: ',',
+    decimalPlaces: 0,
     allowDecimalPadding: false,
     minimumValue: '0',
     modifyValueOnUpDownArrow: false,
     modifyValueOnWheel: false
 });
 let harga_dasar_tarif_laboratorium = new AutoNumeric('#harga_dasar_tarif_laboratorium', {
-    decimal: '.',
-    digit: ',',
+    digitGroupSeparator: '.',
+    decimalCharacter: ',',
+    decimalPlaces: 0,
     allowDecimalPadding: false,
     minimumValue: '0',
     modifyValueOnUpDownArrow: false,

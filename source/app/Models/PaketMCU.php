@@ -13,7 +13,6 @@ class PaketMCU extends Model
         'kode_paket',
         'nama_paket',
         'harga_paket',
-        'akses_poli',
         'keterangan',
     ];
 
@@ -21,13 +20,8 @@ class PaketMCU extends Model
     {
         $parameterpencarian = $req->parameter_pencarian;
         $tablePrefix = config('database.connections.mysql.prefix');
-        $query = DB::table('paket_mcu')
-            ->select('paket_mcu.id', 'paket_mcu.kode_paket', 'paket_mcu.nama_paket', 'paket_mcu.harga_paket', 'paket_mcu.keterangan',
-                DB::raw('GROUP_CONCAT('.$tablePrefix.'poli_mcu.nama_poli ORDER BY '.$tablePrefix.'poli_mcu.nama_poli) AS akses_poli')
-            )
-            ->join('poli_mcu', DB::raw('FIND_IN_SET('.$tablePrefix.'poli_mcu.kode_poli, '.$tablePrefix.'paket_mcu.akses_poli)'), '>', DB::raw('0'))
-            ->groupBy('paket_mcu.id', 'paket_mcu.kode_paket', 'paket_mcu.nama_paket', 'paket_mcu.harga_paket', 'paket_mcu.keterangan');
-
+        $query = PaketMCU::query()
+        ->where('id', '>', 1);
         if (!empty($parameterpencarian)) {
             $query->where('paket_mcu.kode_paket', 'LIKE', '%' . $parameterpencarian . '%')
                 ->orWhere('paket_mcu.nama_paket', 'LIKE', '%' . $parameterpencarian . '%')
@@ -36,7 +30,7 @@ class PaketMCU extends Model
         $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
             ->skip($offset)
-            ->orderBy('paket_mcu.nama_paket', 'ASC')
+            ->orderBy('paket_mcu.id', 'ASC')
             ->get();
         return [
             'data' => $result,

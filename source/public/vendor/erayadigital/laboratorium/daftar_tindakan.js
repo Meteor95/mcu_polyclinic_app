@@ -1,9 +1,37 @@
+let daftar_table_tindakan_modal, daftar_table_fee_modal;
 $(document).ready(function(){
     document.querySelectorAll('[data-state]').forEach(element => {
         element.classList.add('close_icon');
     });
     load_datatables_tindakan();
+    daftar_table_tindakan_modal = initDataTable("#table_tindakan_lab_modal");
+    daftar_table_fee_modal = initDataTable("#table_fee_lab_modal");
 });
+function initDataTable(selector, options = {}) {
+    const defaultOptions = {
+        searching: false,
+        lengthChange: false,
+        ordering: false,
+        bFilter: false,
+        scrollX: $(window).width() < 768 ? true : false,
+        pagingType: "full_numbers",
+        pageLength: 15,
+        columnDefs: [{
+            defaultContent: "-",
+            targets: "_all"
+        }],
+        language: {
+            "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            "paginate": {
+                "first": '<i class="fa fa-angle-double-left"></i>',
+                "last": '<i class="fa fa-angle-double-right"></i>',
+                "next": '<i class="fa fa-angle-right"></i>',
+                "previous": '<i class="fa fa-angle-left"></i>',
+            },
+        },
+    };
+    return $(selector).DataTable($.extend(true, {}, defaultOptions, options));
+}
 function load_datatables_tindakan(){
     $.get('/generate-csrf-token', function(response) {
         $("#daftar_table_tindakan").DataTable({
@@ -73,7 +101,22 @@ function load_datatables_tindakan(){
                             let parts = row.no_nota.split('/');
                             let no_trx = parts.slice(0, 3).join('/');
                             let no_mcu = parts.slice(3).join('/');
-                            return "No Nota : "+no_trx+"<br>No MCU : "+no_mcu;
+                            let jenis_transaksi = '';
+                            switch (row.jenis_transaksi) {
+                                case 0:
+                                    jenis_transaksi = 'Invoice';
+                                    break;
+                                case 1:
+                                    jenis_transaksi = 'Tunai';
+                                    break;
+                                case 2:
+                                    jenis_transaksi = 'Non Tunai';
+                                    break;
+                                default:
+                                    jenis_transaksi = 'Unknown';
+                                    break;
+                            }
+                            return "No Nota : " + no_trx + "<br>No MCU : " + no_mcu + "<br>Jenis Transaksi : <b>" + jenis_transaksi + "</b>";
                         }
                         return data;
                     }
@@ -114,11 +157,12 @@ function load_datatables_tindakan(){
                     className: "text-center",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
+                            let parts = row.no_nota.split('/');
                             return `<div class="d-flex justify-content-between gap-2">
-                                <button onclick="detail_informasi_tarif('${row.kode_item}','${row.nama_item}')" class="btn btn-success w-100">
+                                <button onclick="detail_tindakan('${row.id_transaksi}')" class="btn btn-success w-100">
                                     <i class="fa fa-eye"></i> Detail
                                 </button>
-                                <button onclick="hapus_informasi_tarif('${row.kode_item}','${row.nama_item}')" class="btn btn-danger w-100">
+                                <button onclick="hapus_tindakan('${row.id_transaksi}','${btoa(parts)}','${row.nama_peserta}')" class="btn btn-danger w-100">
                                     <i class="fa fa-trash-o"></i> Hapus
                                 </button>
                             </div>`;
@@ -129,4 +173,108 @@ function load_datatables_tindakan(){
             ]
         });
     });
+}
+function hapus_tindakan(id,parts,nama_peserta){
+    Swal.fire({ 
+        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Hapus Informasi Transaksi Tindakan</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus informasi transaksi tindakan dengan atas nama : <strong>' + nama_peserta + '</strong> dengan Nota <strong>' + atob(parts).split(',').slice(0, 3).join('/') + '</strong> pada MCU <strong>' + atob(parts).split(',').slice(3).join('/') + '</strong></p></div></div>',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: 'orange',
+        confirmButtonText: 'Hapus Data',
+        cancelButtonText: 'Nanti Dulu!!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.get('/generate-csrf-token', function(response) {
+                $.ajax({
+                    url: baseurlapi + '/laboratorium/hapus_tindakan',
+                    type: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                    data: {
+                        _token:response.csrf_token,
+                        id_transaksi:id,
+                        nama_peserta:nama_peserta,
+                        no_nota:atob(parts).split(',').slice(0, 3).join('/'),
+                        no_mcu:atob(parts).split(',').slice(3).join('/'),
+                    },
+                    success: function(response) {
+                        if (response.success == false){
+                            return createToast('Kesalahan Penyimpanan', 'top-right', response.message, 'error', 3000);
+                        }
+                        $("#daftar_table_tindakan").DataTable().ajax.reload();
+                        return createToast('Tarif Laboratorium Telah Terhapus', 'top-right', response.message, 'success', 3000);
+                    },
+                    error: function(xhr, status, error) {
+                        return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
+                    },
+                });
+            });
+        }
+    }); 
+}
+function detail_tindakan(id,parts,nama_peserta){
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/laboratorium/detail_tindakan',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+            data: {
+                _token:response.csrf_token,
+                id_transaksi:id,
+            },
+            success: function(response) {
+                console.log(response);
+                let parts = response.transaksi[0].no_nota.split('/');
+                let no_trx = parts.slice(0, 3).join('/');
+                let no_mcu = parts.slice(3).join('/');
+                $("#no_trx").html(no_trx);
+                $("#total_pendapatan").html(response.transaksi[0].total_transaksi.toLocaleString('id-ID'));
+                $("#no_mcu_label").html(no_mcu);
+                $("#waktu_transaksi_label").html(moment(response.transaksi[0].waktu_trx).format('DD-MM-YYYY HH:mm:ss'));
+                $("#waktu_sample_label").html(moment(response.transaksi[0].waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss'));
+                $("#dibuat_tanggal_label").html(moment(response.transaksi[0].created_at).format('DD-MM-YYYY HH:mm:ss'));
+                $("#nama_dokter_label").html(response.transaksi[0].nama_dokter);
+                $("#nama_penanggung_jawab_label").html(response.transaksi[0].nama_pj);
+                if (response.transaksi[0].is_paket_mcu == 1){
+                    $("#nama_paket_label").html("Terhubung Paket MCU : "+response.transaksi[0].nama_paket_mcu);  
+                }else if (response.transaksi[0].is_paket_mcu == 0 && response.transaksi[0].nama_paket_mcu == 0){
+                    $("#nama_paket_label").html("Tidak Terhubung Paket MCU");
+                }else{
+                    $("#nama_paket_label").html("Template Tindakan : "+response.transaksi[0].nama_paket_mcu);
+                }
+                if (response.transaksi[0].nama_file_surat_pengantar == ""){
+                    $("#surat_pengantaran_label").html("Tidak Ada Surat Pengantaran / Unggahan");
+                }else{
+                    $("#surat_pengantaran_label").html("<a href='"+baseurlapi+"/file/unduh_surat_pengantar?file_name="+response.transaksi[0].nama_file_surat_pengantar+"' target='_blank'><i class='fa fa-download'></i> Unduh Berkas</a>");
+                }
+                daftar_table_tindakan_modal.rows().clear().draw();
+                daftar_table_fee_modal.rows().clear().draw();
+                response.transaksi.forEach((item, index) => {
+                    daftar_table_tindakan_modal.row.add([
+                        `<div class="text-center">${index + 1}</div>`,
+                        item.kode_item,
+                        item.nama_item,
+                        `<div class="text-end">${item.harga.toLocaleString('id-ID')}</div>`,
+                        `<div class="text-end">${item.diskon.toLocaleString('id-ID')}</div>`,
+                        `<div class="text-end">${item.harga_setelah_diskon.toLocaleString('id-ID')}</div>`,
+                        `<div class="text-end">${item.jumlah.toLocaleString('id-ID')}</div>`,
+                        `<div class="text-end">${(item.harga_setelah_diskon * item.jumlah).toLocaleString('id-ID')}</div>`,
+                    ]).draw();
+                });
+                response.transaksi_fee.forEach((item, index) => {
+                    daftar_table_fee_modal.row.add([
+                        index + 1,
+                        item.nama_tindakan,
+                        item.kode_jasa,
+                        item.nama_petugas,
+                        `<div class="text-end">${item.nominal_fee.toLocaleString('id-ID')}</div>`,
+                        `<div class="text-end">${item.besaran_fee.toLocaleString('id-ID')}</div>`,
+                    ]).draw();
+                });
+            },
+            error: function(xhr, status, error) {
+                return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
+            },
+        });
+    });
+    $('#modalDetailTindakan').modal('show');
 }

@@ -1,39 +1,15 @@
 let formValidasi = $("#formulir_tambah_paket_mcu");let isedit = false;let idpaketmcu = "";
 $(document).ready(function() {
     daftarpaketmcu();
-    getPoli();
 });
 const hargapaketmcu = new AutoNumeric('#hargapaketmcu', {
     digitGroupSeparator: '.',
     decimalCharacter: ',',
-    decimalPlaces: 2,
+    decimalPlaces: 0,
+    modifyValueOnUpDownArrow: false,
+    modifyValueOnWheel: false
 });
-function getPoli() {
-    $.get('/generate-csrf-token', function(response){
-        $.ajax({
-            url: baseurlapi + '/komponen/daftarpoli',
-            type: 'GET',
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
-            },
-            data: {
-                _token: response.csrf_token,
-                katakuncipencarian: ""
-            },
-            success: function(response) {
-                const whitelist = response.data.map(poli => ({
-                    value: poli.nama_poli,
-                    nilai: poli.kode_poli
-                }));
-                tagify.settings.whitelist = whitelist;
-                tagify.dropdown.show();
-            },
-            error: function(xhr) {
-                createToast('Error', 'top-right', xhr.responseJSON.message, 'error', 3000);
-            }
-        });
-    });
-}
+
 function daftarpaketmcu() {
     $.get('/generate-csrf-token', function(response) {
         $("#datatable_paketmcu").DataTable({
@@ -94,7 +70,6 @@ function daftarpaketmcu() {
             columns: [
                 {
                     title: "No",
-                    data: null,
                     render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
@@ -109,30 +84,25 @@ function daftarpaketmcu() {
                 },
                 {
                     title: "Harga",
-                    data: "harga_paket",
-                    render: function(data) {
-                        return '<div style="text-align: right;">' + new Intl.NumberFormat('id-ID', { 
-                            style: 'currency', 
-                            currency: 'IDR',
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 0
-                        }).format(data) + '</div>';
+                    render: function(data, type, row, meta) {
+                       if (type === 'display'){
+                        return row.harga_paket == null ? 0 : row.harga_paket.toLocaleString('id-ID');
+                       }
                     }
                 },
                 {
-                    title: "Keterangan Akses Poli",
-                    render: function(data, type, row, meta) {
-                        const polis = row.akses_poli.split(',').map(poli => 
-                            `<span class="badge badge-primary">${poli.trim()}</span>`
-                        ).join(' ');
-                        return `Keterangan: ${row.keterangan}<br>Akses : ${polis}`;
-                    }
+                    title: "Keterangan",
+                    data: "keterangan"
                 },
                 {
                     title: "Aksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"editpaketmcu('" + row.id + "','" + row.kode_paket + "','" + row.nama_paket + "','" + row.harga_paket + "','" + row.akses_poli + "','" + row.keterangan + "')\"><i class=\"fa fa-edit\"></i> Edit Paket MCU</button><button class=\"btn btn-danger w-100\" onclick=\"hapuspaketmcu('" + row.id + "','" + row.kode_paket + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Paket MCU</button></div>";
+                            if (row.id > 1){
+                                return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"editpaketmcu('" + row.id + "','" + row.kode_paket + "','" + row.nama_paket + "','" + row.harga_paket + "','" + row.akses_poli + "','" + row.keterangan + "')\"><i class=\"fa fa-edit\"></i> Edit Paket MCU</button><button class=\"btn btn-danger w-100\" onclick=\"hapuspaketmcu('" + row.id + "','" + row.kode_paket + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Paket MCU</button></div>";
+                            }else{
+                                return "";
+                            }
                         }
                         return data;
                     }
@@ -207,24 +177,6 @@ function clearFormulirTambahPaketMcu() {
     $("#aksespolipaketmcu").val("");
     $("#keteranganpaketmcu").val("");
 }
-let input = document.querySelector("#aksespolipaketmcu"),
-tagify = new Tagify(input, {
-    whitelist: [],
-    dropdown: {
-        position: "manual",
-        maxItems: Infinity,
-        enabled: 0,
-        classname: "customSuggestionsList",
-    },
-    templates: {
-        dropdownItemNoMatch() {
-            return `<div class='empty'>Data Poli Tidak Ditemukan</div>`;
-        },
-    },
-    enforceWhitelist: true,
-});
-
-tagify.on("dropdown:show",function(e){}).on("dropdown:hide",function(){}).on("dropdown:scroll",function(e){});(function(){tagify.dropdown.show();tagify.DOM.scope.parentNode.appendChild(tagify.DOM.dropdown)})();
 function hapuspaketmcu(id, nama) {
     Swal.fire({
         html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53a48ece-27d3-4b85-9150-8005e7c27aa4/usrEqiqrei.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penghapusan Data Paket MCU <strong>'+nama+'</strong></h4><p class="text-muted mx-4 mb-0">Informasi yang terkait dengan paket MCU <strong>'+nama+'</strong> tidak akan hilang tetapi tidak ditampilkan di sistem. Apakah anda yakin ingin melanjutkan proses penghapusan ini ?</p></div>',
@@ -266,7 +218,6 @@ function editpaketmcu(id, kode, nama, harga, akses, keterangan) {
     $("#kodepaketmcu").val(kode);
     $("#namapaketmcu").val(nama);
     hargapaketmcu.set(harga);
-    $("#aksespolipaketmcu").val(akses);
     $("#keteranganpaketmcu").val(keterangan);
     $("#formulir_tambah_paket_mcu").modal("show");
 }

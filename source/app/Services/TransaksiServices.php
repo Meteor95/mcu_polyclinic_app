@@ -81,6 +81,7 @@ class TransaksiServices
                 Storage::disk('public')->putFileAs('file_surat_pengantar/', $file, $filename);
             }
             $paket_mcu = PaketMCU::find($data['id_paket_mcu']);
+            $parts = explode('|', $data['id_paket_mcu']);
             $dataToInsert = [
                 'no_transaksi' => $nomor_transaksi_mcu,
                 'tanggal_transaksi' => Carbon::parse($data['tanggal_transaksi']." ".Carbon::now()->format('H:i:s'))->format('Y-m-d H:i:s'),
@@ -88,27 +89,20 @@ class TransaksiServices
                 'perusahaan_id' => $data['perusahaan_id'],
                 'departemen_id' => $data['departemen_id'],
                 'proses_kerja' => json_encode($data['proses_kerja']),
-                'id_paket_mcu' => $data['id_paket_mcu'],
-                'harga_paket_saat_ini' => $data['nominal_bayar_konfirmasi'],
-                'fitur_paket_mcu_saat_ini' => $paket_mcu->akses_poli,
-                'nama_file_surat_pengantar' => $filename,
-                'tipe_pembayaran' => $data['tipe_pembayaran'],
-                'metode_pembayaran' => $data['metode_pembayaran'],
-                'nominal_pembayaran' => $data['nominal_pembayaran'],
-                'penerima_bank_id' => $data['penerima_bank'],
-                'nomor_transakasi_transfer' => $data['nomor_transaksi_transfer'] ?? null,
+                'id_paket_mcu' => $parts[0],
                 'petugas_id' => $user_id_petugas,
                 'jenis_transaksi_pendaftaran' => $data['jenis_transaksi_pendaftaran'],
+                'status_peserta' => 'proses',
             ];
             if (filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
                 unset($dataToInsert['no_transaksi']);           
                 Transaksi::where('id', $data['id_detail_transaksi_mcu'])->update($dataToInsert);
             } else {
-                $datatransaksi = Transaksi::whereDate('tanggal_transaksi', Carbon::parse($data['tanggal_transaksi'])->format('Y-m-d'))
-                    ->where('user_id', $member->id)
+                $datatransaksi = Transaksi::where('user_id', $member->id)
+                    ->where('status_peserta', 'proses')
                     ->first();
                 if ($datatransaksi) {
-                    throw new \Exception("Dalam hari ini peserta dengan Nama ".$member->nama_peserta." sudah melakukan pendaftaran. Silahkan cek kembali pada menu pasien");
+                    throw new \Exception("Pasien dengan Nama ".$member->nama_peserta." sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya");
                 }
                 Transaksi::create($dataToInsert);
             }

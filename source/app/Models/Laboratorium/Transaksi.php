@@ -34,10 +34,10 @@ class Transaksi extends Model
     public static function listTabelTindakan($req, $perHalaman, $offset){
         $parameterpencarian = $req->parameter_pencarian;
         $tablePrefix = config('database.connections.mysql.prefix');
-        $query = DB::table('transaksi')
-        ->join('mcu_transaksi_peserta', 'transaksi.no_mcu', '=', 'mcu_transaksi_peserta.id')
+        $query = Transaksi::join('mcu_transaksi_peserta', 'transaksi.no_mcu', '=', 'mcu_transaksi_peserta.id')
         ->join('users_member', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
-        ->join('users','transaksi.id_kasir','=','users.id');
+        ->join('users','transaksi.id_kasir','=','users.id')
+        ->select('transaksi.id as id_transaksi','transaksi.*','mcu_transaksi_peserta.*','users_member.*','users.*');
         if (!empty($parameterpencarian)) {
             $query->where('transaksi.no_mcu', 'LIKE', '%' . $parameterpencarian . '%')
             ->orWhere('transaksi.no_nota', 'LIKE', '%' . $parameterpencarian . '%');

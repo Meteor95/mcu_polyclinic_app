@@ -30,7 +30,7 @@
                         Nama Peserta
                     </div>
                     <div class="col-sm-3">
-                        <span id="nama_peserta_mcu"></span>
+                        <span id="nama_peserta_mcu"></span> (<span id="status_peserta_mcu"></span>)
                     </div>
                     <div class="col-sm-3">
                         No Telepon
@@ -112,7 +112,7 @@
                 <div class="col-md-12">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="input-group">
-                            <span class="text-start" style="margin-top: 5px; padding-right: 10px; font-family: 'DS-Digital', sans-serif; font-size: 30px; color: red;">
+                            <span id="label_total_harga" class="text-start" style="margin-top: 5px; padding-right: 10px; font-family: 'DS-Digital', sans-serif; font-size: 30px; color: red;">
                                 <strong>Total Harga</strong>
                             </span>
                             <input type="text" class="form-control text-end" id="generate_total_harga_tindakan_mcu" name="generate_total_harga_tindakan_mcu" placeholder="0">

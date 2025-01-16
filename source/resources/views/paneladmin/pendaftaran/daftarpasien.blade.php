@@ -17,24 +17,6 @@
       </div>
     </div>
 </div>
-<div class="modal modal-lg fade" id="modal_detail_paket_mcu" tabindex="-1" role="dialog" aria-labelledby="modal_detail_paket_mcuLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTambahPenggunaLabel">Informasi Detail Paket MCU</h5>
-                <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
-            </div>
-            <div class="modal-body">
-                <div id="detail_paket_mcu"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-                    <i class="fa fa-times"></i> Tutup
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 @section('css_load')
 <style>

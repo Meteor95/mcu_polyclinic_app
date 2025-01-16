@@ -315,7 +315,7 @@
             </div>
         </div>
     </div>
-  </div>
+</div>
 @endsection
 @section('css_load')
 <link href="https://cdn.datatables.net/keytable/2.12.1/css/keyTable.dataTables.min.css" rel="stylesheet">

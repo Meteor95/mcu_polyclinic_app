@@ -110,4 +110,15 @@ class LaboratoriumServices
             TransaksiDetail::insert($data_tindakan);
         });
     }
+    public function handleDeleteTransactionLaboratorium($data,$user_id){
+        return DB::transaction(function () use ($data,$user_id) {
+            $informasi_file = Transaksi::where('id', $data['id_transaksi'])->first();
+            if ($informasi_file){
+                if (isset($data['hard_delete']) && filter_var($data['hard_delete'], FILTER_VALIDATE_BOOLEAN)){
+                    Storage::disk('public')->delete('file_surat_pengantar/' . $informasi_file->nama_file_surat_pengantar);
+                }
+                Transaksi::where('id', $data['id_transaksi'])->delete(); 
+            }
+        });
+    }
 }

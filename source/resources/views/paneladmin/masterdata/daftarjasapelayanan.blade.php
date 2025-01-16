@@ -91,5 +91,5 @@
 @endsection
 @section('js_load')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
-<script src="{{asset('mofi/assets/js/system/master_data/jasapelayanan.js')}}"></script>
+<script src="{{asset('vendor/erayadigital/master_data/jasapelayanan.js')}}"></script>
 @endsection

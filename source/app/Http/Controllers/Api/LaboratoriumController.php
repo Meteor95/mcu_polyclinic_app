@@ -463,6 +463,12 @@ class LaboratoriumController extends Controller
     public function pilih_template_tindakan_mcu(Request $req){
         try {
             $template = TemplateLab::where('id', $req->id_template_tindakan)->first();
+            if (!$template) {
+                $dynamicAttributes = [
+                    'data' => [],
+                ];
+                return ResponseHelper::data('Informasi template tindakan tidak ditemukan. Silahkan tentukan template terlebih dahulu untuk menghindari kerancuan data', $dynamicAttributes);
+            }
             $metaData = json_decode($template->meta_data_template, true);
             $kodeItems = array_column($metaData, 'kode_item');
             $tarifItems = Tarif::whereIn('kode_item', $kodeItems)->get();
@@ -503,6 +509,14 @@ class LaboratoriumController extends Controller
             }
             $data = $req->all();
             $file = $req->file('nama_file_surat_pengantar');
+            $pasien_sudah_ada = Transaksi::where('no_mcu', $req->no_mcu)
+            ->where('status_pembayaran', '!=', 'paid')->first();
+            if ($pasien_sudah_ada) {
+                $parts_nota = explode("/", $pasien_sudah_ada->no_nota);
+                $no_nota = implode("/", array_slice($parts_nota, 0, 3));
+                $no_mcu = implode("/", array_slice($parts_nota, 3));
+                return ResponseHelper::data_conflict("Informasi pasien MCU dengan <b>Nomor Transaksi '".$no_nota."' [MCU : ".$no_mcu."]</b> sudah ada. Silahkan lakukan transaksi dengan nomor transaksi yang berbeda.");
+            }
             $iserrir = $laboratoriumService->handleTransactionLaboratorium($data,$req->attributes->get('user_id'),$file);
             return ResponseHelper::success('Informasi transaksi tindakan dengan No. Nota ' . $req->no_nota . ' [MCU : ' . $req->no_mcu . '] berhasil disimpan. Silahkan lakukan validasi transaksi dengan hak akses kasir atau yang sesuai.');
         } catch (\Throwable $th) {
@@ -524,6 +538,49 @@ class LaboratoriumController extends Controller
                 ],
             ];
             return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Hak Akses']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function hapus_tindakan(LaboratoriumServices $laboratoriumService, Request $req){
+        try {
+            $validator = Validator::make($req->all(), [
+                'id_transaksi' => 'required',
+                'nama_peserta' => 'required',
+                'no_nota' => 'required',
+                'no_mcu' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $data = $req->all();
+            $iserrir = $laboratoriumService->handleDeleteTransactionLaboratorium($data,$req->attributes->get('user_id'));
+            return ResponseHelper::success("Informasi transaksi tindakan dengan No. Nota '".$req->no_nota."' [MCU : ".$req->no_mcu."] berhasil dihapus. Silahkan transkasikan kembali jikalau dibutuhkan untuk keperluan dokumen lain seperti MCU atau laporan lainnya.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function detail_tindakan(Request $req){
+        try {
+            $validator = Validator::make($req->all(), [
+                'id_transaksi' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $transaksiData = Transaksi::join('transaksi_detail', 'transaksi.id', '=', 'transaksi_detail.id_transaksi')
+            ->where('transaksi.id', $req->id_transaksi)
+            ->get();
+            $transaksiFee = Transaksi::where('id_transaksi', $req->id_transaksi)
+            ->join('transaksi_fee', 'transaksi.id', '=', 'transaksi_fee.id_transaksi')
+            ->get();
+            $dynamicAttributes = [
+                'transaksi' => $transaksiData,
+                'transaksi_fee' => $transaksiFee,
+            ];
+            return ResponseHelper::data('Informasi Transaksi Tindakan', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

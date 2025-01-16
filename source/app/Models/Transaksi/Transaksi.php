@@ -16,16 +16,9 @@ class Transaksi extends Model
         'departemen_id',
         'proses_kerja',
         'id_paket_mcu',
-        'harga_paket_saat_ini',
-        'fitur_paket_mcu_saat_ini',
-        'nama_file_surat_pengantar',
-        'tipe_pembayaran', // 0 = HUTANG, 1 = TUNAI
-        'metode_pembayaran', // 0 = TUNAI, 1 = TRANSFER
-        'nominal_pembayaran',
-        'penerima_bank_id',
-        'nomor_transakasi_transfer',
         'petugas_id',
-        'jenis_transaksi_pendaftaran'
+        'jenis_transaksi_pendaftaran',
+        'status_peserta'
     ];
     public static function listPasienTabel($request, $perHalaman, $offset)
     {
@@ -37,7 +30,6 @@ class Transaksi extends Model
             ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
             ->join('users_pegawai', 'users_pegawai.id', '=', 'mcu_transaksi_peserta.petugas_id')
             ->join('paket_mcu', 'paket_mcu.id', '=', 'mcu_transaksi_peserta.id_paket_mcu')
-            ->join('poli_mcu', DB::raw('FIND_IN_SET(' . $tablePrefix . 'poli_mcu.kode_poli, ' . $tablePrefix . 'mcu_transaksi_peserta.fitur_paket_mcu_saat_ini)'), '>', DB::raw('0'))
             ->select(
                 'mcu_transaksi_peserta.id',
                 'mcu_transaksi_peserta.no_transaksi',
@@ -47,10 +39,8 @@ class Transaksi extends Model
                 'users_pegawai.nama_pegawai',
                 'paket_mcu.nama_paket',
                 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran',
-                'mcu_transaksi_peserta.tipe_pembayaran',
                 DB::raw("DATE_FORMAT(" . $tablePrefix . "mcu_transaksi_peserta.tanggal_transaksi, '%d-%m-%Y %H:%i:%s') as tanggal_transaksi"),
-                DB::raw("TIMESTAMPDIFF(YEAR, " . $tablePrefix . "users_member.tanggal_lahir, CURDATE()) AS umur"),
-                DB::raw("GROUP_CONCAT(" . $tablePrefix . "poli_mcu.nama_poli ORDER BY " . $tablePrefix . "poli_mcu.kode_poli) AS akses_poli")
+                DB::raw("TIMESTAMPDIFF(YEAR, " . $tablePrefix . "users_member.tanggal_lahir, CURDATE()) AS umur")
             );
         if (!empty($parameterpencarian)) {
             $query->where('no_transaksi', 'LIKE', '%' . $parameterpencarian . '%')

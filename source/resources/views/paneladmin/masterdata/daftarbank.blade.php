@@ -58,5 +58,5 @@
 @section('css_load')
 @endsection
 @section('js_load')
-<script src="{{asset('mofi/assets/js/system/master_data/daftarbank.js')}}"></script>
+<script src="{{asset('vendor/erayadigital/master_data/daftarbank.js')}}"></script>
 @endsection

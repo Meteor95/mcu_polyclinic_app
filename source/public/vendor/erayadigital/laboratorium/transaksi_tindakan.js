@@ -157,7 +157,7 @@ function load_table_template_tindakan_mcu(){
                     title: "Paket MCU",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return row.used_paket_mcu == 0 ? "Tidak Terhubung Paket MCU" : "Nama Paket MCU : "+row.nama_paket+"<br>Harga MCU : "+row.harga_paket.toLocaleString('id-ID');
+                            return row.used_paket_mcu == 0 ? "Tidak Terhubung Paket MCU" : "Nama Paket MCU : "+row.nama_paket+"<br>Harga MCU : "+(row.harga_paket == null ? 0 : row.harga_paket).toLocaleString('id-ID');
                         }
                         return data;
                     }
@@ -364,6 +364,10 @@ function load_data_tindakan(){
         }
     });
 }
+function clear_keranjang_tindakan(){
+    data_table_tindakan.rows().clear().draw();
+    hitung_keranjang_tindakan();
+}
 $("#pencarian_member_mcu").on('change', function(){
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
@@ -379,6 +383,7 @@ $("#pencarian_member_mcu").on('change', function(){
                     clear_tanda_vital();
                     return createToast('Data tidak ditemukan', 'top-right', response.message, 'error', 3000);
                 }
+                clear_keranjang_tindakan();
                 $("#nomor_transaksi_mcu").text(response.data.no_transaksi);
                 $("#nomor_identitas_mcu").text(response.data.nomor_identitas);
                 $("#id_user_mcu").text(response.data.user_id);
@@ -389,6 +394,11 @@ $("#pencarian_member_mcu").on('change', function(){
                 $("#email_mcu").text(response.data.email);
                 $("#company_name_mcu").text(response.data.company_name);
                 $("#nama_departemen_mcu").text(response.data.nama_departemen);
+                $("#status_peserta_mcu").text(capitalizeFirstLetter(response.data.jenis_transaksi_pendaftaran));
+                if (response.data.jenis_transaksi_pendaftaran == 'MCU') {
+                    $("#nomor_transaksi_mcu_generate").val("Membaca Paket MCU "+response.data.nama_paket);
+                    pilih_template_tindakan_mcu(response.data.id_template_tindakan, response.data.nama_paket, "", response.data.used_paket_mcu, response.data.harga_paket)
+                }
                 $("#nomor_transaksi_mcu_generate").val("TRX/LAB/" + moment().format('YYYYMMDDHHmmss')+"/"+$("#nomor_transaksi_mcu").text());
             }
         });
@@ -421,27 +431,32 @@ $('#table_tindakan_mcu').on('click', '.btn_hapus_tindakan_mcu', function () {
     updateRowNumbers();
     hitung_keranjang_tindakan();
 });
-function updateRowNumbers() {
+function updateRowNumbers(harga_paket = null) {
     data_table_tindakan.rows().every(function (rowIdx) {
-    const row = this;
-    const rowIndex = row.data()[0]; 
-    const kode_item = row.data()[1];
-    this.cell({ row: rowIdx, column: 0 }).data(rowIdx + 1).draw();
-    const fields = ['harga_jual', 'diskon', 'harga_setelah_diskon', 'total_harga', 'jumlah'];
-    fields.forEach(function (field) {
-        const input = $(row.node()).find(`#${field}_${kode_item}_${rowIndex}`);
-        if (input.length > 0) {
-            input.attr('id', `${field}_${kode_item}_${rowIdx + 1}`);
+        const row = this;
+        const rowIndex = row.data()[0]; 
+        const kode_item = row.data()[1];
+        this.cell({ row: rowIdx, column: 0 }).data(rowIdx + 1).draw();
+        const fields = ['harga_jual', 'diskon', 'harga_setelah_diskon', 'total_harga', 'jumlah'];
+        fields.forEach(function (field) {
+            const input = $(row.node()).find(`#${field}_${kode_item}_${rowIndex}`);
+            if (input.length > 0) {
+                const autoNumericInstance = AutoNumeric.getAutoNumericElement(input[0]);
+                if (autoNumericInstance) {
+                    autoNumericInstance.remove();
+                }
+                input.attr('id', `${field}_${kode_item}_${rowIdx + 1}`);
+            }
+        });
+        const deleteButton = $(row.node()).find(`#btn_hapus_tindakan_mcu_${rowIndex}`);
+        if (deleteButton.length > 0) {
+            deleteButton.attr('id', `btn_hapus_tindakan_mcu_${rowIdx + 1}`);
         }
-    });
-    const deleteButton = $(row.node()).find(`#btn_hapus_tindakan_mcu_${rowIndex}`);
-    if (deleteButton.length > 0) {
-        deleteButton.attr('id', `btn_hapus_tindakan_mcu_${rowIdx + 1}`);
-    }
+        initAutoNumeric(rowIdx + 1, kode_item, harga_paket);
     });
 }
 const rowIndexMap = {};
-function tambah_ke_keranjang_tindakan(data_tarif, dari = null) {
+function tambah_ke_keranjang_tindakan(data_tarif, dari = null, harga_paket = false) {
     if (data_tarif.length == 0) {
         return createToast('Tidak ada data yang dipilih', 'top-right', 'Setidaknya pilih 1 data tindakan untuk ditambahkan ke dalam keranjang tindakan lab dan pengobatan', 'error', 3000);
     }
@@ -455,81 +470,75 @@ function tambah_ke_keranjang_tindakan(data_tarif, dari = null) {
         nomor,
         tarif.kode_item,
         tarif.nama_item,
-        createInput(nomor,'harga_jual', kode_item, tarif.harga_jual),
-        createInput(nomor,'diskon', kode_item, '0'),
-        createInput(nomor,'harga_setelah_diskon', kode_item, '0', true),
-        createInput(nomor,'jumlah', kode_item, '1'),
-        createInput(nomor,'total_harga', kode_item, '0', true),
+        createInput(nomor, 'harga_jual', kode_item, harga_paket > 0 ? 0 : tarif.harga_jual),
+        createInput(nomor, 'diskon', kode_item, '0'),
+        createInput(nomor, 'harga_setelah_diskon', kode_item, '0', true),
+        createInput(nomor, 'jumlah', kode_item, '1'),
+        createInput(nomor, 'total_harga', kode_item, '0', true),
         `<div class="d-flex justify-content-center gap-2">
-        <button onclick="modal_bagi_fee_tindakan_mcu('${tarif.id}','${btoa(tarif.meta_data_jasa)}','${kode_item}','${nomor}','${tarif.nama_item}')" class="w-100 btn btn-success btn-sm btn_bagi_fee_tindakan_mcu" id="btn_bagi_fee_tindakan_mcu_${kode_item}"><i class="fa fa-edit"></i> Fee</button>
-        <button class="w-100 btn btn-danger btn-sm btn_hapus_tindakan_mcu" id="btn_hapus_tindakan_mcu_${kode_item}"><i class="fa fa-trash"></i></button>
+            <button onclick="modal_bagi_fee_tindakan_mcu('${tarif.id}','${btoa(tarif.meta_data_jasa)}','${kode_item}','${nomor}','${tarif.nama_item}')" class="w-100 btn btn-success btn-sm btn_bagi_fee_tindakan_mcu" id="btn_bagi_fee_tindakan_mcu_${kode_item}"><i class="fa fa-edit"></i> Fee</button>
+            ${harga_paket > 0 ? '' : `<button class="w-100 btn btn-danger btn-sm btn_hapus_tindakan_mcu" id="btn_hapus_tindakan_mcu_${kode_item}"><i class="fa fa-trash"></i></button>`}
         </div>`,
         `<input type="text" class="form-control" id="meta_data_kuantitaif_${kode_item}_${nomor}" value="${JSON.parse(tarif.meta_data_kuantitaif).length == 0 ? '' : btoa(tarif.meta_data_kuantitaif)}">`,
         `<input type="text" class="form-control" id="meta_data_kualitatif_${kode_item}_${nomor}" value="${JSON.parse(tarif.meta_data_kualitatif).length == 0 ? '' : btoa(tarif.meta_data_kualitatif)}">`,
         `<input type="text" class="form-control" id="meta_data_jasa_${kode_item}_${nomor}" value="">`,
     ]).draw();
-    initAutoNumeric(nomor,kode_item);
-    hitung_keranjang_tindakan();
-    updateRowNumbers();
+    
+    initAutoNumeric(nomor,kode_item, harga_paket);
+    hitung_keranjang_tindakan(null, null, null, harga_paket);
+    updateRowNumbers(harga_paket);
     let lastRow = data_table_tindakan.row(data_table_tindakan.rows().count() - 1).node();
     $(lastRow).get(0).scrollIntoView({ behavior: 'smooth', block: 'end' });
     $("#tindakan_tersedia_mcu").val(null).trigger('change');
 }
 
-function hitung_keranjang_tindakan(indexKe = null, id = null, paramter_id = null) {
-    let general_total = 0, totalHarga = 0, hargaJual = 0, diskon = 0, totalHargaSetelahDiskon = 0, jumlah = 0;
-    if (indexKe != null) {
-        const row = data_table_tindakan.row(indexKe -1).node();
-        const hargaJualElement = $(row).find('#harga_jual_' + paramter_id)[0];
-        const diskonElement = $(row).find('#diskon_' + paramter_id)[0];
-        const hargaSetelahDiskonElement = $(row).find('#harga_setelah_diskon_' + paramter_id)[0];
-        const jumlahElement = $(row).find('#jumlah_' + paramter_id)[0];
-        const totalHargaElement = $(row).find('#total_harga_' + paramter_id)[0];
-        hargaJual = AutoNumeric.getAutoNumericElement(hargaJualElement).get();
-        diskon = AutoNumeric.getAutoNumericElement(diskonElement).get();
+function hitung_keranjang_tindakan(indexKe = null, id = null, paramter_id = null, harga_paket = null) {
+    let general_total = 0;
+    function hitungDiskon(hargaJual, diskon) {
         if (diskon < 100) {
-            totalHargaSetelahDiskon = (hargaJual - (hargaJual * diskon / 100)).toFixed(2);
-        } else {
-            totalHargaSetelahDiskon = hargaJual - diskon;
+            return (hargaJual - (hargaJual * diskon / 100)).toFixed(2);
         }
+        return hargaJual - diskon;
+    }
+    if (indexKe != null) {
+        const row = data_table_tindakan.row(indexKe - 1).node();
+        const hargaJual = AutoNumeric.getAutoNumericElement($(row).find(`#harga_jual_${paramter_id}`)[0]).get();
+        const diskon = AutoNumeric.getAutoNumericElement($(row).find(`#diskon_${paramter_id}`)[0]).get();
+
+        let totalHargaSetelahDiskon = hitungDiskon(hargaJual, diskon);
         if (totalHargaSetelahDiskon < 0) {
-            AutoNumeric.getAutoNumericElement(diskonElement).set("");
-            return createToast(
-                'Kesalahan Diskon',
-                'top-right',
-                `Harga setelah diskon tidak boleh kurang dari 0. Silahkan cek kembali data diskon pada ID: ${capitalizeFirstLetter(id)} di Baris: ${indexKe}.`,
-                'error',
-                3000
-            );
+            AutoNumeric.getAutoNumericElement($(row).find(`#diskon_${paramter_id}`)[0]).set("");
+            return createToast('Kesalahan Diskon', 'top-right', 
+                `Harga setelah diskon tidak boleh kurang dari 0. Silahkan cek kembali data diskon pada ID: ${capitalizeFirstLetter(id)} di Baris: ${indexKe}.`, 
+                'error', 3000);
         }
-        AutoNumeric.getAutoNumericElement(hargaSetelahDiskonElement).set(totalHargaSetelahDiskon);
-        jumlah = AutoNumeric.getAutoNumericElement(jumlahElement).get();
-        totalHarga = totalHargaSetelahDiskon * jumlah;
-        AutoNumeric.getAutoNumericElement(totalHargaElement).set(totalHarga);
+        AutoNumeric.getAutoNumericElement($(row).find(`#harga_setelah_diskon_${paramter_id}`)[0]).set(totalHargaSetelahDiskon);
+        const jumlah = AutoNumeric.getAutoNumericElement($(row).find(`#jumlah_${paramter_id}`)[0]).get();
+        const totalHarga = totalHargaSetelahDiskon * jumlah;
+        AutoNumeric.getAutoNumericElement($(row).find(`#total_harga_${paramter_id}`)[0]).set(totalHarga);
         general_total = Array.from($('.total_harga'))
-        .map(el => AutoNumeric.getAutoNumericElement(el)?.get() || 0)
-        .reduce((sum, value) => sum + parseFloat(value), 0);
-        generate_total_harga_tindakan_mcu_autoNumeric.set(general_total);
+            .map(el => AutoNumeric.getAutoNumericElement(el)?.get() || 0)
+            .reduce((sum, value) => sum + parseFloat(value), 0);
+        generate_total_harga_tindakan_mcu_autoNumeric.set(harga_paket > 0 ? harga_paket : general_total);
         return;
     }
     data_table_tindakan.rows().every(function () {
         const row = this;
-        const kode_item = row.data()[1]+"_"+(row.data()[0])
-        hargaJual = AutoNumeric.getAutoNumericElement($(row.node()).find('#harga_jual_' + kode_item)[0]).get();
-        diskon = AutoNumeric.getAutoNumericElement($(row.node()).find('#diskon_' + kode_item)[0]).get();
-        if (diskon < 100) {
-            totalHargaSetelahDiskon = (hargaJual - (hargaJual * diskon / 100)).toFixed(2);
-        } else {
-            totalHargaSetelahDiskon = hargaJual - diskon;
-        }
-        AutoNumeric.getAutoNumericElement($(row.node()).find('#harga_setelah_diskon_' + kode_item)[0]).set(totalHargaSetelahDiskon);
-        jumlah = AutoNumeric.getAutoNumericElement($(row.node()).find('#jumlah_' + kode_item)[0]).get();
-        totalHarga = totalHargaSetelahDiskon * jumlah;
-        AutoNumeric.getAutoNumericElement($(row.node()).find('#total_harga_' + kode_item)[0]).set(totalHarga);
+        const kode_item = `${row.data()[1]}_${row.data()[0]}`;
+        const hargaJual = AutoNumeric.getAutoNumericElement($(row.node()).find(`#harga_jual_${kode_item}`)[0]).get();
+        const diskon = AutoNumeric.getAutoNumericElement($(row.node()).find(`#diskon_${kode_item}`)[0]).get();
+
+        let totalHargaSetelahDiskon = hitungDiskon(hargaJual, diskon);
+        AutoNumeric.getAutoNumericElement($(row.node()).find(`#harga_setelah_diskon_${kode_item}`)[0]).set(totalHargaSetelahDiskon);
+
+        const jumlah = AutoNumeric.getAutoNumericElement($(row.node()).find(`#jumlah_${kode_item}`)[0]).get();
+        const totalHarga = totalHargaSetelahDiskon * jumlah;
+        AutoNumeric.getAutoNumericElement($(row.node()).find(`#total_harga_${kode_item}`)[0]).set(totalHarga);
         general_total += totalHarga;
     });
-    generate_total_harga_tindakan_mcu_autoNumeric.set(general_total);
+    generate_total_harga_tindakan_mcu_autoNumeric.set(harga_paket > 0 ? harga_paket : general_total);
 }
+
 
 
 function createInput(index,type, kode_item, value, readonly = false) {
@@ -546,16 +555,29 @@ function calculateWidth(value,type) {
     return `${width}px`;
 }
 
-function initAutoNumeric(index,kode_item) {
+function initAutoNumeric(index, kode_item, harga_paket = null) {
     const fields = ['harga_jual', 'diskon', 'harga_setelah_diskon', 'total_harga', 'jumlah'];
-    fields.forEach(function(field) {
-        new AutoNumeric(`#${field}_${kode_item}_${index}`, getAutoNumericOptions());
-        $(`#${field}_${kode_item}_${index}`).on('keyup', debounce(function(event) {
-            hitung_keranjang_tindakan(index, this.id, `${kode_item}_${index}`);
+    fields.forEach(function (field) {
+        const elementId = `#${field}_${kode_item}_${index}`;
+        const inputElement = $(elementId);
+        inputElement.off('keyup');
+        new AutoNumeric(elementId, getAutoNumericOptions());
+        inputElement.on('keyup', debounce(function(event) {
+            if (harga_paket > 0) {
+                $(elementId).val(0);
+                return createToast('Kesalahan Perhitungan', 'top-right', 
+                    'Pasien ini terindikasi terhubung dengan paket MCU, sehingga harga paket MCU akan dihitung secara otomatis dan tidak bisa diubah', 
+                    'success', 3000);
+            }
+            const charCode = event.which ? event.which : event.keyCode;
+            if (!((charCode >= 48 && charCode <= 57) || (charCode >= 96 && charCode <= 105))) {
+                event.preventDefault();
+                return;
+            }
+            hitung_keranjang_tindakan(index, this.id, `${kode_item}_${index}`, harga_paket);
         }, 300));
-    });
+    });   
 }
-
 function getAutoNumericOptions() {
     return {
         decimal: ',',
@@ -572,8 +594,9 @@ $("#table_tindakan_mcu_filter").on('keyup', function(){
 $("#btn_baca_template_tindakan_mcu").on('click', function(){
     $("#modal_baca_template_tindakan_mcu").modal('show');
 });
-function pilih_template_tindakan_mcu(id_template_tindakan, nama_template, id_button, used_paket_mcu){
+function pilih_template_tindakan_mcu(id_template_tindakan, nama_template, id_button, used_paket_mcu, harga_paket = false){
     $("#btn_pilih_template_tindakan_mcu_"+id_button).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memuat Data...');
+    data_table_tindakan.rows().clear().draw();
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
             url: baseurlapi + '/laboratorium/pilih_template_tindakan_mcu',
@@ -585,10 +608,13 @@ function pilih_template_tindakan_mcu(id_template_tindakan, nama_template, id_but
                 nama_template: nama_template,
             },
             success: function(response) {
+                if (response.data.length == 0) {
+                    return createToast('Data tidak ditemukan', 'top-right', 'Informasi template tindakan tidak ditemukan. Silahkan tentukan template terlebih dahulu untuk menghindari kerancuan data', 'error', 3000);
+                }
                 is_paket_mcu = used_paket_mcu;
                 nama_paket_mcu = nama_template;
                 response.data.forEach(tarif => {
-                    tambah_ke_keranjang_tindakan(tarif, "template");
+                    tambah_ke_keranjang_tindakan(tarif, "template", harga_paket);
                 });
                 $("#btn_pilih_template_tindakan_mcu_"+id_button).prop('disabled', false).html('<i class="fa fa-check"></i> Pilih');
                 $("#modal_baca_template_tindakan_mcu").modal('hide');
@@ -865,7 +891,7 @@ function simpan_konfirmasi(){
                 formData.append('total_tindakan', data_table_tindakan.rows().count());   
                 formData.append('jenis_transaksi', jenis_transaksi);
                 formData.append('metode_pembayaran', metode_pembayaran);
-                formData.append('status_pembayaran', 'pending');
+                formData.append('status_pembayaran', 'process');
                 const fileInput = $('#surat_pengantar')[0];
                 if (fileInput.files[0]) {
                     formData.append('nama_file_surat_pengantar', fileInput.files[0]);
@@ -888,11 +914,13 @@ function simpan_konfirmasi(){
                         cancelButtonText: 'Tambah Data Baru',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                           
+                            window.location.href = '/laboratorium/daftar_tindakan';
                         }else{
                             window.location.reload();
                         }
                     });
+                }else{
+                    createToast('Kesalahan Cek Data', 'top-right', response_data.message, 'error', 3000);
                 }
             },
             error: function(xhr, status, error){

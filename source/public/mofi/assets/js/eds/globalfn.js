@@ -69,21 +69,19 @@ $("#pencarian_member_mcu").on('change', function() {
                     nomor_identitas : $("#pencarian_member_mcu").val()
                 },
                 success: function(response) {
-                    if (!response.success) {
-                        clear_tanda_vital();
-                        return createToast('Data tidak ditemukan', 'top-right', response.message, 'error', 3000);
+                    if (response.success) {
+                        $("#id_transaksi_mcu").text(response.data.id_transaksi);
+                        $("#user_id_temp").text(response.data.user_id);
+                        $("#nomor_identitas_temp").text(response.data.nomor_identitas);
+                        $("#nama_peserta_temp_1").text(response.data.nama_peserta);
+                        $("#nama_peserta_temp").text(response.data.nama_peserta);
+                        $("#no_telepon_temp").text(response.data.no_telepon);
+                        $("#jenis_kelamin_temp").text(response.data.jenis_kelamin);
+                        $("#nomor_transaksi_temp").text(response.data.no_transaksi);
+                        $("#email_temp").text(response.data.email);
+                        $("#tempat_lahir_temp").text(response.data.company_name);
+                        $("#status_kawin_temp").text(response.data.nama_departemen);
                     }
-                    $("#id_transaksi_mcu").text(response.data.id_transaksi);
-                    $("#user_id_temp").text(response.data.user_id);
-                    $("#nomor_identitas_temp").text(response.data.nomor_identitas);
-                    $("#nama_peserta_temp_1").text(response.data.nama_peserta);
-                    $("#nama_peserta_temp").text(response.data.nama_peserta);
-                    $("#no_telepon_temp").text(response.data.no_telepon);
-                    $("#jenis_kelamin_temp").text(response.data.jenis_kelamin);
-                    $("#nomor_transaksi_temp").text(response.data.no_transaksi);
-                    $("#email_temp").text(response.data.email);
-                    $("#tempat_lahir_temp").text(response.data.company_name);
-                    $("#status_kawin_temp").text(response.data.nama_departemen);
                 }
             });
         });
