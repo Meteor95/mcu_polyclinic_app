@@ -18,6 +18,7 @@ class MemberMCU extends Model
         'alamat',
         'status_kawin',
         'no_telepon',
+        'email',
     ];
     public static function listMemberMcu($req, $perHalaman, $offset)
     {

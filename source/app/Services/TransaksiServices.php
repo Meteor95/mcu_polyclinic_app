@@ -27,60 +27,37 @@ class TransaksiServices
 
     public function handleTransactionPeserta($data, $user_id_petugas, $file)
     {
+        $datatransaksi = Transaksi::where('user_id', $user_id_petugas)
+            ->where('status_peserta', 'proses')
+            ->first();
+        if ($datatransaksi) {
+            throw new \Exception("Pasien dengan Nama ".$data['nama_peserta']." sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya");
+        }
         return DB::transaction(function () use ($data, $user_id_petugas, $file) {
-            $filename = "";
-            /* update data peserta jikalau dibutuhkan atau saat pendaftaran peserta baru MCU */
-            if ($data['type_data_peserta'] == 1) {
-                Peserta::where('nomor_identitas', $data['nomor_identitas'])->update([
-                    'nama_peserta' => $data['nama_peserta'],
-                    'tempat_lahir' => $data['tempat_lahir'],
-                    'tanggal_lahir' => Carbon::parse($data['tanggal_lahir_peserta'])->format('Y-m-d'),
-                    'tipe_identitas' => $data['tipe_identitas'],
-                    'status_kawin' => $data['status_kawin'],
-                    'jenis_kelamin' => $data['jenis_kelamin'],
-                    'no_telepon' => $data['no_telepon'],
-                    'email' => $data['email'],
-                    'alamat' => $data['alamat'],
-                ]);
-            }
             $kodeperusahaan = Perusahaan::where('id', $data['perusahaan_id'])->first()->company_code;
             $kodepdepartemen = DepartemenPerusahaan::where('id', $data['departemen_id'])->first()->kode_departemen;
             $baseCount = Transaksi::count() + 1;
-            $nomor_transaksi_mcu = str_pad($baseCount + 1, 4, '0', STR_PAD_LEFT);
-            $member = MemberMCU::where('nomor_identitas', $data['nomor_identitas'])->first();
-            if ($nomor_transaksi_mcu === $member->no_transaksi) {
-                $nomor_transaksi_mcu = str_pad($baseCount + 2, 4, '0', STR_PAD_LEFT);
-            }
-            $nomor_transaksi_mcu = $nomor_transaksi_mcu . "/MCU/" . $kodeperusahaan . "-" . $kodepdepartemen . "/AMC/" . $this->convertToRoman(date('m')) . "/" . date('Y');
-            if(!$member){
-                /*jika tidak ada maka insert*/
-                $ambildaripeserta = Peserta::where('nomor_identitas', $data['nomor_identitas'])->first();
-                if($ambildaripeserta){
-                    $member = MemberMCU::create([
-                        'nomor_identitas' => $ambildaripeserta->nomor_identitas,
-                        'nama_peserta' => $ambildaripeserta->nama_peserta,
-                        'tempat_lahir' => $ambildaripeserta->tempat_lahir,
-                        'tanggal_lahir' => $ambildaripeserta->tanggal_lahir,
-                        'tipe_identitas' => $ambildaripeserta->tipe_identitas,
-                        'jenis_kelamin' => $ambildaripeserta->jenis_kelamin,
-                        'alamat' => $ambildaripeserta->alamat,
-                        'status_kawin' => $ambildaripeserta->status_kawin,
-                        'no_telepon' => $ambildaripeserta->no_telepon,
-                        'email' => $ambildaripeserta->email,
-                    ]);
-                    if ($member) {
-                        Peserta::where('nomor_identitas', $data['nomor_identitas'])->delete();
-                    }
-                }
-            }
-            if($file){
-                $originalName = $file->getClientOriginalName();
-                $sanitizedName = strtolower(preg_replace('/[\s\W_]+/', '_', $originalName));
-                $timestamp = microtime(true);
-                $filename = $nomor_transaksi_mcu . '_' . $sanitizedName . '_' . $timestamp . '.' . $file->getClientOriginalExtension();
-                Storage::disk('public')->putFileAs('file_surat_pengantar/', $file, $filename);
-            }
             $paket_mcu = PaketMCU::find($data['id_paket_mcu']);
+            $dataMember = [
+                'nomor_identitas' => $data['nomor_identitas'],
+                'nama_peserta' => $data['nama_peserta'],
+                'tempat_lahir' => $data['tempat_lahir'],
+                'tanggal_lahir' => Carbon::parse($data['tanggal_lahir_peserta'])->format('Y-m-d'),
+                'tipe_identitas' => $data['tipe_identitas'],
+                'jenis_kelamin' => $data['jenis_kelamin'],
+                'alamat' => $data['alamat'],
+                'status_kawin' => $data['status_kawin'],
+                'no_telepon' => $data['no_telepon'],
+                'email' => $data['email'],
+            ];
+            $member = MemberMCU::where('nomor_identitas', $data['nomor_identitas'])->first();
+            if(!$member){
+                $member = MemberMCU::create($dataMember);
+            }else{
+                $member->update($dataMember);
+            }
+            $nomor_transaksi_mcu = str_pad($baseCount + 1, 4, '0', STR_PAD_LEFT);
+            $nomor_transaksi_mcu = $nomor_transaksi_mcu . "/MCU/" . $kodeperusahaan . "-" . $kodepdepartemen . "/AMC/" . $this->convertToRoman(date('m')) . "/" . date('Y');
             $parts = explode('|', $data['id_paket_mcu']);
             $dataToInsert = [
                 'no_transaksi' => $nomor_transaksi_mcu,
@@ -95,18 +72,11 @@ class TransaksiServices
                 'status_peserta' => 'proses',
             ];
             if (filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
-                unset($dataToInsert['no_transaksi']);           
-                Transaksi::where('id', $data['id_detail_transaksi_mcu'])->update($dataToInsert);
-            } else {
-                $datatransaksi = Transaksi::where('user_id', $member->id)
-                    ->where('status_peserta', 'proses')
-                    ->first();
-                if ($datatransaksi) {
-                    throw new \Exception("Pasien dengan Nama ".$member->nama_peserta." sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya");
-                }
-                Transaksi::create($dataToInsert);
+                $transaksi = Transaksi::where('no_transaksi', $data['no_transaksi'])->first();
+                $transaksi->update($dataToInsert);
+            }else{
+                $transaksi = Transaksi::create($dataToInsert);
             }
-            
         });
     }
 }

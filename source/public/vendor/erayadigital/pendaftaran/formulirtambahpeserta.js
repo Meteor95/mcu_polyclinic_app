@@ -60,17 +60,15 @@ $("#btnKonfirmasiPendaftaran").on("click", function(event) {
                         formData.append('id_detail_transaksi_mcu', id_detail_transaksi_mcu);
                         formData.append('isedit', isedit);
                         formData.append('nomor_identitas', $('#nomor_identitas').val());
-                        if ($('#type_data_peserta').val() == 1) {
-                            formData.append('nama_peserta', $('#nama_peserta').val());
-                            formData.append('tempat_lahir', $('#tempat_lahir').val());
-                            formData.append('tanggal_lahir_peserta', $('#tanggal_lahir_peserta').val());
-                            formData.append('tipe_identitas', $('#tipe_identitas').val());
-                            formData.append('status_kawin', $('#status_kawin').val());
-                            formData.append('jenis_kelamin', $('#jenis_kelamin').val());
-                            formData.append('no_telepon', $('#no_telepon').val());
-                            formData.append('email', $('#email').val());
-                            formData.append('alamat', $('#alamat').val());
-                        }
+                        formData.append('nama_peserta', $('#nama_peserta').val());
+                        formData.append('tempat_lahir', $('#tempat_lahir').val());
+                        formData.append('tanggal_lahir_peserta', $('#tanggal_lahir_peserta').val());
+                        formData.append('tipe_identitas', $('#tipe_identitas').val());
+                        formData.append('status_kawin', $('#status_kawin').val());
+                        formData.append('jenis_kelamin', $('#jenis_kelamin').val());
+                        formData.append('no_telepon', $('#no_telepon').val());
+                        formData.append('email', $('#email').val());
+                        formData.append('alamat', $('#alamat').val());
                         formData.append('_token', response.csrf_token);
                         formData.append('type_data_peserta', $('#type_data_peserta').val());
                         formData.append('tanggal_transaksi', $('#tanggal_pendaftaran').val());

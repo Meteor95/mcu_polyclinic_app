@@ -11,6 +11,7 @@ use App\Models\Transaksi\{Transaksi, UnggahCitra};
 use App\Models\Masterdata\MemberMCU;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Log;
 
 class TransaksiController extends Controller
 {
@@ -34,6 +35,7 @@ class TransaksiController extends Controller
             $iserrir = $transaksiService->handleTransactionPeserta($data,$request->attributes->get('user_id'),$file);
             return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil didaftarkan kedalam sistem MCU Artha Medica. Silahkan tambah informasi detail MCU berdasarkan Nomor Indetitas yang sudah didaftarkan [' . $request->input('nomor_identitas') . ']');
         } catch (\Throwable $th) {
+            Log::info($th);
             return ResponseHelper::error($th);
         }
     }
