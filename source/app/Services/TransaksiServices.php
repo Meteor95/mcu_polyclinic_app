@@ -27,13 +27,8 @@ class TransaksiServices
 
     public function handleTransactionPeserta($data, $user_id_petugas, $file)
     {
-        $datatransaksi = Transaksi::where('user_id', $user_id_petugas)
-            ->where('status_peserta', 'proses')
-            ->first();
-        if ($datatransaksi) {
-            throw new \Exception("Pasien dengan Nama ".$data['nama_peserta']." sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya");
-        }
-        return DB::transaction(function () use ($data, $user_id_petugas, $file) {
+        $is_finish = 1;
+        DB::transaction(function () use ($data, $user_id_petugas, $file, &$is_finish) {
             $kodeperusahaan = Perusahaan::where('id', $data['perusahaan_id'])->first()->company_code;
             $kodepdepartemen = DepartemenPerusahaan::where('id', $data['departemen_id'])->first()->kode_departemen;
             $baseCount = Transaksi::count() + 1;
@@ -75,9 +70,16 @@ class TransaksiServices
                 $transaksi = Transaksi::where('no_transaksi', $data['no_transaksi'])->first();
                 $transaksi->update($dataToInsert);
             }else{
+                $datatransaksi = Transaksi::where('user_id', $member->id)
+                    ->where('status_peserta', 'proses')
+                    ->first();
+                if ($datatransaksi) {
+                    $is_finish = 0;
+                }
                 $transaksi = Transaksi::create($dataToInsert);
             }
         });
+        return $is_finish;
     }
 }
 

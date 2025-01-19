@@ -80,7 +80,9 @@ $("#btnKonfirmasiPendaftaran").on("click", function(event) {
                         return formData;
                     })(),
                     success: function(response_data){
-                        if (response_data.rc == 200) {
+                        if (response_data.success == false) {
+                            createToast('Kesalahan', 'top-right', response_data.message, 'error', 3000);
+                        }else{
                             createToast('Berhasil', 'top-right', response_data.message, 'success', 3000);
                             return Swal.fire({
                                 html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/bf2bdd2d-1dac-4285-aa3d-9548be13b15d/zzf9qF3Q23.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player>Informasi berhasil disimpan ke dalam sistem MCU Artha Medica. Silahkan tambah informasi detail MCU berdasarkan Nomor Indetitas yang sudah didaftarkan ['+$('#nomor_identitas').val()+']. Aksi apa yang ingin anda lakukan selanjutnya?<div>',
