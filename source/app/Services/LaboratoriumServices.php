@@ -18,15 +18,27 @@ class LaboratoriumServices
     public function handleTransactionLaboratorium($data, $user_id, $file)
     {
         return DB::transaction(function () use ($data, $user_id, $file) {
-            $keranjangTindakan = json_decode($data['keranjang_tindakan'], true);
             $filename = "";
             $jenis_layanan = TransaksiMCU::where('id',$data['no_mcu'])->first();
+            $informasi_file = Transaksi::where('id', $data['id_transaksi'])->first();
+            $filename = $informasi_file->nama_file_surat_pengantar;
             if($file){
                 $nomor_transaksi_mcu = $jenis_layanan->no_transaksi;
                 $originalName = $file->getClientOriginalName();
                 $sanitizedName = strtolower(preg_replace('/[\s\W_]+/', '_', $originalName));
                 $timestamp = microtime(true);
                 $filename = str_replace('/','_',$nomor_transaksi_mcu) . '_' . $sanitizedName . '_' . $timestamp . '.' . $file->getClientOriginalExtension();
+            }
+            if (filter_var($data['is_edit_transaksi'], FILTER_VALIDATE_BOOLEAN)){
+                if ($informasi_file){
+                    if (($informasi_file->nama_file_surat_pengantar != $filename) && ($file)){
+                        Storage::disk('public')->delete('file_surat_pengantar/' . $informasi_file->nama_file_surat_pengantar);
+                    }
+                    DB::table('transaksi')->where('id', $data['id_transaksi'])->delete();
+                }
+            }
+            $keranjangTindakan = json_decode($data['keranjang_tindakan'], true);
+            if($file){
                 Storage::disk('public')->putFileAs('file_surat_pengantar/', $file, $filename);
             }
             $data = [
@@ -63,6 +75,8 @@ class LaboratoriumServices
                     'keterangan' => $item['keterangan'],
                     'meta_data_kuantitatif' => base64_decode($item['meta_kuantitatif']) == "" ? "{}" : base64_decode($item['meta_kuantitatif']),
                     'meta_data_kualitatif' => base64_decode($item['meta_kualitatif']) == "" ? "{}" : base64_decode($item['meta_kualitatif']),
+                    'meta_data_jasa' => $item['meta_jasa'] == "" ? "{}" : $item['meta_jasa'],
+                    'meta_data_jasa_fee' => $item['meta_jasa_fee'] == "" ? "{}" : $item['meta_jasa_fee'],
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 ];

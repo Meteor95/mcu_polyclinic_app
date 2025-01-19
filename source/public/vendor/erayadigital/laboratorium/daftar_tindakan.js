@@ -139,7 +139,7 @@ function load_datatables_tindakan(){
                 {
                     title: "Jenis Layanan",
                     render: function(data, type, row, meta) {
-                        return `${row.jenis_layanan}<br><span class="badge badge-primary">${capitalizeFirstLetter(row.status_pembayaran)}</span>`;
+                        return `${row.jenis_layanan.replace('_',' ')}<br><span class="badge badge-primary">${capitalizeFirstLetter(row.status_pembayaran)}</span>`;
                     }
                 },
                 {
@@ -223,6 +223,7 @@ function detail_tindakan(id,parts,nama_peserta){
             },
             success: function(response) {
                 console.log(response);
+                let detail_transaksi_code = encodeURIComponent(btoa(response.transaksi[0].id_transaksi+'|'+response.transaksi[0].no_mcu+'|'+response.transaksi[0].nomor_identitas+'|'+response.transaksi[0].nama_peserta));
                 let parts = response.transaksi[0].no_nota.split('/');
                 let no_trx = parts.slice(0, 3).join('/');
                 let no_mcu = parts.slice(3).join('/');
@@ -270,6 +271,7 @@ function detail_tindakan(id,parts,nama_peserta){
                         `<div class="text-end">${item.besaran_fee.toLocaleString('id-ID')}</div>`,
                     ]).draw();
                 });
+                $("#button_edit_transaksi").html(`<a href="/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}" target="_blank" class="btn btn-amc-orange"><i class="fa fa-edit"></i> Ubah Data Transaksi</a>`);
             },
             error: function(xhr, status, error) {
                 return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);

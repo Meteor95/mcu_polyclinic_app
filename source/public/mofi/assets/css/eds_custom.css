@@ -116,3 +116,7 @@ body.dark-only .choices__list--dropdown .choices__item--selectable.is-highlighte
     padding-top: 2px;
     padding-bottom: 2px;
 }
+.blur-grayscale {
+    -webkit-filter: blur(5px) grayscale(100%);
+    filter: blur(5px) grayscale(100%);
+}

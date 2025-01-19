@@ -62,7 +62,7 @@ class LaboratoriumController extends Controller
                 'nama_kategori' => preg_replace('/-+/', '', $request->nama_kategori),
                 'satuan' => $request->satuan,
                 'jenis_item' => $request->jenis_item,
-                'meta_data_kuantitaif' => json_encode($request->meta_data_kuantitaif),
+                'meta_data_kuantitatif' => json_encode($request->meta_data_kuantitatif),
                 'meta_data_kualitatif' => json_encode($request->meta_data_kualitatif),
                 'harga_dasar' => $request->harga_dasar,
                 'meta_data_jasa' => json_encode($request->meta_data_jasa),
@@ -75,7 +75,6 @@ class LaboratoriumController extends Controller
             }
             return ResponseHelper::success("Informasi Nama Tarif '".$request->nama_item."' Laboratorium berhasil disimpan. Silahkan lakukan transaksi pada menu Transaksi Laboratorium");
         } catch (\Throwable $th) {
-            Log::error($th);
             return ResponseHelper::error($th);
         }
     }
@@ -219,7 +218,6 @@ class LaboratoriumController extends Controller
             $kategori = Kategori::where('id', $req->id)->delete();
             return ResponseHelper::success("Informasi Kategori Laboratorium '".$req->nama_kategori."' berhasil dihapus.");
         } catch (\Throwable $th) {
-            Log::error($th);
             return ResponseHelper::error($th);
         }
     }
@@ -509,13 +507,15 @@ class LaboratoriumController extends Controller
             }
             $data = $req->all();
             $file = $req->file('nama_file_surat_pengantar');
+            if (!filter_var($req->is_edit_transaksi, FILTER_VALIDATE_BOOLEAN)){
             $pasien_sudah_ada = Transaksi::where('no_mcu', $req->no_mcu)
             ->where('status_pembayaran', '!=', 'paid')->first();
-            if ($pasien_sudah_ada) {
-                $parts_nota = explode("/", $pasien_sudah_ada->no_nota);
-                $no_nota = implode("/", array_slice($parts_nota, 0, 3));
-                $no_mcu = implode("/", array_slice($parts_nota, 3));
-                return ResponseHelper::data_conflict("Informasi pasien MCU dengan <b>Nomor Transaksi '".$no_nota."' [MCU : ".$no_mcu."]</b> sudah ada. Silahkan lakukan transaksi dengan nomor transaksi yang berbeda.");
+                if ($pasien_sudah_ada) {
+                    $parts_nota = explode("/", $pasien_sudah_ada->no_nota);
+                    $no_nota = implode("/", array_slice($parts_nota, 0, 3));
+                    $no_mcu = implode("/", array_slice($parts_nota, 3));
+                    return ResponseHelper::data_conflict("Informasi pasien MCU dengan <b>Nomor Transaksi '".$no_nota."' [MCU : ".$no_mcu."]</b> sudah ada. Silahkan lakukan transaksi dengan nomor transaksi yang berbeda.");
+                }
             }
             $iserrir = $laboratoriumService->handleTransactionLaboratorium($data,$req->attributes->get('user_id'),$file);
             return ResponseHelper::success('Informasi transaksi tindakan dengan No. Nota ' . $req->no_nota . ' [MCU : ' . $req->no_mcu . '] berhasil disimpan. Silahkan lakukan validasi transaksi dengan hak akses kasir atau yang sesuai.');
@@ -571,6 +571,9 @@ class LaboratoriumController extends Controller
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $transaksiData = Transaksi::join('transaksi_detail', 'transaksi.id', '=', 'transaksi_detail.id_transaksi')
+            ->join('mcu_transaksi_peserta', 'transaksi.no_mcu', '=', 'mcu_transaksi_peserta.id')
+            ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+            ->select('transaksi.*', 'transaksi.id as id_transaksi', 'transaksi_detail.*', 'mcu_transaksi_peserta.*', 'users_member.*')
             ->where('transaksi.id', $req->id_transaksi)
             ->get();
             $transaksiFee = Transaksi::where('id_transaksi', $req->id_transaksi)

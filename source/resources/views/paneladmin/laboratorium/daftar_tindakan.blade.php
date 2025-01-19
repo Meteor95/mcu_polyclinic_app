@@ -144,7 +144,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <a href="{{ route('admin.laboratorium.tindakan') }}" target="_blank" class="btn btn-amc-orange"><i class="fa fa-edit"></i> Ubah Data Transaksi</a>
+            <div id="button_edit_transaksi"></div>
           </div>
       </div>
   </div>

@@ -552,7 +552,7 @@ $("#btn_simpan_tarif_laboratorium").click(function(e){
                         nama_kategori:$("#kategori option:selected").text(),
                         satuan:$("#satuan").val(),
                         jenis_item:table_rentang_nilai_kenormalan_kuantitatif.data().length > 0 ? "kuantitatif" : "kualitatif",
-                        meta_data_kuantitaif:getTableDataAsJson('kuantitatif'),
+                        meta_data_kuantitatif:getTableDataAsJson('kuantitatif'),
                         meta_data_kualitatif:getTableDataAsJson('kualitatif'),
                         harga_dasar:harga_dasar_tarif_laboratorium.get(),
                         meta_data_jasa:getTableDataAsJson('jasa'),
@@ -712,7 +712,7 @@ function detail_informasi_tarif_tabel(kode_item, group_item) {
                     if (response.data.jenis_item == 'kuantitatif'){
                         const tabKuantitatif = new bootstrap.Tab(document.querySelector('#tab_jenis_item_kuantitatif'));
                         tabKuantitatif.show();
-                        const dataKuantitatif = JSON.parse(response.data.meta_data_kuantitaif);
+                        const dataKuantitatif = JSON.parse(response.data.meta_data_kuantitatif);
                         table_rentang_nilai_kenormalan_kuantitatif.clear().draw();
                         dataKuantitatif.forEach(function(row, index) {
                             table_rentang_nilai_kenormalan_kuantitatif.row.add([
@@ -800,7 +800,7 @@ function detail_informasi_tarif(kode_item, nama_item) {
                 if (response.data.group_item == 'laboratorium') {
                     if (response.data.jenis_item == 'kuantitatif') {
                         table_jasa_laboratorium_tarif_kuantitatif.clear().draw();
-                        const data = JSON.parse(response.data.meta_data_kuantitaif);
+                        const data = JSON.parse(response.data.meta_data_kuantitatif);
                         let nomor_kuantitatif = 1;
                         data.forEach(function(row, index) {
                             table_jasa_laboratorium_tarif_kuantitatif.row.add([

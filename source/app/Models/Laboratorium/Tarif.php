@@ -18,7 +18,7 @@ class Tarif extends Model
         'nama_kategori',
         'satuan',
         'jenis_item',
-        'meta_data_kuantitaif',
+        'meta_data_kuantitatif',
         'meta_data_kualitatif',
         'harga_dasar',
         'meta_data_jasa',

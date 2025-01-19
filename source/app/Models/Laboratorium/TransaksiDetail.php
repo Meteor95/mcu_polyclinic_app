@@ -21,5 +21,7 @@ class TransaksiDetail extends Model
         'keterangan',
         'meta_data_kuantitatif',
         'meta_data_kualitatif',
+        'meta_data_jasa',
+        'meta_data_jasa_fee',
     ];
 }

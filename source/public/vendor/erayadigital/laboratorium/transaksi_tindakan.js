@@ -29,6 +29,11 @@ let nominalBayarKonfirmasi = new AutoNumeric('#nominal_bayar_konfirmasi', {  dec
     minimumValue: '0',
     modifyValueOnUpDownArrow: false,
     modifyValueOnWheel: false,});
+const paramsURL = new URLSearchParams(window.location.search);
+const paramter_tindakan = atob(paramsURL.get("paramter_tindakan"));
+const param_url = paramsURL.get("paramter_tindakan");
+let is_edit_transaksi = false;
+let id_transaksi = "";
 $(document).on('keydown', function (e) {
     if (e.key === 'F1') {
         e.preventDefault();
@@ -78,11 +83,102 @@ $(document).ready(function(){
         maxDate: 'today',
         time_24hr: true,
     });
-    load_data_dokter_bertugas('dokter');
-    load_data_dokter_bertugas('');
-    load_data_tarif_tindakan();
-    load_table_template_tindakan_mcu();
+    load_data_dokter_bertugas('dokter')
+    load_data_dokter_bertugas('')
+    load_data_tarif_tindakan()
+    load_table_template_tindakan_mcu()
+    if (param_url !== null) {
+        is_edit_transaksi = true;
+        onload_detail_tindakan();
+    }
 });
+function onload_detail_tindakan(){
+    /* ini akan mengoveride semua data yang ada pada form transaksi */
+    if (is_edit_transaksi){
+        $("#container_transaksi_tindakan").addClass('blur-grayscale');
+        createToast('Informasi Mode Ubah Data', 'top-right', 'Anda dalam mode EDIT data transaksi. Silahkan klik tombol "SIMPAN" untuk menyimpan data transaksi terbaru', 'warning', 3000);
+        let newOption = new Option('['+paramter_tindakan.split('|')[2]+'] - '+paramter_tindakan.split('|')[3], paramter_tindakan.split('|')[2], true, false);
+        $("#pencarian_member_mcu").append(newOption).trigger('change');
+        $("#pencarian_member_mcu").val(paramter_tindakan.split('|')[2]).trigger('change');
+        data_table_tindakan.rows().clear().draw();
+        $("#container_transaksi_tindakan").addClass('blur-grayscale');
+        $.get('/generate-csrf-token', function(response) {
+            $.ajax({
+                url: baseurlapi + '/laboratorium/detail_tindakan',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                data: {
+                    _token: response.csrf_token,
+                    id_transaksi: paramter_tindakan.split('|')[0],
+                    nomor_identitas: paramter_tindakan.split('|')[2],
+                },
+                success: function(response) {
+                    id_transaksi = response.transaksi[0].id_transaksi;
+                    $("#nomor_transaksi_mcu_generate").val(response.transaksi[0].no_nota);
+                    $("#waktu_transaksi_mcu").val(moment(response.transaksi[0].waktu_trx).format('DD-MM-YYYY HH:mm:ss'));
+                    $("#waktu_transaksi_sample_mcu").val(moment(response.transaksi[0].waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss'));
+                    const radioHutang = document.getElementById("hutang");
+                    const radioTunai = document.getElementById("tunai");
+                    if (response.transaksi[0].jenis_transaksi == 0) {
+                        radioHutang.checked = true;
+                    } else {
+                        radioTunai.checked = true;
+                        if (response.transaksi[0].jenis_transaksi == 1) {
+                            $("#select2_metode_pembayaran").val(0).trigger('change');
+                            nominalBayar.set(response.transaksi[0].total_bayar);
+                            nominalKembalian.set(response.transaksi[0].total_bayar - response.transaksi[0].total_transaksi);
+                        } else {
+                            $("#select2_metode_pembayaran").val(1).trigger('change');
+                            const values = response.transaksi[0].metode_pembayaran.split('|');
+                            $("#beneficiary_bank").val(values[0]).trigger('change');
+                            $("#nomor_transaksi_transfer").val(values[2]);
+                        }
+                    }
+                    setTimeout(() => {
+                        choicesDokterBertugas.setChoiceByValue(response.transaksi[0].id_dokter.toString());
+                        choicesPenanggungJawab.setChoiceByValue(response.transaksi[0].id_pj.toString());
+                    }, 1000);
+                    response.transaksi.forEach((item, index) => {
+                        let nomor = index + 1;
+                        const metaDataKuantitatif = item.meta_data_kuantitatif == "{}" ? {} : JSON.parse(item.meta_data_kuantitatif);
+                        const metaDataKualitatif = item.meta_data_kualitatif == "{}" ? {} : JSON.parse(item.meta_data_kualitatif);
+                        data_table_tindakan.row.add([
+                            nomor,
+                            item.kode_item,
+                            item.nama_item,
+                            createInput(nomor, 'harga_jual', item.kode_item, item.is_paket_mcu > 0 ? 0 : item.harga),
+                            createInput(nomor, 'diskon', item.kode_item, item.is_paket_mcu > 0 ? 0 : item.diskon),
+                            createInput(nomor, 'harga_setelah_diskon', item.kode_item, item.is_paket_mcu > 0 ? 0 : item.harga_setelah_diskon, true),
+                            createInput(nomor, 'jumlah', item.kode_item, '1'),
+                            createInput(nomor, 'total_harga', item.kode_item, item.is_paket_mcu > 0 ? 0 : (item.harga_setelah_diskon * item.jumlah), true),
+                            `<div class="d-flex justify-content-center gap-2">
+                                <button onclick="modal_bagi_fee_tindakan_mcu('${item.id}','${item.meta_data_jasa_fee}','${item.kode_item}','${nomor}','${item.nama_item}')" class="w-100 btn btn-success btn-sm btn_bagi_fee_tindakan_mcu" id="btn_bagi_fee_tindakan_mcu_${item.kode_item}"><i class="fa fa-edit"></i> Fee</button>
+                                ${item.is_paket_mcu > 0 ? '' : `<button class="w-100 btn btn-danger btn-sm btn_hapus_tindakan_mcu" id="btn_hapus_tindakan_mcu_${item.kode_item}"><i class="fa fa-trash"></i></button>`}
+                            </div>`,
+                            `<input type="text" class="form-control" id="meta_data_kuantitatif_${item.kode_item}_${nomor}" value="${Array.isArray(metaDataKuantitatif) ? btoa(item.meta_data_kuantitatif) : ''}">`,
+                            `<input type="text" class="form-control" id="meta_data_kualitatif_${item.kode_item}_${nomor}" value="${Array.isArray(metaDataKualitatif) ? btoa(item.meta_data_kualitatif) : ''}">`,
+                            `<input type="text" class="form-control" id="meta_data_jasa_${item.kode_item}_${nomor}" value="${item.meta_data_jasa}">`,
+                            `<input type="text" class="form-control" id="meta_data_jasa_fee_${item.kode_item}_${nomor}" value="${item.meta_data_jasa_fee}">`,
+                        ]).draw();
+                        initAutoNumeric(nomor, item.kode_item, item.is_paket_mcu > 0 ? item.total_transaksi : 0);
+                    });
+                    hitung_keranjang_tindakan(null, null, null, response.transaksi[0].is_paket_mcu > 0 ? response.transaksi[0].total_transaksi : 0);
+                    updateRowNumbers(response.transaksi[0].is_paket_mcu > 0 ? response.transaksi[0].total_transaksi : 0);
+                    let lastRow = data_table_tindakan.row(data_table_tindakan.rows().count() - 1).node();
+                    $(lastRow).get(0).scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    $("#tindakan_tersedia_mcu").val(null).trigger('change');
+                },
+                complete: function() {
+                    $("#container_transaksi_tindakan").removeClass('blur-grayscale');
+                },
+                error: function(xhr, status, error) {
+                    return createToast('Kesalahan Penggunaan', 'top-right', xhr.responseJSON.message, 'error', 3000);
+                }
+            });
+        });
+        
+    }
+}
 function load_table_template_tindakan_mcu(){
     $.get('/generate-csrf-token', function(response) {
         $("#table_template_tindakan_mcu_modal").DataTable({
@@ -345,7 +441,7 @@ function load_data_tindakan(){
         keys: true,
         columnDefs: [
             {
-                targets: [9, 10, 11],
+                targets: [9, 10, 11, 12],
                 className: "d-none",
             },
             {
@@ -376,14 +472,13 @@ $("#pencarian_member_mcu").on('change', function(){
             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
             data: {
                 _token : response.csrf_token,
-                nomor_identitas : $("#pencarian_member_mcu").val()
+                nomor_identitas : $("#pencarian_member_mcu").val() == '' ? code.split('|')[2] : $("#pencarian_member_mcu").val()
             },
             success: function(response) {
                 if (!response.success) {
                     clear_tanda_vital();
                     return createToast('Data tidak ditemukan', 'top-right', response.message, 'error', 3000);
                 }
-                clear_keranjang_tindakan();
                 $("#nomor_transaksi_mcu").text(response.data.no_transaksi);
                 $("#nomor_identitas_mcu").text(response.data.nomor_identitas);
                 $("#id_user_mcu").text(response.data.user_id);
@@ -395,11 +490,14 @@ $("#pencarian_member_mcu").on('change', function(){
                 $("#company_name_mcu").text(response.data.company_name);
                 $("#nama_departemen_mcu").text(response.data.nama_departemen);
                 $("#status_peserta_mcu").text(capitalizeFirstLetter(response.data.jenis_transaksi_pendaftaran));
-                if (response.data.jenis_transaksi_pendaftaran == 'MCU') {
-                    $("#nomor_transaksi_mcu_generate").val("Membaca Paket MCU "+response.data.nama_paket);
-                    pilih_template_tindakan_mcu(response.data.id_template_tindakan, response.data.nama_paket, "", response.data.used_paket_mcu, response.data.harga_paket)
+                if (param_url === null) {
+                    clear_keranjang_tindakan();
+                    if (response.data.jenis_transaksi_pendaftaran == 'MCU') {
+                        $("#nomor_transaksi_mcu_generate").val("Membaca Paket MCU "+response.data.nama_paket);
+                        pilih_template_tindakan_mcu(response.data.id_template_tindakan, response.data.nama_paket, "", response.data.id_paket_mcu, response.data.harga_paket)
+                    }
+                    $("#nomor_transaksi_mcu_generate").val("TRX/LAB/" + moment().format('YYYYMMDDHHmmss')+"/"+$("#nomor_transaksi_mcu").text());
                 }
-                $("#nomor_transaksi_mcu_generate").val("TRX/LAB/" + moment().format('YYYYMMDDHHmmss')+"/"+$("#nomor_transaksi_mcu").text());
             }
         });
     });
@@ -434,18 +532,23 @@ $('#table_tindakan_mcu').on('click', '.btn_hapus_tindakan_mcu', function () {
 function updateRowNumbers(harga_paket = null) {
     data_table_tindakan.rows().every(function (rowIdx) {
         const row = this;
-        const rowIndex = row.data()[0]; 
-        const kode_item = row.data()[1];
+        const rowData = row.data();
+        const rowIndex = rowData[0];
+        const kode_item = rowData[1];
         this.cell({ row: rowIdx, column: 0 }).data(rowIdx + 1).draw();
-        const fields = ['harga_jual', 'diskon', 'harga_setelah_diskon', 'total_harga', 'jumlah'];
-        fields.forEach(function (field) {
+        const fields = ['harga_jual', 'diskon', 'harga_setelah_diskon', 'total_harga', 'jumlah', 'meta_data_kuantitatif', 'meta_data_kualitatif', 'meta_data_jasa', 'meta_data_jasa_fee'];
+        fields.forEach(field => {
             const input = $(row.node()).find(`#${field}_${kode_item}_${rowIndex}`);
             if (input.length > 0) {
-                const autoNumericInstance = AutoNumeric.getAutoNumericElement(input[0]);
-                if (autoNumericInstance) {
-                    autoNumericInstance.remove();
-                }
+                // Update input id
                 input.attr('id', `${field}_${kode_item}_${rowIdx + 1}`);
+                // Remove AutoNumeric if applicable
+                if (field !== 'meta_data_kuantitatif' && field !== 'meta_data_kualitatif' && field !== 'meta_data_jasa' && field !== 'meta_data_jasa_fee') {
+                    const autoNumericInstance = AutoNumeric.getAutoNumericElement(input[0]);
+                    if (autoNumericInstance) {
+                        autoNumericInstance.remove();
+                    }
+                }
             }
         });
         const deleteButton = $(row.node()).find(`#btn_hapus_tindakan_mcu_${rowIndex}`);
@@ -454,6 +557,7 @@ function updateRowNumbers(harga_paket = null) {
         }
         initAutoNumeric(rowIdx + 1, kode_item, harga_paket);
     });
+    
 }
 const rowIndexMap = {};
 function tambah_ke_keranjang_tindakan(data_tarif, dari = null, harga_paket = false) {
@@ -479,9 +583,10 @@ function tambah_ke_keranjang_tindakan(data_tarif, dari = null, harga_paket = fal
             <button onclick="modal_bagi_fee_tindakan_mcu('${tarif.id}','${btoa(tarif.meta_data_jasa)}','${kode_item}','${nomor}','${tarif.nama_item}')" class="w-100 btn btn-success btn-sm btn_bagi_fee_tindakan_mcu" id="btn_bagi_fee_tindakan_mcu_${kode_item}"><i class="fa fa-edit"></i> Fee</button>
             ${harga_paket > 0 ? '' : `<button class="w-100 btn btn-danger btn-sm btn_hapus_tindakan_mcu" id="btn_hapus_tindakan_mcu_${kode_item}"><i class="fa fa-trash"></i></button>`}
         </div>`,
-        `<input type="text" class="form-control" id="meta_data_kuantitaif_${kode_item}_${nomor}" value="${JSON.parse(tarif.meta_data_kuantitaif).length == 0 ? '' : btoa(tarif.meta_data_kuantitaif)}">`,
+        `<input type="text" class="form-control" id="meta_data_kuantitatif_${kode_item}_${nomor}" value="${JSON.parse(tarif.meta_data_kuantitatif).length == 0 ? '' : btoa(tarif.meta_data_kuantitatif)}">`,
         `<input type="text" class="form-control" id="meta_data_kualitatif_${kode_item}_${nomor}" value="${JSON.parse(tarif.meta_data_kualitatif).length == 0 ? '' : btoa(tarif.meta_data_kualitatif)}">`,
         `<input type="text" class="form-control" id="meta_data_jasa_${kode_item}_${nomor}" value="">`,
+        `<input type="text" class="form-control" id="meta_data_jasa_fee_${kode_item}_${nomor}" value="${btoa(tarif.meta_data_jasa)}">`,
     ]).draw();
     
     initAutoNumeric(nomor,kode_item, harga_paket);
@@ -642,6 +747,7 @@ $("#refresh_keranjang_tindakan_mcu").on('click', function(){
 });
 let tagifyInstances = {};
 function modal_bagi_fee_tindakan_mcu(id_tarif, meta_data_jasa, kode_item, nomor, nama_item) {
+    console.log(meta_data_jasa);
     tagifyInstances = {};
     let tableHtml = '';
     $('#table_jasa tbody').html('');
@@ -656,6 +762,7 @@ function modal_bagi_fee_tindakan_mcu(id_tarif, meta_data_jasa, kode_item, nomor,
             data: { _token: response.csrf_token, role: '' },
             success: function(response) {
                 const hierarchicalData = response.data;
+                console.log(meta_data_jasa);
                 let json_meta_data_jasa = JSON.parse(atob(meta_data_jasa));
                 $('#table_jasa_container').html('');
                 $('#table_jasa_container_alert').html('');
@@ -824,6 +931,9 @@ function konfirmasi_transaksi_tindakan_mcu(){
     nominalBayarKonfirmasi.set(generate_total_harga_tindakan_mcu_autoNumeric.getNumber());
     updateCardStyles();
     $("#modalKonfimasiPendaftaran").modal("show");
+    if (is_edit_transaksi && $("#select2_metode_pembayaran").val() == 1) {
+        $('.transaksi_transfer').show();
+    }
 }
 function getKeranjangTindakan() {
     let keranjangTindakan = [];
@@ -836,9 +946,11 @@ function getKeranjangTindakan() {
         let diskon = AutoNumeric.getAutoNumericElement($(this.node()).find('#diskon_' + id_index)[0]).get();
         let hargaSetelahDiskon = AutoNumeric.getAutoNumericElement($(this.node()).find('#harga_setelah_diskon_' + id_index)[0]).get();
         let jumlah = AutoNumeric.getAutoNumericElement($(this.node()).find('#jumlah_' + id_index)[0]).get();
-        let metaKuantitatif = $(`#meta_data_kuantitaif_${id_index}`).val();
+        let metaKuantitatif = $(`#meta_data_kuantitatif_${id_index}`).val();
         let metaKualitatif = $(`#meta_data_kualitatif_${id_index}`).val();
         let metaJasa = $(`#meta_data_jasa_${id_index}`).val();
+        let metaJasaFee = $(`#meta_data_jasa_fee_${id_index}`).val();
+        console.log($(`#meta_data_kuantitatif_${id_index}`).val());
         keranjangTindakan.push({
             kode_item: kodeItem,
             nama_item: namaItem,
@@ -850,6 +962,7 @@ function getKeranjangTindakan() {
             meta_kuantitatif: metaKuantitatif,
             meta_kualitatif: metaKualitatif,
             meta_jasa: metaJasa,
+            meta_jasa_fee: metaJasaFee,
         });
     });
     return keranjangTindakan;
@@ -878,6 +991,8 @@ function simpan_konfirmasi(){
                 /* parameter transkasi */
                 const formData = new FormData();
                 formData.append('_token', response.csrf_token);
+                formData.append('is_edit_transaksi', is_edit_transaksi);
+                formData.append('id_transaksi', id_transaksi);
                 formData.append('no_mcu', $('#id_transaksi_mcu').html());
                 formData.append('no_nota', $('#nomor_transaksi_mcu_generate').val());
                 formData.append('waktu_trx', $('#waktu_transaksi_mcu').val());

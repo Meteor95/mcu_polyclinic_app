@@ -1,6 +1,6 @@
 @extends('paneladmin.templateadmin')
 @section('konten_utama_admin')
-<div class="row">
+<div id="container_transaksi_tindakan" class="row">
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
@@ -139,9 +139,10 @@
                         <th>Jumlah</th>
                         <th>Sub Total Harga</th>
                         <th style="width: 200px;">Aksi</th>
-                        <th>meta_data_kuantitaif</th>
+                        <th>meta_data_kuantitatif</th>
                         <th>meta_data_kualitatif</th>
                         <th>meta_data_jasa</th>
+                        <th>meta_data_jasa_fee</th>
                     </tr>
                 </thead>
             </table>
