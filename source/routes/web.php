@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController, FileController, PendaftaranController, ProfileController, PemeriksaanFisikController, LaboratoriumController, PoliklinikController};
+use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController, FileController, PendaftaranController, ProfileController, PemeriksaanFisikController, LaboratoriumController, PoliklinikController, LaporanController};
 use Illuminate\Http\Request;
 
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
@@ -60,6 +60,9 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     });
     Route::prefix('image')->group(function () {
         Route::get('user/signature/{filename}', [FileController::class, 'showSignature']);
+    });
+    Route::prefix('laporan')->group(function () {
+        Route::get('validasi_mcu', [LaporanController::class,"validasi_mcu"])->middleware('permission_cache:akses_validasi_mcu')->name('admin.laporan.validasi_mcu');
     });
 });
 Route::prefix('landing')->group(function () {

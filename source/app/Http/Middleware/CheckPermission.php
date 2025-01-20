@@ -68,6 +68,8 @@ class CheckPermission
             /* Pemeriksaan */
             'hasAccessTindakanLaboratorium' => 'akses_tindakan_laboratorium',
             'hasAccessTindakanObat' => 'akses_tindakan_obat',
+            /* Laporan */
+            'hasAccessValidasiMcu' => 'akses_validasi_mcu',
             /* Master Data */
             'hasAccessMasterData' => 'akses_master_data',
             'hasAccessMasterPerusahaan' => 'akses_master_perusahaan',

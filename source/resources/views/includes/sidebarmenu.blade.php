@@ -221,13 +221,15 @@
               <h6>LAPORAN</h6>
             </div>
           </li>
+          @if ($hasAccessValidasiMcu)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
-            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+            <a class="sidebar-link sidebar-title" href="{{ route('admin.laporan.validasi_mcu') }}">
               <i class="fa fa-file-pdf-o" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
               <span>Validasi MCU</span>
             </a>
           </li>
+          @endif
           <!-- Pengaturan Section -->
           <li class="sidebar-main-title">
             <div>

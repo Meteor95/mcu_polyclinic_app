@@ -45,7 +45,7 @@ sudo chmod -R 775 /var/www/html/storage/logs
 # Pull from the repository
 ######################################
 eval $(ssh-agent)
-ssh-add /home/veldora/.ssh/github_eraya_digital
+ssh-add /home/veldora/.ssh/github_id_rsa_meteor95
 git pull
 
 ######################################
