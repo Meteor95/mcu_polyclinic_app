@@ -509,7 +509,7 @@ class LaboratoriumController extends Controller
             $file = $req->file('nama_file_surat_pengantar');
             if (!filter_var($req->is_edit_transaksi, FILTER_VALIDATE_BOOLEAN)){
             $pasien_sudah_ada = Transaksi::where('no_mcu', $req->no_mcu)
-            ->where('status_pembayaran', '!=', 'paid')->first();
+            ->where('status_pembayaran', '!=', 'done')->first();
                 if ($pasien_sudah_ada) {
                     $parts_nota = explode("/", $pasien_sudah_ada->no_nota);
                     $no_nota = implode("/", array_slice($parts_nota, 0, 3));

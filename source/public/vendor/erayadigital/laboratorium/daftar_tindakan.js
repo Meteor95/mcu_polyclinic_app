@@ -224,7 +224,6 @@ function detail_tindakan(id,parts,nama_peserta){
                 id_transaksi:id,
             },
             success: function(response) {
-                console.log(response);
                 let detail_transaksi_code = encodeURIComponent(btoa(response.transaksi[0].id_transaksi+'|'+response.transaksi[0].no_mcu+'|'+response.transaksi[0].nomor_identitas+'|'+response.transaksi[0].nama_peserta));
                 let parts = response.transaksi[0].no_nota.split('/');
                 let no_trx = parts.slice(0, 3).join('/');

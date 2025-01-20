@@ -21,7 +21,7 @@ class LaboratoriumServices
             $filename = "";
             $jenis_layanan = TransaksiMCU::where('id',$data['no_mcu'])->first();
             $informasi_file = Transaksi::where('id', $data['id_transaksi'])->first();
-            $filename = $informasi_file->nama_file_surat_pengantar;
+            $filename = $informasi_file->nama_file_surat_pengantar ?? "";
             if($file){
                 $nomor_transaksi_mcu = $jenis_layanan->no_transaksi;
                 $originalName = $file->getClientOriginalName();

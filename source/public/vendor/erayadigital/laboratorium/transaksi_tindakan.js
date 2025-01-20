@@ -747,7 +747,6 @@ $("#refresh_keranjang_tindakan_mcu").on('click', function(){
 });
 let tagifyInstances = {};
 function modal_bagi_fee_tindakan_mcu(id_tarif, meta_data_jasa, kode_item, nomor, nama_item) {
-    console.log(meta_data_jasa);
     tagifyInstances = {};
     let tableHtml = '';
     $('#table_jasa tbody').html('');
@@ -762,7 +761,6 @@ function modal_bagi_fee_tindakan_mcu(id_tarif, meta_data_jasa, kode_item, nomor,
             data: { _token: response.csrf_token, role: '' },
             success: function(response) {
                 const hierarchicalData = response.data;
-                console.log(meta_data_jasa);
                 let json_meta_data_jasa = JSON.parse(atob(meta_data_jasa));
                 $('#table_jasa_container').html('');
                 $('#table_jasa_container_alert').html('');
@@ -950,7 +948,6 @@ function getKeranjangTindakan() {
         let metaKualitatif = $(`#meta_data_kualitatif_${id_index}`).val();
         let metaJasa = $(`#meta_data_jasa_${id_index}`).val();
         let metaJasaFee = $(`#meta_data_jasa_fee_${id_index}`).val();
-        console.log($(`#meta_data_kuantitatif_${id_index}`).val());
         keranjangTindakan.push({
             kode_item: kodeItem,
             nama_item: namaItem,

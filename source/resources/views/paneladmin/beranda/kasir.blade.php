@@ -24,7 +24,6 @@
                   <label for="status_pembayaran">Status Pembayaran</label>
                     <select id="status_pembayaran" class="form-select">
                       <option value="">Semua</option>
-                      <option value="paid">Lunas</option>
                       <option value="process">Proses</option>
                       <option value="pending">Ditahan</option>
                       <option value="done">Selesai</option>
@@ -154,6 +153,18 @@
                         <input type="text" value="0" class="form-control text-end" id="nominal_bayar_konfirmasi" name="nominal_bayar_konfirmasi" placeholder="0.00" readonly>
                     </div>
                 </div>
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        <h4 class="text-start mt-1">Status Transaksi</h4>
+                    </div>
+                    <div class="col-md-8">
+                        <select class="form-select mt-2" id="status_pembayaran_terakhir" name="status_pembayaran_terakhir" required>
+                          <option value="process">Proses</option>
+                          <option value="pending">Ditahan</option>
+                          <option value="done">Selesai</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-4">
                         <h4 class="text-start mt-1">Tipe Pembayaran</h4>
@@ -239,8 +250,8 @@
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
                     <i class="fa fa-times"></i> Batal
                 </button>
-                <button type="submit" class="btn btn-primary" id="btnSimpanPendaftaran">
-                    <i class="fa fa-save"></i> Simpan Data
+                <button type="submit" class="btn btn-primary" id="btnKonfirmasiPembayaran">
+                    <i class="fa fa-save"></i> Konfirmasi Pembayaran
                 </button>
             </div>
         </div>
@@ -250,16 +261,23 @@
 @section('css_load')
 <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 <style>
-  #total_pendapatan_text, #total_pendapatan{
+#nominal_bayar_konfirmasi, #nominal_bayar, #nominal_kembalian{
+    text-align: right;
     font-family: 'DS-Digital', sans-serif;
-    font-size: 60px;
+    font-size: 50px;
     color: red;
     padding: 0; 
     line-height: 1;
     font-weight: bold;
-  }
+}
+#nominal_bayar_konfirmasi::placeholder, #nominal_bayar::placeholder, #nominal_kembalian::placeholder {
+    font-family: 'DS-Digital', sans-serif;
+    font-size: 50px;
+    color: red;
+}
 </style>
 @endsection
 @section('js_load')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
 <script src="{{ asset('vendor/erayadigital/laboratorium/kasir.js') }}"></script>
 @endsection
