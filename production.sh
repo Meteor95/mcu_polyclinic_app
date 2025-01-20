@@ -46,6 +46,9 @@ sudo chmod -R 775 /var/www/html/storage/logs
 ######################################
 eval $(ssh-agent)
 ssh-add /home/veldora/.ssh/github_id_rsa_meteor95
+# Reset local changes and pull from the latest commit
+git reset --hard HEAD
+git clean -fd
 git pull
 
 ######################################
