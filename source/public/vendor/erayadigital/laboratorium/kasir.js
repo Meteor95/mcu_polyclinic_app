@@ -1,4 +1,5 @@
 let daftar_table_tindakan_modal;
+let id_transaksi_konfirmasi;
 let nominalBayar = new AutoNumeric('#nominal_bayar', {  decimal: ',',
     digit: '.',
     allowDecimalPadding: false,
@@ -204,7 +205,6 @@ function detail_tindakan(id,parts,nama_peserta){
                 id_transaksi:id,
             },
             success: function(response) {
-                let detail_transaksi_code = encodeURIComponent(btoa(response.transaksi[0].id_transaksi+'|'+response.transaksi[0].no_mcu+'|'+response.transaksi[0].nomor_identitas+'|'+response.transaksi[0].nama_peserta));
                 let parts = response.transaksi[0].no_nota.split('/');
                 let no_trx = parts.slice(0, 3).join('/');
                 let no_mcu = parts.slice(3).join('/');
@@ -269,6 +269,10 @@ function konfirmasi_pembayaran(id_transaksi){
             },
             success: function(response) {
                 console.log(response);
+                if (response.transaksi[0].jenis_transaksi == 0){
+                    updateCardStyles();
+                } 
+                id_transaksi_konfirmasi = id_transaksi;
                 $("#status_pembayaran_terakhir").val(response.transaksi[0].status_pembayaran).trigger('change');
                 nominalBayarKonfirmasi.set(response.transaksi[0].total_transaksi);
                 const radioHutang = document.getElementById("hutang");
@@ -328,6 +332,19 @@ $('#select2_metode_pembayaran').on('change', function(){
     }
 });
 $("#btnKonfirmasiPembayaran").click(function(){
+    if(id_transaksi_konfirmasi == null || id_transaksi_konfirmasi == ""){
+        return createToast('Kesalahan Penyimpanan', 'top-right', 'Id Transaksi tidak ditemukan. Silahkan tentukan transaksi mana yang ingin di konfirmasi status pembayarannya', 'error', 3000);
+    }
+    let jenis_transaksi_status = $('input[name="tipe_pembayaran"]:checked').val();
+    let metode_pembayaran_status = "";
+    if (jenis_transaksi_status == 1) {
+        if ($('#select2_metode_pembayaran').val() == 0) {
+            jenis_transaksi_status = 1;
+        }else{
+            jenis_transaksi_status = 2;
+            metode_pembayaran_status = $('#beneficiary_bank').val()+"|"+$('#beneficiary_bank option:selected').text()+"|"+$('#nomor_transaksi_transfer').val();
+        }
+    }
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
             url: baseurlapi + '/transaksi/konfirmasi_pembayaran',
@@ -335,16 +352,21 @@ $("#btnKonfirmasiPembayaran").click(function(){
             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
             data: {
                 _token:response.csrf_token,
-                id_transaksi:id_transaksi,
+                id_transaksi:id_transaksi_konfirmasi,
                 status_pembayaran:$("#status_pembayaran_terakhir").val(),
-                nominal_bayar:$("#nominal_bayar").val(),
-                nominal_kembalian:$("#nominal_kembalian").val(),
-                metode_pembayaran:$("#select2_metode_pembayaran").val(),
-                nomor_transaksi_transfer:$("#nomor_transaksi_transfer").val(),
-                beneficiary_bank:$("#beneficiary_bank").val(),
+                total_bayar: nominalBayar.getNumber(),
+                jenis_transaksi:jenis_transaksi_status,
+                metode_pembayaran:metode_pembayaran_status,
             },
             success: function(response) {
-                console.log(response);
+                if (!response.success) {
+                    return createToast('Kesalahan Konfirmasi Transaksi', 'top-right', response.message, 'error', 3000);
+                }
+                $("#daftar_table_tindakan").DataTable().ajax.reload();
+                return createToast('Kesalahan Penyimpanan', 'top-right', response.message, 'success', 3000);
+            },
+            complete: function() {
+                $('#modalKonfimasiPendaftaran').modal('hide');
             },
             error: function(xhr, status, error) {
                 return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
@@ -352,3 +374,9 @@ $("#btnKonfirmasiPembayaran").click(function(){
         });
     });
 });
+$('#nominal_bayar').on('input', function(){
+    hitungNominalBayar();
+});
+function hitungNominalBayar(){
+    nominalKembalian.set((nominalBayarKonfirmasi.getNumber() - nominalBayar.getNumber()) * -1);
+}

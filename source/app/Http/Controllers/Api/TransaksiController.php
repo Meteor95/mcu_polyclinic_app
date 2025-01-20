@@ -8,6 +8,7 @@ use App\Services\TransaksiServices;
 use Illuminate\Support\Facades\{Validator, Storage};
 use App\Helpers\ResponseHelper;
 use App\Models\Transaksi\{Transaksi, UnggahCitra};
+use App\Models\Laboratorium\Transaksi as TransaksiLab;
 use App\Models\Masterdata\MemberMCU;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -191,11 +192,24 @@ class TransaksiController extends Controller
     }
     public function konfirmasi_pembayaran(Request $request){
         try{
-            $status_transaksi = Transaksi::where('id', $request->id_transaksi)->first();
-            $status_transaksi->status_pembayaran = $request->status_pembayaran;
-            $status_transaksi->save();
-            return ResponseHelper::success('Status pembayaran transaksi MCU berhasil diubah');
+            $id_transaksi = $request->id_transaksi;
+            $informasi_transaksi = TransaksiLab::where('id', $id_transaksi)->first();
+            $parts = explode('/', $informasi_transaksi->no_nota, 4);
+            $no_nota = implode('/', array_slice($parts, 0, 3));
+            $no_mcu = $parts[3];
+            if ($informasi_transaksi->status_pembayaran == 'done') {
+                return ResponseHelper::data_not_found('Status pembayaran dengan No Nota: ' . $no_nota . ' dan No MCU: ' . $no_mcu . ' sudah tidak dapat diubah karena Status Pembayaran : SELESAI (DONE)');
+            }
+            $dataInformasi = [
+                'jenis_transaksi' => $request->jenis_transaksi,
+                'status_pembayaran' => $request->status_pembayaran,
+                'total_bayar' => $request->total_bayar,
+                'metode_pembayaran' => $request->metode_pembayaran,
+            ];
+            TransaksiLab::where('id', $id_transaksi)->update($dataInformasi);
+            return ResponseHelper::success('Informasi transaksi dengan No Nota: ' . $no_nota . ' dan No MCU: ' . $no_mcu . ' berhasil dikonfirmasi menjadi Status Pembayaran: ');
         } catch (\Throwable $th) {
+            Log::info($th);
             return ResponseHelper::error($th);
         }
     }
