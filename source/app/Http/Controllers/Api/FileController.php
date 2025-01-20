@@ -74,7 +74,6 @@ class FileController extends Controller
         try {
             $fileName = $req->file_name;
             $filePath = 'file_surat_pengantar/' . $fileName;
-            Log::info($filePath);
             if (!Storage::disk('public')->exists($filePath)) {
                 return response()->json([
                     'error' => 'File not found.'

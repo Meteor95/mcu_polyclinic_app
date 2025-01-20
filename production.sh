@@ -5,20 +5,6 @@
 CURRENT_USER=$(eval "whoami")
 CURRENT_GROUP=$(eval "id -gn")
 
-# Ensure necessary directories exist
-######################################
-sudo mkdir -p /var/www/html/storage/logs
-sudo mkdir -p /var/www/html/storage/app/public/file_surat_pengantar
-sudo mkdir -p /var/www/html/storage/app/public/mcu/foto_peserta
-sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/audiometri
-sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/ekg
-sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/ronsen
-sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/spirometri
-sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/threadmill
-sudo mkdir -p /var/www/html/storage/app/public/user/ttd
-# Berikan izin akses yang sesuai
-sudo chown -R nobody:nogroup /var/www/html/storage
-sudo chmod -R 775 /var/www/html/storage
 # Source code location
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/app
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/bootstrap
@@ -32,12 +18,25 @@ sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/routes
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/database/migrations
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/database/factories
 
+# Ensure necessary directories exist
+######################################
+sudo mkdir -p /var/www/html/storage/logs
+mkdir -p source/storage/app/public/file_surat_pengantar
+mkdir -p source/storage/app/public/mcu/foto_peserta
+mkdir -p source/storage/app/public/mcu/poliklinik/audiometri
+mkdir -p source/storage/app/public/mcu/poliklinik/ekg
+mkdir -p source/storage/app/public/mcu/poliklinik/ronsen
+mkdir -p source/storage/app/public/mcu/poliklinik/spirometri
+mkdir -p source/storage/app/public/mcu/poliklinik/threadmill
+mkdir -p source/storage/app/public/user/ttd
 # Ensure necessary permissions
 ######################################
-sudo chmod -R 775 source/storage
-sudo chmod -R 775 source/app
+sudo chown -R nobody:nogroup /var/www/html/storage
 sudo chown -R nobody:nogroup source/storage
 sudo chown -R nobody:nogroup source/app
+sudo chmod -R 775 /var/www/html/storage
+sudo chmod -R 775 source/storage
+sudo chmod -R 775 source/app
 
 # Pull from the repository
 ######################################
