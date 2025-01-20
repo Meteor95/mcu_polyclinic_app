@@ -330,7 +330,7 @@ $('#select2_metode_pembayaran').on('change', function(){
 $("#btnKonfirmasiPembayaran").click(function(){
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
-            url: baseurlapi + '/laboratorium/konfirmasi_pembayaran',
+            url: baseurlapi + '/transaksi/konfirmasi_pembayaran',
             type: 'POST',
             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
             data: {

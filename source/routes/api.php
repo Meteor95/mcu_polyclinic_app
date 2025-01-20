@@ -191,6 +191,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('transaksi')->group(function () {
             Route::post('simpanpeserta', [TransaksiController::class,"savepeserta"]);
             Route::get('hapuspeserta', [TransaksiController::class,"deletepeserta"]);
+            Route::post('konfirmasi_pembayaran', [TransaksiController::class,"konfirmasi_pembayaran"]);
         });
     });
 });

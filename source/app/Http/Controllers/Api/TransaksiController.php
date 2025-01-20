@@ -189,4 +189,14 @@ class TransaksiController extends Controller
             return ResponseHelper::error($th);
         }
     }
+    public function konfirmasi_pembayaran(Request $request){
+        try{
+            $status_transaksi = Transaksi::where('id', $request->id_transaksi)->first();
+            $status_transaksi->status_pembayaran = $request->status_pembayaran;
+            $status_transaksi->save();
+            return ResponseHelper::success('Status pembayaran transaksi MCU berhasil diubah');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
 }

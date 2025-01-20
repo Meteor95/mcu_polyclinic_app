@@ -20,7 +20,6 @@ sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/database/factories
 
 # Ensure necessary directories exist
 ######################################
-sudo mkdir -p /var/www/html/storage/logs
 mkdir -p source/storage/app/public/file_surat_pengantar
 mkdir -p source/storage/app/public/mcu/foto_peserta
 mkdir -p source/storage/app/public/mcu/poliklinik/audiometri
@@ -29,20 +28,24 @@ mkdir -p source/storage/app/public/mcu/poliklinik/ronsen
 mkdir -p source/storage/app/public/mcu/poliklinik/spirometri
 mkdir -p source/storage/app/public/mcu/poliklinik/threadmill
 mkdir -p source/storage/app/public/user/ttd
+
 # Ensure necessary permissions
 ######################################
-sudo chown -R nobody:nogroup /var/www/html/storage
-sudo chown -R nobody:nogroup source/storage
-sudo chown -R nobody:nogroup source/app
-sudo chmod -R 775 /var/www/html/storage
-sudo chmod -R 775 source/storage
 sudo chmod -R 775 source/app
 
+# Change ownership of the entire .git directory
+sudo chown -R $CURRENT_USER:$CURRENT_GROUP .git
+sudo chown -R nobody:nogroup source/storage
+sudo chmod -R 775 source/storage
+
+# Create the storage/logs directory if it doesn't exist and set permissions
+sudo mkdir -p /var/www/html/storage/logs
+sudo chown -R nobody:nogroup /var/www/html/storage/logs
+sudo chmod -R 775 /var/www/html/storage/logs
 # Pull from the repository
 ######################################
-sudo chown -R $CURRENT_USER:$CURRENT_GROUP .git
 eval $(ssh-agent)
-ssh-add /home/veldora/.ssh/github_id_rsa_meteor95
+ssh-add /home/veldora/.ssh/github_eraya_digital
 git pull
 
 ######################################
@@ -77,3 +80,4 @@ if [ $? -eq 0 ]; then
 else
 	echo "Deployment failed. Please check the logs."
 fi
+#sudo docker stack remove artha_medica
