@@ -5,6 +5,20 @@
 CURRENT_USER=$(eval "whoami")
 CURRENT_GROUP=$(eval "id -gn")
 
+# Ensure necessary directories exist
+######################################
+sudo mkdir -p /var/www/html/storage/logs
+sudo mkdir -p /var/www/html/storage/app/public/file_surat_pengantar
+sudo mkdir -p /var/www/html/storage/app/public/mcu/foto_peserta
+sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/audiometri
+sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/ekg
+sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/ronsen
+sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/spirometri
+sudo mkdir -p /var/www/html/storage/app/public/mcu/poliklinik/threadmill
+sudo mkdir -p /var/www/html/storage/app/public/user/ttd
+# Berikan izin akses yang sesuai
+sudo chown -R nobody:nogroup /var/www/html/storage
+sudo chmod -R 775 /var/www/html/storage
 # Source code location
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/app
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/bootstrap
@@ -18,17 +32,16 @@ sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/routes
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/database/migrations
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/database/factories
 
-# Change ownership of the entire .git directory
-sudo chown -R $CURRENT_USER:$CURRENT_GROUP .git
-sudo chown -R nobody:nogroup source/storage
-sudo chown -R nobody:nogroup source/app
-sudo chown -R nobody:nogroup /var/www/html/storage/logs
-sudo mkdir -p /var/www/html/storage/logs
-sudo chmod -R 775 /var/www/html/storage/logs
+# Ensure necessary permissions
+######################################
 sudo chmod -R 775 source/storage
 sudo chmod -R 775 source/app
+sudo chown -R nobody:nogroup source/storage
+sudo chown -R nobody:nogroup source/app
+
 # Pull from the repository
 ######################################
+sudo chown -R $CURRENT_USER:$CURRENT_GROUP .git
 eval $(ssh-agent)
 ssh-add /home/veldora/.ssh/github_id_rsa_meteor95
 git pull
