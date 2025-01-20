@@ -56,7 +56,7 @@ class ResponseHelper
     public static function error($th)
     {
         $message = (is_int($th) ?__('error.'.$th.'_error') : __('error.500_error'));
-        if ((bool)env('APP_DEBUG') && !is_int($th)){
+        if ((bool)env('APP_DEBUG_MESSAGE') && !is_int($th)){
             $message .= ". Pesan Kesalahan : ".$th->getMessage();
         }
         return response()->json([
