@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Masterdata\DaftarBank;
 
 class BerandaController extends Controller
 {
@@ -21,5 +22,13 @@ class BerandaController extends Controller
             'Dashboard' => route('admin.beranda'),
         ]);
         return view('paneladmin.beranda.main_konten', ['data' => $data]);
+    }
+    public function kasir(Request $request)
+    {
+        $data = $this->getData($request, 'Kasir MCU Arta Medica', [
+            'Kasir' => route('admin.kasir'),
+        ]);
+        $data['bank'] = DaftarBank::all();
+        return view('paneladmin.beranda.kasir', ['data' => $data]);
     }
 }

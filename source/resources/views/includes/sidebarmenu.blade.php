@@ -56,7 +56,7 @@
           @if ($hasAccessKasir)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
-            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+            <a class="sidebar-link sidebar-title" href="{{ route('admin.kasir') }}">
               <i class="fa-solid fa-cash-register" style="padding-right: 10px;font-size: 18px;color: #fff;"></i>
               <span>Kasir</span>
             </a>

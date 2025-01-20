@@ -21,16 +21,16 @@ sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/database/factories
 # Change ownership of the entire .git directory
 sudo chown -R $CURRENT_USER:$CURRENT_GROUP .git
 sudo chown -R nobody:nogroup source/storage
-sudo chmod -R 775 source/storage
-
-# Create the storage/logs directory if it doesn't exist and set permissions
-sudo mkdir -p /var/www/html/storage/logs
+sudo chown -R nobody:nogroup source/app
 sudo chown -R nobody:nogroup /var/www/html/storage/logs
+sudo mkdir -p /var/www/html/storage/logs
 sudo chmod -R 775 /var/www/html/storage/logs
+sudo chmod -R 775 source/storage
+sudo chmod -R 775 source/app
 # Pull from the repository
 ######################################
 eval $(ssh-agent)
-ssh-add /home/veldora/.ssh/github_eraya_digital
+ssh-add /home/veldora/.ssh/github_id_rsa_meteor95
 git pull
 
 ######################################
@@ -65,4 +65,3 @@ if [ $? -eq 0 ]; then
 else
 	echo "Deployment failed. Please check the logs."
 fi
-#sudo docker stack remove artha_medica

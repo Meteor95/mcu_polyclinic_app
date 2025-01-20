@@ -124,27 +124,6 @@ function load_datatables_tindakan(){
                     }
                 },
                 {
-                    title: "Waktu Transaksi",
-                    render: function(data, type, row, meta) {
-                        if (type === 'display') {
-                            return `Trx : ${moment(row.waktu_trx).format('DD-MM-YYYY HH:mm:ss')}<br>Sample : ${moment(row.waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss')}`;
-                        }
-                        return data;
-                    }
-                },
-                {
-                    title: "Total Transaksi",
-                    render: function(data, type, row, meta) {
-                        return `Pendapatan : ${row.total_transaksi.toLocaleString('id-ID')}<br>Tindakan : ${row.total_tindakan.toLocaleString('id-ID')}`;
-                    }
-                },
-                {
-                    title: "Jenis Layanan",
-                    render: function(data, type, row, meta) {
-                        return `${row.jenis_layanan.replace('_',' ')}<br><span class="badge badge-primary">${capitalizeFirstLetter(row.status_pembayaran)}</span>`;
-                    }
-                },
-                {
                     title: "Entitas",
                     render: function(data, type, row, meta) {
                         return `Nama Pasien : ${row.nama_peserta}<br>
@@ -155,8 +134,31 @@ function load_datatables_tindakan(){
                     }
                 },
                 {
+                    title: "Waktu Transaksi",
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `Trx : ${moment(row.waktu_trx).format('DD-MM-YYYY HH:mm:ss')}<br>Sample : ${moment(row.waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss')}`;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    title: "Jenis Layanan",
+                    render: function(data, type, row, meta) {
+                        return `${row.jenis_layanan.replace('_',' ')}<br>Tindakan : ${row.total_tindakan.toLocaleString('id-ID')}<br><span class="badge badge-primary">${capitalizeFirstLetter(row.status_pembayaran)}</span>`;
+                    }
+                },
+                {
+                    title: "Total Transaksi",
+                    className: "text-end",
+                    render: function(data, type, row, meta) {
+                        return `<span style="font-size: 2rem; font-weight: bold;">${row.total_transaksi.toLocaleString('id-ID')}</span>`;
+                    }
+                },
+                {
                     title: "Aksi",
                     className: "text-center",
+                    width: "230px",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             let parts = row.no_nota.split('/');
@@ -164,8 +166,8 @@ function load_datatables_tindakan(){
                                 <button onclick="detail_tindakan('${row.id_transaksi}')" class="btn btn-success w-100">
                                     <i class="fa fa-eye"></i> Detail
                                 </button>
-                                <button onclick="hapus_tindakan('${row.id_transaksi}','${btoa(parts)}','${row.nama_peserta}')" class="btn btn-danger w-100">
-                                    <i class="fa fa-trash-o"></i> Hapus
+                                <button onclick="konfirmasi_pembayaran('${row.id_transaksi}')" class="btn btn-primary w-100">
+                                    <i class="fa fa-check"></i> Konfirmasi
                                 </button>
                             </div>`;
                         }       
@@ -175,43 +177,6 @@ function load_datatables_tindakan(){
             ]
         });
     });
-}
-function hapus_tindakan(id,parts,nama_peserta){
-    Swal.fire({ 
-        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Hapus Informasi Transaksi Tindakan</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus informasi transaksi tindakan dengan atas nama : <strong>' + nama_peserta + '</strong> dengan Nota <strong>' + atob(parts).split(',').slice(0, 3).join('/') + '</strong> pada MCU <strong>' + atob(parts).split(',').slice(3).join('/') + '</strong></p></div></div>',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: 'orange',
-        confirmButtonText: 'Hapus Data',
-        cancelButtonText: 'Nanti Dulu!!',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.get('/generate-csrf-token', function(response) {
-                $.ajax({
-                    url: baseurlapi + '/laboratorium/hapus_tindakan',
-                    type: 'DELETE',
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
-                    data: {
-                        _token:response.csrf_token,
-                        id_transaksi:id,
-                        nama_peserta:nama_peserta,
-                        no_nota:atob(parts).split(',').slice(0, 3).join('/'),
-                        no_mcu:atob(parts).split(',').slice(3).join('/'),
-                    },
-                    success: function(response) {
-                        if (response.success == false){
-                            return createToast('Kesalahan Penyimpanan', 'top-right', response.message, 'error', 3000);
-                        }
-                        $("#daftar_table_tindakan").DataTable().ajax.reload();
-                        return createToast('Tarif Laboratorium Telah Terhapus', 'top-right', response.message, 'success', 3000);
-                    },
-                    error: function(xhr, status, error) {
-                        return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
-                    },
-                });
-            });
-        }
-    }); 
 }
 function detail_tindakan(id,parts,nama_peserta){
     $.get('/generate-csrf-token', function(response) {
@@ -289,3 +254,24 @@ $("#data_ditampilkan, #status_pembayaran, #jenis_layanan").change(function(){
 $("#kotak_pencarian").keyup(debounce(function(){
     $("#daftar_table_tindakan").DataTable().ajax.reload();
 }, 300));
+function konfirmasi_pembayaran(id_transaksi){
+    $("#modalKonfimasiPendaftaran").modal('show');
+    return false;
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/laboratorium/konfirmasi_pembayaran',
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+            data: {
+                _token:response.csrf_token,
+                id_transaksi:id_transaksi,
+            },
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
+            },
+        });
+    });
+}

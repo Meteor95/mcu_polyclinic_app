@@ -16,6 +16,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-2">
+                  <label for="data_ditampilkan">Data yang ditampilkan</label>
                     <select id="data_ditampilkan" class="form-select">
                       <option value="10">10 Data</option>
                       <option selected value="25">25 Data</option>
@@ -25,25 +26,30 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <select id="jenis_item_tampilkan" class="form-select">
+                  <label for="status_pembayaran">Status Pembayaran</label>
+                    <select id="status_pembayaran" class="form-select">
                       <option value="">Semua</option>
-                      <option value="laboratorium">Laboratorium</option>
-                      <option value="non_laboratorium">Non Laboratorium</option>
+                      <option value="paid">Lunas</option>
+                      <option value="process">Proses</option>
+                      <option value="pending">Ditahan</option>
+                      <option value="done">Selesai</option>
                     </select>
                 </div>
                 <div class="col-md-2">
+                  <label for="jenis_layanan">Jenis Layanan</label>
                     <select id="jenis_layanan" class="form-select">
                       <option value="">Semua</option>
                       <option value="MCU">MCU</option>
                       <option value="Follow_Up">Follow Up</option>
                       <option value="Berobat">Berobat</option>
-                      <option value="MCU-Tambahan">MCU-Tambahan</option>
-                      <option value="MCU-Threadmill">MCU-Threadmill</option>
+                      <option value="MCU_Tambahan">MCU Tambahan</option>
+                      <option value="MCU_Threadmill">MCU Threadmill</option>
                       <option value="Threadmill">Threadmill</option>
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan kode, nama item, group item, kategori, atau satuan">
+                  <label for="kotak_pencarian">Cari Data</label>
+                    <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan No MCU, Nama Penanggung Jawab, Nama Pasien atau Nama Dokter">
                 </div>
             </div>
             <hr>
