@@ -181,7 +181,7 @@
     </div>
 </div>
 <div class="modal fade" id="modalLihatParameter" tabindex="-1" role="dialog" aria-labelledby="modalLihatParameterLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog modal-lg"">
+  <div class="modal-dialog modal-lg">
       <div class="modal-content">
           <div class="modal-header">
               <h5 class="modal-title">Nama Pasien : <span id="modal_nama_peserta_parameter"></span><br>Lokasi Fisik : <span id="modal_lokasi_fisik_parameter"></span></h5>

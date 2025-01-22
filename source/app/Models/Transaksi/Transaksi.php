@@ -39,6 +39,7 @@ class Transaksi extends Model
                 'users_pegawai.nama_pegawai',
                 'paket_mcu.nama_paket',
                 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran',
+                'mcu_transaksi_peserta.status_peserta',
                 DB::raw("DATE_FORMAT(" . $tablePrefix . "mcu_transaksi_peserta.tanggal_transaksi, '%d-%m-%Y %H:%i:%s') as tanggal_transaksi"),
                 DB::raw("TIMESTAMPDIFF(YEAR, " . $tablePrefix . "users_member.tanggal_lahir, CURDATE()) AS umur")
             );

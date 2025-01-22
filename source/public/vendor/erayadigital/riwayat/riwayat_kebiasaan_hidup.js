@@ -130,6 +130,42 @@ function onload_datatables_daftar_kebiasaan_hidup(){
         });
     });
 }
+$("#pencarian_member_mcu").on('change', function(){
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/pendaftaran/getdatapasien',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+            data: {
+                _token : response.csrf_token,
+                nomor_identitas : $("#pencarian_member_mcu").val() == '' ? code.split('|')[2] : $("#pencarian_member_mcu").val()
+            },
+            success: function(response) {
+                if (!response.success) {
+                    clear_tanda_vital();
+                    return createToast('Data tidak ditemukan', 'top-right', response.message, 'error', 3000);
+                }
+                $("#nomor_transaksi_mcu").text(response.data.no_transaksi);
+                $("#nomor_identitas_mcu").text(response.data.nomor_identitas);
+                $("#id_user_mcu").text(response.data.user_id);
+                $("#id_transaksi_mcu").text(response.data.id_transaksi);
+                $("#nama_peserta_mcu").text(response.data.nama_peserta);
+                $("#no_telepon_mcu").text(response.data.no_telepon);
+                $("#jenis_kelamin_mcu").text(response.data.jenis_kelamin);
+                $("#email_mcu").text(response.data.email);
+                $("#company_name_mcu").text(response.data.company_name);
+                $("#nama_departemen_mcu").text(response.data.nama_departemen);
+                $("#status_peserta_mcu").text(capitalizeFirstLetter(response.data.jenis_transaksi_pendaftaran));
+                if (response.data.jenis_kelamin == 'Perempuan'){
+                    $("#kebiasaan_hidup_perempuan").show();
+                }else{
+                    $("#kebiasaan_hidup_perempuan").hide();
+                }
+                $('#datatables_kebiasaan_hidup_perempuan').DataTable().columns.adjust().draw();
+            }
+        });
+    });
+});
 function applyAutoNumeric() {
     $('#datatables_riwayat_kebiasaan_hidup input[id^="nilai_kebiasaan"]').each(function() {
         if (!$(this).data('autoNumeric')) {

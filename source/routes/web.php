@@ -63,6 +63,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     });
     Route::prefix('laporan')->group(function () {
         Route::get('validasi_mcu', [LaporanController::class,"validasi_mcu"])->middleware('permission_cache:akses_validasi_mcu')->name('admin.laporan.validasi_mcu');
+        Route::get('validasi_mcu/nota/{no_nota}', [LaporanController::class,"validasi_mcu_nota"])->middleware('permission_cache:akses_validasi_mcu')->name('admin.laporan.validasi_mcu_nota');
     });
 });
 Route::prefix('landing')->group(function () {

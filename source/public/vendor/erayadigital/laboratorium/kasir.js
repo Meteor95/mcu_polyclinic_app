@@ -269,9 +269,6 @@ function konfirmasi_pembayaran(id_transaksi){
             },
             success: function(response) {
                 console.log(response);
-                if (response.transaksi[0].jenis_transaksi == 0){
-                    updateCardStyles();
-                } 
                 id_transaksi_konfirmasi = id_transaksi;
                 $("#status_pembayaran_terakhir").val(response.transaksi[0].status_pembayaran).trigger('change');
                 nominalBayarKonfirmasi.set(response.transaksi[0].total_transaksi);
@@ -279,8 +276,12 @@ function konfirmasi_pembayaran(id_transaksi){
                 const radioTunai = document.getElementById("tunai");
                 if (response.transaksi[0].jenis_transaksi == 0) {
                     radioHutang.checked = true;
+                    nominalBayar.set(0);
+                    nominalKembalian.set(nominalBayarKonfirmasi.getNumber() * -1);
+                    $('#pembayaran_tunai').hide();
                 } else {
                     radioTunai.checked = true;
+                    $('#pembayaran_tunai').show();
                     if (response.transaksi[0].jenis_transaksi == 1) {
                         $("#select2_metode_pembayaran").val(0).trigger('change');
                         nominalBayar.set(response.transaksi[0].total_bayar);

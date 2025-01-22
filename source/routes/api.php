@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController, PoliklinikController, LaboratoriumController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController, PoliklinikController, LaboratoriumController, LaporanController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -192,6 +192,11 @@ Route::prefix('v1')->group(function () {
             Route::post('simpanpeserta', [TransaksiController::class,"savepeserta"]);
             Route::get('hapuspeserta', [TransaksiController::class,"deletepeserta"]);
             Route::post('konfirmasi_pembayaran', [TransaksiController::class,"konfirmasi_pembayaran"]);
+        });
+        Route::prefix('laporan')->group(function () {
+            Route::get('validasi_mcu_nota', [LaporanController::class,"validasi_mcu_nota"]);
+            Route::get('validasi_mcu_modal', [LaporanController::class,"validasi_mcu_modal"]);
+            Route::get('validasi_mcu_nota_akhir', [LaporanController::class,"validasi_mcu_nota_akhir"]);
         });
     });
 });

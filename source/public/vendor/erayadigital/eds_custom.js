@@ -73,3 +73,14 @@ function addCategoryOptions(categories, depth = 0) {
         }
     });
 }
+function formatAngkaSingkatan(angka) {
+    if (angka >= 1_000_000_000) {
+        return (angka / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'M'; // Miliar
+    } else if (angka >= 1_000_000) {
+        return (angka / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'Jt'; // Juta
+    } else if (angka >= 1_000) {
+        return (angka / 1_000).toFixed(1).replace(/\.0$/, '') + 'Rb'; // Ribu
+    } else {
+        return angka.toString(); // Angka kecil tetap
+    }
+}

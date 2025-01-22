@@ -66,7 +66,7 @@ function loadDataPasien() {
                     title: "Nomor MCU",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `${row.no_transaksi}<br><span class="badge bg-primary">${capitalizeFirstLetter(row.jenis_transaksi_pendaftaran)}</span>`;
+                            return `${row.no_transaksi}`;
                         }
                         return data;
                     }
@@ -84,7 +84,15 @@ function loadDataPasien() {
                     title: "Informasi MCU",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `Tanggal: ${row.tanggal_transaksi}<br>Nama Paket: <span>${row.nama_paket}</span><br>`;
+                            let status_peserta = '';
+                            if (row.status_peserta == 'proses') {
+                                status_peserta = '<span class="badge bg-warning">Di Proses</span>';
+                            }else if (row.status_peserta == 'dibatalkan') {
+                                status_peserta = '<span class="badge bg-danger">Di Batalkan</span>';
+                            }else if (row.status_peserta == 'selesai') {
+                                status_peserta = '<span class="badge bg-success">Tervalidasi dan Selesai</span>';
+                            }
+                            return `Tanggal: ${row.tanggal_transaksi}<br>Status: ${status_peserta}`;
                         }
                         return data;
                     }
@@ -99,17 +107,12 @@ function loadDataPasien() {
                     }
                 },
                 {
-                    title: "Petugas",
-                    data: "nama_pegawai"
-                },
-                {
                     title: "Aksi",
-                    className: "dtfc-fixed-right_header",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             return `<div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-                                <a href="${baseurl}/pendaftaran/formulir_ubah_peserta/${row.id}">
-                                    <button class="btn btn-success w-100"><i class="fa fa-edit"></i></button>
+                                <a href="${baseurl}/laporan/validasi_mcu/nota/${encodeURIComponent(btoa(row.no_transaksi))}">
+                                    <button class="btn btn-success w-100"><i class="fa fa-edit"></i> Validasi</button>
                                 </a>
                             </div>`;
                         }       
