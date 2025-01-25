@@ -167,6 +167,8 @@ Route::prefix('v1')->group(function () {
             Route::get('daftar_tindakan', [LaboratoriumController::class,"daftar_tindakan"]);
             Route::delete('hapus_tindakan', [LaboratoriumController::class,"hapus_tindakan"]);
             Route::get('detail_tindakan', [LaboratoriumController::class,"detail_tindakan"]);
+            /* Tindakan Kesimpulan */
+            Route::get('tindakan_kesimpulan_pilihan', [LaboratoriumController::class,"tindakan_kesimpulan_pilihan"]);
         });
         Route::prefix('atribut')->group(function () {
             Route::get('lingkungankerja', [AtributController::class,"getlingkungankerja"]);
@@ -197,6 +199,8 @@ Route::prefix('v1')->group(function () {
             Route::get('validasi_mcu_nota', [LaporanController::class,"validasi_mcu_nota"]);
             Route::get('validasi_mcu_modal', [LaporanController::class,"validasi_mcu_modal"]);
             Route::get('validasi_mcu_nota_akhir', [LaporanController::class,"validasi_mcu_nota_akhir"]);
+            Route::post('validasi_rekap_kesimpulan', [LaporanController::class,"validasi_rekap_kesimpulan"]);
+            Route::get('validasi_rekap_kesimpulan', [LaporanController::class,"validasi_rekap_kesimpulan_get"]);
         });
     });
 });

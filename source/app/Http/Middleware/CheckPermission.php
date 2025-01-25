@@ -70,6 +70,9 @@ class CheckPermission
             'hasAccessTindakanObat' => 'akses_tindakan_obat',
             /* Laporan */
             'hasAccessValidasiMcu' => 'akses_validasi_mcu',
+            'hasAccessArciveMCU' => 'akses_berkas_tindakan_mcu',
+            'hasAccessArciveLaboratorium' => 'akses_berkas_tindakan_laboratorium',
+            'hasAccessArciveNota' => 'akses_berkas_tindakan_kwitansi',
             /* Master Data */
             'hasAccessMasterData' => 'akses_master_data',
             'hasAccessMasterPerusahaan' => 'akses_master_perusahaan',

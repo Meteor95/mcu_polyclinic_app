@@ -41,6 +41,14 @@
                     <label for="satuan">Satuan</label>
                     <select name="satuan" id="satuan" class="form-control"></select>
                 </div>
+                <div class="col-sm-6">
+                    <label for="visible_item">Status Penampilkan</label>
+                    <select name="visible_item" data-choices id="visible_item" class="form-control">
+                        <option value="tampilkan">Tampilkan</option>
+                        <option value="rahasia">Rahasia</option>
+                        <option value="sembunyikan">Sembunyikan</option>
+                    </select>
+                </div>
             </div>
             <div class="row" id="section_nilai_kenormalan">
                 <div class="col-md-12 mt-2">

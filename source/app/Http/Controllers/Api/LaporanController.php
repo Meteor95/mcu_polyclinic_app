@@ -8,6 +8,7 @@ use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, Riwaya
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\Transaksi as TransaksiLab;
+use App\Models\Laporan\Kesimpulan;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\{Log, DB};
@@ -288,5 +289,73 @@ class LaporanController extends Controller
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
+    }
+    public function validasi_rekap_kesimpulan(Request $req){
+        try {
+            $validator = Validator::make($req->all(), [
+                'id_mcu_let' => 'required',
+                'nomor_mcu_let' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $informasi_mcu = Transaksi::join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+                ->select('users_member.nama_peserta')
+                ->where('no_transaksi', $req->nomor_mcu_let)->first();
+            $is_mcu_exist = Kesimpulan::where('id_mcu', $req->id_mcu_let)->first();
+            $data = [
+                'id_mcu' => $req->id_mcu_let,
+                'kesimpulan_pemeriksaan_fisik' => $req->hasil_kesimpulan_pemeriksaan_fisik,
+                'status_pemeriksaan_laboratorium' => $req->status_pemeriksaan_laboratorium,
+                'kesimpulan_pemeriksaan_laboratorum' => $req->hasil_kesimpulan_pemeriksaan_laboratorium,
+                'kesimpulan_pemeriksaan_threadmill' => $req->hasil_kesimpulan_pemeriksaan_threadmill,
+                'kesimpulan_pemeriksaan_ronsen' => $req->hasil_kesimpulan_pemeriksaan_ronsen,
+                'kesimpulan_pemeriksaan_ekg' => $req->hasil_kesimpulan_pemeriksaan_ekg,
+                'kesimpulan_pemeriksaan_audio_kiri' => $req->hasil_kesimpulan_pemeriksaan_audio_kiri,
+                'kesimpulan_pemeriksaan_audio_kanan' => $req->hasil_kesimpulan_pemeriksaan_audio_kanan,
+                'kesimpulan_pemeriksaan_spiro_restriksi' => $req->hasil_kesimpulan_pemeriksaan_spirometri_restriksi,
+                'kesimpulan_pemeriksaan_spiro_obstruksi' => $req->hasil_kesimpulan_pemeriksaan_spirometri_obstruksi,
+                'kesimpulan_keseluruhan' => $req->hasil_kesimpulan_pemeriksaan_kesimpulan_tindakan,
+                'saran_keseluruhan' => $req->hasil_kesimpulan_pemeriksaan_tindakan_saran,
+            ];
+            if ($is_mcu_exist) {
+                Kesimpulan::where('id_mcu', $req->id_mcu_let)->update($data);
+            } else {
+                Kesimpulan::create($data);
+            }
+            $dynamicAttributes = [];
+            return ResponseHelper::success('Informasi kesimpulan dari nomor dokumen '.$req->nomor_mcu_let.' berhasil disimpan atas nama '.$informasi_mcu->nama_peserta, $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function validasi_rekap_kesimpulan_get(Request $req){
+       try {
+            $id_mcu = $req->id_mcu_let;
+            if ($req->id_mcu_let == "") {
+                $id_mcu = Transaksi::where('no_transaksi', $req->nomor_mcu_let)->first()->id;
+            }
+            $informasi_mcu = Kesimpulan::where('id_mcu', $id_mcu)->first();
+            $count_poliklinik_spirometri = DB::table('mcu_poli_spirometri')->where('transaksi_id', $id_mcu)->count();
+            $count_poliklinik_ekg = DB::table('mcu_poli_ekg')->where('transaksi_id', $id_mcu)->count();
+            $count_poliklinik_threadmill = DB::table('mcu_poli_threadmill')->where('transaksi_id', $id_mcu)->count();
+            $count_poliklinik_ronsen = DB::table('mcu_poli_ronsen')->where('transaksi_id', $id_mcu)->count();
+            $count_poliklinik_audiometri = DB::table('mcu_poli_audiometri')->where('transaksi_id', $id_mcu)->count();
+            $data_poliklinik = [
+                'count_poliklinik_spirometri' => $count_poliklinik_spirometri,
+                'count_poliklinik_ekg' => $count_poliklinik_ekg,
+                'count_poliklinik_threadmill' => $count_poliklinik_threadmill,
+                'count_poliklinik_ronsen' => $count_poliklinik_ronsen,
+                'count_poliklinik_audiometri' => $count_poliklinik_audiometri,
+            ];
+            $dynamicAttributes = [
+                'data' => $informasi_mcu,
+                'data_poliklinik' => $data_poliklinik,
+            ];
+            return ResponseHelper::data('Informasi Kesimpulan', $dynamicAttributes);
+       } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+       }
     }
 }

@@ -1,3 +1,24 @@
+const pemeriksaanConfig = [
+    { id: 'pemeriksaan_fisik', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Fisik peserta ini' },
+    { id: 'pemeriksaan_laboratorium', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Laboratorium peserta ini' },
+    { id: 'pemeriksaan_threadmill', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Threadmill peserta ini' },
+    { id: 'pemeriksaan_ronsen', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Ronsen peserta ini' },
+    { id: 'pemeriksaan_ekg', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan EKG peserta ini' },
+    { id: 'pemeriksaan_audiometri_kiri', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Audiometri Kiri peserta ini' },
+    { id: 'pemeriksaan_audiometri_kanan', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Audiometri Kanan peserta ini' },
+    { id: 'pemeriksaan_spirometri_restriksi', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Spirometri Restriksi peserta ini' },
+    { id: 'pemeriksaan_spirometri_obstruksi', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Spirometri Obstruksi peserta ini' },
+    { id: 'pemeriksaan_kesimpulan_tindakan', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Kesimpulan Tindakan peserta ini' },
+    { id: 'pemeriksaan_tindakan_saran', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Tindakan Saran peserta ini' }
+];
+let pemeriksaan_laboratorium_kondisi_select_id = document.getElementById('pemeriksaan_laboratorium_kondisi_select');
+let choice_pemeriksaan_laboratorium_kondisi_select = new Choices(pemeriksaan_laboratorium_kondisi_select_id, {
+    searchEnabled: true,
+    shouldSort: false,
+    placeholder: true,
+    placeholderValue: 'Pilih Status Kesimpulan Laboratorium',
+});
+let quillInstances = {};
 $(window).scroll(function() {
     let scrollTop = $(this).scrollTop();
     if (scrollTop >= 300) {
@@ -14,6 +35,12 @@ const quill_informasi = new Quill('#detail_kesimpulan_informasi', {
 });
 $(document).ready(function() {
     load_data_document();
+    pemeriksaanConfig.forEach(item => {
+        quillInstances[item.id] = new Quill(`#${item.id}_quill`, {
+            placeholder: item.placeholder,
+            readOnly: true
+        });
+    });
 });
 function updateProgress(selector, condition, text, response = null) {
     const icon = condition 
@@ -38,7 +65,6 @@ function load_data_document() {
                 no_nota: no_mcu_js,
             },
             success: function(response) {
-                console.log(response);
                 /* Riwayat Informasi */
                 updateProgress('.progress_fdd', response.jumlah_data_foto_data_diri > 0, 'FDD');
                 updateProgress('.progress_lk', response.jumlah_data_lingkungan_kerja > 0, 'LK');
@@ -102,6 +128,60 @@ function load_data_document() {
         })
     })
 }
+$("#btn_lab_mcu_batal").click(function() {
+    validasi_rekap_kesimpulan_nota(no_mcu_js);
+});
+function validasi_rekap_kesimpulan_nota(no_mcu_js) {
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/laporan/validasi_rekap_kesimpulan',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+            data: {
+                _token: response.csrf_token,
+                id_mcu_let: "",
+                nomor_mcu_let: atob(no_mcu_js),
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.data_poliklinik.count_poliklinik_spirometri > 0) {
+                    $(".pemeriksaan_spirometri").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_ekg > 0) {
+                    $(".pemeriksaan_ekg").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_threadmill > 0) {
+                    $(".pemeriksaan_threadmill").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_ronsen > 0) {
+                    $(".pemeriksaan_ronsen").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_audiometri > 0) {
+                    $(".pemeriksaan_audiometri").show();
+                }
+                if (response.data && Object.keys(response.data).length > 0) {
+                    quillInstances['pemeriksaan_fisik'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_fisik));
+                    choice_pemeriksaan_laboratorium_kondisi_select.setChoiceByValue(response.data.status_pemeriksaan_laboratorium);
+                    quillInstances['pemeriksaan_laboratorium'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_laboratorum));
+                    quillInstances['pemeriksaan_threadmill'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_threadmill));
+                    quillInstances['pemeriksaan_ronsen'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_ronsen));
+                    quillInstances['pemeriksaan_ekg'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_ekg));
+                    quillInstances['pemeriksaan_audiometri_kiri'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_audio_kiri));
+                    quillInstances['pemeriksaan_audiometri_kanan'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_audio_kanan));
+                    quillInstances['pemeriksaan_spirometri_restriksi'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_spiro_restriksi));
+                    quillInstances['pemeriksaan_spirometri_obstruksi'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_spiro_obstruksi));
+                    quillInstances['pemeriksaan_kesimpulan_tindakan'].setContents(JSON.parse(response.data.kesimpulan_keseluruhan));
+                    quillInstances['pemeriksaan_tindakan_saran'].setContents(JSON.parse(response.data.saran_keseluruhan));
+                }
+                $("#modal_validasi_rekap_kesimpulan_text").html('Validasi Kesimpulan Tindakan Pasien');
+                $("#modal_validasi_rekap_kesimpulan").modal('show');
+            },
+            error: function(xhr, status, error) {
+                createToast('Kesalahan Validasi Kesimpulan', 'top-right', error, 'error', 3000);
+            }
+        });
+    });
+}
 function process_ajax(kondisi,modal,lokasi_fisik = null){
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
@@ -116,7 +196,6 @@ function process_ajax(kondisi,modal,lokasi_fisik = null){
                 kondisi: kondisi,
             },
             success: function(response) {
-                console.log(response);
                 aksesmodal(response,modal,lokasi_fisik);
             },
             error: function(xhr, status, error) {
@@ -307,7 +386,6 @@ function aksesmodal(response,modal,lokasi_fisik = null){
         $("#modal_fisik_lokasi").text(lokasi_fisik.charAt(0).toUpperCase() + lokasi_fisik.slice(1));
         if (lokasi_fisik === 'Gigi') {
             const data = response.informasi_mcu_gigi[0];
-            console.log(data);
             ['atas', 'bawah'].forEach(posisi => {
                 ['kanan', 'kiri'].forEach(sisi => {
                     for (let i = 1; i <= 8; i++) {
@@ -377,7 +455,7 @@ $("#btn_lab_mcu_verifikasi").click(function(){
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(xhr.responseText);
+                        createToast('Kesalahan Validasi Akhir Dokumen', 'top-right', error, 'error', 3000);
                     }
                 });
             });

@@ -29,4 +29,11 @@ class LaporanController extends Controller
         $data['no_nota'] = $no_nota;
         return view('paneladmin.laporan.validasi_mcu_nota', ['data' => $data]);
     }
+    public function validasi_rekap_kesimpulan(Request $req){
+        $data = $this->getData($req, 'Validasi Laporan Tindakan MCU atau Pengobatan Pasien', [
+            'Beranda' => route('admin.beranda'),
+            'Validasi' => route('admin.laporan.validasi_rekap_kesimpulan'),
+        ]);
+        return view('paneladmin.laporan.validasi_rekap_kesimpulan', ['data' => $data]);
+    }
 }

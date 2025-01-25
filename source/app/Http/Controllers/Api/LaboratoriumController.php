@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
-use App\Models\Laboratorium\{Tarif, Kategori, Satuan, Kenormalan, TemplateLab, Transaksi};
+use App\Models\Laboratorium\{Tarif, Kategori, Satuan, Kenormalan, TemplateLab, Transaksi, Kesimpulan, KesimpulanTindakan};
 use Illuminate\Support\Facades\Log;
 use App\Services\LaboratoriumServices;
 
@@ -49,6 +49,7 @@ class LaboratoriumController extends Controller
                 'jenis_item' => 'required',
                 'harga_dasar' => 'required',
                 'harga_jual' => 'required',
+                'visible_item' => 'required',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -62,11 +63,12 @@ class LaboratoriumController extends Controller
                 'nama_kategori' => preg_replace('/-+/', '', $request->nama_kategori),
                 'satuan' => $request->satuan,
                 'jenis_item' => $request->jenis_item,
-                'meta_data_kuantitatif' => json_encode($request->meta_data_kuantitatif),
-                'meta_data_kualitatif' => json_encode($request->meta_data_kualitatif),
+                'meta_data_kuantitatif' => $request->meta_data_kuantitatif == NULL ? '[]' : json_encode($request->meta_data_kuantitatif),
+                'meta_data_kualitatif' => $request->meta_data_kualitatif == NULL ? '[]' : json_encode($request->meta_data_kualitatif),
                 'harga_dasar' => $request->harga_dasar,
-                'meta_data_jasa' => json_encode($request->meta_data_jasa),
+                'meta_data_jasa' => $request->meta_data_jasa == NULL ? '[]' : json_encode($request->meta_data_jasa),
                 'harga_jual' => $request->harga_jual,
+                'visible_item' => $request->visible_item,
             ];
             if ($request->isedit == 'true') {
                 $tarif = Tarif::where('kode_item', $request->kode_item)->update($data);
@@ -584,6 +586,28 @@ class LaboratoriumController extends Controller
                 'transaksi_fee' => $transaksiFee,
             ];
             return ResponseHelper::data('Informasi Transaksi Tindakan', $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function tindakan_kesimpulan_pilihan(Request $req){
+        try {
+            $validator = Validator::make($req->all(), [
+                'kondisi' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            if($req->kondisi == 'pemeriksaan_kesimpulan_tindakan'){
+                $kesimpulan = Kesimpulan::all();
+            }else{
+                $kesimpulan = KesimpulanTindakan::where('jenis_kesimpulan', $req->kondisi)->get();
+            }
+            $dynamicAttributes = [
+                'data' => $kesimpulan,
+            ];
+            return ResponseHelper::data('Informasi kesimpulan tindakan', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

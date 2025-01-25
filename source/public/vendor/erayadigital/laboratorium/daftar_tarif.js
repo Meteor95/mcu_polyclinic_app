@@ -24,11 +24,15 @@ const selectElementKategori = document.getElementById('kategori');
 const selectElementSatuan = document.getElementById('satuan');
 const selectElementRentangKenormalanKualitatif = document.getElementById('rentang_kenormalan_kualitatif');
 const selectElementRentangKenormalanKuantitatif = document.getElementById('rentang_kenormalan_kuantitatif');
-let choiceGrupItem, choiceKategori, choiceSatuan, choiceRentangKenormalanKualitatif, choiceRentangKenormalanKuantitatif;
+let choiceGrupItem, choiceKategori, choiceSatuan, choiceRentangKenormalanKualitatif, choiceRentangKenormalanKuantitatif, choiceVisibleItem;
 $(document).ready(function(){
     choiceGrupItem = new Choices('#grup_item',{
         placeholder: true,
         placeholderValue: 'Pilih Grup Item',
+    });
+    choiceVisibleItem = new Choices('#visible_item',{
+        placeholder: true,
+        placeholderValue: 'Tentukan Status Penampilkan Item',
     });
     choiceRentangKenormalanKualitatif = new Choices(selectElementRentangKenormalanKualitatif, {
         searchEnabled: true,
@@ -519,11 +523,14 @@ $(document).on("change keyup input", "input[name='tarif_laboratorium[]']", funct
 });
 $("#btn_simpan_tarif_laboratorium").click(function(e){
     e.preventDefault();
-    if ($("#kode_item").val() == '' || $("#nama_tarif_laboratorium").val() == '') {
+    if ($("#kode_item").val() == '' || $("#nama_item").val() == '') {
         return createToast('Kesalahan Formulir', 'top-right', "Informasi KODE ITEM dan NAMA ITEM tidak boleh kosong, Silahkan isi terlebih dahulu karena dibutuhkan untuk proses simpan data", 'error', 3000);
     }
     if ($("#grup_item").val() == '' || $("#kategori").val() == '' || $("#satuan").val() == '') {
         return createToast('Kesalahan Formulir', 'top-right', "Informasi GRUP ITEM, KATEGORI dan SATUAN tidak boleh kosong, Silahkan isi terlebih dahulu karena dibutuhkan untuk proses simpan data", 'error', 3000);
+    }
+    if ($("#harga_dasar_tarif_laboratorium").val() == '' || $("#harga_jual_tarif_laboratorium").val() == '') {
+        return createToast('Kesalahan Formulir', 'top-right', "Informasi HARGA DASAR dan HARGA JUAL tidak boleh kosong. Jika ingin memberikan GRATIS untuk tindakan "+$("#nama_item").val()+" dengan kode item : "+$("#kode_item").val()+" , Silahkan isi dengan angka 0 (nol)", 'error', 3000);
     }
     if (((table_rentang_nilai_kenormalan_kualitatif.data().length == 0 && table_rentang_nilai_kenormalan_kuantitatif.data().length == 0) && $("#grup_item").val() === 'laboratorium') || ((table_rentang_nilai_kenormalan_kualitatif.data().length > 0 && table_rentang_nilai_kenormalan_kuantitatif.data().length > 0) && $("#grup_item").val() === 'laboratorium')) {
         return createToast('Kesalahan Formulir', 'top-right', "Informasi TABEL KONORMALAN KUALITATIF dan TABEL KONORMALAN KUANTITATIF tidak boleh kosong dan harus diisi salah satunya, Silahkan isi terlebih dahulu karena dibutuhkan untuk proses simpan data", 'error', 3000);
@@ -557,6 +564,7 @@ $("#btn_simpan_tarif_laboratorium").click(function(e){
                         harga_dasar:harga_dasar_tarif_laboratorium.get(),
                         meta_data_jasa:getTableDataAsJson('jasa'),
                         harga_jual:harga_jual_tarif_laboratorium.get(),
+                        visible_item:$("#visible_item").val(),
                     },
                     success: function(response) {
                         if (response.success == false){

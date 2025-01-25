@@ -191,7 +191,7 @@
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
               <i class="fa fa-bars" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
-              <span>Paramter</span>
+              <span>Parameter</span>
             </a>
             <ul class="sidebar-submenu">
               @foreach([
@@ -221,6 +221,13 @@
               <h6>LAPORAN</h6>
             </div>
           </li>
+          <li class="sidebar-list">
+            <i class="fa fa-thumb-tack"></i>
+            <a class="sidebar-link sidebar-title" href="{{ route('admin.laporan.validasi_rekap_kesimpulan') }}">
+              <i class="fa fa-book" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+              <span>Hasil Kesimpulan</span>
+            </a>
+          </li>
           @if ($hasAccessValidasiMcu)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
@@ -228,6 +235,26 @@
               <i class="fa fa-file-pdf-o" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
               <span>Validasi MCU</span>
             </a>
+          </li>
+          @endif
+          @if ($hasAccessArciveMCU || $hasAccessArciveLaboratorium || $hasAccessArciveNota)
+          <li class="sidebar-list">
+            <i class="fa fa-thumb-tack"></i>
+            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+              <i class="fa-solid fa-folder-tree" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+              <span>Berkas Tindakan</span>
+            </a>
+            <ul class="sidebar-submenu">
+              @foreach([
+                ['condition' => $hasAccessArciveMCU, 'url' => 'berkas_tindakan/archive_mcu', 'label' => 'MCU'],
+                ['condition' => $hasAccessArciveLaboratorium, 'url' => 'berkas_tindakan/archive_laboratorium', 'label' => 'Non MCU'],
+                ['condition' => $hasAccessArciveNota, 'url' => 'berkas_tindakan/archive_nota', 'label' => 'Kwitansi']
+              ] as $menuItem)
+                @if ($menuItem['condition'])
+                  <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
+                @endif
+              @endforeach
+            </ul>
           </li>
           @endif
           <!-- Pengaturan Section -->

@@ -188,7 +188,10 @@
                     <option value="dibatalkan">Status Dibatalkan</option>
                     <option value="selesai">Status Selesai dan Valid</option>
                   </select>
-                  <button class="btn btn-amc-orange" id="btn_lab_mcu_verifikasi"><i class="fa fa-check"></i> Validasi Akhir</button>
+                  <div class="input-group-append">
+                    <button class="btn btn-amc-orange" id="btn_lab_mcu_verifikasi"><i class="fa fa-check"></i> Validasi Akhir</button>
+                    <button class="btn btn-primary" id="btn_lab_mcu_batal"><i class="fa fa-question"></i> Kesimpulan</button>
+                  </div>
                 </div>
               </div>
               <div class="card-body">
@@ -386,10 +389,180 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="modal_validasi_rekap_kesimpulan" tabindex="-1" role="dialog" aria-labelledby="modal_validasi_rekap_kesimpulanLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal_validasi_rekap_kesimpulan_text">Validasi Kesimpulan Pada Setiap Tindakan</h5>
+              <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="alert alert-dark d-flex align-items-center" role="alert">
+                    <div class="mr-2">
+                        <i class="fa fa-info-circle fa-2x" style="color: white;"></i>
+                    </div>
+                    <span class="txt-light">Silahkan ubah jikalau terdapat kesalahan pada kesimpulan tindakan pasien ini. Silahkan masukan nomor MCU pada menu <a href="{{url('laporan/validasi_rekap_kesimpulan')}}" target="_blank" style="color: yellow;">Hasil Kesimpulan</a></span>
+                </div>
+                <table id="table_validasi_rekap_kesimpulan" class="table table-bordered table-striped table-padding-sm">
+                    <tr>
+                        <th>Pemeriksaan Fisik</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_fisik_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Laboratorium</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12 mb-1">
+                                    <select class="form-control" id="pemeriksaan_laboratorium_kondisi_select">
+                                        <option value="normal">Normal</option>
+                                        <option value="abnormal">Abnormal</option>
+                                        <option value="dalam_batas_normal">Dalam Batas Normal</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_laboratorium_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_threadmill" style="display: none;">
+                        <th>ThreadMill</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_threadmill_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_ronsen" style="display: none;">
+                        <th>Ronsen</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_ronsen_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_ekg" style="display: none;">
+                        <th>EKG</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_ekg_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_audiometri" style="display: none;">
+                        <th colspan="2" style="text-align: center;"><h3>Audiometri</h3></th>
+                    </tr>
+                    <tr class="pemeriksaan_audiometri" style="display: none;">
+                        <th>Kiri</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_audiometri_kiri_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_audiometri" style="display: none;">
+                        <th>Kanan</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_audiometri_kanan_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_spirometri" style="display: none;">
+                        <th colspan="2" style="text-align: center;"><h3>Spirometri</h3></th>
+                    </tr>
+                    <tr class="pemeriksaan_spirometri" style="display: none;"   >
+                        <th>Restriksi</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_spirometri_restriksi_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_spirometri" style="display: none;">
+                        <th>Obstruksi</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_spirometri_obstruksi_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Kesimpulan</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_kesimpulan_tindakan_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Saran</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_tindakan_saran_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
 @include('komponen.information_validasi_mcu_modal')
 @endsection
 @section('css_load')
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 <style>
 .tooltip-inner {
   background-color: #ff5722 !important; 
@@ -404,9 +577,10 @@
 </style>
 @endsection
 @section('js_load')
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script>
     let no_mcu_js = '{{ $data['no_nota'] }}';
 </script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <script src="{{ asset('vendor/erayadigital/laporan/validasi_mcu_nota.js') }}"></script>
 @endsection
