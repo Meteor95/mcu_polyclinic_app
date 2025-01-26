@@ -49,6 +49,9 @@ sudo chmod -R 775 /var/www/html/storage/logs
 ######################################
 eval $(ssh-agent)
 ssh-add /home/veldora/.ssh/github_id_rsa_meteor95
+# Membatalkan semua perubahan lokal dan mengembalikan ke commit terakhir dari remote
+sudo git reset --hard
+# Lakukan git pull untuk menarik perubahan dari remote repository
 git pull
 
 ######################################
