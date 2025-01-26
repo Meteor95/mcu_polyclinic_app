@@ -175,7 +175,10 @@
                 ['condition' => $hasAccessAudiometri, 'url' => 'poli/audiometri', 'label' => 'Audiometri'],
                 ['condition' => $hasAccessEkg, 'url' => 'poli/ekg', 'label' => 'EKG'],
                 ['condition' => $hasAccessThreadmill, 'url' => 'poli/threadmill', 'label' => 'Threadmill'],
-                ['condition' => $hasAccessRonsen, 'url' => 'poli/ronsen', 'label' => 'Ronsen']
+                ['condition' => $hasAccessRontgenThorax, 'url' => 'poli/rontgen_thorax', 'label' => 'Rontgen Thorax'],
+                ['condition' => $hasAccessRontgenLumbosacral, 'url' => 'poli/rontgen_lumbosacral', 'label' => 'Rontgen Lumbosacral'],
+                ['condition' => $hasAccessUSGUbdomain, 'url' => 'poli/usg_ubdomain', 'label' => 'USG Ubdomain'],
+                ['condition' => $hasAccessFarminghamScore, 'url' => 'poli/farmingham_score', 'label' => 'Farmingham Score']
               ] as $menuItem)
                 <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
               @endforeach
@@ -246,9 +249,9 @@
             </a>
             <ul class="sidebar-submenu">
               @foreach([
-                ['condition' => $hasAccessArciveMCU, 'url' => 'berkas_tindakan/archive_mcu', 'label' => 'MCU'],
-                ['condition' => $hasAccessArciveLaboratorium, 'url' => 'berkas_tindakan/archive_laboratorium', 'label' => 'Non MCU'],
-                ['condition' => $hasAccessArciveNota, 'url' => 'berkas_tindakan/archive_nota', 'label' => 'Kwitansi']
+                ['condition' => $hasAccessArciveMCU, 'url' => 'laporan/berkas/mcu', 'label' => 'MCU'],
+                ['condition' => $hasAccessArciveLaboratorium, 'url' => 'laporan/berkas/non_mcu', 'label' => 'Non MCU'],
+                ['condition' => $hasAccessArciveNota, 'url' => 'laporan/berkas/kwitansi', 'label' => 'Kwitansi']
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>

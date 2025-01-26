@@ -1,8 +1,12 @@
 const pemeriksaanConfig = [
+    { id: 'riwayat_medis', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Riwayat Medis peserta ini' },
     { id: 'pemeriksaan_fisik', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Fisik peserta ini' },
     { id: 'pemeriksaan_laboratorium', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Laboratorium peserta ini' },
     { id: 'pemeriksaan_threadmill', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Threadmill peserta ini' },
-    { id: 'pemeriksaan_ronsen', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Ronsen peserta ini' },
+    { id: 'pemeriksaan_rontgen_thorax', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Rontgen Thorax peserta ini' },
+    { id: 'pemeriksaan_rontgen_lumbosacral', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Rontgen Lumbosacral peserta ini' },
+    { id: 'pemeriksaan_usg_ubdomain', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan USG Ubdomain peserta ini' },
+    { id: 'pemeriksaan_farmingham_score', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Farmingham Score peserta ini' },
     { id: 'pemeriksaan_ekg', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan EKG peserta ini' },
     { id: 'pemeriksaan_audiometri_kiri', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Audiometri Kiri peserta ini' },
     { id: 'pemeriksaan_audiometri_kanan', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Audiometri Kanan peserta ini' },
@@ -93,7 +97,10 @@ function load_data_document() {
                 updateProgress('.progress_sp', response.jumlah_data_spirometri > 0, 'SP');
                 updateProgress('.progress_ekg', response.jumlah_data_ekg > 0, 'EKG');
                 updateProgress('.progress_tm', response.jumlah_data_threadmill > 0, 'TM');
-                updateProgress('.progress_rsn', response.jumlah_data_ronsen > 0, 'RSN');
+                updateProgress('.progress_rsn_thorax', response.jumlah_data_rontgen_thorax > 0, 'THX');
+                updateProgress('.progress_rsn_lumbosacral', response.jumlah_data_rontgen_lumbosacral > 0, 'LBS');
+                updateProgress('.progress_usg_ubdomain', response.jumlah_data_usg_ubdomain > 0, 'USG');
+                updateProgress('.progress_farmingham_score', response.jumlah_data_farmingham_score > 0, 'FS');
                 updateProgress('.progress_au', response.jumlah_data_audiometri > 0, 'AU');
                 /* Lab */
                 updateProgress('.progress_lab', response.jumlah_data_lab > 0, 'LAB', response);
@@ -143,7 +150,6 @@ function validasi_rekap_kesimpulan_nota(no_mcu_js) {
                 nomor_mcu_let: atob(no_mcu_js),
             },
             success: function(response) {
-                console.log(response);
                 if (response.data_poliklinik.count_poliklinik_spirometri > 0) {
                     $(".pemeriksaan_spirometri").show();
                 }
@@ -153,18 +159,31 @@ function validasi_rekap_kesimpulan_nota(no_mcu_js) {
                 if (response.data_poliklinik.count_poliklinik_threadmill > 0) {
                     $(".pemeriksaan_threadmill").show();
                 }
-                if (response.data_poliklinik.count_poliklinik_ronsen > 0) {
-                    $(".pemeriksaan_ronsen").show();
+                if (response.data_poliklinik.count_poliklinik_rontgen_thorax > 0) {
+                    $(".pemeriksaan_rontgen_thorax").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_rontgen_lumbosacral > 0) {
+                    $(".pemeriksaan_rontgen_lumbosacral").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_usg_ubdomain > 0) {
+                    $(".pemeriksaan_usg_ubdomain").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_farmingham_score > 0) {
+                    $(".pemeriksaan_farmingham_score").show();
                 }
                 if (response.data_poliklinik.count_poliklinik_audiometri > 0) {
                     $(".pemeriksaan_audiometri").show();
                 }
                 if (response.data && Object.keys(response.data).length > 0) {
+                    quillInstances['riwayat_medis'].setContents(JSON.parse(response.data.kesimpulan_riwayat_medis));
                     quillInstances['pemeriksaan_fisik'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_fisik));
                     choice_pemeriksaan_laboratorium_kondisi_select.setChoiceByValue(response.data.status_pemeriksaan_laboratorium);
                     quillInstances['pemeriksaan_laboratorium'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_laboratorum));
                     quillInstances['pemeriksaan_threadmill'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_threadmill));
-                    quillInstances['pemeriksaan_ronsen'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_ronsen));
+                    quillInstances['pemeriksaan_rontgen_thorax'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_rontgen_thorax));
+                    quillInstances['pemeriksaan_rontgen_lumbosacral'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_rontgen_lumbosacral));
+                    quillInstances['pemeriksaan_usg_ubdomain'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_usg_ubdomain));
+                    quillInstances['pemeriksaan_farmingham_score'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_farmingham_score));
                     quillInstances['pemeriksaan_ekg'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_ekg));
                     quillInstances['pemeriksaan_audiometri_kiri'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_audio_kiri));
                     quillInstances['pemeriksaan_audiometri_kanan'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_audio_kanan));

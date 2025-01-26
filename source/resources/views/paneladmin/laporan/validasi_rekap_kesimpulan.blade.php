@@ -34,6 +34,18 @@
                 </div>
                 <table id="table_validasi_rekap_kesimpulan" class="table table-bordered table-striped table-padding-sm">
                     <tr>
+                        <th>Riwayat Medis</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="riwayat_medis_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
                         <th>Pemeriksaan Fisik</th>
                         <th>
                             <div class="row">
@@ -103,22 +115,85 @@
                             </div>
                         </th>
                     </tr>
-                    <tr class="pemeriksaan_ronsen" style="display: none;">
-                        <th>Ronsen</th>
+                    <tr class="pemeriksaan_rontgen_thorax" style="display: none;">
+                        <th>Rontgen Thorax</th>
                         <th>
                             <div class="row">
                                 <div class="col-md-9 mb-1">
-                                    <select class="form-control" id="pemeriksaan_ronsen_select"></select>
+                                    <select class="form-control" id="pemeriksaan_rontgen_thorax_select"></select>
                                 </div>
                                 <div class="col-md-3 mb-1">
                                     <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_ronsen', $('#pemeriksaan_ronsen_select option:selected').text(), 'gantikan')" class="btn btn-primary w-100" style="height: 45px;">Gantikan</button>
-                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_ronsen', $('#pemeriksaan_ronsen_select option:selected').text(), 'tambah')" class="btn btn-primary w-100" style="height: 45px;">Tambah</button>
+                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_rontgen_thorax', $('#pemeriksaan_rontgen_thorax_select option:selected').text(), 'gantikan')" class="btn btn-primary w-100" style="height: 45px;">Gantikan</button>
+                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_rontgen_thorax', $('#pemeriksaan_rontgen_thorax_select option:selected').text(), 'tambah')" class="btn btn-primary w-100" style="height: 45px;">Tambah</button>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div id="editor_container">
-                                        <div id="pemeriksaan_ronsen_quill"></div>
+                                        <div id="pemeriksaan_rontgen_thorax_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_rontgen_lumbosacral" style="display: none;">
+                        <th>Rontgen Lumbosacral</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-9 mb-1">
+                                    <select class="form-control" id="pemeriksaan_rontgen_lumbosacral_select"></select>
+                                </div>
+                                <div class="col-md-3 mb-1">
+                                    <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
+                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_rontgen_lumbosacral', $('#pemeriksaan_rontgen_lumbosacral_select option:selected').text(), 'gantikan')" class="btn btn-primary w-100" style="height: 45px;">Gantikan</button>
+                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_rontgen_lumbosacral', $('#pemeriksaan_rontgen_lumbosacral_select option:selected').text(), 'tambah')" class="btn btn-primary w-100" style="height: 45px;">Tambah</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_rontgen_lumbosacral_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_usg_ubdomain" style="display: none;">
+                        <th>USG Ubdomain</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-9 mb-1">
+                                    <select class="form-control" id="pemeriksaan_usg_ubdomain_select"></select>
+                                </div>
+                                <div class="col-md-3 mb-1">
+                                    <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
+                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_usg_ubdomain', $('#pemeriksaan_usg_ubdomain_select option:selected').text(), 'gantikan')" class="btn btn-primary w-100" style="height: 45px;">Gantikan</button>
+                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_usg_ubdomain', $('#pemeriksaan_usg_ubdomain_select option:selected').text(), 'tambah')" class="btn btn-primary w-100" style="height: 45px;">Tambah</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_usg_ubdomain_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_farmingham_score" style="display: none;">
+                        <th>Farmingham Score</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-9 mb-1">
+                                    <select class="form-control" id="pemeriksaan_farmingham_score_select"></select>
+                                </div>
+                                <div class="col-md-3 mb-1">
+                                    <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
+                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_farmingham_score', $('#pemeriksaan_farmingham_score_select option:selected').text(), 'gantikan')" class="btn btn-primary w-100" style="height: 45px;">Gantikan</button>
+                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_farmingham_score', $('#pemeriksaan_farmingham_score_select option:selected').text(), 'tambah')" class="btn btn-primary w-100" style="height: 45px;">Tambah</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_farmingham_score_quill"></div>
                                     </div>
                                 </div>
                             </div>
@@ -235,6 +310,7 @@
                             </div>
                         </th>
                     </tr>
+
                     <tr>
                         <th>Kesimpulan</th>
                         <th>

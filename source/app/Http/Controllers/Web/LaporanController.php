@@ -36,4 +36,12 @@ class LaporanController extends Controller
         ]);
         return view('paneladmin.laporan.validasi_rekap_kesimpulan', ['data' => $data]);
     }
+    public function berkas_mcu(Request $req){
+        $data = $this->getData($req, 'Berkas Tindakan MCU', [
+            'Beranda' => route('admin.beranda'),
+            'Berkas' => route('admin.laporan.berkas_mcu'),
+        ]);
+        return view('paneladmin.laporan.berkas.berkas_mcu', ['data' => $data]);
+    }
 }
+

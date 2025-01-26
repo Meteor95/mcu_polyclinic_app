@@ -58,7 +58,10 @@ class CheckPermission
             'hasAccessAudiometri' => 'akses_audiometri',
             'hasAccessEkg' => 'akses_ekg',
             'hasAccessThreadmill' => 'akses_threadmill',
-            'hasAccessRonsen' => 'akses_ronsen',
+            'hasAccessRontgenThorax' => 'akses_rontgen_thorax',
+            'hasAccessRontgenLumbosacral' => 'akses_rontgen_lumbosacral',
+            'hasAccessUSGUbdomain' => 'akses_usg_ubdomain',
+            'hasAccessFarminghamScore' => 'akses_farmingham_score',
             /* Laboratorium */
             'hasAccessTarifLaboratorium' => 'akses_tarif_laboratorium',
             'hasAccessKategoriLaboratorium' => 'akses_kategori_laboratorium',
@@ -73,6 +76,7 @@ class CheckPermission
             'hasAccessArciveMCU' => 'akses_berkas_tindakan_mcu',
             'hasAccessArciveLaboratorium' => 'akses_berkas_tindakan_laboratorium',
             'hasAccessArciveNota' => 'akses_berkas_tindakan_kwitansi',
+            'hasAccessBerkasMCU' => 'akses_berkas_tindakan_mcu',
             /* Master Data */
             'hasAccessMasterData' => 'akses_master_data',
             'hasAccessMasterPerusahaan' => 'akses_master_perusahaan',

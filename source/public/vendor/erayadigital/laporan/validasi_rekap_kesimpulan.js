@@ -1,8 +1,12 @@
 const pemeriksaanConfig = [
+    { id: 'riwayat_medis', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Riwayat Medis peserta ini' },
     { id: 'pemeriksaan_fisik', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Fisik peserta ini' },
     { id: 'pemeriksaan_laboratorium', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Laboratorium peserta ini' },
     { id: 'pemeriksaan_threadmill', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Threadmill peserta ini' },
-    { id: 'pemeriksaan_ronsen', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Ronsen peserta ini' },
+    { id: 'pemeriksaan_rontgen_thorax', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Rontgen Thorax peserta ini' },
+    { id: 'pemeriksaan_rontgen_lumbosacral', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Rontgen Lumbosacral peserta ini' },
+    { id: 'pemeriksaan_usg_ubdomain', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan USG Ubdomain peserta ini' },
+    { id: 'pemeriksaan_farmingham_score', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Farmingham Score peserta ini' },
     { id: 'pemeriksaan_ekg', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan EKG peserta ini' },
     { id: 'pemeriksaan_audiometri_kiri', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Audiometri Kiri peserta ini' },
     { id: 'pemeriksaan_audiometri_kanan', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Audiometri Kanan peserta ini' },
@@ -15,7 +19,10 @@ const choicesConfig = [
     { id_quill: 'pemeriksaan_fisik', kondisi: 'pemeriksaan_fisik', id: 'pemeriksaan_fisik_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Fisik' },
     { id_quill: 'pemeriksaan_laboratorium', kondisi: 'pemeriksaan_laboratorium', id: 'pemeriksaan_laboratorium_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Laboratorium' },
     { id_quill: 'pemeriksaan_threadmill', kondisi: 'pemeriksaan_threadmill', id: 'pemeriksaan_threadmill_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Threadmill' },
-    { id_quill: 'pemeriksaan_ronsen', kondisi: 'pemeriksaan_ronsen', id: 'pemeriksaan_ronsen_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Ronsen' },
+    { id_quill: 'pemeriksaan_rontgen_thorax', kondisi: 'pemeriksaan_rontgen_thorax', id: 'pemeriksaan_rontgen_thorax_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Rontgen Thorax' },
+    { id_quill: 'pemeriksaan_rontgen_lumbosacral', kondisi: 'pemeriksaan_rontgen_lumbosacral', id: 'pemeriksaan_rontgen_lumbosacral_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Rontgen Lumbosacral' },
+    { id_quill: 'pemeriksaan_usg_ubdomain', kondisi: 'pemeriksaan_usg_ubdomain', id: 'pemeriksaan_usg_ubdomain_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan USG Ubdomain' },
+    { id_quill: 'pemeriksaan_farmingham_score', kondisi: 'pemeriksaan_farmingham_score', id: 'pemeriksaan_farmingham_score_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Farmingham Score' },
     { id_quill: 'pemeriksaan_ekg', kondisi: 'pemeriksaan_ekg', id: 'pemeriksaan_ekg_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan EKG' },
     { id_quill: 'pemeriksaan_audiometri_kiri', kondisi: 'pemeriksaan_audiometri', id: 'pemeriksaan_audiometri_kiri_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Audiometri Kiri' },
     { id_quill: 'pemeriksaan_audiometri_kanan', kondisi: 'pemeriksaan_audiometri', id: 'pemeriksaan_audiometri_kanan_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Audiometri Kanan' },
@@ -36,6 +43,7 @@ let choice_pemeriksaan_laboratorium_kondisi_select = new Choices(pemeriksaan_lab
 let quillInstances = {};
 $(document).ready(function() {
     pemeriksaanConfig.forEach(item => {
+        console.log(item.id);
         quillInstances[item.id] = new Quill(`#${item.id}_quill`, {
             placeholder: item.placeholder,
             theme: 'snow'
@@ -234,10 +242,14 @@ function clear_pemeriksaan_kesimpulan() {
     $(".pemeriksaan_threadmill").hide();
     $(".pemeriksaan_ronsen").hide();
     $(".pemeriksaan_audiometri").hide();
+    quillInstances['riwayat_medis'].setText('');
     quillInstances['pemeriksaan_fisik'].setText('');
     quillInstances['pemeriksaan_laboratorium'].setText('');
     quillInstances['pemeriksaan_threadmill'].setText('');
-    quillInstances['pemeriksaan_ronsen'].setText('');
+    quillInstances['pemeriksaan_rontgen_thorax'].setText('');
+    quillInstances['pemeriksaan_rontgen_lumbosacral'].setText('');
+    quillInstances['pemeriksaan_usg_ubdomain'].setText('');
+    quillInstances['pemeriksaan_farmingham_score'].setText('');
     quillInstances['pemeriksaan_ekg'].setText('');
     quillInstances['pemeriksaan_audiometri_kiri'].setText('');
     quillInstances['pemeriksaan_audiometri_kanan'].setText('');
@@ -271,18 +283,31 @@ function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
                 if (response.data_poliklinik.count_poliklinik_threadmill > 0) {
                     $(".pemeriksaan_threadmill").show();
                 }
-                if (response.data_poliklinik.count_poliklinik_ronsen > 0) {
-                    $(".pemeriksaan_ronsen").show();
+                if (response.data_poliklinik.count_poliklinik_rontgen_thorax > 0) {
+                    $(".pemeriksaan_rontgen_thorax").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_rontgen_lumbosacral > 0) {
+                    $(".pemeriksaan_rontgen_lumbosacral").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_usg_ubdomain > 0) {
+                    $(".pemeriksaan_usg_ubdomain").show();
+                }
+                if (response.data_poliklinik.count_poliklinik_farmingham_score > 0) {
+                    $(".pemeriksaan_farmingham_score").show();
                 }
                 if (response.data_poliklinik.count_poliklinik_audiometri > 0) {
                     $(".pemeriksaan_audiometri").show();
                 }
                 if (response.data && Object.keys(response.data).length > 0) {
+                    quillInstances['riwayat_medis'].setContents(JSON.parse(response.data.kesimpulan_riwayat_medis));
                     quillInstances['pemeriksaan_fisik'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_fisik));
                     choice_pemeriksaan_laboratorium_kondisi_select.setChoiceByValue(response.data.status_pemeriksaan_laboratorium);
                     quillInstances['pemeriksaan_laboratorium'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_laboratorum));
                     quillInstances['pemeriksaan_threadmill'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_threadmill));
-                    quillInstances['pemeriksaan_ronsen'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_ronsen));
+                    quillInstances['pemeriksaan_rontgen_thorax'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_rontgen_thorax));
+                    quillInstances['pemeriksaan_rontgen_lumbosacral'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_rontgen_lumbosacral));
+                    quillInstances['pemeriksaan_usg_ubdomain'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_usg_ubdomain));
+                    quillInstances['pemeriksaan_farmingham_score'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_farmingham_score));
                     quillInstances['pemeriksaan_ekg'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_ekg));
                     quillInstances['pemeriksaan_audiometri_kiri'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_audio_kiri));
                     quillInstances['pemeriksaan_audiometri_kanan'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_audio_kanan));
@@ -323,11 +348,15 @@ $("#konfirmasi_validasi_rekap_kesimpulan").on('click', function() {
                         _token: response.csrf_token,
                         id_mcu_let: id_mcu_let,
                         nomor_mcu_let: nomor_mcu_let,
+                        hasil_kesimpulan_riwayat_medis: JSON.stringify(quillInstances['riwayat_medis'].getContents().ops),
                         hasil_kesimpulan_pemeriksaan_fisik: JSON.stringify(quillInstances['pemeriksaan_fisik'].getContents().ops),
                         status_pemeriksaan_laboratorium: $("#pemeriksaan_laboratorium_kondisi_select").val(),
                         hasil_kesimpulan_pemeriksaan_laboratorium: JSON.stringify(quillInstances['pemeriksaan_laboratorium'].getContents().ops),
                         hasil_kesimpulan_pemeriksaan_threadmill: JSON.stringify(quillInstances['pemeriksaan_threadmill'].getContents().ops),
-                        hasil_kesimpulan_pemeriksaan_ronsen: JSON.stringify(quillInstances['pemeriksaan_ronsen'].getContents().ops),
+                        hasil_kesimpulan_pemeriksaan_rontgen_thorax: JSON.stringify(quillInstances['pemeriksaan_rontgen_thorax'].getContents().ops),
+                        hasil_kesimpulan_pemeriksaan_rontgen_lumbosacral: JSON.stringify(quillInstances['pemeriksaan_rontgen_lumbosacral'].getContents().ops),
+                        hasil_kesimpulan_pemeriksaan_usg_ubdomain: JSON.stringify(quillInstances['pemeriksaan_usg_ubdomain'].getContents().ops),
+                        hasil_kesimpulan_pemeriksaan_farmingham_score: JSON.stringify(quillInstances['pemeriksaan_farmingham_score'].getContents().ops),
                         hasil_kesimpulan_pemeriksaan_ekg: JSON.stringify(quillInstances['pemeriksaan_ekg'].getContents().ops),
                         hasil_kesimpulan_pemeriksaan_audio_kiri: JSON.stringify(quillInstances['pemeriksaan_audiometri_kiri'].getContents().ops),
                         hasil_kesimpulan_pemeriksaan_audio_kanan: JSON.stringify(quillInstances['pemeriksaan_audiometri_kanan'].getContents().ops),

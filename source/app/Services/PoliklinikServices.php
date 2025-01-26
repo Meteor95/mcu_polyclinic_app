@@ -29,12 +29,21 @@ class PoliklinikServices
             }elseif($jenis_poli == 'threadmill'){
                 $model->setTableName('mcu_poli_threadmill');
                 $namafolder = 'threadmill';
-            }elseif($jenis_poli == 'ronsen'){
-                $model->setTableName('mcu_poli_ronsen');
-                $namafolder = 'ronsen';
+            }elseif($jenis_poli == 'rontgen_thorax'){
+                $model->setTableName('mcu_poli_rontgen_thorax');
+                $namafolder = 'rontgen_thorax';
+            }elseif($jenis_poli == 'rontgen_lumbosacral'){
+                $model->setTableName('mcu_poli_rontgen_lumbosacral');
+                $namafolder = 'rontgen_lumbosacral';
+            }elseif($jenis_poli == 'farmingham_score'){
+                $model->setTableName('mcu_poli_farmingham_score');
+                $namafolder = 'farmingham_score';
             }elseif($jenis_poli == 'audiometri'){
                 $model->setTableName('mcu_poli_audiometri');
                 $namafolder = 'audiometri';
+            }elseif($jenis_poli == 'usg_ubdomain'){
+                $model->setTableName('mcu_poli_usg_ubdomain');
+                $namafolder = 'usg_ubdomain';
             }
             $isedit = filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN);
             $data = [
@@ -118,12 +127,21 @@ class PoliklinikServices
             }elseif($data['jenis_poli'] == 'threadmill'){
                 $model->setTableName('mcu_poli_threadmill');
                 $namafolder = 'threadmill';
-            }elseif($data['jenis_poli'] == 'ronsen'){
-                $model->setTableName('mcu_poli_ronsen');
-                $namafolder = 'ronsen';
+            }elseif($data['jenis_poli'] == 'rontgen_thorax'){
+                $model->setTableName('mcu_poli_rontgen_thorax');
+                $namafolder = 'rontgen_thorax';
+            }elseif($data['jenis_poli'] == 'rontgen_lumbosacral'){
+                $model->setTableName('mcu_poli_rontgen_lumbosacral');
+                $namafolder = 'rontgen_lumbosacral';
+            }elseif($data['jenis_poli'] == 'farmingham_score'){
+                $model->setTableName('mcu_poli_farmingham_score');
+                $namafolder = 'farmingham_score';
             }elseif($data['jenis_poli'] == 'audiometri'){
                 $model->setTableName('mcu_poli_audiometri');
                 $namafolder = 'audiometri';
+            }elseif($data['jenis_poli'] == 'usg_ubdomain'){
+                $model->setTableName('mcu_poli_usg_ubdomain');
+                $namafolder = 'usg_ubdomain';
             }
             $model->where('id', $data['id_trx_poli'])->delete();
             $unggahan_citra = UnggahanCitra::where('id_trx_poli', $data['id_trx_poli'])->get();

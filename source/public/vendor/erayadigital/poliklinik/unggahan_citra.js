@@ -416,7 +416,8 @@ function lihatFotoDetail(id_trx_poli,nama_peserta){
             data: {
                 _token : response.csrf_token,
                 id_trx_poli : id_trx_poli,
-                jenis_modal: "lihat_foto_detail"
+                jenis_modal: "lihat_foto_detail",
+                jenis_poli: jenis_poli
             },
             success: function(response) {
                 // Reset carousel content

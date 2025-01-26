@@ -72,8 +72,12 @@ class PoliklinikController extends Controller
             'spirometri' => 'mcu_poli_spirometri',
             'ekg' => 'mcu_poli_ekg',
             'threadmill' => 'mcu_poli_threadmill',
-            'ronsen' => 'mcu_poli_ronsen',
+            'rontgen_thorax' => 'mcu_poli_rontgen_thorax',
+            'rontgen_lumbosacral' => 'mcu_poli_rontgen_lumbosacral',
             'audiometri' => 'mcu_poli_audiometri',
+            'usg_ubdomain' => 'mcu_poli_usg_ubdomain',
+            'farmingham_score' => 'mcu_poli_farmingham_score',
+
         ];
         return $tables[strtolower($jenis_poli)] ?? null;
     }
@@ -81,7 +85,8 @@ class PoliklinikController extends Controller
     {
         try {
             if ($req->jenis_modal === "lihat_foto_detail") {
-                $citra_unggahan_poliklinik = UnggahanCitra::where('id_trx_poli', $req->id_trx_poli)->get();
+                Log::info($req->all());
+                $citra_unggahan_poliklinik = UnggahanCitra::where('id_trx_poli', $req->id_trx_poli)->where('jenis_poli', 'poli_'.$req->jenis_poli)->get();
                 $dataWithFoto = collect($citra_unggahan_poliklinik)->map(function ($item) {
                     $item->data_foto = url(env('APP_VERSI_API')."/file/unduh_citra_poliklinik?jenis_poli=".$item->jenis_poli ."&file_name=" . $item->nama_file);
                     return $item;
@@ -110,6 +115,7 @@ class PoliklinikController extends Controller
                 $informasi_poliklik = $model->join('mcu_poli_citra', 'mcu_poli_citra.id_trx_poli', '=', $tableName.'.id')
                 ->select($tableName.'.*', 'mcu_poli_citra.*', 'mcu_poli_citra.id as id_each_citra')
                 ->where($tableName.'.id', $req->id_trx_poli)
+                ->where('mcu_poli_citra.jenis_poli', 'poli_'.$req->jenis_poli)
                 ->get();
                 $dataWithFoto = collect($informasi_poliklik)->map(function ($item) {
                     $item->data_foto = url(env('APP_VERSI_API')."/file/unduh_citra_poliklinik?jenis_poli=".$item->jenis_poli ."&file_name=" . $item->nama_file);
@@ -164,7 +170,7 @@ class PoliklinikController extends Controller
                 'data' => $hapus_foto,
             ];
             $hapus_foto->delete();
-            $hapus_foto = UnggahanCitra::where('id_trx_poli', $req->id_trx_poli)->first();
+            $hapus_foto = UnggahanCitra::where('id_trx_poli', $req->id_trx_poli)->where('jenis_poli', 'poli_'.$req->jenis_poli)->first();
             if (!$hapus_foto) {
                 $model = new Poliklinik();
                 $tableName = $this->determineTableName($req->jenis_poli);

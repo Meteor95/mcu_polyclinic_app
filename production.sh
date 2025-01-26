@@ -24,7 +24,10 @@ mkdir -p source/storage/app/public/file_surat_pengantar
 mkdir -p source/storage/app/public/mcu/foto_peserta
 mkdir -p source/storage/app/public/mcu/poliklinik/audiometri
 mkdir -p source/storage/app/public/mcu/poliklinik/ekg
-mkdir -p source/storage/app/public/mcu/poliklinik/ronsen
+mkdir -p source/storage/app/public/mcu/poliklinik/rontgen_thorax
+mkdir -p source/storage/app/public/mcu/poliklinik/rontgen_lumbosacral
+mkdir -p source/storage/app/public/mcu/poliklinik/usg_ubdomain
+mkdir -p source/storage/app/public/mcu/poliklinik/farmingham_score
 mkdir -p source/storage/app/public/mcu/poliklinik/spirometri
 mkdir -p source/storage/app/public/mcu/poliklinik/threadmill
 mkdir -p source/storage/app/public/user/ttd

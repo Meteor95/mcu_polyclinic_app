@@ -9,7 +9,7 @@
             <tr style="text-align: center;">
               <th colspan="7">Riwayat Informasi</th>
               <th colspan="15">Pemeriksaan Fisik</th>
-              <th colspan="5">Poliklinik</th>
+              <th colspan="8">Poliklinik</th>
               <th>Lab</th>
             </tr>
           </thead>
@@ -43,7 +43,10 @@
               <td><span class="progress_au" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Audiometri">AU</span></td>
               <td><span class="progress_ekg" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="EKG">EKG</span></td>
               <td><span class="progress_tm" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Threadmill">TM</span></td>
-              <td><span class="progress_rsn" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Ronsen">RSN</span></td>
+              <td><span class="progress_rsn_thorax" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Rontgen Thorax">RSN</span></td>
+              <td><span class="progress_rsn_lumbosacral" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Rontgen Lumbosacral">RSN</span></td>
+              <td><span class="progress_usg_ubdomain" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="USG Ubdomain">USG</span></td>
+              <td><span class="progress_farmingham_score" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Farmingham Score">FS</span></td>
               <td><span class="progress_lab" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Lab dan Pengobatan">LAB</span></td>
             </tr>
           </tbody>
@@ -343,7 +346,7 @@
                       </tr>
                       <tr>
                         <td>23</td>
-                        <td rowspan="5" style="background-color:rgb(1, 54, 171);color:white;">Poliklinik</td>
+                        <td rowspan="8" style="background-color:rgb(1, 54, 171);color:white;">Poliklinik</td>
                         <td>Spirometri</td>
                         <td><span class="progress_sp">SP</span></td>
                         <td><button onclick="process_ajax('sp','modalPoliklinik','Spirometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
@@ -362,18 +365,36 @@
                       </tr>
                       <tr>
                         <td>26</td>
-                        <td>Ronsen</td>
-                        <td><span class="progress_rsn">RSN</span></td>
-                        <td><button onclick="process_ajax('rsn','modalPoliklinik','Ronsen')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>Rontgen Thorax</td>
+                        <td><span class="progress_rsn_thorax">RSN</span></td>
+                        <td><button onclick="process_ajax('rsn_thorax','modalPoliklinik','Rontgen Thorax')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                       </tr>
                       <tr>
                         <td>27</td>
+                        <td>Rontgen Lumbosacral</td>
+                        <td><span class="progress_rsn_lumbosacral">LBS</span></td>
+                        <td><button onclick="process_ajax('rsn_lumbosacral','modalPoliklinik','Rontgen Lumbosacral')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                      </tr>
+                      <tr>
+                        <td>28</td>
+                        <td>USG Ubdomain</td>
+                        <td><span class="progress_usg_ubdomain">USG</span></td>
+                        <td><button onclick="process_ajax('usg_ubdomain','modalPoliklinik','USG Ubdomain')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                      </tr>
+                      <tr>
+                        <td>29</td>
+                        <td>Farmingham Score</td>
+                        <td><span class="progress_farmingham_score">FS</span></td>
+                        <td><button onclick="process_ajax('farmingham_score','modalPoliklinik','Farmingham Score')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                      </tr>
+                      <tr>
+                        <td>30</td>
                         <td>Audiometri</td>
                         <td><span class="progress_au">AU</span></td>
                         <td><button onclick="process_ajax('au','modalPoliklinik','Audiometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                       </tr>
                       <tr>
-                        <td>28</td>
+                        <td>31</td>
                         <td>Lab dan Tindakan</td>
                         <td colspan="2">Laboratorium dan Pengobatan</td>
                         <td><span class="progress_lab_bawah">LAB</span></td>
@@ -406,6 +427,18 @@
                     <span class="txt-light">Silahkan ubah jikalau terdapat kesalahan pada kesimpulan tindakan pasien ini. Silahkan masukan nomor MCU pada menu <a href="{{url('laporan/validasi_rekap_kesimpulan')}}" target="_blank" style="color: yellow;">Hasil Kesimpulan</a></span>
                 </div>
                 <table id="table_validasi_rekap_kesimpulan" class="table table-bordered table-striped table-padding-sm">
+                    <tr>
+                        <th>Riwayat Medis</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="riwayat_medis_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
                     <tr>
                         <th>Pemeriksaan Fisik</th>
                         <th>
@@ -449,13 +482,49 @@
                             </div>
                         </th>
                     </tr>
-                    <tr class="pemeriksaan_ronsen" style="display: none;">
-                        <th>Ronsen</th>
+                    <tr class="pemeriksaan_rontgen_thorax" style="display: none;">
+                        <th>Rontgen Thorax</th>
                         <th>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div id="editor_container">
-                                        <div id="pemeriksaan_ronsen_quill"></div>
+                                        <div id="pemeriksaan_rontgen_thorax_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_rontgen_lumbosacral" style="display: none;">
+                        <th>Rontgen Lumbosacral</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_rontgen_lumbosacral_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_usg_ubdomain" style="display: none;">
+                        <th>USG Ubdomain</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_usg_ubdomain_quill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr class="pemeriksaan_farmingham_score" style="display: none;">
+                        <th>Farmingham Score</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="editor_container">
+                                        <div id="pemeriksaan_farmingham_score_quill"></div>
                                     </div>
                                 </div>
                             </div>

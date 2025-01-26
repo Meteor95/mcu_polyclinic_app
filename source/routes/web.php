@@ -39,7 +39,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('penglihatan', [PemeriksaanFisikController::class,"penglihatan"])->middleware('permission_cache:akses_pemeriksaan_fisik_penglihatan')->name('admin.pemeriksaan_fisik.penglihatan');
         Route::get('kondisi_fisik/{lokasi_fisik}', [PemeriksaanFisikController::class,"kondisi_fisik"])->middleware('permission_cache:akses_pemeriksaan_fisik_kondisi_fisik')->name('admin.pemeriksaan_fisik.kondisi_fisik');
     });
-    Route::get('poli/{jenis_poli}', [PoliklinikController::class,"poliklinik"])->middleware('permission_cache:akses_poliklinik,akses_spirometri,akses_audiometri,akses_ekg,akses_threadmill,akses_ronsen')->name('admin.poliklinik');
+    Route::get('poli/{jenis_poli}', [PoliklinikController::class,"poliklinik"])->middleware('permission_cache:akses_poliklinik,akses_spirometri,akses_audiometri,akses_ekg,akses_threadmill,akses_rontgen_thorax,akses_rontgen_lumbosacral,akses_usg_ubdomain,akses_farmingham_score')->name('admin.poliklinik');
     Route::prefix('masterdata')->middleware('permission_cache:akses_master_data')->group(function () {
         Route::get('daftar_perusahaan', [MasterdataController::class,"daftar_perusahaan"])->middleware('permission_cache:akses_master_perusahaan')->name('admin.masterdata.daftar_perusahaan');
         Route::get('daftar_paket_mcu', [MasterdataController::class,"daftar_paket_mcu"])->middleware('permission_cache:akses_paket_harga')->name('admin.masterdata.daftar_paket_mcu');
@@ -65,6 +65,9 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('validasi_mcu', [LaporanController::class,"validasi_mcu"])->middleware('permission_cache:akses_validasi_mcu')->name('admin.laporan.validasi_mcu');
         Route::get('validasi_mcu/nota/{no_nota}', [LaporanController::class,"validasi_mcu_nota"])->middleware('permission_cache:akses_validasi_mcu')->name('admin.laporan.validasi_mcu_nota');
         Route::get('validasi_rekap_kesimpulan', [LaporanController::class,"validasi_rekap_kesimpulan"])->middleware('permission_cache:akses_validasi_mcu')->name('admin.laporan.validasi_rekap_kesimpulan');
+        Route::prefix('berkas')->group(function () {
+            Route::get('mcu',[LaporanController::class,"berkas_mcu"])->middleware('permission_cache:akses_berkas_tindakan_mcu')->name('admin.laporan.berkas_mcu');
+        });
     });
 });
 Route::prefix('landing')->group(function () {

@@ -39,7 +39,10 @@ class LaporanController extends Controller
             'spirometri' => 'mcu_poli_spirometri',
             'ekg' => 'mcu_poli_ekg',
             'threadmill' => 'mcu_poli_threadmill',
-            'ronsen' => 'mcu_poli_ronsen',
+            'rontgen_thorax' => 'mcu_poli_rontgen_thorax',
+            'rontgen_lumbosacral' => 'mcu_poli_rontgen_lumbosacral',
+            'usg_ubdomain' => 'mcu_poli_usg_ubdomain',
+            'farmingham_score' => 'mcu_poli_farmingham_score',
             'audiometri' => 'mcu_poli_audiometri',
         ];
         return $tables[strtolower($jenis_poli)] ?? null;
@@ -106,7 +109,10 @@ class LaporanController extends Controller
             $jumlah_data_audiometri = DB::table($this->determineTableNamePoliklinik('audiometri'))->where('transaksi_id', $transaksi_id->transaksi_id)->count();
             $jumlah_data_ekg = DB::table($this->determineTableNamePoliklinik('ekg'))->where('transaksi_id', $transaksi_id->transaksi_id)->count();
             $jumlah_data_threadmill = DB::table($this->determineTableNamePoliklinik('threadmill'))->where('transaksi_id', $transaksi_id->transaksi_id)->count();
-            $jumlah_data_ronsen = DB::table($this->determineTableNamePoliklinik('ronsen'))->where('transaksi_id', $transaksi_id->transaksi_id)->count();
+            $jumlah_data_rontgen_thorax = DB::table($this->determineTableNamePoliklinik('rontgen_thorax'))->where('transaksi_id', $transaksi_id->transaksi_id)->count();
+            $jumlah_data_rontgen_lumbosacral = DB::table($this->determineTableNamePoliklinik('rontgen_lumbosacral'))->where('transaksi_id', $transaksi_id->transaksi_id)->count();
+            $jumlah_data_usg_ubdomain = DB::table($this->determineTableNamePoliklinik('usg_ubdomain'))->where('transaksi_id', $transaksi_id->transaksi_id)->count();
+            $jumlah_data_farmingham_score = DB::table($this->determineTableNamePoliklinik('farmingham_score'))->where('transaksi_id', $transaksi_id->transaksi_id)->count();
             /* Lab */
             $jumlah_data_lab = DB::table('transaksi')->where('no_mcu', $transaksi_id->transaksi_id)->count();
             $dynamicAttributes = [
@@ -141,7 +147,10 @@ class LaporanController extends Controller
                 'jumlah_data_audiometri' => $jumlah_data_audiometri,
                 'jumlah_data_ekg' => $jumlah_data_ekg,
                 'jumlah_data_threadmill' => $jumlah_data_threadmill,
-                'jumlah_data_ronsen' => $jumlah_data_ronsen,
+                'jumlah_data_rontgen_thorax' => $jumlah_data_rontgen_thorax,
+                'jumlah_data_rontgen_lumbosacral' => $jumlah_data_rontgen_lumbosacral,
+                'jumlah_data_usg_ubdomain' => $jumlah_data_usg_ubdomain,
+                'jumlah_data_farmingham_score' => $jumlah_data_farmingham_score,
                 /* Lab */
                 'jumlah_data_lab' => $jumlah_data_lab,
             ];
@@ -238,7 +247,7 @@ class LaporanController extends Controller
                 }
                 $informasi_mcu = DB::table($table)->where('transaksi_id', $transaksi_id->transaksi_id)->get();
             }
-            if ($req->kondisi == 'sp' || $req->kondisi == 'ekg' || $req->kondisi == 'tm' || $req->kondisi == 'rsn' || $req->kondisi == 'au') {
+            if ($req->kondisi == 'sp' || $req->kondisi == 'ekg' || $req->kondisi == 'tm' || $req->kondisi == 'rsn_thorax' || $req->kondisi == 'rsn_lumbosacral' || $req->kondisi == 'usg_ubdomain' || $req->kondisi == 'farmingham_score' || $req->kondisi == 'au') {
                 if ($req->kondisi == 'sp') {
                     $table = $this->determineTableNamePoliklinik('spirometri');
                 }
@@ -248,8 +257,17 @@ class LaporanController extends Controller
                 if ($req->kondisi == 'tm') {
                     $table = $this->determineTableNamePoliklinik('threadmill');
                 }
-                if ($req->kondisi == 'rsn') {
-                    $table = $this->determineTableNamePoliklinik('ronsen');
+                if ($req->kondisi == 'rsn_thorax') {
+                    $table = $this->determineTableNamePoliklinik('rontgen_thorax');
+                }
+                if ($req->kondisi == 'rsn_lumbosacral') {
+                    $table = $this->determineTableNamePoliklinik('rontgen_lumbosacral');
+                }
+                if ($req->kondisi == 'usg_ubdomain') {
+                    $table = $this->determineTableNamePoliklinik('usg_ubdomain');
+                }
+                if ($req->kondisi == 'farmingham_score') {
+                    $table = $this->determineTableNamePoliklinik('farmingham_score');
                 }
                 if ($req->kondisi == 'au') {
                     $table = $this->determineTableNamePoliklinik('audiometri');
@@ -306,11 +324,15 @@ class LaporanController extends Controller
             $is_mcu_exist = Kesimpulan::where('id_mcu', $req->id_mcu_let)->first();
             $data = [
                 'id_mcu' => $req->id_mcu_let,
+                'kesimpulan_riwayat_medis' => $req->hasil_kesimpulan_riwayat_medis,
                 'kesimpulan_pemeriksaan_fisik' => $req->hasil_kesimpulan_pemeriksaan_fisik,
                 'status_pemeriksaan_laboratorium' => $req->status_pemeriksaan_laboratorium,
                 'kesimpulan_pemeriksaan_laboratorum' => $req->hasil_kesimpulan_pemeriksaan_laboratorium,
                 'kesimpulan_pemeriksaan_threadmill' => $req->hasil_kesimpulan_pemeriksaan_threadmill,
-                'kesimpulan_pemeriksaan_ronsen' => $req->hasil_kesimpulan_pemeriksaan_ronsen,
+                'kesimpulan_pemeriksaan_rontgen_thorax' => $req->hasil_kesimpulan_pemeriksaan_rontgen_thorax,
+                'kesimpulan_pemeriksaan_rontgen_lumbosacral' => $req->hasil_kesimpulan_pemeriksaan_rontgen_lumbosacral,
+                'kesimpulan_pemeriksaan_usg_ubdomain' => $req->hasil_kesimpulan_pemeriksaan_usg_ubdomain,
+                'kesimpulan_pemeriksaan_farmingham_score' => $req->hasil_kesimpulan_pemeriksaan_farmingham_score,
                 'kesimpulan_pemeriksaan_ekg' => $req->hasil_kesimpulan_pemeriksaan_ekg,
                 'kesimpulan_pemeriksaan_audio_kiri' => $req->hasil_kesimpulan_pemeriksaan_audio_kiri,
                 'kesimpulan_pemeriksaan_audio_kanan' => $req->hasil_kesimpulan_pemeriksaan_audio_kanan,
@@ -340,13 +362,19 @@ class LaporanController extends Controller
             $count_poliklinik_spirometri = DB::table('mcu_poli_spirometri')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_ekg = DB::table('mcu_poli_ekg')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_threadmill = DB::table('mcu_poli_threadmill')->where('transaksi_id', $id_mcu)->count();
-            $count_poliklinik_ronsen = DB::table('mcu_poli_ronsen')->where('transaksi_id', $id_mcu)->count();
+            $count_poliklinik_rontgen_thorax = DB::table('mcu_poli_rontgen_thorax')->where('transaksi_id', $id_mcu)->count();
+            $count_poliklinik_rontgen_lumbosacral = DB::table('mcu_poli_rontgen_lumbosacral')->where('transaksi_id', $id_mcu)->count();
+            $count_poliklinik_usg_ubdomain = DB::table('mcu_poli_usg_ubdomain')->where('transaksi_id', $id_mcu)->count();
+            $count_poliklinik_farmingham_score = DB::table('mcu_poli_farmingham_score')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_audiometri = DB::table('mcu_poli_audiometri')->where('transaksi_id', $id_mcu)->count();
             $data_poliklinik = [
                 'count_poliklinik_spirometri' => $count_poliklinik_spirometri,
                 'count_poliklinik_ekg' => $count_poliklinik_ekg,
                 'count_poliklinik_threadmill' => $count_poliklinik_threadmill,
-                'count_poliklinik_ronsen' => $count_poliklinik_ronsen,
+                'count_poliklinik_rontgen_thorax' => $count_poliklinik_rontgen_thorax,
+                'count_poliklinik_rontgen_lumbosacral' => $count_poliklinik_rontgen_lumbosacral,
+                'count_poliklinik_usg_ubdomain' => $count_poliklinik_usg_ubdomain,
+                'count_poliklinik_farmingham_score' => $count_poliklinik_farmingham_score,
                 'count_poliklinik_audiometri' => $count_poliklinik_audiometri,
             ];
             $dynamicAttributes = [

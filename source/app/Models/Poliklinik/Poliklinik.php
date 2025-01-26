@@ -48,8 +48,11 @@ class Poliklinik extends Model
             'spirometri' => 'mcu_poli_spirometri',
             'ekg' => 'mcu_poli_ekg',
             'threadmill' => 'mcu_poli_threadmill',
-            'ronsen' => 'mcu_poli_ronsen',
+            'rontgen_thorax' => 'mcu_poli_rontgen_thorax',
+            'rontgen_lumbosacral' => 'mcu_poli_rontgen_lumbosacral',
             'audiometri' => 'mcu_poli_audiometri',
+            'usg_ubdomain' => 'mcu_poli_usg_ubdomain',
+            'farmingham_score' => 'mcu_poli_farmingham_score',
         ];
         return $jenis_poliTables[$jenis_poli] ?? null;
     }
@@ -89,4 +92,3 @@ class Poliklinik extends Model
         return $query->groupBy($jenis_poli . '.user_id', $jenis_poli . '.transaksi_id');
     }
 }
-
