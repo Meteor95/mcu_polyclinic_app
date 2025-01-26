@@ -20,17 +20,17 @@ sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/database/factories
 
 # Ensure necessary directories exist
 ######################################
-mkdir -p source/storage/app/public/file_surat_pengantar
-mkdir -p source/storage/app/public/mcu/foto_peserta
-mkdir -p source/storage/app/public/mcu/poliklinik/audiometri
-mkdir -p source/storage/app/public/mcu/poliklinik/ekg
-mkdir -p source/storage/app/public/mcu/poliklinik/rontgen_thorax
-mkdir -p source/storage/app/public/mcu/poliklinik/rontgen_lumbosacral
-mkdir -p source/storage/app/public/mcu/poliklinik/usg_ubdomain
-mkdir -p source/storage/app/public/mcu/poliklinik/farmingham_score
-mkdir -p source/storage/app/public/mcu/poliklinik/spirometri
-mkdir -p source/storage/app/public/mcu/poliklinik/threadmill
-mkdir -p source/storage/app/public/user/ttd
+sudo mkdir -p source/storage/app/public/file_surat_pengantar
+sudo mkdir -p source/storage/app/public/mcu/foto_peserta
+sudo mkdir -p source/storage/app/public/mcu/poliklinik/audiometri
+sudo mkdir -p source/storage/app/public/mcu/poliklinik/ekg
+sudo mkdir -p source/storage/app/public/mcu/poliklinik/rontgen_thorax
+sudo mkdir -p source/storage/app/public/mcu/poliklinik/rontgen_lumbosacral
+sudo mkdir -p source/storage/app/public/mcu/poliklinik/usg_ubdomain
+sudo mkdir -p source/storage/app/public/mcu/poliklinik/farmingham_score
+sudo mkdir -p source/storage/app/public/mcu/poliklinik/spirometri
+sudo mkdir -p source/storage/app/public/mcu/poliklinik/threadmill
+sudo mkdir -p source/storage/app/public/user/ttd
 
 # Ensure necessary permissions
 ######################################
