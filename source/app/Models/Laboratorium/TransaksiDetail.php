@@ -12,6 +12,7 @@ class TransaksiDetail extends Model
     protected $table = 'transaksi_detail';
     protected $fillable = [
         'id_transaksi',
+        'id_item',
         'kode_item',
         'nana_item',
         'harga',
@@ -23,5 +24,6 @@ class TransaksiDetail extends Model
         'meta_data_kualitatif',
         'meta_data_jasa',
         'meta_data_jasa_fee',
+        'nilai_tindakan'
     ];
 }

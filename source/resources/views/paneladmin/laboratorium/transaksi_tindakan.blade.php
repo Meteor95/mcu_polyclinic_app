@@ -133,6 +133,7 @@
                         <th>No</th>
                         <th>Kode Tindakan</th>
                         <th>Nama Tindakan</th>
+                        <th>Nilai</th>
                         <th>Harga</th>
                         <th>Diskon</th>
                         <th>Harga Setelah Diskon</th>
@@ -143,6 +144,7 @@
                         <th>meta_data_kualitatif</th>
                         <th>meta_data_jasa</th>
                         <th>meta_data_jasa_fee</th>
+                        <th>id_item</th>
                     </tr>
                 </thead>
             </table>
@@ -395,6 +397,13 @@
 
 .floating-button:hover {
     background-color: #0056b3;
+}
+.tooltip-inner {
+  background-color: #ff5722 !important; 
+  color: #ffffff !important; 
+}
+.tooltip-arrow::before {
+  border-top-color: #ff5722 !important; 
 }
 </style>
 @endsection

@@ -66,8 +66,10 @@ class LaboratoriumServices
             foreach ($keranjangTindakan as $item) {
                 $data_tindakan[] = [
                     'id_transaksi' => $hasil_query_tranaksi->id,
+                    'id_item' => $item['id_item'],
                     'kode_item' => $item['kode_item'],
                     'nama_item' => $item['nama_item'],
+                    'nilai_tindakan' => $item['nilai_tindakan'],
                     'harga' => $item['harga'],
                     'diskon' => $item['diskon'],
                     'harga_setelah_diskon' => $item['harga_setelah_diskon'],

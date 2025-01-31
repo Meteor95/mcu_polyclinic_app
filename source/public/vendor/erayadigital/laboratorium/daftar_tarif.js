@@ -651,9 +651,9 @@ function getTableDataAsJson(kondisi) {
                 id_nilai_kenormalan: row[1], 
                 batas_umur: row[2], 
                 nama_nilai_kenormalan: row[3], 
-                nilai_positif: row[5] == "" ? true : false, 
+                nilai_positif: row[5] !== "" ? true : false, 
                 keterangan_positif: row[5], 
-                nilai_negatif: row[7] == "" ? true : false, 
+                nilai_negatif: row[7] !== "" ? true : false, 
                 keterangan_negatif: row[7], 
             };
         });
@@ -746,9 +746,9 @@ function detail_informasi_tarif_tabel(kode_item, group_item) {
                                 row.id_nilai_kenormalan,
                                 row.batas_umur,
                                 row.nama_nilai_kenormalan,
-                                row.nilai_positif,
+                                row.nilai_positif ? "✔️" : "❌",
                                 row.keterangan_positif,
-                                row.nilai_negatif,
+                                row.nilai_negatif ? "✔️" : "❌",
                                 row.keterangan_negatif,
                                 `<button onclick="hapus_tarif_tabel(this, 'kualitatif')" class="btn btn-danger btn-sm w-100"><i class="fa fa-trash"></i> Hapus</button>`
                             ]);

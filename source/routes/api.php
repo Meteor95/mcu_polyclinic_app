@@ -201,6 +201,8 @@ Route::prefix('v1')->group(function () {
             Route::get('validasi_mcu_nota_akhir', [LaporanController::class,"validasi_mcu_nota_akhir"]);
             Route::post('validasi_rekap_kesimpulan', [LaporanController::class,"validasi_rekap_kesimpulan"]);
             Route::get('validasi_rekap_kesimpulan', [LaporanController::class,"validasi_rekap_kesimpulan_get"]);
+            Route::get('informasi_mcu', [LaporanController::class,"informasi_mcu"]);
         });
     });
 });
+

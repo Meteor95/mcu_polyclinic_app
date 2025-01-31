@@ -146,6 +146,7 @@ function onload_detail_tindakan(){
                             nomor,
                             item.kode_item,
                             item.nama_item,
+                            createInput(nomor, 'nilai_tindakan', item.kode_item, item.nilai_tindakan),
                             createInput(nomor, 'harga_jual', item.kode_item, item.is_paket_mcu > 0 ? 0 : item.harga),
                             createInput(nomor, 'diskon', item.kode_item, item.is_paket_mcu > 0 ? 0 : item.diskon),
                             createInput(nomor, 'harga_setelah_diskon', item.kode_item, item.is_paket_mcu > 0 ? 0 : item.harga_setelah_diskon, true),
@@ -159,6 +160,7 @@ function onload_detail_tindakan(){
                             `<input type="text" class="form-control" id="meta_data_kualitatif_${item.kode_item}_${nomor}" value="${Array.isArray(metaDataKualitatif) ? btoa(item.meta_data_kualitatif) : ''}">`,
                             `<input type="text" class="form-control" id="meta_data_jasa_${item.kode_item}_${nomor}" value="${item.meta_data_jasa}">`,
                             `<input type="text" class="form-control" id="meta_data_jasa_fee_${item.kode_item}_${nomor}" value="${item.meta_data_jasa_fee}">`,
+                            `${item.id_item}`,
                         ]).draw();
                         initAutoNumeric(nomor, item.kode_item, item.is_paket_mcu > 0 ? item.total_transaksi : 0);
                     });
@@ -441,7 +443,7 @@ function load_data_tindakan(){
         keys: true,
         columnDefs: [
             {
-                targets: [9, 10, 11, 12],
+                targets: [10, 11, 12, 13, 14],
                 className: "d-none",
             },
             {
@@ -574,6 +576,7 @@ function tambah_ke_keranjang_tindakan(data_tarif, dari = null, harga_paket = fal
         nomor,
         tarif.kode_item,
         tarif.nama_item,
+        createInput(nomor, 'nilai_tindakan', kode_item, 0),
         createInput(nomor, 'harga_jual', kode_item, harga_paket > 0 ? 0 : tarif.harga_jual),
         createInput(nomor, 'diskon', kode_item, '0'),
         createInput(nomor, 'harga_setelah_diskon', kode_item, '0', true),
@@ -587,8 +590,8 @@ function tambah_ke_keranjang_tindakan(data_tarif, dari = null, harga_paket = fal
         `<input type="text" class="form-control" id="meta_data_kualitatif_${kode_item}_${nomor}" value="${JSON.parse(tarif.meta_data_kualitatif).length == 0 ? '' : btoa(tarif.meta_data_kualitatif)}">`,
         `<input type="text" class="form-control" id="meta_data_jasa_${kode_item}_${nomor}" value="">`,
         `<input type="text" class="form-control" id="meta_data_jasa_fee_${kode_item}_${nomor}" value="${btoa(tarif.meta_data_jasa)}">`,
+        `${tarif.id}`,
     ]).draw();
-    
     initAutoNumeric(nomor,kode_item, harga_paket);
     hitung_keranjang_tindakan(null, null, null, harga_paket);
     updateRowNumbers(harga_paket);
@@ -646,27 +649,51 @@ function hitung_keranjang_tindakan(indexKe = null, id = null, paramter_id = null
 
 
 
-function createInput(index,type, kode_item, value, readonly = false) {
+function createInput(index, type, kode_item, value, readonly = false) {
     const readonlyAttr = readonly ? 'readonly' : '';
-    const classAttr = readonly ? 'form-control readonly-input '+type : 'form-control '+type;
-    return `<input type="text" class="${classAttr}" id="${type}_${kode_item}_${index}" value="${value}" ${readonlyAttr} style="text-align: right;width: ${calculateWidth(value,type)}">`;
+    const classAttr = readonly ? 'form-control readonly-input ' + type : 'form-control ' + type;
+    let element = '';
+    if (type == 'nilai_tindakan') {
+        element = `<input data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" 
+                        title="${value}" data-bs-original-title="${value}" 
+                        type="text" class="${classAttr}" 
+                        id="${type}_${kode_item}_${index}" 
+                        value="${value}" ${readonlyAttr} 
+                        style="text-align: right;width: ${calculateWidth(value,type)}">`;
+
+        setTimeout(() => {
+            $(`#${type}_${kode_item}_${index}`).tooltip();
+        }, 50);
+    }else{
+        element = `<input type="text" class="${classAttr}" id="${type}_${kode_item}_${index}" value="${value}" ${readonlyAttr} style="text-align: right;width: ${calculateWidth(value,type)}">`;
+    }
+    
+    return element;
 }
+$(document).on('keyup', 'input[data-bs-toggle="tooltip"]', debounce(function () {
+    $(this).attr('data-bs-original-title', $(this).val()).tooltip('dispose').tooltip('show');
+}, 300));
 
 function calculateWidth(value,type) {
     const digitLength = value.toString().length;
-    const minWidth = type == 'jumlah' ? 80 : 180;
-    const maxWidth = 300;
+    let minWidth = 150;
+    let maxWidth = 300;
+    if (type == 'jumlah') minWidth = 70;
+    if (type == 'nilai_tindakan') { minWidth = 120; maxWidth = 120; }
     const width = Math.min(Math.max(minWidth, digitLength * 8), maxWidth);
     return `${width}px`;
 }
 
 function initAutoNumeric(index, kode_item, harga_paket = null) {
     const fields = ['harga_jual', 'diskon', 'harga_setelah_diskon', 'total_harga', 'jumlah'];
-    fields.forEach(function (field) {
+    fields.forEach(function (field, indexx) {
+        console.log(field+" Ke "+indexx)
         const elementId = `#${field}_${kode_item}_${index}`;
         const inputElement = $(elementId);
         inputElement.off('keyup');
-        new AutoNumeric(elementId, getAutoNumericOptions());
+        if (!AutoNumeric.getAutoNumericElement(elementId)) {
+            new AutoNumeric(elementId, getAutoNumericOptions());
+        }
         inputElement.on('keyup', debounce(function(event) {
             if (harga_paket > 0) {
                 $(elementId).val(0);
@@ -938,8 +965,10 @@ function getKeranjangTindakan() {
     data_table_tindakan.rows().every(function (rowIdx, tableLoop, rowLoop) {
         let data = this.data();
         let id_index = data[1]+"_"+(rowIdx+1);
+        let id_item = data[14];
         let kodeItem = data[1];
         let namaItem = data[2];
+        let nilai_tindakan = $(`#nilai_tindakan_${id_index}`).val();
         let hargaJual = AutoNumeric.getAutoNumericElement($(this.node()).find('#harga_jual_' + id_index)[0]).get();
         let diskon = AutoNumeric.getAutoNumericElement($(this.node()).find('#diskon_' + id_index)[0]).get();
         let hargaSetelahDiskon = AutoNumeric.getAutoNumericElement($(this.node()).find('#harga_setelah_diskon_' + id_index)[0]).get();
@@ -949,8 +978,10 @@ function getKeranjangTindakan() {
         let metaJasa = $(`#meta_data_jasa_${id_index}`).val();
         let metaJasaFee = $(`#meta_data_jasa_fee_${id_index}`).val();
         keranjangTindakan.push({
+            id_item: id_item,
             kode_item: kodeItem,
             nama_item: namaItem,
+            nilai_tindakan:nilai_tindakan,
             harga: hargaJual,
             diskon: diskon,
             harga_setelah_diskon: hargaSetelahDiskon,
