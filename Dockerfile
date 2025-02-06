@@ -34,6 +34,7 @@ RUN apk add --no-cache \
   php83-pdo \
   php83-pear \
   php83-redis \
+  php83-iconv \
   supervisor \
   autoconf \
   automake \
