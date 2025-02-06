@@ -17,7 +17,7 @@
     </div>
 </div>
 <div class="modal fade" id="modal_lihat_berkas_mcu" tabindex="-1" role="dialog" aria-labelledby="modal_lihat_berkas_mcuLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="modal_lihat_berkas_mcu_text">Pratinjau Berkas MCU Non Header</h5>
@@ -30,6 +30,7 @@
                     <div id="berkas_mcu_foro_peserta"></div>
                 </div>
                 <div class="col-sm-12">
+                    <div style="display: none;" id="id_mcu_berkas_mcu"></div>
                     <table class="table table-bordered table-padding-sm-no-datatable" style="width: 80%; margin: 0 auto;">
                         <tr>
                             <td class="text-end" style="white-space: nowrap;">NOMOR MEDICAL CHECKUP</td>
@@ -89,63 +90,63 @@
                                 <tr>
                                     <td>RIWAYAT MEDIS</td>
                                     <td>:</td>
-                                    <td id="berkas_mcu_riwayat_medis_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_riwayat_medis_quill"></div></td>
                                 </tr>
                                 <tr>
                                     <td>PEMERIKSAAN FISIK</td>
                                     <td>:</td>
-                                    <td id="berkas_mcu_pemeriksaan_fisik_quill">Tekanan Darah, Suhu, Nadi, Respirasi, dan Berat Badan</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_fisik_quill"></div></td>
                                 </tr>
                                 <tr>
                                     <td>HASIL LABORATORIUM</td>
                                     <td>:</td>
-                                    <td id="berkas_mcu_pemeriksaan_laboratorium_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_laboratorium_quill"></div></td>
                                 </tr>
                                 <tr>
                                     <td>RO THORAX</td>
                                     <td>:</td>
-                                    <td id="berkas_mcu_pemeriksaan_rontgen_thorax_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_rontgen_thorax_quill"></div></td>
                                 </tr>
                                 <tr>
                                     <td>RO LUMBOSACRAL</td>
                                     <td>:</td>
-                                    <td id="berkas_mcu_pemeriksaan_rontgen_lumbosacral_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_rontgen_lumbosacral_quill"></div></td>
                                 </tr>
                                 <tr>
                                     <td>USG UB DOMAIN</td>
                                     <td>:</td>
-                                    <td id="berkas_mcu_pemeriksaan_usg_ubdomain_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_usg_ubdomain_quill"></div></td>
                                 </tr>
                                 <tr>
                                     <td>EKG</td>
                                     <td>:</td>
-                                    <td id="berkas_mcu_pemeriksaan_ekg_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_ekg_quill"></div></td>
                                 </tr>
                                 <tr>
                                     <td rowspan="2">AUDIOMETRI</td>
                                     <td rowspan="2">:</td>
-                                    <td id="berkas_mcu_pemeriksaan_audiometri_kiri_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_audiometri_kiri_quill"></div></td>
                                 </tr>
                                 <tr>
-                                    <td id="berkas_mcu_pemeriksaan_audiometri_kanan_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_audiometri_kanan_quill"></div></td>
                                 </tr>
                                 <tr>
                                     <td rowspan="2">SPIROMETRI</td>
                                     <td rowspan="2">:</td>
-                                    <td id="berkas_mcu_pemeriksaan_spirometri_restriksi_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_spirometri_restriksi_quill"></div></td>
                                 </tr>
                                 <tr>
-                                    <td id="berkas_mcu_pemeriksaan_spirometri_obstruksi_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_spirometri_obstruksi_quill"></div></td>
                                 </tr>
                                 <tr>
                                     <td>FARINGOMETER</td>
                                     <td>:</td>
-                                    <td id="berkas_mcu_pemeriksaan_farmingham_score_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_farmingham_score_quill"></div></td>
                                 </tr>
-                                 <tr>
+                                <tr>
                                     <td>THREADMILL</td>
                                     <td>:</td>
-                                    <td id="berkas_mcu_pemeriksaan_threadmill_quill">Tidak Ada</td>
+                                    <td><div id="berkas_mcu_pemeriksaan_threadmill_quill"></div></td>
                                 </tr>
                             </table>
                             <h3>KESIMPULAN HASIL MEDICAL CHECKUP</h3>
@@ -494,7 +495,7 @@
 }
 .scaled-image_0_3 {
      width: 25%;
-  }
+}
 </style>
 @endsection
 @section('js_load')

@@ -49,6 +49,10 @@
                         <option value="sembunyikan">Sembunyikan</option>
                     </select>
                 </div>
+                <div class="col-sm-12">
+                    <label for="metode_tindakan">Ketikan Metode Tindakan</label>
+                    <input type="text" name="metode_tindakan" id="metode_tindakan" class="form-control" placeholder="Ex: Laser Optical Flow Cytometry">
+                </div>
             </div>
             <div class="row" id="section_nilai_kenormalan">
                 <div class="col-md-12 mt-2">
@@ -272,6 +276,14 @@
                 <div class="row">
                     <label class="col-sm-3">Satuan</label>
                     <div class="col-sm-9"><div class="form-control-static" id="satuan_tarif"></div></div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">Metode Tindakan</label>
+                    <div class="col-sm-9"><div class="form-control-static" id="metode_tindakan_tarif"></div></div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3">Visible Item</label>
+                    <div class="col-sm-9"><div class="form-control-static" id="visible_item_tarif"></div></div>
                 </div>
                 <div class="row" id="section_nilai_kenormalan_tarif_modal">
                     <label class="col-sm-3">Nilai Kenormalan</label>

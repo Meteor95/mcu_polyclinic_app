@@ -24,6 +24,7 @@ class Kesimpulan extends Model
         'kesimpulan_pemeriksaan_spiro_restriksi',
         'kesimpulan_pemeriksaan_spiro_obstruksi',
         'kesimpulan_keseluruhan',
+        'kesimpulan_hasil_medical_checkup',
         'saran_keseluruhan',
     ];
 }

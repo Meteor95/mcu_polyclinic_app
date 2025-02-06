@@ -565,6 +565,7 @@ $("#btn_simpan_tarif_laboratorium").click(function(e){
                         meta_data_jasa:getTableDataAsJson('jasa'),
                         harga_jual:harga_jual_tarif_laboratorium.get(),
                         visible_item:$("#visible_item").val(),
+                        metode_tindakan:$("#metode_tindakan").val(),
                     },
                     success: function(response) {
                         if (response.success == false){
@@ -602,6 +603,7 @@ function clear_formulir() {
     $("#batas_bawah").val('');
     $("#keterangan_kualitatif_positif").val('');
     $("#keterangan_kualitatif_negatif").val('');
+    $("#metode_tindakan").val('');
     choiceGrupItem.setChoiceByValue("laboratorium");
     load_kategori_dinamis();
     load_satuan_dinamis();
@@ -706,7 +708,9 @@ function detail_informasi_tarif_tabel(kode_item, group_item) {
                 $("#collapse_formulir").text("Sembunyikan Formulir");
                 $("#kode_item").val(response.data.kode_item);
                 $("#nama_item").val(response.data.nama_item);
+                $("#metode_tindakan").val(response.data.metode_tindakan);   
                 choiceGrupItem.setChoiceByValue(response.data.group_item);
+                choiceVisibleItem.setChoiceByValue(response.data.visible_item);
                 setTimeout(() => {
                     choiceKategori.setChoiceByValue(response.data.id_kategori.toString());
                     choiceSatuan.setChoiceByValue(response.data.satuan);
@@ -803,6 +807,8 @@ function detail_informasi_tarif(kode_item, nama_item) {
                 $("#grup_item_tarif").text(capitalizeFirstLetter(response.data.group_item));
                 $("#jenis_item_tarif").text(capitalizeFirstLetter(response.data.nama_kategori));
                 $("#satuan_tarif").text(response.data.nama_satuan);
+                $("#metode_tindakan_tarif").text(response.data.metode_tindakan);
+                $("#visible_item_tarif").text(response.data.visible_item.slice(0, 1).toUpperCase()+response.data.visible_item.slice(1));
                 $("#harga_dasar_tarif").text(response.data.harga_dasar.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
                 $("#harga_jual_tarif").text(response.data.harga_jual.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
                 if (response.data.group_item == 'laboratorium') {

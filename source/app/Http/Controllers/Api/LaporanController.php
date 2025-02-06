@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, RiwayatKecelakaanKerja, RiwayatKebiasaanHidup, RiwayatPenyakitTerdahulu, RiwayatPenyakitKeluarga, RiwayatImunisasi};
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
-use App\Models\Laboratorium\{Transaksi as TransaksiLab, Kategori, TransaksiDetail};
+use App\Models\Laboratorium\{Transaksi as TransaksiLab, Kategori, TransaksiDetail, Kesimpulan as KesimpulanLabStatus};
 use App\Models\Laporan\Kesimpulan;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
@@ -339,6 +339,7 @@ class LaporanController extends Controller
                 'kesimpulan_pemeriksaan_spiro_restriksi' => $req->hasil_kesimpulan_pemeriksaan_spirometri_restriksi,
                 'kesimpulan_pemeriksaan_spiro_obstruksi' => $req->hasil_kesimpulan_pemeriksaan_spirometri_obstruksi,
                 'kesimpulan_keseluruhan' => $req->hasil_kesimpulan_pemeriksaan_kesimpulan_tindakan,
+                'kesimpulan_hasil_medical_checkup' => $req->kesimpulan_hasil_medical_checkup,
                 'saran_keseluruhan' => $req->hasil_kesimpulan_pemeriksaan_tindakan_saran,
             ];
             if ($is_mcu_exist) {
@@ -359,6 +360,7 @@ class LaporanController extends Controller
                 $id_mcu = Transaksi::where('no_transaksi', $req->nomor_mcu_let)->first()->id;
             }
             $informasi_mcu = Kesimpulan::where('id_mcu', $id_mcu)->first();
+            $kesimpulan_tindakan = KesimpulanLabStatus::all();
             $count_poliklinik_spirometri = DB::table('mcu_poli_spirometri')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_ekg = DB::table('mcu_poli_ekg')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_threadmill = DB::table('mcu_poli_threadmill')->where('transaksi_id', $id_mcu)->count();
@@ -379,6 +381,7 @@ class LaporanController extends Controller
             ];
             $dynamicAttributes = [
                 'data' => $informasi_mcu,
+                'data_kesimpulan_tindakan' => $kesimpulan_tindakan,
                 'data_poliklinik' => $data_poliklinik,
             ];
             return ResponseHelper::data('Informasi Kesimpulan', $dynamicAttributes);
@@ -402,6 +405,7 @@ class LaporanController extends Controller
             'meta_data_kualitatif' => $detail->meta_data_kualitatif,
             'satuan' => $detail->nama_satuan,
             'nilai_tindakan' => $detail->nilai_tindakan,
+            'metode_tindakan' => $detail->metode_tindakan,
             'sub' => TransaksiDetail::where('id_transaksi', $id_transaksi)
                 ->where('id_item', $detail->id)
                 ->get()

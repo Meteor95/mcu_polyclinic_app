@@ -14,11 +14,11 @@ use Exception;
 class PoliklinikServices
 {
 
-    public function handleTransactionPoliklinik($data, $hasFile, $jenis_poli)
+    public function handleTransactionPoliklinik($data, $hasFile, $jenis_poli, $userIdLogin)
     {
         $namafolder = "";$updatedId = "";
         $dataToInsert = [];
-        return DB::transaction(function () use ($data, $hasFile, $jenis_poli) {
+        return DB::transaction(function () use ($data, $hasFile, $jenis_poli, $userIdLogin) {
             $model = new Poliklinik();
             if ($jenis_poli == 'spirometri') {
                 $model->setTableName('mcu_poli_spirometri');
@@ -55,6 +55,7 @@ class PoliklinikServices
                 'kesimpulan' => $data['kesimpulan'],
                 'detail_kesimpulan' => $data['detail_kesimpulan'],
                 'catatan_kaki' => $data['catatan_kaki'],
+                'petugas_id' => $userIdLogin,
             ];
             if ($isedit){
                 $unggahan_poliklinik = $model->where('user_id', $data['user_id'])->where('transaksi_id', $data['transaksi_id'])->first();
@@ -76,12 +77,13 @@ class PoliklinikServices
                     $filename = "{$uuid}_{$sanitizedName}_{$timestamp}.png";
                     $filePath = $directory . '/' . $filename;
                     $imageSize = getimagesize($file->getPathname());
+                    Log::info($imageSize);
                     if (!$imageSize || $imageSize['mime'] !== 'image/png') {
                         throw new Exception('File bukan PNG atau tidak valid.');
                     }
                     $image = imagecreatefrompng($file->getPathname());
                     if (!$image) {
-                        throw new Exception('Gagal memproses file PNG.');
+                        throw new Exception('Gagal memproses file PNG atau JPEG.');
                     }
                     if (!file_exists($directory)) {
                         mkdir($directory, 0755, true);
@@ -103,6 +105,8 @@ class PoliklinikServices
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]),
+                        'width' => $imageSize[0],
+                        'height' => $imageSize[1],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];

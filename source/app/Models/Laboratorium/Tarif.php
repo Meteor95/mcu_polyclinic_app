@@ -23,7 +23,8 @@ class Tarif extends Model
         'harga_dasar',
         'meta_data_jasa',
         'harga_jual',
-        'visible_item'
+        'visible_item',
+        'metode_tindakan'
     ];
     public static function listTarifTabel($req, $perHalaman, $offset)
     {

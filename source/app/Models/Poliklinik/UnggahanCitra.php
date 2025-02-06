@@ -13,5 +13,7 @@ class UnggahanCitra extends Model
         'nama_file_asli',
         'nama_file',
         'meta_citra',
+        'width',
+        'height',
     ];
 }

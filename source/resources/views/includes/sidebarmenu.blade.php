@@ -198,7 +198,7 @@
             </a>
             <ul class="sidebar-submenu">
               @foreach([
-                ['condition' => $hasAccessTarifLaboratorium, 'url' => 'laboratorium/tarif', 'label' => 'Daftar Tarif'],
+                ['condition' => $hasAccessTarifLaboratorium, 'url' => 'laboratorium/tarif', 'label' => 'Daftar Tindakan'],
                 ['condition' => $hasAccessKategoriLaboratorium, 'url' => 'laboratorium/kategori', 'label' => 'Kategori'],
                 ['condition' => $hasAccessSatuanLaboratorium, 'url' => 'laboratorium/satuan', 'label' => 'Satuan'],
                 ['condition' => $hasAccessRentangKenormalanLaboratorium, 'url' => 'laboratorium/rentang_kenormalan', 'label' => 'Rentang Kenormalan'],
@@ -250,8 +250,27 @@
             <ul class="sidebar-submenu">
               @foreach([
                 ['condition' => $hasAccessArciveMCU, 'url' => 'laporan/berkas/mcu', 'label' => 'MCU'],
-                ['condition' => $hasAccessArciveLaboratorium, 'url' => 'laporan/berkas/non_mcu', 'label' => 'Non MCU'],
-                ['condition' => $hasAccessArciveNota, 'url' => 'laporan/berkas/kwitansi', 'label' => 'Kwitansi']
+                ['condition' => $hasAccessArciveLaboratorium, 'url' => 'laporan/berkas/laboratorium', 'label' => 'Laboratorium'],
+                ['condition' => $hasAccessArciveNota, 'url' => 'laporan/berkas/kuitansi', 'label' => 'Kuitansi']
+              ] as $menuItem)
+                @if ($menuItem['condition'])
+                  <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
+                @endif
+              @endforeach
+            </ul>
+          </li>
+          @endif
+          @if ($hasLaporanPenjualan || $hasLaporanHutang)
+          <li class="sidebar-list">
+            <i class="fa fa-thumb-tack"></i>
+            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+              <i class="fa-solid fa-folder-tree" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+              <span>Berkas Tindakan</span>
+            </a>
+            <ul class="sidebar-submenu">
+              @foreach([
+                ['condition' => $hasAccessArciveMCU, 'url' => 'laporan/berkas/mcu', 'label' => 'MCU'],
+                ['condition' => $hasAccessArciveLaboratorium, 'url' => 'laporan/berkas/laboratorium', 'label' => 'Laboratorium'],
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>

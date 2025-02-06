@@ -17,7 +17,8 @@ class Poliklinik extends Model
         'id_kesimpulan',
         'kesimpulan',
         'detail_kesimpulan',
-        'catatan_kaki'
+        'catatan_kaki',
+        'petugas_id',
     ];
     public function setTableName($table)
     {

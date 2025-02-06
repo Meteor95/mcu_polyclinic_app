@@ -310,24 +310,27 @@
                             </div>
                         </th>
                     </tr>
-
                     <tr>
                         <th>Kesimpulan</th>
                         <th>
                             <div class="row">
-                                <div class="col-md-9 mb-1">
+                                <div class="col-md-12 mb-1">
+                                    <select class="form-control" id="pemeriksaan_kesimpulan_non_status_kesehatan_select">
+                                        <option value="fit_to_work">FIT TO WORK</option>
+                                        <option value="fit_with_note">FIT WITH NOTE</option>
+                                        <option value="temporary_unfit">TEMPORARY UNFIT</option>
+                                        <option value="unfit">UNFIT</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Status Kesehatan</th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-12 mb-1">
                                     <select class="form-control" id="pemeriksaan_kesimpulan_tindakan_select"></select>
-                                </div>
-                                <div class="col-md-3 mb-1">
-                                    <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_kesimpulan_tindakan', $('#pemeriksaan_kesimpulan_tindakan_select option:selected').text(), 'gantikan')" class="btn btn-primary w-100" style="height: 45px;">Gantikan</button>
-                                        <button onclick="aksi_onchange_tindakan_kesimpulan('pemeriksaan_kesimpulan_tindakan', $('#pemeriksaan_kesimpulan_tindakan_select option:selected').text(), 'tambah')" class="btn btn-primary w-100" style="height: 45px;">Tambah</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div id="editor_container">
-                                        <div id="pemeriksaan_kesimpulan_tindakan_quill"></div>
-                                    </div>
                                 </div>
                             </div>
                         </th>

@@ -6,11 +6,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.1",
         "laravel/framework": "^11.9",
         "laravel/octane": "^2.5",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "nadar/quill-delta-parser": "^3.4",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.9",
+        "symfony/dom-crawler": "^7.2",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {

@@ -72,6 +72,8 @@ function loadDataPasien() {
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
+                    d.from_query = "berkas_mcu";
+                    d.status_peserta = "selesai";
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -166,7 +168,6 @@ $("#kotak_pencarian_daftarpasien").on('keyup', debounce(function() {
 }, 300));
 function renderRow(item, level = 0, tbody, datadiri) {
     let paddingLeft = level * 2;
-    console.log(level);
     let nilai_rujukan = '';
     let nilai_rujukan_object = [];
     let is_kuantitatif = false;
@@ -185,53 +186,36 @@ function renderRow(item, level = 0, tbody, datadiri) {
     }
     if (nilai_rujukan_object.length > 0 && Array.isArray(nilai_rujukan_object)) {
         nilai_rujukan_object.forEach(item_nilai_rujukan => {
-            console.log(item_nilai_rujukan);
             let gender = item_nilai_rujukan.nama_nilai_kenormalan.split(" - ")[0].toLowerCase().replace(/\s+/g, '');
             let genderFromData = datadiri.jenis_kelamin.toLowerCase().replace(/\s+/g, '');
             if (item_nilai_rujukan.batas_umur == -1) {
+                if (gender === "semuajeniskelamin")
+                {
+                    semuajeniskelaminFound = true
+                }
                 if (is_kuantitatif) {
-                    nilai_rujukan += item_nilai_rujukan.nama_nilai_kenormalan + " : " + item_nilai_rujukan.batas_bawah + " " + item_nilai_rujukan.antara + " " + item_nilai_rujukan.batas_atas + "<br>";
-                    if (gender === genderFromData) {
-                        return;
-                    }
-                    if (gender === "semuajeniskelamin") {
-                        if (!semuajeniskelaminFound) {
-                            nilai_rujukan = '';
-                            semuajeniskelaminFound = true;
-                            nilai_rujukan += item_nilai_rujukan.nama_nilai_kenormalan + " : " + item_nilai_rujukan.batas_bawah + " " + item_nilai_rujukan.antara + " " + item_nilai_rujukan.batas_atas + "<br>";
-                        }
-                        if (semuajeniskelaminFound && gender !== "semuajeniskelamin") {
-                            return;
+                    if ((gender === genderFromData && !semuajeniskelaminFound) || gender === "semuajeniskelamin") {
+                        const nilaiTindakan = parseFloat(item.nilai_tindakan); 
+                        const batasBawah = parseFloat(item_nilai_rujukan.batas_bawah); 
+                        const batasAtas = parseFloat(item_nilai_rujukan.batas_atas); 
+                        if (nilaiTindakan >= batasBawah && nilaiTindakan <= batasAtas) {
+                            status = "NORMAL";
+                        } else {
+                            status = "ABNORMAL";
                         }
                     }
-                    const nilaiTindakan = parseFloat(item.nilai_tindakan); 
-                    const batasBawah = parseFloat(item_nilai_rujukan.batas_bawah); 
-                    const batasAtas = parseFloat(item_nilai_rujukan.batas_atas);                        
-                    if (nilaiTindakan >= batasBawah && nilaiTindakan <= batasAtas) {
-                        status = "NORMAL";
-                    } else {
-                        status = "ABNORMAL";
-                    }
+                    nilai_rujukan += `${item_nilai_rujukan.nama_nilai_kenormalan} : ${item_nilai_rujukan.batas_bawah} ${item_nilai_rujukan.antara} ${item_nilai_rujukan.batas_atas}<br>`;
                 } else {
-                    nilai_rujukan += item_nilai_rujukan.nama_nilai_kenormalan + " : (+) <strong>" + item_nilai_rujukan.keterangan_positif + "</strong>, (-) <strong>" + item_nilai_rujukan.keterangan_negatif + "</strong><br>";
-                    if (gender === genderFromData) {
-                        return;
-                    }
-                    if (gender === "semuajeniskelamin") {
-                        if (!semuajeniskelaminFound) {
-                            nilai_rujukan = '';
-                            semuajeniskelaminFound = true;
-                            nilai_rujukan += item_nilai_rujukan.nama_nilai_kenormalan + " : (+) <strong>" + item_nilai_rujukan.keterangan_positif + "</strong>, (-) <strong>" + item_nilai_rujukan.keterangan_negatif + "</strong><br>";
-                        }
-                        if (semuajeniskelaminFound && gender !== "semuajeniskelamin") {
-                            return;
-                        }
+                    if ((gender === genderFromData && !semuajeniskelaminFound) || gender === "semuajeniskelamin") {
                         if (item.nilai_tindakan.toLowerCase().replace(/\s+/g, '') === item_nilai_rujukan.keterangan_positif.toLowerCase().replace(/\s+/g, '')) {
                             status = "NORMAL";
                         } else if(item.nilai_tindakan.toLowerCase().replace(/\s+/g, '') === item_nilai_rujukan.keterangan_negatif.toLowerCase().replace(/\s+/g, '')) {
                             status = "ABNORMAL";
+                        }else{
+                            status = "TIDAK TERDEFINISI"
                         }
                     }
+                    nilai_rujukan += `${item_nilai_rujukan.nama_nilai_kenormalan} : (+) <strong>${item_nilai_rujukan.keterangan_positif}</strong>, (-) <strong>${item_nilai_rujukan.keterangan_negatif}</strong><br>`;
                 }
             }
         });
@@ -257,7 +241,9 @@ function renderRow(item, level = 0, tbody, datadiri) {
         item.sub.forEach(subItem => renderRow(subItem, level + 1, tbody));
     }
 }
-
+function clear_berkas_mcu(){
+    
+}
 function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu) {
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
@@ -271,9 +257,9 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu) {
                 nama_peserta: nama_peserta,
             },
             success: function(response) {
-                console.log(response.laboratorium);
+                $("#id_mcu_berkas_mcu").html(id_mcu);
                 $("#riwayat_khusus_wanita_section").hide();
-                $("#berkas_mcu_foro_peserta").html(`<img src="${response.riwayat_informasi_foto.data_foto}" class="img-fluid rounded scaled-image_0_3">`);
+                $("#berkas_mcu_foro_peserta").html(`<img src="${response.riwayat_informasi_foto.data_foto   }" class="img-fluid rounded scaled-image_0_3">`);
                 $("#berkas_mcu_nomor_mcu").html(no_transaksi);
                 $("#berkas_mcu_nama_peserta").html(nama_peserta);
                 $("#berkas_mcu_nik").html(response.informasi_data_diri.nomor_identitas);
@@ -284,19 +270,21 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu) {
                 $("#berkas_mcu_jabatan").html(response.informasi_data_diri.nama_departemen);
                 $("#berkas_mcu_tanggal_mcu").html(moment(response.informasi_data_diri.tanggal_mcu).format('DD-MM-YYYY')+" / "+response.informasi_data_diri.jenis_transaksi_pendaftaran.toUpperCase().replace('_', ' '));
                 /*kesimpulan tindakan*/
-                quillInstances['berkas_mcu_riwayat_medis'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_riwayat_medis));
-                quillInstances['berkas_mcu_pemeriksaan_fisik'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_fisik));
-                quillInstances['berkas_mcu_pemeriksaan_laboratorium'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_laboratorum));
-                quillInstances['berkas_mcu_pemeriksaan_threadmill'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_threadmill));
-                quillInstances['berkas_mcu_pemeriksaan_rontgen_thorax'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_rontgen_thorax));
-                quillInstances['berkas_mcu_pemeriksaan_rontgen_lumbosacral'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_rontgen_lumbosacral));
-                quillInstances['berkas_mcu_pemeriksaan_usg_ubdomain'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_usg_ubdomain));
-                quillInstances['berkas_mcu_pemeriksaan_farmingham_score'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_farmingham_score));
-                quillInstances['berkas_mcu_pemeriksaan_ekg'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_ekg));
-                quillInstances['berkas_mcu_pemeriksaan_audiometri_kiri'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_audio_kiri));
-                quillInstances['berkas_mcu_pemeriksaan_audiometri_kanan'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_audio_kanan));
-                quillInstances['berkas_mcu_pemeriksaan_spirometri_restriksi'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_spiro_restriksi));
-                quillInstances['berkas_mcu_pemeriksaan_spirometri_obstruksi'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_spiro_obstruksi));
+                if (response.kesimpulan_tindakan !== null){
+                    quillInstances['berkas_mcu_riwayat_medis'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_riwayat_medis));
+                    quillInstances['berkas_mcu_pemeriksaan_fisik'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_fisik));
+                    quillInstances['berkas_mcu_pemeriksaan_laboratorium'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_laboratorum));
+                    quillInstances['berkas_mcu_pemeriksaan_threadmill'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_threadmill));
+                    quillInstances['berkas_mcu_pemeriksaan_rontgen_thorax'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_rontgen_thorax));
+                    quillInstances['berkas_mcu_pemeriksaan_rontgen_lumbosacral'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_rontgen_lumbosacral));
+                    quillInstances['berkas_mcu_pemeriksaan_usg_ubdomain'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_usg_ubdomain));
+                    quillInstances['berkas_mcu_pemeriksaan_farmingham_score'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_farmingham_score));
+                    quillInstances['berkas_mcu_pemeriksaan_ekg'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_ekg));
+                    quillInstances['berkas_mcu_pemeriksaan_audiometri_kiri'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_audio_kiri));
+                    quillInstances['berkas_mcu_pemeriksaan_audiometri_kanan'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_audio_kanan));
+                    quillInstances['berkas_mcu_pemeriksaan_spirometri_restriksi'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_spiro_restriksi));
+                    quillInstances['berkas_mcu_pemeriksaan_spirometri_obstruksi'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_pemeriksaan_spiro_obstruksi));
+                }
                 /* kesimpulan dan saran*/
                 quillInstances['berkas_mcu_kesimpulan_tindakan'].setContents(JSON.parse(response.kesimpulan_tindakan.kesimpulan_keseluruhan));
                 quillInstances['berkas_mcu_tindakan_saran'].setContents(JSON.parse(response.kesimpulan_tindakan.saran_keseluruhan));
@@ -546,8 +534,6 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu) {
                 response.laboratorium.forEach(kategori => {
                     renderKategori(kategori, 1, response.informasi_data_diri);
                 });
-            },
-            complete: function(xhr, status) {
                 $("#modal_lihat_berkas_mcu").modal('show');
             },
             error: function(xhr, status, error) {
@@ -556,3 +542,21 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu) {
         });
     });
 }
+$("#konfirmasi_validasi_rekap_kesimpulan").click(function(){
+    Swal.fire({
+        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Validasi Akhir Dokumen Ini</h4><p class="text-muted mx-4 mb-0">Apakah ingin mencetak file berkas PDF MCU dari peserta Nama : <strong>'+$("#berkas_mcu_nama_peserta").text()+'</strong> dengan No.MCU : <strong>'+$("#berkas_mcu_nomor_mcu").text()+'</strong> ?. Untuk melanjukan ini kelihatannya membutuhkan proses yang lumayan lama, Usahakan jangan tutup tampilan ini dan pastikan terkoneksi dengan internet selama proses pengambilan data. </p></div></div>',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: 'orange',
+        confirmButtonText: 'Cetak PDF',
+        cancelButtonText: 'Nanti Dulu!!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let id_mcu = $("#id_mcu_berkas_mcu").text();
+            let nomor_mcu = $("#berkas_mcu_nomor_mcu").text();
+            let nik_peserta = $("#berkas_mcu_nik").text();
+            let dataparameter = btoa(JSON.stringify({id_mcu: id_mcu, nomor_mcu: nomor_mcu, nik_peserta: nik_peserta}));
+            window.location.href = baseurl + '/laporan/berkas/mcu/cetak?data='+dataparameter;
+        }
+    })
+})

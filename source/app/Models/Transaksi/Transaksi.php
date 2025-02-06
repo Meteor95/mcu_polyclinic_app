@@ -23,6 +23,8 @@ class Transaksi extends Model
     public static function listPasienTabel($request, $perHalaman, $offset)
     {
         $parameterpencarian = $request->parameter_pencarian;
+        $status_peserta = $request->status_peserta;
+        $from_query = $request->from_query;
         $tablePrefix = config('database.connections.mysql.prefix');
         $query = DB::table((new self())->getTable())
             ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
@@ -46,6 +48,9 @@ class Transaksi extends Model
         if (!empty($parameterpencarian)) {
             $query->where('no_transaksi', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');
+        }
+        if (!empty($status_peserta)) {
+            $query->where('mcu_transaksi_peserta.status_peserta', '=', $status_peserta);
         }
         $jumlahdata = $query->groupBy('mcu_transaksi_peserta.id')
             ->get()

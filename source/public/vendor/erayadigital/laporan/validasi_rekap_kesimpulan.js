@@ -12,7 +12,6 @@ const pemeriksaanConfig = [
     { id: 'pemeriksaan_audiometri_kanan', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Audiometri Kanan peserta ini' },
     { id: 'pemeriksaan_spirometri_restriksi', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Spirometri Restriksi peserta ini' },
     { id: 'pemeriksaan_spirometri_obstruksi', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Spirometri Obstruksi peserta ini' },
-    { id: 'pemeriksaan_kesimpulan_tindakan', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Kesimpulan Tindakan peserta ini' },
     { id: 'pemeriksaan_tindakan_saran', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Tindakan Saran peserta ini' }
 ];
 const choicesConfig = [
@@ -30,16 +29,24 @@ const choicesConfig = [
     { id_quill: 'pemeriksaan_spirometri_obstruksi', kondisi: 'pemeriksaan_spirometri', id: 'pemeriksaan_spirometri_obstruksi_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Spirometri Obstruksi' },
     { id_quill: 'pemeriksaan_restriksi', kondisi: 'pemeriksaan_restriksi', id: 'pemeriksaan_restriksi_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Restriksi' },
     { id_quill: 'pemeriksaan_obstruksi', kondisi: 'pemeriksaan_obstruksi', id: 'pemeriksaan_obstruksi_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Obstruksi' },
-    { id_quill: 'pemeriksaan_kesimpulan_tindakan', kondisi: 'pemeriksaan_kesimpulan_tindakan', id: 'pemeriksaan_kesimpulan_tindakan_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Kesimpulan Tindakan' }
 ];
 let id_mcu_let = '', nomor_mcu_let = '';
 let pemeriksaan_laboratorium_kondisi_select_id = document.getElementById('pemeriksaan_laboratorium_kondisi_select');
+let pemeriksaan_kesimpulan_non_status_kesehatan_select_id = document.getElementById('pemeriksaan_kesimpulan_non_status_kesehatan_select');
+let pemeriksaan_kesimpulan_tindakan_select_id = document.getElementById('pemeriksaan_kesimpulan_tindakan_select');
 let choice_pemeriksaan_laboratorium_kondisi_select = new Choices(pemeriksaan_laboratorium_kondisi_select_id, {
     searchEnabled: true,
     shouldSort: false,
     placeholder: true,
     placeholderValue: 'Pilih Status Kesimpulan Laboratorium',
 });
+let choice_pemeriksaan_kesimpulan_non_status_kesehatan_select = new Choices(pemeriksaan_kesimpulan_non_status_kesehatan_select_id, {
+    searchEnabled: true,
+    shouldSort: false,
+    placeholder: true,
+    placeholderValue: 'Pilih Kesimpulan Kesehatan',
+});
+let choice_pemeriksaan_kesimpulan_tindakan_select = null;
 let quillInstances = {};
 $(document).ready(function() {
     pemeriksaanConfig.forEach(item => {
@@ -255,7 +262,6 @@ function clear_pemeriksaan_kesimpulan() {
     quillInstances['pemeriksaan_audiometri_kanan'].setText('');
     quillInstances['pemeriksaan_spirometri_restriksi'].setText('');
     quillInstances['pemeriksaan_spirometri_obstruksi'].setText('');
-    quillInstances['pemeriksaan_kesimpulan_tindakan'].setText('');
     quillInstances['pemeriksaan_tindakan_saran'].setText('');
 }
 function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
@@ -272,8 +278,22 @@ function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
                 nomor_mcu_let: nomor_mcu_let,
             },
             success: function(response) {
-                console.log(response.data_poliklinik)
                 clear_pemeriksaan_kesimpulan();
+                const hierarchicalData = response.data_kesimpulan_tindakan;
+                    pemeriksaan_kesimpulan_tindakan_select_id.innerHTML = '';
+                    hierarchicalData.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.id;
+                        option.textContent = `${category.status} ${category.kategori} [${category.catatan}]`;
+                        pemeriksaan_kesimpulan_tindakan_select_id.appendChild(option);
+                    });
+                    if (choice_pemeriksaan_kesimpulan_tindakan_select) { choice_pemeriksaan_kesimpulan_tindakan_select.destroy(); }
+                    choice_pemeriksaan_kesimpulan_tindakan_select = new Choices(pemeriksaan_kesimpulan_tindakan_select_id, {
+                        searchEnabled: true,
+                        shouldSort: false,
+                        placeholder: true,
+                        placeholderValue: 'Silahkan Pilih Satuan',
+                    });
                 if (response.data_poliklinik.count_poliklinik_spirometri > 0) {
                     $(".pemeriksaan_spirometri").show();
                 }
@@ -313,7 +333,10 @@ function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
                     quillInstances['pemeriksaan_audiometri_kanan'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_audio_kanan));
                     quillInstances['pemeriksaan_spirometri_restriksi'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_spiro_restriksi));
                     quillInstances['pemeriksaan_spirometri_obstruksi'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_spiro_obstruksi));
-                    quillInstances['pemeriksaan_kesimpulan_tindakan'].setContents(JSON.parse(response.data.kesimpulan_keseluruhan));
+                    setTimeout(() => {
+                        choice_pemeriksaan_kesimpulan_tindakan_select.setChoiceByValue(response.data.kesimpulan_keseluruhan.toString());
+                    }, 100);
+                    choice_pemeriksaan_kesimpulan_non_status_kesehatan_select.setChoiceByValue(response.data.kesimpulan_hasil_medical_checkup);
                     quillInstances['pemeriksaan_tindakan_saran'].setContents(JSON.parse(response.data.saran_keseluruhan));
                 }
             },
@@ -362,7 +385,8 @@ $("#konfirmasi_validasi_rekap_kesimpulan").on('click', function() {
                         hasil_kesimpulan_pemeriksaan_audio_kanan: JSON.stringify(quillInstances['pemeriksaan_audiometri_kanan'].getContents().ops),
                         hasil_kesimpulan_pemeriksaan_spirometri_restriksi: JSON.stringify(quillInstances['pemeriksaan_spirometri_restriksi'].getContents().ops),
                         hasil_kesimpulan_pemeriksaan_spirometri_obstruksi: JSON.stringify(quillInstances['pemeriksaan_spirometri_obstruksi'].getContents().ops),
-                        hasil_kesimpulan_pemeriksaan_kesimpulan_tindakan: JSON.stringify(quillInstances['pemeriksaan_kesimpulan_tindakan'].getContents().ops),
+                        hasil_kesimpulan_pemeriksaan_kesimpulan_tindakan: $("#pemeriksaan_kesimpulan_tindakan_select").val(),
+                        kesimpulan_hasil_medical_checkup: $("#pemeriksaan_kesimpulan_non_status_kesehatan_select").val(),
                         hasil_kesimpulan_pemeriksaan_tindakan_saran: JSON.stringify(quillInstances['pemeriksaan_tindakan_saran'].getContents().ops),
                     },
                     success: function(response) {

@@ -29,7 +29,8 @@ class PoliklinikController extends Controller
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $data = $req->all();
-            $poliklinikServices->handleTransactionPoliklinik($data, $req->file('citra_unggahan_poliklinik'),$jenis_poli);
+            $userId = $req->attributes->get('user_id');
+            $poliklinikServices->handleTransactionPoliklinik($data, $req->file('citra_unggahan_poliklinik'),$jenis_poli, $userId);
             $dynamicAttributes = [
                 'data' => $data,
             ];

@@ -69,6 +69,7 @@ class LaboratoriumController extends Controller
                 'meta_data_jasa' => $request->meta_data_jasa == NULL ? '[]' : json_encode($request->meta_data_jasa),
                 'harga_jual' => $request->harga_jual,
                 'visible_item' => $request->visible_item,
+                'metode_tindakan' => $request->metode_tindakan,
             ];
             if ($request->isedit == 'true') {
                 $tarif = Tarif::where('kode_item', $request->kode_item)->update($data);
