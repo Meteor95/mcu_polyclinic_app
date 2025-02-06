@@ -260,17 +260,17 @@
             </ul>
           </li>
           @endif
-          @if ($hasLaporanPenjualan || $hasLaporanHutang)
+          @if ($hasAccessLaporanPenjualan || $hasAccessLaporanHutang)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
-              <i class="fa-solid fa-folder-tree" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
-              <span>Berkas Tindakan</span>
+              <i class="fa-solid fa-cash-register" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+              <span>Transaksi</span>
             </a>
             <ul class="sidebar-submenu">
               @foreach([
-                ['condition' => $hasAccessArciveMCU, 'url' => 'laporan/berkas/mcu', 'label' => 'MCU'],
-                ['condition' => $hasAccessArciveLaboratorium, 'url' => 'laporan/berkas/laboratorium', 'label' => 'Laboratorium'],
+                ['condition' => $hasAccessLaporanPenjualan, 'url' => 'laporan/transaksi/penjualan', 'label' => 'Penjualan'],
+                ['condition' => $hasAccessLaporanHutang, 'url' => 'laporan/transaksi/hutang', 'label' => 'Hutang'],
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>

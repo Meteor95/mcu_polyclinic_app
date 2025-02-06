@@ -77,6 +77,8 @@ class CheckPermission
             'hasAccessArciveLaboratorium' => 'akses_berkas_tindakan_laboratorium',
             'hasAccessArciveNota' => 'akses_berkas_tindakan_kwitansi',
             'hasAccessBerkasMCU' => 'akses_berkas_tindakan_mcu',
+            'hasAccessLaporanPenjualan' => 'akses_laporan_penjualan',
+            'hasAccessLaporanHutang' => 'akses_laporan_hutang',
             /* Master Data */
             'hasAccessMasterData' => 'akses_master_data',
             'hasAccessMasterPerusahaan' => 'akses_master_perusahaan',
