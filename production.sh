@@ -31,6 +31,7 @@ sudo mkdir -p source/storage/app/public/mcu/poliklinik/farmingham_score
 sudo mkdir -p source/storage/app/public/mcu/poliklinik/spirometri
 sudo mkdir -p source/storage/app/public/mcu/poliklinik/threadmill
 sudo mkdir -p source/storage/app/public/user/ttd
+sudo mkdir -p source/storage/app/public/upload/apotek
 
 # Ensure necessary permissions
 ######################################

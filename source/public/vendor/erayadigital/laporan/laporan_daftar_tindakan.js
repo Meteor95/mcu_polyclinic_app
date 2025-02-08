@@ -1,34 +1,8 @@
-let daftar_table_tindakan_modal;
-let id_transaksi_konfirmasi;
-let nominalBayar = new AutoNumeric('#nominal_bayar', {  decimal: ',',
-    digit: '.',
-    allowDecimalPadding: false,
-    minimumValue: '0',
-    modifyValueOnUpDownArrow: false,
-    modifyValueOnWheel: false,});
-let nominalKembalian = new AutoNumeric('#nominal_kembalian', {  decimal: ',',
-    digit: '.',
-    allowDecimalPadding: false,
-    modifyValueOnUpDownArrow: false,
-    modifyValueOnWheel: false,});
-let nominalBayarKonfirmasi = new AutoNumeric('#nominal_bayar_konfirmasi', {  decimal: ',',
-    digit: '.',
-    allowDecimalPadding: false,
-    minimumValue: '0',
-    modifyValueOnUpDownArrow: false,
-    modifyValueOnWheel: false,});
-let nominalApotekKonfirmasi = new AutoNumeric('#nominal_apotek_konfirmasi', {  decimal: ',',
-    digit: '.',
-    allowDecimalPadding: false,
-    minimumValue: '0',
-    modifyValueOnUpDownArrow: false,
-    modifyValueOnWheel: false,});
+let daftar_table_tindakan_modal, daftar_table_fee_modal;
 $(document).ready(function(){
-    document.querySelectorAll('[data-state]').forEach(element => {
-        element.classList.add('close_icon');
-    });
     load_datatables_tindakan();
     daftar_table_tindakan_modal = initDataTable("#table_tindakan_lab_modal");
+    daftar_table_fee_modal = initDataTable("#table_fee_lab_modal");
 });
 function initDataTable(selector, options = {}) {
     const defaultOptions = {
@@ -147,6 +121,27 @@ function load_datatables_tindakan(){
                     }
                 },
                 {
+                    title: "Waktu Transaksi",
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `Trx : ${moment(row.waktu_trx).format('DD-MM-YYYY HH:mm:ss')}<br>Sample : ${moment(row.waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss')}`;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    title: "Total Transaksi",
+                    render: function(data, type, row, meta) {
+                        return `Pendapatan : ${row.total_transaksi.toLocaleString('id-ID')}<br>Tindakan : ${row.total_tindakan.toLocaleString('id-ID')}`;
+                    }
+                },
+                {
+                    title: "Jenis Layanan",
+                    render: function(data, type, row, meta) {
+                        return `${row.jenis_layanan.replace('_',' ')}<br><span class="badge badge-primary">${capitalizeFirstLetter(row.status_pembayaran)}</span>`;
+                    }
+                },
+                {
                     title: "Entitas",
                     render: function(data, type, row, meta) {
                         return `Nama Pasien : ${row.nama_peserta}<br>
@@ -157,39 +152,17 @@ function load_datatables_tindakan(){
                     }
                 },
                 {
-                    title: "Waktu Transaksi",
-                    render: function(data, type, row, meta) {
-                        if (type === 'display') {
-                            return `Trx : ${moment(row.waktu_trx).format('DD-MM-YYYY HH:mm:ss')}<br>Sample : ${moment(row.waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss')}`;
-                        }
-                        return data;
-                    }
-                },
-                {
-                    title: "Jenis Layanan",
-                    render: function(data, type, row, meta) {
-                        return `${row.jenis_layanan.replace('_',' ')}<br>Tindakan : ${row.total_tindakan.toLocaleString('id-ID')}<br><span class="badge ${row.status_pembayaran == 'done' ? 'badge-success' : row.status_pembayaran == 'pending' ? 'badge-warning' : 'badge-danger'}">${capitalizeFirstLetter(row.status_pembayaran)}</span>`;
-                    }
-                },
-                {
-                    title: "Total Transaksi",
-                    className: "text-end",
-                    render: function(data, type, row, meta) {
-                        return `<span style="font-size: 2rem; font-weight: bold;">${(row.total_transaksi + row.nominal_apotek).toLocaleString('id-ID')}</span>`;
-                    }
-                },
-                {
                     title: "Aksi",
                     className: "text-center",
-                    width: "230px",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
+                            let parts = row.no_nota.split('/');
                             return `<div class="d-flex justify-content-between gap-2">
                                 <button onclick="detail_tindakan('${row.id_transaksi}')" class="btn btn-success w-100">
                                     <i class="fa fa-eye"></i> Detail
                                 </button>
-                                <button onclick="konfirmasi_pembayaran('${row.id_transaksi}')" class="btn btn-primary w-100">
-                                    <i class="fa fa-check"></i> Konfirmasi
+                                <button onclick="hapus_tindakan('${row.id_transaksi}','${btoa(parts)}','${row.nama_peserta}')" class="btn btn-danger w-100">
+                                    <i class="fa fa-trash-o"></i> Hapus
                                 </button>
                             </div>`;
                         }       
@@ -199,6 +172,43 @@ function load_datatables_tindakan(){
             ]
         });
     });
+}
+function hapus_tindakan(id,parts,nama_peserta){
+    Swal.fire({ 
+        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Hapus Informasi Transaksi Tindakan</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus informasi transaksi tindakan dengan atas nama : <strong>' + nama_peserta + '</strong> dengan Nota <strong>' + atob(parts).split(',').slice(0, 3).join('/') + '</strong> pada MCU <strong>' + atob(parts).split(',').slice(3).join('/') + '</strong></p></div></div>',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: 'orange',
+        confirmButtonText: 'Hapus Data',
+        cancelButtonText: 'Nanti Dulu!!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.get('/generate-csrf-token', function(response) {
+                $.ajax({
+                    url: baseurlapi + '/laboratorium/hapus_tindakan',
+                    type: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                    data: {
+                        _token:response.csrf_token,
+                        id_transaksi:id,
+                        nama_peserta:nama_peserta,
+                        no_nota:atob(parts).split(',').slice(0, 3).join('/'),
+                        no_mcu:atob(parts).split(',').slice(3).join('/'),
+                    },
+                    success: function(response) {
+                        if (response.success == false){
+                            return createToast('Kesalahan Penyimpanan', 'top-right', response.message, 'error', 3000);
+                        }
+                        $("#daftar_table_tindakan").DataTable().ajax.reload();
+                        return createToast('Tarif Laboratorium Telah Terhapus', 'top-right', response.message, 'success', 3000);
+                    },
+                    error: function(xhr, status, error) {
+                        return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
+                    },
+                });
+            });
+        }
+    }); 
 }
 function detail_tindakan(id,parts,nama_peserta){
     $.get('/generate-csrf-token', function(response) {
@@ -211,19 +221,18 @@ function detail_tindakan(id,parts,nama_peserta){
                 id_transaksi:id,
             },
             success: function(response) {
+                let detail_transaksi_code = encodeURIComponent(btoa(response.transaksi[0].id_transaksi+'|'+response.transaksi[0].no_mcu+'|'+response.transaksi[0].nomor_identitas+'|'+response.transaksi[0].nama_peserta));
                 let parts = response.transaksi[0].no_nota.split('/');
                 let no_trx = parts.slice(0, 3).join('/');
                 let no_mcu = parts.slice(3).join('/');
                 $("#no_trx").html(no_trx);
-                $("#total_pendapatan").html((response.transaksi[0].total_transaksi + response.transaksi[0].nominal_apotek).toLocaleString('id-ID'));
-                $("#total_pendapatan_apotek_keterangan").html("Laboratorium : "+response.transaksi[0].total_transaksi.toLocaleString('id-ID')+"<br>Apotek : "+response.transaksi[0].nominal_apotek.toLocaleString('id-ID'));
+                $("#total_pendapatan").html(response.transaksi[0].total_transaksi.toLocaleString('id-ID'));
                 $("#no_mcu_label").html(no_mcu);
                 $("#waktu_transaksi_label").html(moment(response.transaksi[0].waktu_trx).format('DD-MM-YYYY HH:mm:ss'));
                 $("#waktu_sample_label").html(moment(response.transaksi[0].waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss'));
                 $("#dibuat_tanggal_label").html(moment(response.transaksi[0].created_at).format('DD-MM-YYYY HH:mm:ss'));
                 $("#nama_dokter_label").html(response.transaksi[0].nama_dokter);
                 $("#nama_penanggung_jawab_label").html(response.transaksi[0].nama_pj);
-                nominalApotekKonfirmasi.set(response.transaksi[0].nominal_apotek);
                 if (response.transaksi[0].is_paket_mcu == 1){
                     $("#nama_paket_label").html("Terhubung Paket MCU : "+response.transaksi[0].nama_paket_mcu);  
                 }else if (response.transaksi[0].is_paket_mcu == 0 && response.transaksi[0].nama_paket_mcu == 0){
@@ -237,6 +246,7 @@ function detail_tindakan(id,parts,nama_peserta){
                     $("#surat_pengantaran_label").html("<a href='"+baseurlapi+"/file/unduh_surat_pengantar?file_name="+response.transaksi[0].nama_file_surat_pengantar+"' target='_blank'><i class='fa fa-download'></i> Unduh Berkas</a>");
                 }
                 daftar_table_tindakan_modal.rows().clear().draw();
+                daftar_table_fee_modal.rows().clear().draw();
                 response.transaksi.forEach((item, index) => {
                     daftar_table_tindakan_modal.row.add([
                         `<div class="text-center">${index + 1}</div>`,
@@ -249,7 +259,17 @@ function detail_tindakan(id,parts,nama_peserta){
                         `<div class="text-end">${(item.harga_setelah_diskon * item.jumlah).toLocaleString('id-ID')}</div>`,
                     ]).draw();
                 });
-                $("#button_edit_transaksi").html(``);
+                response.transaksi_fee.forEach((item, index) => {
+                    daftar_table_fee_modal.row.add([
+                        index + 1,
+                        item.nama_tindakan,
+                        item.kode_jasa,
+                        item.nama_petugas,
+                        `<div class="text-end">${item.nominal_fee.toLocaleString('id-ID')}</div>`,
+                        `<div class="text-end">${item.besaran_fee.toLocaleString('id-ID')}</div>`,
+                    ]).draw();
+                });
+                $("#button_edit_transaksi").html(`<a href="/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}" target="_blank" class="btn btn-amc-orange"><i class="fa fa-edit"></i> Ubah Data Transaksi</a>`);
             },
             error: function(xhr, status, error) {
                 return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
@@ -265,127 +285,3 @@ $("#data_ditampilkan, #status_pembayaran, #jenis_layanan").change(function(){
 $("#kotak_pencarian").keyup(debounce(function(){
     $("#daftar_table_tindakan").DataTable().ajax.reload();
 }, 300));
-function konfirmasi_pembayaran(id_transaksi){
-    $.get('/generate-csrf-token', function(response) {
-        $.ajax({
-            url: baseurlapi + '/laboratorium/detail_tindakan',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
-            data: {
-                _token:response.csrf_token,
-                id_transaksi:id_transaksi,
-            },
-            success: function(response) {
-                console.log(response);
-                id_transaksi_konfirmasi = id_transaksi;
-                $("#status_pembayaran_terakhir").val(response.transaksi[0].status_pembayaran).trigger('change');
-                nominalBayarKonfirmasi.set(response.transaksi[0].total_transaksi);
-                const radioHutang = document.getElementById("hutang");
-                const radioTunai = document.getElementById("tunai");
-                if (response.transaksi[0].jenis_transaksi == 0) {
-                    radioHutang.checked = true;
-                    nominalBayar.set(0);
-                    nominalKembalian.set(nominalBayarKonfirmasi.getNumber() * -1);
-                    $('#pembayaran_tunai').hide();
-                } else {
-                    radioTunai.checked = true;
-                    $('#pembayaran_tunai').show();
-                    if (response.transaksi[0].jenis_transaksi == 1) {
-                        $("#select2_metode_pembayaran").val(0).trigger('change');
-                        nominalBayar.set(response.transaksi[0].total_bayar);
-                        nominalKembalian.set(response.transaksi[0].total_bayar - response.transaksi[0].total_transaksi);
-                    } else {
-                        $("#select2_metode_pembayaran").val(1).trigger('change');
-                        const values = response.transaksi[0].metode_pembayaran.split('|');
-                        $("#beneficiary_bank").val(values[0]).trigger('change');
-                        $("#nomor_transaksi_transfer").val(values[2]);
-                    }
-                }
-                
-            },
-            error: function(xhr, status, error) {
-                return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
-            },
-        });
-    });
-    $('#modalKonfimasiPendaftaran').modal('show');
-}
-$('input[name="tipe_pembayaran"]').on('change', updateCardStyles);
-function updateCardStyles() {
-    if ($('#hutang').is(':checked')) {
-        $('#card-hutang').css({'border': '2px solid #ccc', 'background-color': '#f8f9fa'});
-        $('#card-tunai').css({'border': '', 'background-color': ''});
-        nominalBayar.set(0);
-        nominalKembalian.set(nominalBayarKonfirmasi.getNumber() * -1);
-        $('#pembayaran_tunai').hide();
-        $('#select2_metode_pembayaran')[0].selectedIndex = 0;
-    } else if ($('#tunai').is(':checked')) {
-        $('#card-tunai').css({'border': '2px solid #ccc', 'background-color': '#f8f9fa'});
-        $('#card-hutang').css({'border': '', 'background-color': ''});
-        $('#pembayaran_tunai').show();
-        $('.transaksi_transfer').hide();
-        $('#nominal_bayar').focus();
-    }
-}
-$('#select2_metode_pembayaran').on('change', function(){
-    if ($('#select2_metode_pembayaran').val() == 1) {
-        $('.transaksi_transfer').show();
-        $('.transaksi_tunai').hide();
-        nominalBayar.set(0);
-        nominalKembalian.set(nominalBayarKonfirmasi.getNumber() * -1);
-    }else{
-        $('.transaksi_transfer').hide();
-        $('.transaksi_tunai').show();
-        $('#nomor_transaksi_transfer').val('');
-        $('#beneficiary_bank')[0].selectedIndex = 0;
-    }
-});
-$("#btnKonfirmasiPembayaran").click(function(){
-    if(id_transaksi_konfirmasi == null || id_transaksi_konfirmasi == ""){
-        return createToast('Kesalahan Penyimpanan', 'top-right', 'Id Transaksi tidak ditemukan. Silahkan tentukan transaksi mana yang ingin di konfirmasi status pembayarannya', 'error', 3000);
-    }
-    let jenis_transaksi_status = $('input[name="tipe_pembayaran"]:checked').val();
-    let metode_pembayaran_status = "";
-    if (jenis_transaksi_status == 1) {
-        if ($('#select2_metode_pembayaran').val() == 0) {
-            jenis_transaksi_status = 1;
-        }else{
-            jenis_transaksi_status = 2;
-            metode_pembayaran_status = $('#beneficiary_bank').val()+"|"+$('#beneficiary_bank option:selected').text()+"|"+$('#nomor_transaksi_transfer').val();
-        }
-    }
-    $.get('/generate-csrf-token', function(response) {
-        $.ajax({
-            url: baseurlapi + '/transaksi/konfirmasi_pembayaran',
-            type: 'POST',
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
-            data: {
-                _token:response.csrf_token,
-                id_transaksi:id_transaksi_konfirmasi,
-                status_pembayaran:$("#status_pembayaran_terakhir").val(),
-                total_bayar: nominalBayar.getNumber(),
-                jenis_transaksi:jenis_transaksi_status,
-                metode_pembayaran:metode_pembayaran_status,
-            },
-            success: function(response) {
-                if (!response.success) {
-                    return createToast('Kesalahan Konfirmasi Transaksi', 'top-right', response.message, 'error', 3000);
-                }
-                $("#daftar_table_tindakan").DataTable().ajax.reload();
-                return createToast('Kesalahan Penyimpanan', 'top-right', response.message, 'success', 3000);
-            },
-            complete: function() {
-                $('#modalKonfimasiPendaftaran').modal('hide');
-            },
-            error: function(xhr, status, error) {
-                return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
-            },
-        });
-    });
-});
-$('#nominal_bayar').on('input', function(){
-    hitungNominalBayar();
-});
-function hitungNominalBayar(){
-    nominalKembalian.set((nominalBayarKonfirmasi.getNumber() - nominalBayar.getNumber()) * -1);
-}

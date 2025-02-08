@@ -97,4 +97,31 @@ class FileController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    public function download_berkas_apotek(Request $req){
+        try {
+            $fileName = $req->file_name;
+            $filePath = 'uploads/apotek/' . $fileName;
+            if (!Storage::disk('public')->exists($filePath)) {
+                return response()->json([
+                    'error' => 'File tidak ditemukan.'
+                ], Response::HTTP_NOT_FOUND);
+            }
+            $fileContents = Storage::disk('public')->get($filePath);
+            if (empty($fileContents)) {
+                return response()->json([
+                    'error' => 'File kosong atau tidak dapat dibaca.'
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+            $mimeType = mime_content_type(storage_path('app/public/' . $filePath));
+            $headers = [
+                'Content-Type' => $mimeType, 
+                'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+            ];
+            return response($fileContents, 200, $headers);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

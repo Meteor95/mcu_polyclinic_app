@@ -257,8 +257,8 @@ if (!function_exists('header_mcu')) {
         </div>
     </main>
     </div>
-
     @php
+if (!function_exists('hasValidItems')) {
     function hasValidItems(array $kategori): bool {
         if (count($kategori['items']) > 0) return true;
         foreach ($kategori['subkategori'] as $subkategori) {
@@ -268,6 +268,8 @@ if (!function_exists('header_mcu')) {
         }
         return false;
     }
+}
+if (!function_exists('renderKategori')) {
     function renderKategori(array $kategori, int $depth, $datadiri = null) {
         $html = '';
 
@@ -301,6 +303,8 @@ if (!function_exists('header_mcu')) {
         }
         return $html;
     }
+}
+if (!function_exists('renderRow')) {
     function renderRow(array $item, int $level = 0, $datadiri = null) {
         $paddingLeft = $level * 2;
         $nilai_rujukan = '';
@@ -390,6 +394,7 @@ if (!function_exists('header_mcu')) {
 
         return $row;
     }
+}
     @endphp
     <div class="break-before section">
     <main>

@@ -112,7 +112,6 @@
               </div>
               <div class="col-md-6 text-end">
                 <div id="total_pendapatan">0</div>
-                <div id="total_pendapatan_apotek_keterangan">0</div>
               </div>
             </div>
             <div class="row">
@@ -151,157 +150,25 @@
             </div>
           </div>
           <div class="modal-footer">
-            <div id="button_edit_apotek"></div>
             <div id="button_edit_transaksi"></div>
-          </div>
-      </div>
-  </div>
-</div>
-<div class="modal fade" id="modalUbahDataApotek" tabindex="-1" role="dialog" aria-labelledby="modalUbahDataApotekLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog modal-fullscreen" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="modalUbahDataApotekLabel">Ubah Data Apotek dengan ID Transaksi <span id="id_transaksi_apotek"></span> dan Nomor <span id="nomor_trx_apotek"></span></h5>
-              <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-12">
-                <h3>Masukan Nominal</h3>
-                <input type="text" class="form-control text-end" id="nominal_apotek" placeholder="0" autofocus>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h3>Berkas Teks</h3>
-                <table id="daftar_table_berkas_apotek" class="table table-striped table-bordered table-hover table-padding-sm">
-                  <thead>
-                    <tr style="text-align: center;">
-                      <th>No</th>
-                      <th>Berkas</th>
-                      <th>Ekstensi</th>
-                      <th>Keterangan</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-            </div>
-            <div class="row mt-2">
-              <div class="card-body">
-                <div class="dropzone" id="singleFileUploadApotek">
-                  <div class="dz-message needsclick">
-                      <i class="icon-cloud-up" style="font-size: 40px;"></i>
-                      <h5 class="f-w-600">Tarik file ke sini atau klik untuk mengunggah berkas.</h5>
-                      <span class="note needsclick">(Berkas yang diizinkan diunggah dalam satu waktu adalah <strong>3 File</strong>)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-amc-orange" id="simpan_data_apotek"><i class="fa fa-save"></i> Simpan Tambahan Apotek</button>
           </div>
       </div>
   </div>
 </div>
 @endsection
 @section('css_load')
-<link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/dropzone.min.css') }}">
-<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/ds-digital">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" integrity="sha512-UtLOu9C7NuThQhuXXrGwx9Jb/z9zPQJctuAgNUBK3Z6kkSYT9wJ+2+dh6klS+TDBCV9kNPBbAxbVD+vCcfGPaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 <style>
-#total_pendapatan_text, #total_pendapatan, #nominal_apotek{
-  font-family: 'DS-Digital', sans-serif;
-  font-size: 60px;
-  color: red;
-  padding: 0; 
-  line-height: 1;
-  font-weight: bold;
-}
-#nominal_apotek::placeholder{
-  font-size: 60px;
-  color: red;
-}
-#singleFileUploadApotek{
-  border: 1px dashed blue;
-  margin: 0 10px 0 10px;
-}
-.dropzone .dz-preview {
-  position: relative;
-  display: inline-block;
-  vertical-align: top;
-  margin: 16px;
-  min-height: 100px;
-}
-.dz-preview .dz-image img {
-    display: block;
-    margin: 0 auto;
-}
-.dz-preview {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    justify-content: center;
-    width: 100% !important; 
-    max-width: 300px; /* Batasi maksimal lebar agar tidak terlalu besar */
-    height: 150px;
-    padding: 10px;
-}
-
-.dz-preview .dz-image img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-.dz-details .dz-filename {
-    display: none !important;
-}
-/* Pastikan Dropzone berada di tengah */
-.dropzone {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: center;
-    justify-content: flex-start;
-    justify-content: center;
-}
-
-/* Pastikan pesan dalam Dropzone tetap center */
-.dropzone .dz-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    width: 100%;
-    height: 100%;
-}
-
-/* Ikon cloud di dalam Dropzone */
-.dropzone .dz-message i {
-    font-size: 50px;
-    margin-bottom: 10px;
-}
-
-/* Teks dalam Dropzone */
-.dropzone .dz-message h5 {
-    font-size: 16px;
+  #total_pendapatan_text, #total_pendapatan{
+    font-family: 'DS-Digital', sans-serif;
+    font-size: 60px;
+    color: red;
+    padding: 0; 
+    line-height: 1;
     font-weight: bold;
-    margin-bottom: 5px;
-}
-
-/* Note di bawah teks */
-.dropzone .dz-message .note {
-    font-size: 14px;
-    color: #777;
-}
-
-
+  }
 </style>
 @endsection
 @section('js_load')
-<script src="{{ asset('mofi/assets/js/dropzone/dropzone.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" integrity="sha512-JyCZjCOZoyeQZSd5+YEAcFgz2fowJ1F1hyJOXgtKu4llIa0KneLcidn5bwfutiehUTiOuK87A986BZJMko0eWQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/laboratorium/daftar_tindakan.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/laporan/laporan_daftar_tindakan.js') }}"></script>
 @endsection

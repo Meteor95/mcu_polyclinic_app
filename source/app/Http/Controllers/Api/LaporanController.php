@@ -66,7 +66,7 @@ class LaporanController extends Controller
                 ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
                 ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
                 ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
-                ->select('users_member.*','transaksi.total_transaksi','departemen_peserta.nama_departemen','company.company_name', 'transaksi.waktu_trx', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'transaksi.*', 'mcu_transaksi_peserta.id as transaksi_id')
+                ->select('users_member.*','transaksi.total_transaksi','departemen_peserta.nama_departemen','company.company_name', 'transaksi.waktu_trx', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'transaksi.*', 'mcu_transaksi_peserta.id as transaksi_id','mcu_transaksi_peserta.status_peserta')
                 ->selectRaw('
                     COUNT(' . $tablePrefix . 'transaksi.no_mcu) as kedatangan, 
                     MAX(' . $tablePrefix . 'transaksi.created_at) as terakhir_datang, 
@@ -360,7 +360,7 @@ class LaporanController extends Controller
                 $id_mcu = Transaksi::where('no_transaksi', $req->nomor_mcu_let)->first()->id;
             }
             $informasi_mcu = Kesimpulan::where('id_mcu', $id_mcu)->first();
-            $kesimpulan_tindakan = KesimpulanLabStatus::all();
+            $kesimpulan_tindakan = KesimpulanLabStatus::where('id', $informasi_mcu->kesimpulan_keseluruhan)->first();
             $count_poliklinik_spirometri = DB::table('mcu_poli_spirometri')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_ekg = DB::table('mcu_poli_ekg')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_threadmill = DB::table('mcu_poli_threadmill')->where('transaksi_id', $id_mcu)->count();

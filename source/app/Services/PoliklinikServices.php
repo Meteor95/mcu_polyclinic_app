@@ -77,7 +77,6 @@ class PoliklinikServices
                     $filename = "{$uuid}_{$sanitizedName}_{$timestamp}.png";
                     $filePath = $directory . '/' . $filename;
                     $imageSize = getimagesize($file->getPathname());
-                    Log::info($imageSize);
                     if (!$imageSize || $imageSize['mime'] !== 'image/png') {
                         throw new Exception('File bukan PNG atau tidak valid.');
                     }

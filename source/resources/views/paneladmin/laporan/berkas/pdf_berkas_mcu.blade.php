@@ -609,135 +609,140 @@ watermark {
     </div>
 
     @php
-    function renderRow(array $item, int $level = 0, $datadiri = null) {
-        $paddingLeft = $level * 2;
-        $nilai_rujukan = '';
-        $nilai_rujukan_object = [];
-        $is_kuantitatif = false;
-        $status = 'Nilai Tidak Terdefinisi';
-        $semuajeniskelaminFound = false;
+    if (!function_exists('renderRow')) {
+        function renderRow(array $item, int $level = 0, $datadiri = null) {
+            $paddingLeft = $level * 2;
+            $nilai_rujukan = '';
+            $nilai_rujukan_object = [];
+            $is_kuantitatif = false;
+            $status = 'Nilai Tidak Terdefinisi';
+            $semuajeniskelaminFound = false;
 
-        if ($item['meta_data_kuantitatif'] === '[]' && $item['meta_data_kualitatif'] === '[]') {
-            $nilai_rujukan_object = "Meta Data Tidak Dikonfigurasi";
-            $nilai_rujukan = $nilai_rujukan_object;
-        } else {
-            if ($item['meta_data_kuantitatif'] !== '[]') {
-                $nilai_rujukan_object = json_decode($item['meta_data_kuantitatif'], true); // Decode JSON as associative array
-                $is_kuantitatif = true;
+            if ($item['meta_data_kuantitatif'] === '[]' && $item['meta_data_kualitatif'] === '[]') {
+                $nilai_rujukan_object = "Meta Data Tidak Dikonfigurasi";
+                $nilai_rujukan = $nilai_rujukan_object;
             } else {
-                $nilai_rujukan_object = json_decode($item['meta_data_kualitatif'], true); // Decode JSON as associative array
+                if ($item['meta_data_kuantitatif'] !== '[]') {
+                    $nilai_rujukan_object = json_decode($item['meta_data_kuantitatif'], true); // Decode JSON as associative array
+                    $is_kuantitatif = true;
+                } else {
+                    $nilai_rujukan_object = json_decode($item['meta_data_kualitatif'], true); // Decode JSON as associative array
+                }
             }
-        }
 
-        if (is_array($nilai_rujukan_object) && count($nilai_rujukan_object) > 0) {
-            foreach ($nilai_rujukan_object as $item_nilai_rujukan) {
-                $gender = strtolower(str_replace(' ', '', explode(" - ", $item_nilai_rujukan['nama_nilai_kenormalan'])[0]));
-                $genderFromData = strtolower(str_replace(' ', '', $datadiri['jenis_kelamin']));
+            if (is_array($nilai_rujukan_object) && count($nilai_rujukan_object) > 0) {
+                foreach ($nilai_rujukan_object as $item_nilai_rujukan) {
+                    $gender = strtolower(str_replace(' ', '', explode(" - ", $item_nilai_rujukan['nama_nilai_kenormalan'])[0]));
+                    $genderFromData = strtolower(str_replace(' ', '', $datadiri['jenis_kelamin']));
 
-                if ($item_nilai_rujukan['batas_umur'] == -1) {
-                    if ($gender === "semuajeniskelamin") {
-                        $semuajeniskelaminFound = true;
-                    }
-
-                    if ($is_kuantitatif) {
-                        if (($gender === $genderFromData && !$semuajeniskelaminFound) || $gender === "semuajeniskelamin") {
-                            $nilaiTindakan = floatval($item['nilai_tindakan']);
-                            $batasBawah = floatval($item_nilai_rujukan['batas_bawah']);
-                            $batasAtas = floatval($item_nilai_rujukan['batas_atas']);
-
-                            if ($nilaiTindakan >= $batasBawah && $nilaiTindakan <= $batasAtas) {
-                                $status = "<span style='color: green;'>NORMAL</span>";
-                            } else {
-                                $status = "<span style='color: red;'>ABNORMAL</span>";
-                            }
+                    if ($item_nilai_rujukan['batas_umur'] == -1) {
+                        if ($gender === "semuajeniskelamin") {
+                            $semuajeniskelaminFound = true;
                         }
-                        $nilai_rujukan .= "{$item_nilai_rujukan['nama_nilai_kenormalan']} : {$item_nilai_rujukan['batas_bawah']} {$item_nilai_rujukan['antara']} {$item_nilai_rujukan['batas_atas']}<br>";
-                    } else {
-                        if (($gender === $genderFromData && !$semuajeniskelaminFound) || $gender === "semuajeniskelamin") {
-                            $nilaiTindakan = strtolower(str_replace(' ', '', $item['nilai_tindakan']));
-                            $keteranganPositif = strtolower(str_replace(' ', '', $item_nilai_rujukan['keterangan_positif']));
-                            $keteranganNegatif = strtolower(str_replace(' ', '', $item_nilai_rujukan['keterangan_negatif']));
 
-                            if ($nilaiTindakan === $keteranganPositif) {
-                                $status = "<span style='color: green;'>NORMAL</span>";
-                            } else if ($nilaiTindakan === $keteranganNegatif) {
-                                $status = "<span style='color: red;'>ABNORMAL</span>";
-                            } else {
-                                $status = "<span style='color: orange;'>TIDAK TERDEFINISI</span>";
+                        if ($is_kuantitatif) {
+                            if (($gender === $genderFromData && !$semuajeniskelaminFound) || $gender === "semuajeniskelamin") {
+                                $nilaiTindakan = floatval($item['nilai_tindakan']);
+                                $batasBawah = floatval($item_nilai_rujukan['batas_bawah']);
+                                $batasAtas = floatval($item_nilai_rujukan['batas_atas']);
+
+                                if ($nilaiTindakan >= $batasBawah && $nilaiTindakan <= $batasAtas) {
+                                    $status = "<span style='color: green;'>NORMAL</span>";
+                                } else {
+                                    $status = "<span style='color: red;'>ABNORMAL</span>";
+                                }
                             }
+                            $nilai_rujukan .= "{$item_nilai_rujukan['nama_nilai_kenormalan']} : {$item_nilai_rujukan['batas_bawah']} {$item_nilai_rujukan['antara']} {$item_nilai_rujukan['batas_atas']}<br>";
+                        } else {
+                            if (($gender === $genderFromData && !$semuajeniskelaminFound) || $gender === "semuajeniskelamin") {
+                                $nilaiTindakan = strtolower(str_replace(' ', '', $item['nilai_tindakan']));
+                                $keteranganPositif = strtolower(str_replace(' ', '', $item_nilai_rujukan['keterangan_positif']));
+                                $keteranganNegatif = strtolower(str_replace(' ', '', $item_nilai_rujukan['keterangan_negatif']));
+
+                                if ($nilaiTindakan === $keteranganPositif) {
+                                    $status = "<span style='color: green;'>NORMAL</span>";
+                                } else if ($nilaiTindakan === $keteranganNegatif) {
+                                    $status = "<span style='color: red;'>ABNORMAL</span>";
+                                } else {
+                                    $status = "<span style='color: orange;'>TIDAK TERDEFINISI</span>";
+                                }
+                            }
+                            $nilai_rujukan .= "{$item_nilai_rujukan['nama_nilai_kenormalan']} : (+) <strong>{$item_nilai_rujukan['keterangan_positif']}</strong>, (-) <strong>{$item_nilai_rujukan['keterangan_negatif']}</strong><br>";
                         }
-                        $nilai_rujukan .= "{$item_nilai_rujukan['nama_nilai_kenormalan']} : (+) <strong>{$item_nilai_rujukan['keterangan_positif']}</strong>, (-) <strong>{$item_nilai_rujukan['keterangan_negatif']}</strong><br>";
                     }
                 }
             }
-        }
 
-        $row = "
-            <tr>
-                <td style='padding-left: {$paddingLeft}px;'><span style='font-family: DejaVu Sans;'>➤</span>{$item['nama_item']}</td>
-                <td style='text-align: center;'>" . (isset($item['nilai_tindakan']) ? $item['nilai_tindakan'] : 'Nilai Tidak Terdefinisi') . "</td>
-                <td>{$nilai_rujukan}</td>
-                <td style='text-align: center;'>" . (isset($item['satuan']) ? $item['satuan'] : '') . "</td>
-                <td>{$status}</td>
-            </tr>
-        ";
-
-        // Rekursif panggil renderRow untuk subkategori dan sub-item
-        if (isset($item['subkategori']) && is_array($item['subkategori']) && count($item['subkategori']) > 0) {
-            foreach ($item['subkategori'] as $subItem) {
-                $row .= renderRow($subItem, $level + 1, $datadiri);
-            }
-        }
-
-        if (isset($item['sub']) && is_array($item['sub']) && count($item['sub']) > 0) {
-            foreach ($item['sub'] as $subItem) {
-                $row .= renderRow($subItem, $level + 1, $datadiri);
-            }
-        }
-
-        return $row;
-    }
-    function hasValidItems(array $kategori): bool {
-        if (count($kategori['items']) > 0) return true;
-        foreach ($kategori['subkategori'] as $subkategori) {
-            if (count($subkategori['items']) > 0 || hasValidItems($subkategori)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    function renderKategori(array $kategori, int $depth, $datadiri = null) {
-        $html = '';
-
-        if (hasValidItems($kategori)) {
-            $paddingLeft = $depth * 4;
-            $bgColor = '';
-            $textColor = '';
-            if ($depth == 1) {
-                $paddingLeft = 0;
-                $bgColor = 'green';
-                $textColor = 'white';
-            }
-            $prefix = ($depth > 1 && (count($kategori['items']) > 0 && count($kategori['subkategori']) > 0)) ? '➤' : '';
-            $html .= "
-                <tr style='margin-left: 100px; margin-right: 100px;'>
-                    <td colspan='5' style='padding-left: {$paddingLeft}px; background-color: {$bgColor}; color: {$textColor};'>{$kategori['nama_kategori']}</td>
+            $row = "
+                <tr>
+                    <td style='padding-left: {$paddingLeft}px;'><span style='font-family: DejaVu Sans;'>➤</span>{$item['nama_item']}</td>
+                    <td style='text-align: center;'>" . (isset($item['nilai_tindakan']) ? $item['nilai_tindakan'] : 'Nilai Tidak Terdefinisi') . "</td>
+                    <td>{$nilai_rujukan}</td>
+                    <td style='text-align: center;'>" . (isset($item['satuan']) ? $item['satuan'] : '') . "</td>
+                    <td>{$status}</td>
                 </tr>
             ";
 
-            if (isset($kategori['items']) && count($kategori['items']) > 0) {
-                foreach ($kategori['items'] as $item) {
-                    $html .= renderRow($item, $depth, $datadiri);
+            // Rekursif panggil renderRow untuk subkategori dan sub-item
+            if (isset($item['subkategori']) && is_array($item['subkategori']) && count($item['subkategori']) > 0) {
+                foreach ($item['subkategori'] as $subItem) {
+                    $row .= renderRow($subItem, $level + 1, $datadiri);
                 }
             }
 
-            if (isset($kategori['subkategori']) && count($kategori['subkategori']) > 0) {
-                foreach ($kategori['subkategori'] as $subkategori) {
-                    $html .= renderKategori($subkategori, $depth + 1, $datadiri);
+            if (isset($item['sub']) && is_array($item['sub']) && count($item['sub']) > 0) {
+                foreach ($item['sub'] as $subItem) {
+                    $row .= renderRow($subItem, $level + 1, $datadiri);
                 }
             }
+
+            return $row;
         }
-        return $html;
+    }
+    if (!function_exists('hasValidItems')) {
+        function hasValidItems(array $kategori): bool {
+            if (count($kategori['items']) > 0) return true;
+            foreach ($kategori['subkategori'] as $subkategori) {
+                if (count($subkategori['items']) > 0 || hasValidItems($subkategori)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+    if (!function_exists('renderKategori')) {
+        function renderKategori(array $kategori, int $depth, $datadiri = null) {
+            $html = '';
+            if (hasValidItems($kategori)) {
+                $paddingLeft = $depth * 4;
+                $bgColor = '';
+                $textColor = '';
+                if ($depth == 1) {
+                    $paddingLeft = 0;
+                    $bgColor = 'green';
+                    $textColor = 'white';
+                }
+                $prefix = ($depth > 1 && (count($kategori['items']) > 0 && count($kategori['subkategori']) > 0)) ? '➤' : '';
+                $html .= "
+                    <tr style='margin-left: 100px; margin-right: 100px;'>
+                        <td colspan='5' style='padding-left: {$paddingLeft}px; background-color: {$bgColor}; color: {$textColor};'>{$kategori['nama_kategori']}</td>
+                    </tr>
+                ";
+
+                if (isset($kategori['items']) && count($kategori['items']) > 0) {
+                    foreach ($kategori['items'] as $item) {
+                        $html .= renderRow($item, $depth, $datadiri);
+                    }
+                }
+
+                if (isset($kategori['subkategori']) && count($kategori['subkategori']) > 0) {
+                    foreach ($kategori['subkategori'] as $subkategori) {
+                        $html .= renderKategori($subkategori, $depth + 1, $datadiri);
+                    }
+                }
+            }
+            return $html;
+        }
     }
     @endphp
     <div class="break-before section">

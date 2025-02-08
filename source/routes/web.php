@@ -72,6 +72,10 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
             Route::get('mcu/cetak',[LaporanController::class,"cetak_berkas_mcu"])->middleware('permission_cache:akses_berkas_tindakan_mcu')->name('admin.laporan.cetak_berkas_mcu');
             Route::get('mcu/cetak_laboratorium',[LaporanController::class,"cetak_berkas_laboratorium"])->middleware('permission_cache:akses_berkas_tindakan_laboratorium')->name('admin.laporan.cetak_berkas_laboratorium');
         });
+        Route::prefix('transaksi')->group(function () {
+            Route::get('penjualan',[LaporanController::class,"laporan_penjualan"])->middleware('permission_cache:akses_laporan_penjualan')->name('admin.laporan.laporan_penjualan');
+            Route::get('hutang',[LaporanController::class,"laporan_hutang"])->middleware('permission_cache:akses_laporan_hutang')->name('admin.laporan.laporan_hutang');
+        });
     });
 });
 Route::prefix('landing')->group(function () {

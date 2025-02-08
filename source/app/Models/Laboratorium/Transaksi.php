@@ -30,6 +30,7 @@ class Transaksi extends Model
         'nama_file_surat_pengantar',
         'is_paket_mcu',
         'nama_paket_mcu',
+        'nominal_apotek',
     ];
     public static function listTabelTindakan($req, $perHalaman, $offset){
         $parameterpencarian = $req->parameter_pencarian;

@@ -186,7 +186,7 @@
               <div class="card-header">
                 <h5>Tentukan Status Dokumen Ini</h5>
                 <div class="input-group">
-                  <select class="form-control" id="select_lab_mcu_verifikasi">
+                  <select class="form-select" id="select_lab_mcu_verifikasi">
                     <option value="proses">Status Proses</option>
                     <option value="dibatalkan">Status Dibatalkan</option>
                     <option value="selesai">Status Selesai dan Valid</option>
@@ -599,14 +599,14 @@
                     <tr>
                         <th>Kesimpulan</th>
                         <th>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div id="editor_container">
-                                        <div id="pemeriksaan_kesimpulan_tindakan_quill"></div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div id="kesimpulan_keseluruhan"></div>
                         </th>
+                    </tr>
+                    <tr>
+                      <th>Status Kesehatan</th>
+                      <th>
+                        <div id="status_kesehatan"></div>
+                      </th>
                     </tr>
                     <tr>
                         <th>Saran</th>

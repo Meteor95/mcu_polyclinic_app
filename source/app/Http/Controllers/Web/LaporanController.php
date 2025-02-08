@@ -16,6 +16,8 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Helpers\GlobalHelper;
 use Illuminate\Support\Facades\DB;
 use App\Models\Poliklinik\{Poliklinik, UnggahanCitra};
+use Illuminate\Support\Facades\Storage;
+
 
 class LaporanController extends Controller
 {
@@ -270,25 +272,34 @@ class LaporanController extends Controller
             'laboratorium' => $laboratorium,
             'all_citra_data' => $all_citra_data,
         ];
-        $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
-        ->setPaper('legal', 'portrait')
-        ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
-        $pdf->render();
-        $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
-            if ($pageNumber > 1 && $pageNumber < $pageCount) {
-                $width = $canvas->get_width();
-                $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
-                $x = ($width / 2) + 175;              
-                $y = $canvas->get_height() - 40;
-                $canvas->text($x, $y, $text, null, 12);
-            }
-            if ($pageCount == $pageNumber) {
-                $width = $canvas->get_width();
-                $height = $canvas->get_height();
-                $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
-            }
-        });
-        return $pdf->stream();
+        $folderPath = 'public/mcu/berkas/mcu/';
+        $filename = "MCU_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
+        $fullPath = storage_path("app/$folderPath$filename");
+        if (!Storage::exists($folderPath)) {
+            Storage::makeDirectory($folderPath, 0755, true);
+        }
+        if (!file_exists($fullPath)) {
+            $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
+                ->setPaper('legal', 'portrait')
+                ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+            $pdf->render();
+            $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
+                if ($pageNumber > 1 && $pageNumber < $pageCount) {
+                    $width = $canvas->get_width();
+                    $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
+                    $x = ($width / 2) + 175;              
+                    $y = $canvas->get_height() - 40;
+                    $canvas->text($x, $y, $text, null, 12);
+                }
+                if ($pageCount == $pageNumber) {
+                    $width = $canvas->get_width();
+                    $height = $canvas->get_height();
+                    $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
+                }
+            });
+            $pdf->save($fullPath);
+        } 
+        return response()->file($fullPath);
     }
     public function berkas_laboratorium(Request $req){
         $data = $this->getData($req, 'Berkas Tindakan Laboratorium', [
@@ -328,26 +339,35 @@ class LaporanController extends Controller
             'informasi_data_diri' => $informasi_data_diri,
             'laboratorium' => $laboratorium,
         ];
-        $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_laboratorium', ['data' => $data])
-        ->setPaper('legal', 'portrait')
-        ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
-        $pdf->render();
-        $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
-            if ($pageNumber > 1 && $pageNumber < $pageCount) {
-                $width = $canvas->get_width();
-                $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
-                $x = ($width / 2) + 175;              
-                $y = $canvas->get_height() - 40;
-                $canvas->text($x, $y, $text, null, 12);
-            }
-        
-            if ($pageCount == $pageNumber) {
-                $width = $canvas->get_width();
-                $height = $canvas->get_height();
-                $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
-            }
-        });
-        return $pdf->stream();
+        $folderPath = 'public/mcu/berkas/laboratorium/';
+        $filename = "LAB_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
+        $fullPath = storage_path("app/$folderPath$filename");
+        if (!Storage::exists($folderPath)) {
+            Storage::makeDirectory($folderPath, 0755, true);
+        }
+        if (!file_exists($fullPath)) {
+            $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_laboratorium', ['data' => $data])
+                ->setPaper('legal', 'portrait')
+                ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+            $pdf->render();
+            $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
+                if ($pageNumber > 1 && $pageNumber < $pageCount) {
+                    $width = $canvas->get_width();
+                    $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
+                    $x = ($width / 2) + 175;              
+                    $y = $canvas->get_height() - 40;
+                    $canvas->text($x, $y, $text, null, 12);
+                }
+            
+                if ($pageCount == $pageNumber) {
+                    $width = $canvas->get_width();
+                    $height = $canvas->get_height();
+                    $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
+                }
+            });
+            $pdf->save($fullPath);
+        }
+        return response()->file($fullPath);
     }
     public function berkas_kuitansi(Request $req){
         $data = $this->getData($req, 'Berkas Tindakan Kuitansi', [
@@ -356,4 +376,19 @@ class LaporanController extends Controller
         ]);
         return view('paneladmin.laporan.berkas.berkas_kuitansi', ['data' => $data]);
     }
+    public function laporan_penjualan(Request $req){
+        $data = $this->getData($req, 'Laporan Penjualan', [
+            'Beranda' => route('admin.beranda'),
+            'Laporan' => route('admin.laporan.laporan_penjualan'),
+        ]);
+        return view('paneladmin.laporan.transaksi.laporan_penjualan', ['data' => $data]);
+    }
+    public function laporan_hutang(Request $req){
+        $data = $this->getData($req, 'Laporan Hutang', [
+            'Beranda' => route('admin.beranda'),
+            'Laporan' => route('admin.laporan.laporan_hutang'),
+        ]);
+        return view('paneladmin.laporan.transaksi.laporan_hutang', ['data' => $data]);
+    }
 }
+

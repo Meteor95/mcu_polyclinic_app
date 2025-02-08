@@ -102,10 +102,11 @@
             </div>
             <div class="row">
               <div class="col-md-6">
-                <div id="total_pendapatan_text">Total TRX</div>
+                <div id="total_pendapatan_text" style="font-size: 50px; font-weight: bold;">Total Trx</div>
               </div>
               <div class="col-md-6 text-end">
                 <div id="total_pendapatan">0</div>
+                <div id="total_pendapatan_apotek_keterangan">0</div>
               </div>
             </div>
             <div class="row">
@@ -146,11 +147,21 @@
                 <div class="row mb-2">
                     <div class="col-md-4">
                         <span class="text-start" style="margin-top: 5px; padding-right: 10px; font-family: 'DS-Digital', sans-serif; font-size: 30px; color: red;">
-                            <strong>Grand Total</strong>
+                            <strong>Total Tindakan</strong>
                         </span>
                     </div>
                     <div class="col-md-8">
                         <input type="text" value="0" class="form-control text-end" id="nominal_bayar_konfirmasi" name="nominal_bayar_konfirmasi" placeholder="0.00" readonly>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        <span class="text-start" style="margin-top: 5px; padding-right: 10px; font-family: 'DS-Digital', sans-serif; font-size: 30px; color: red;">
+                            <strong>Total Apotek</strong>
+                        </span>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" value="0" class="form-control text-end" id="nominal_apotek_konfirmasi" name="nominal_apotek_konfirmasi" placeholder="0.00" readonly>
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -261,16 +272,18 @@
 @section('css_load')
 <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 <style>
-#nominal_bayar_konfirmasi, #nominal_bayar, #nominal_kembalian{
-    text-align: right;
-    font-family: 'DS-Digital', sans-serif;
+#total_pendapatan_text, #total_pendapatan, #nominal_bayar, #nominal_kembalian, #nominal_bayar_konfirmasi, #nominal_apotek_konfirmasi{
+  font-family: 'DS-Digital', sans-serif;
     font-size: 50px;
     color: red;
     padding: 0; 
     line-height: 1;
     font-weight: bold;
 }
-#nominal_bayar_konfirmasi::placeholder, #nominal_bayar::placeholder, #nominal_kembalian::placeholder {
+#total_pendapatan, #nominal_bayar, #nominal_kembalian{
+    text-align: right;
+}
+#total_pendapatan::placeholder, #nominal_bayar::placeholder, #nominal_kembalian::placeholder {
     font-family: 'DS-Digital', sans-serif;
     font-size: 50px;
     color: red;

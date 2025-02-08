@@ -124,7 +124,6 @@
             <ul class="sidebar-submenu">
               @foreach([
                 ['condition' => $hasAccessTingkatKesadaran, 'url' => 'pemeriksaan_fisik/tingkat_kesadaran', 'label' => 'Tingkat Kesadaran'],
-                ['condition' => $hasAccessTandaVital, 'url' => 'pemeriksaan_fisik/tanda_vital', 'label' => 'Tanda Vital'],
                 ['condition' => $hasAccessPenglihatan, 'url' => 'pemeriksaan_fisik/penglihatan', 'label' => 'Penglihatan']
               ] as $menuItem)
                 @if ($menuItem['condition'])
@@ -171,6 +170,7 @@
             </a>
             <ul class="sidebar-submenu">
               @foreach([
+                ['condition' => $hasAccessTandaVital, 'url' => 'pemeriksaan_fisik/tanda_vital', 'label' => 'Tanda Vital'],
                 ['condition' => $hasAccessSpirometri, 'url' => 'poli/spirometri', 'label' => 'Spirometri'],
                 ['condition' => $hasAccessAudiometri, 'url' => 'poli/audiometri', 'label' => 'Audiometri'],
                 ['condition' => $hasAccessEkg, 'url' => 'poli/ekg', 'label' => 'EKG'],

@@ -114,6 +114,8 @@ function onload_detail_tindakan(){
                 },
                 success: function(response) {
                     id_transaksi = response.transaksi[0].id_transaksi;
+                    is_paket_mcu = response.transaksi[0].is_paket_mcu;
+                    nama_paket_mcu = response.transaksi[0].nama_paket_mcu;
                     $("#nomor_transaksi_mcu_generate").val(response.transaksi[0].no_nota);
                     $("#waktu_transaksi_mcu").val(moment(response.transaksi[0].waktu_trx).format('DD-MM-YYYY HH:mm:ss'));
                     $("#waktu_transaksi_sample_mcu").val(moment(response.transaksi[0].waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss'));
@@ -697,6 +699,7 @@ function initAutoNumeric(index, kode_item, harga_paket = null) {
         inputElement.on('keyup', debounce(function(event) {
             if (harga_paket > 0) {
                 $(elementId).val(0);
+                AutoNumeric.getAutoNumericElement(elementId).set(0);
                 return createToast('Kesalahan Perhitungan', 'top-right', 
                     'Pasien ini terindikasi terhubung dengan paket MCU, sehingga harga paket MCU akan dihitung secara otomatis dan tidak bisa diubah', 
                     'success', 3000);

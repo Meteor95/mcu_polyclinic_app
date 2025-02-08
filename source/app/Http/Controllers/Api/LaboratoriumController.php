@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
-use App\Models\Laboratorium\{Tarif, Kategori, Satuan, Kenormalan, TemplateLab, Transaksi, Kesimpulan, KesimpulanTindakan};
+use App\Models\Laboratorium\{Tarif, Kategori, Satuan, Kenormalan, TemplateLab, Transaksi, Kesimpulan, KesimpulanTindakan, TransaksiApotek};
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use App\Services\LaboratoriumServices;
+use Illuminate\Support\Facades\Storage;
 
 class LaboratoriumController extends Controller
 {
@@ -591,6 +593,63 @@ class LaboratoriumController extends Controller
             return ResponseHelper::error($th);
         }
     }
+    public function ubah_data_apotek(Request $req){
+        try {
+            if (filter_var($req->is_add_transaksi, FILTER_VALIDATE_BOOLEAN)){
+                $files = $req->file('fileUploadApotek');
+                $keterangan = $req->input('keterangan', []);
+                $transaksiId = $req->input('transaksi_id');
+                $nomorTrx = $req->input('nomor_trx');
+                $dataToInsert = [];
+                Transaksi::where('id', $transaksiId)->update(['nominal_apotek' => $req->nominal_apotek]);
+                $updatetransaksi = Transaksi::where('id', $transaksiId)->first();
+                $dynamicAttributes = [
+                    'updatetransaksi' => $updatetransaksi,
+                ];
+                if (!$files || !is_array($files) || count($files) == 0) {
+                    return ResponseHelper::success('Nominal apotek sudah terubah, sedangkan untuk proses pemberkasaan gagal dikarenakan tidak ada file yang terunggah. Silahkan unggah file terlebih dahulu.',$dynamicAttributes);
+                }
+                $directory = storage_path('app/public/mcu/apotek/'.$transaksiId);
+                if (!is_dir($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+                foreach ($files as $index => $file) {
+                    $uuid = (string) Str::uuid();
+                    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $sanitizedName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', strtolower($originalName));
+                    $timestamp = round(microtime(true) * 1000);
+                    $extension = $file->getClientOriginalExtension(); // Ambil ekstensi asli
+                    $filename = "{$uuid}_{$sanitizedName}_{$timestamp}.{$extension}";
+                    $path = $file->storeAs('uploads/apotek', $filename, 'public');
+                    $dataToInsert[] = [
+                        'id_transaksi' => $transaksiId,
+                        'tgl_transaksi_input' => date('Y-m-d H:i:s'),
+                        'nama_file' => $originalName,
+                        'total_harga_nota' => 0,
+                        'data_foto' => $filename,
+                        'ekstensi' => $extension,
+                        'keterangan' => $keterangan[$index],
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ];
+                }
+                TransaksiApotek::insert($dataToInsert);
+                return ResponseHelper::success('Informasi berkas data apotek sejumlah '.count($dataToInsert).' berkas berhasil disimpan ke database dengan nomor refrensi '.$nomorTrx, $dynamicAttributes);
+            }else{
+                $transaksiApotek = TransaksiApotek::where('id_transaksi', $req->id_transaksi)->get();
+                $dataWithFoto = collect($transaksiApotek)->map(function ($item) use ($transaksiApotek) {
+                    $item->data_foto = url(env('APP_VERSI_API')."/file/unduh_berkas_apotek?file_name=" . $item->data_foto);
+                    return $item;
+                });
+                $dynamicAttributes = [
+                    'data' => $transaksiApotek,
+                ];
+                return ResponseHelper::data('Informasi referensi berkas apotek berhasil ditemukan', $dynamicAttributes);
+            }
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
     public function tindakan_kesimpulan_pilihan(Request $req){
         try {
             $validator = Validator::make($req->all(), [
@@ -609,6 +668,28 @@ class LaboratoriumController extends Controller
                 'data' => $kesimpulan,
             ];
             return ResponseHelper::data('Informasi kesimpulan tindakan', $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function hapus_berkas_apotek(Request $req){
+        try {
+            $validator = Validator::make($req->all(), [
+                'id_transaksi' => 'required',
+                'nomor_trx' => 'required',
+                'nama_file' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $transaksiApotek = TransaksiApotek::where('id', $req->id_transaksi)->first();
+            if($transaksiApotek){
+                Storage::disk('public')->delete('uploads/apotek/'.$transaksiApotek->data_foto);
+                $transaksiApotek->delete();
+                return ResponseHelper::success('Berkas apotek dengan nomor transaksi '.$req->nomor_trx.' dengan nama file '.base64_decode($req->nama_file).' berhasil dihapus');
+            }
+            return ResponseHelper::data_not_found('Berkas apotek dengan nomor transaksi '.$req->nomor_trx.' tidak ditemukan');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

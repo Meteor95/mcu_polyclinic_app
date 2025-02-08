@@ -17,6 +17,7 @@ Route::prefix('v1')->group(function () {
         Route::get('unduh_foto', [FileController::class, "download_foto"]);
         Route::get('unduh_citra_poliklinik', [FileController::class, "downlad_citra_poliklinik"]);
         Route::get('unduh_surat_pengantar', [FileController::class, "download_surat_pengantar"]);
+        Route::get('unduh_berkas_apotek', [FileController::class, "download_berkas_apotek"]);
     });
     Route::middleware(['jwt.auth', 'jwt.cookie'])->group(function () {  
         Route::prefix('pengguna')->group(function () {
@@ -167,6 +168,9 @@ Route::prefix('v1')->group(function () {
             Route::get('daftar_tindakan', [LaboratoriumController::class,"daftar_tindakan"]);
             Route::delete('hapus_tindakan', [LaboratoriumController::class,"hapus_tindakan"]);
             Route::get('detail_tindakan', [LaboratoriumController::class,"detail_tindakan"]);
+            Route::get('ubah_data_apotek', [LaboratoriumController::class,"ubah_data_apotek"]);
+            Route::post('ubah_data_apotek', [LaboratoriumController::class,"ubah_data_apotek"]);
+            Route::delete('hapus_berkas_apotek', [LaboratoriumController::class,"hapus_berkas_apotek"]);
             /* Tindakan Kesimpulan */
             Route::get('tindakan_kesimpulan_pilihan', [LaboratoriumController::class,"tindakan_kesimpulan_pilihan"]);
         });
