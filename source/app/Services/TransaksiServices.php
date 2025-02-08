@@ -67,7 +67,7 @@ class TransaksiServices
                 'status_peserta' => 'proses',
             ];
             if (filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
-                $transaksi = Transaksi::where('no_transaksi', $data['no_transaksi'])->first();
+                $transaksi = Transaksi::where('id', $data['id_detail_transaksi_mcu'])->first();
                 $transaksi->update($dataToInsert);
             }else{
                 $datatransaksi = Transaksi::where('user_id', $member->id)
