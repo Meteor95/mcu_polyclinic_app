@@ -2,7 +2,14 @@ let table, isedit;
 $(document).ready(function(){
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onload_datatables_tingkat_kesadaran();
+    onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
 });
+$("#kunci_id_tingkat_kesadaran").on("click", function(){
+    if ($("#nomor_identitas_temp").html() == "" || $("#nama_peserta_temp_1").html() == ""){
+        return createToast('Kesalahan Penyimpanan', 'top-right', 'Kunci ID Navigasi hanya bisa aktif ketika ada data peserta MCU yang dipilih', 'error', 3000);
+    }
+    location.href = baseurl + '/pemeriksaan_fisik/tingkat_kesadaran?nomor_identitas=' + $("#nomor_identitas_temp").html() + '&nama_peserta=' + $("#nama_peserta_temp_1").html();
+})
 function onload_datatables_tingkat_kesadaran(){
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_tingkat_kesadaran").DataTable({

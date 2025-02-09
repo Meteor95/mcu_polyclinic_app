@@ -1,4 +1,6 @@
+
 <div class="row">
+    @if ($unggahan_citra_aktif)
     <div class="col-md-12 mb-2">
       <div class="alert alert-success d-flex align-items-center border-left-light" role="alert">
         <div>
@@ -8,6 +10,7 @@
         </span>
       </div>
     </div>
+    @endif
     <div class="col-md-12">
       <h3>Tentukan Dokter Bertugas</h3>
       <select class="form-select" data-choices name="dokter_citra_unggah_poli" id="dokter_citra_unggah_poli">
@@ -16,6 +19,7 @@
         @endforeach
       </select>
     </div>
+    @if ($unggahan_citra_aktif)
     <div class="col-md-6">
       <h3>Citra Sebelum</h3>
       <input type="file" id="citra_pasien" class="form-control mt-2 mb-2" accept="image/*">
@@ -40,13 +44,16 @@
     <div class="col-md-12">
       <button class="btn w-100 btn-primary mt-3" id="tambah_foto_poliklinik"><i class="fa fa-photo"></i> Tambah Foto</button>
     </div>
+    @endif
 </div>
+ @if ($unggahan_citra_aktif)
 <div class="row">
   <div class="col-md-12">
     <h3>Hasil Scan {{ucwords(str_replace('_', ' ', $data['title']))}}</h3>
     <div id="preview-list" class="row g-1"></div>
   </div>
 </div>
+@endif
 <div class="row mt-2">
   <div class="col-md-12">
     <h3>Formulir informasi {{ucwords(str_replace('_', ' ', $data['title']))}}</h3>
@@ -86,6 +93,6 @@
     <button class="btn btn-danger w-100 mt-2 mb-2" id="bersihkan_formulir_unggah_citra"><i class="fa fa-trash"></i> Bersihkan Formulir </button>
   </div>
   <div class="col-md-6">
-    <button class="btn btn-primary w-100 mt-2 mb-2" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Foto {{ucwords($data['title'])}} </button>
+    <button class="btn btn-primary w-100 mt-2 mb-2" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Data {{ucwords($data['title'])}} </button>
   </div>
 </div>

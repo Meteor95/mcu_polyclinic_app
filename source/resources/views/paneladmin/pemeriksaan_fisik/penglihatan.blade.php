@@ -101,6 +101,9 @@
                     </div>
                 </div>
             </div>
+            @if(isset($data['dataNavigasi']))
+                @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
+            @endif
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Pemeriksaan Tanda Vital</h1>
@@ -216,4 +219,8 @@ table.dataTable tbody td.focus {
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('mofi/assets/js/select2/tagify.js') }}"></script>
 <script src="{{ asset('vendor/erayadigital/tingkatkesadaran/penglihatan.js') }}"></script>
+<script>
+  let param_nomor_identitas = '{{$data['nomor_identitas']}}'
+  let param_nama_peserta = '{{$data['nama_peserta']}}'
+</script>
 @endsection

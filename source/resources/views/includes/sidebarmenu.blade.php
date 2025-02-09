@@ -62,12 +62,6 @@
             </a>
           </li>
           @endif
-          <!-- Doctor Section -->
-          <li class="sidebar-main-title">
-            <div>
-              <h6>Area Dokter</h6>
-            </div>
-          </li>
           <!-- Medical Check Up Section -->
           <li class="sidebar-main-title">
             <div>
@@ -119,7 +113,7 @@
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
               <i class="fa fa-stethoscope" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
-              <span>Pemeriksaan Fisik</span>
+              <span>Poli Dokter</span>
             </a>
             <ul class="sidebar-submenu">
               @foreach([

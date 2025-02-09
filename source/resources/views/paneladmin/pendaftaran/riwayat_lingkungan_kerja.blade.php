@@ -47,6 +47,9 @@
               <button class="btn btn-danger w-100 mt-3" id="bersihkan_data_riwayat_lingkungan_kerja"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
               <button class="btn btn-success w-100 mt-3" id="simpan_riwayat_lingkungan_kerja"><i class="fa fa-save"></i> Simpan Data</button>                   
             </div>
+            @if (isset($data['dataNavigasi']))
+              @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
+            @endif
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Bahaya Riwayat Lingkungan Kerja (Paparan Kerja)</h1>
@@ -100,4 +103,8 @@ table.dataTable tbody td.focus {
 <script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('vendor/erayadigital/riwayat/riwayat_lingkungan_kerja.js') }}"></script>
+<script>
+  let param_nomor_identitas = '{{$data['nomor_identitas']}}'
+  let param_nama_peserta = '{{$data['nama_peserta']}}'
+</script>
 @endsection

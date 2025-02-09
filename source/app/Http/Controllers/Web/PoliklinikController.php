@@ -22,12 +22,17 @@ class PoliklinikController extends Controller
     public function poliklinik(Request $req, $jenis_poli)
     {
         $catatan_kaki = "";
+        $unggahan_citra_aktif = true;
         if ($jenis_poli == "spirometri") {
             $catatan_kaki = "Angka Pada kolom prediksi, % prediksi, dan LLN telah diproyeksi menggunakan acuan Penumobile Project Indonesia (nilai fungsi paru normal orang indonesia) sehingga nilai berbeda dengan yang tercantum pada spirogram.";
+        }
+        if ($jenis_poli == "farmingham_score") {
+            $unggahan_citra_aktif = false;
         }
         $data = $this->getData($req, 'Poliklinik ' . ucwords(str_replace('_', ' ', $jenis_poli)), [
             ucwords(str_replace('_', ' ', $jenis_poli)) => route('admin.poliklinik', $jenis_poli),
         ], $catatan_kaki, $jenis_poli, "poli_" . $jenis_poli);
+        $data['unggahan_citra_aktif'] = $unggahan_citra_aktif;
         $data['daftar_dokter'] = User::role('dokter')->join('users_pegawai', 'users.id', '=', 'users_pegawai.id')->get()->toArray();
         return view('paneladmin.pemeriksaan_fisik.poliklinik.'.$jenis_poli, ['data' => $data]);
     }

@@ -156,6 +156,7 @@ class MasterdataController extends Controller
                 'nama_paket' => 'required|string',
                 'harga_paket' => 'required|integer',
                 'keterangan' => 'required|string',
+                'selected_items' => 'required|array',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -166,6 +167,7 @@ class MasterdataController extends Controller
                 'nama_paket' => $request->nama_paket,
                 'harga_paket' => $request->harga_paket,
                 'keterangan' => $request->keterangan,
+                'akses_tindakan' => json_encode($request->selected_items),
             ]);
             return ResponseHelper::success("Informasi paket MCU berhasil disimpan. Silahkan tentukan pada perusahaan mana paket MCU ini akan digunakan.");
         } catch (\Throwable $th) {
@@ -194,6 +196,7 @@ class MasterdataController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|integer',
+                'selected_items' => 'required|array',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -204,6 +207,7 @@ class MasterdataController extends Controller
                 'nama_paket' => $request->nama_paket,
                 'harga_paket' => $request->harga_paket,
                 'keterangan' => $request->keterangan,
+                'akses_tindakan' => json_encode($request->selected_items),
             ]);
             return ResponseHelper::success("Informasi dari paket MCU " . $request->nama_paket . " berhasil diubah.");
         } catch (\Throwable $th) {

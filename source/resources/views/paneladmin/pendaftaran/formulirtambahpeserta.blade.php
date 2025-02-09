@@ -208,7 +208,21 @@
                         <label for="no_telepon" class="form-label mt-3">Tentukan Paket Layanan</label>
                     </div>
                     <div class="col-md-6">
-                    <div id="pilih_paket_mcu"><select class="form-select" id="select2_paket_mcu" name="select2_paket_mcu" required></select></div>
+                        <div id="pilih_paket_mcu"><select class="form-select" id="select2_paket_mcu" name="select2_paket_mcu" required></select></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div id="tabel_akses_tindakan" style="display: none;">
+                            <table class="table table-bordered table-padding-sm-no-datatable">
+                                <thead>
+                                    <tr style="text-align: center;">
+                                        <th>No</th>
+                                        <th>Akses Tindakan Diizinkan</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -237,6 +251,9 @@
                 </div>
             </div>
             </form>
+            @if(isset($data['dataNavigasi']))
+                @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
+            @endif
         </div>
       </div>
     </div>
@@ -302,6 +319,16 @@
             id: "{{ $data['paket_mcu']->id }}|{{ $data['paket_mcu']->kode_paket }}|{{ $data['paket_mcu']->nama_paket }}|{{ $data['paket_mcu']->harga_paket }}|{{ $data['paket_mcu']->akses_poli }}",
             text: "[{{ $data['paket_mcu']->kode_paket }}] - {{ $data['paket_mcu']->nama_paket }} | Harga : {{ number_format($data['paket_mcu']->harga_paket, 0, ',', '.') }}"
         };
+        let aksesTindakan = @json($data['akses_tindakan']);
+        $("#tabel_akses_tindakan").show();
+        let tbody = document.querySelector("#tabel_akses_tindakan tbody");
+        tbody.innerHTML = aksesTindakan.map((item, index) => `
+            <tr>
+                <td style="text-align: center;">${index + 1}</td>
+                <td>${item.akses.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}</td>
+                <td style="color: ${item.status === "true" ? "green" : "red"};">${item.status === "true" ? "Aktif" : "Tidak Aktif"}</td>
+            </tr>
+        `).join('');
         $('#select2_paket_mcu').trigger({
             type: 'select2:select',
             params: { data: data }

@@ -1,6 +1,19 @@
 let formValidasi = $("#formulir_tambah_paket_mcu");let isedit = false;let idpaketmcu = "";
 $(document).ready(function() {
     daftarpaketmcu();
+    $("#tabel_pemeriksaan tr").click(function(event) {
+        if (!$(event.target).is("input[type='checkbox']")) {
+            let checkbox = $(this).find("input[type='checkbox']");
+            checkbox.prop("checked", !checkbox.prop("checked"));
+        }
+        let hasRowspan = $(this).find("td[rowspan]").length > 0;
+        let targetColumns = hasRowspan 
+            ? $(this).find("td:nth-child(2), td:nth-child(3)") 
+            : $(this).find("td:nth-child(1), td:nth-child(2)");
+        let checked = $(this).find("input[type='checkbox']").is(":checked");
+        targetColumns.css("background-color", checked ? "#add8e6" : "");
+
+    });
 });
 const hargapaketmcu = new AutoNumeric('#hargapaketmcu', {
     digitGroupSeparator: '.',
@@ -99,7 +112,7 @@ function daftarpaketmcu() {
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             if (row.id > 1){
-                                return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"editpaketmcu('" + row.id + "','" + row.kode_paket + "','" + row.nama_paket + "','" + row.harga_paket + "','" + row.akses_poli + "','" + row.keterangan + "')\"><i class=\"fa fa-edit\"></i> Edit Paket MCU</button><button class=\"btn btn-danger w-100\" onclick=\"hapuspaketmcu('" + row.id + "','" + row.kode_paket + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Paket MCU</button></div>";
+                                return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"editpaketmcu('" + row.id + "','" + row.kode_paket + "','" + row.nama_paket + "','" + row.harga_paket + "','" + row.akses_poli + "','" + row.keterangan + "','" + btoa(row.akses_tindakan) + "')\"><i class=\"fa fa-edit\"></i> Edit Paket MCU</button><button class=\"btn btn-danger w-100\" onclick=\"hapuspaketmcu('" + row.id + "','" + row.kode_paket + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Paket MCU</button></div>";
                             }else{
                                 return "";
                             }
@@ -137,6 +150,15 @@ $("#simpan_paket_mcu").click(function(event) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.get('/generate-csrf-token', function(response){
+                let selectedItems = [];
+                $("#tabel_pemeriksaan").find("input[type='checkbox']").each(function() {
+                    let row = $(this).closest("tr");
+                    selectedItems.push({
+                        id: row.data("id"),
+                        akses: $(this).attr("name"),
+                        status: $(this).is(":checked")
+                    });
+                });
                 $.ajax({
                     url: baseurlapi + '/masterdata/' + (isedit ? 'ubahpaketmcu' : 'simpanpaketmcu'),
                     type: 'POST',
@@ -151,6 +173,7 @@ $("#simpan_paket_mcu").click(function(event) {
                         harga_paket: hargapaketmcu.get(),
                         akses_poli: $("#aksespolipaketmcu").val(),
                         keterangan: $("#keteranganpaketmcu").val(),
+                        selected_items: selectedItems
                     },
                     success: function(response) {
                         clearFormulirTambahPaketMcu();
@@ -212,12 +235,27 @@ function hapuspaketmcu(id, nama) {
         }
     });
 }
-function editpaketmcu(id, kode, nama, harga, akses, keterangan) {
+function editpaketmcu(id, kode, nama, harga, akses, keterangan, akses_tindakan) {
     isedit = true;
     idpaketmcu = id;
     $("#kodepaketmcu").val(kode);
     $("#namapaketmcu").val(nama);
     hargapaketmcu.set(harga);
     $("#keteranganpaketmcu").val(keterangan);
+    let akses_tindakan_decode = JSON.parse(atob(akses_tindakan));
+    akses_tindakan_decode.forEach(item => {
+        let checkbox = $("#tabel_pemeriksaan").find("input[name='" + item.akses + "']");
+        if (checkbox.length) {
+            checkbox.prop("checked", item.status === "true");
+            let row = checkbox.closest("tr");
+            let hasRowspan = row.find("td[rowspan]").length > 0;
+            let targetColumns = hasRowspan 
+                ? row.find("td:nth-child(2), td:nth-child(3)") 
+                : row.find("td:nth-child(1), td:nth-child(2)");
+            let checked = checkbox.is(":checked");
+            targetColumns.css("background-color", checked ? "#add8e6" : "");
+        }
+    });
+    
     $("#formulir_tambah_paket_mcu").modal("show");
 }

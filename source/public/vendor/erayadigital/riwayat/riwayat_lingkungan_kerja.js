@@ -3,6 +3,7 @@ $(document).ready(function(){
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onload_datatables();
     onload_datatables_daftar_bahaya_riwayat_lingkungan_kerja();
+    onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
 });
 function onload_datatables(){
     table = $("#datatables_riwayat_lingkungan_kerja").DataTable({

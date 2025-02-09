@@ -29,6 +29,9 @@
             </div>
           </div>
           <button class="btn w-100 btn-primary mt-3" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Foto</button>
+          @if (isset($data['dataNavigasi']))
+            @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
+          @endif
         </div>
         <div class="card-footer">
           <input type="text" class="form-control" id="kotak_pencarian_daftarpeserta" placeholder="Cari data berdasarkan nama peserta">
@@ -91,4 +94,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" integrity="sha512-JyCZjCOZoyeQZSd5+YEAcFgz2fowJ1F1hyJOXgtKu4llIa0KneLcidn5bwfutiehUTiOuK87A986BZJMko0eWQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('vendor/erayadigital/riwayat/foto_pasien.js') }}"></script>
+<script>
+  let param_nomor_identitas = '{{$data['nomor_identitas']}}'
+  let param_nama_peserta = '{{$data['nama_peserta']}}'
+</script>
 @endsection

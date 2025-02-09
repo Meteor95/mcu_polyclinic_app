@@ -7,7 +7,7 @@
             @include('komponen.information_user', ['title_card' => "Foto Farmingham Score", 'informasi_apa' => "informasi foto Farmingham Score"])
         </div>
         <div class="card-body">
-            @include('komponen.unggah_image_poli')
+            @include('komponen.unggah_image_poli', ['unggahan_citra_aktif' => $data['unggahan_citra_aktif']])
         </div>
         <div class="card-footer">
           <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data berdasarkan nama peserta">

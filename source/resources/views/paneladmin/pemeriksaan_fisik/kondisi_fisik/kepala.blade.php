@@ -19,8 +19,8 @@
                                 <th rowspan="2">Keterangan</th>
                             </tr>
                             <tr>
-                                <th>Ab-Normal</th>
-                                <th>Normal</th>
+                                <th id="header_abnormal" style="cursor: pointer;">Ab-Normal</th>
+                                <th id="header_normal" style="cursor: pointer;">Normal</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -31,13 +31,13 @@
                                     <td>{{ $item->jenis_pemeriksaan }}</td>
                                     <td>
                                         <div class="form-check checkbox checkbox-primary mb-0">
-                                            <input class="form-check-input" onclick="cek_ab_normal({{ $item->id }},0)" id="ab_normal_{{ $item->id }}" type="checkbox">
+                                            <input class="form-check-input ab-normal-checkbox" onclick="cek_ab_normal({{ $item->id }},0)" id="ab_normal_{{ $item->id }}" type="checkbox">
                                             <label class="form-check-label" for="ab_normal_{{ $item->id }}">Ab-Normal</label>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-check checkbox checkbox-primary mb-0">
-                                            <input class="form-check-input" onclick="cek_ab_normal({{ $item->id }},1)" id="normal_{{ $item->id }}" type="checkbox">
+                                            <input class="form-check-input normal-checkbox" onclick="cek_ab_normal({{ $item->id }},1)" id="normal_{{ $item->id }}" type="checkbox">
                                             <label class="form-check-label" for="normal_{{ $item->id }}">Normal</label>
                                         </div>
                                     </td>
@@ -54,6 +54,9 @@
                         <button class="btn btn-danger w-100 mt-3" id="bersihkan_kondisi_fisik"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
                         <button class="btn btn-success w-100 mt-3" id="simpan_kondisi_fisik"><i class="fa fa-save"></i> Simpan Data</button>                   
                     </div>
+                     @if(isset($data['dataNavigasi']))
+                        @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
+                    @endif
                 </div>
             </div>
         </div>
@@ -116,4 +119,8 @@ table.dataTable tbody td.focus {
 <script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('vendor/erayadigital/kondisifisik/kondisi_fisik.js') }}"></script>
+<script>
+  let param_nomor_identitas = '{{$data['nomor_identitas']}}'
+  let param_nama_peserta = '{{$data['nama_peserta']}}'
+</script>
 @endsection

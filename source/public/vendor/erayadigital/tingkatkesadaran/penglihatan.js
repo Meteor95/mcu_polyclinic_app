@@ -3,6 +3,7 @@ $(document).ready(function(){
     isedit = false;
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onload_datatables_penglihatan();
+    onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
 });
 function onload_datatables_penglihatan(){
     $.get('/generate-csrf-token', function(response) {

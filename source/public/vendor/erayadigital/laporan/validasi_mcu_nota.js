@@ -191,7 +191,7 @@ function validasi_rekap_kesimpulan_nota(no_mcu_js) {
                     quillInstances['pemeriksaan_spirometri_restriksi'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_spiro_restriksi));
                     quillInstances['pemeriksaan_spirometri_obstruksi'].setContents(JSON.parse(response.data.kesimpulan_pemeriksaan_spiro_obstruksi));
                     $("#kesimpulan_keseluruhan").html(response.data.kesimpulan_hasil_medical_checkup.toUpperCase().replaceAll('_', ' '));
-                    $("#status_kesehatan").html(response.data_kesimpulan_tindakan.status+" "+response.data_kesimpulan_tindakan.kategori+" ["+response.data_kesimpulan_tindakan.catatan+"]");
+                    $("#status_kesehatan").html(response.data_kesimpulan_tindakan_status.status+" "+response.data_kesimpulan_tindakan_status.kategori+" ["+response.data_kesimpulan_tindakan_status.catatan+"]");
                     quillInstances['pemeriksaan_tindakan_saran'].setContents(JSON.parse(response.data.saran_keseluruhan));
                 }
                 $("#modal_validasi_rekap_kesimpulan_text").html('Validasi Kesimpulan Tindakan Pasien');

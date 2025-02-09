@@ -280,20 +280,21 @@ function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
             success: function(response) {
                 clear_pemeriksaan_kesimpulan();
                 const hierarchicalData = response.data_kesimpulan_tindakan;
-                    pemeriksaan_kesimpulan_tindakan_select_id.innerHTML = '';
-                    hierarchicalData.forEach(category => {
-                        const option = document.createElement('option');
-                        option.value = category.id;
-                        option.textContent = `${category.status} ${category.kategori} [${category.catatan}]`;
-                        pemeriksaan_kesimpulan_tindakan_select_id.appendChild(option);
-                    });
-                    if (choice_pemeriksaan_kesimpulan_tindakan_select) { choice_pemeriksaan_kesimpulan_tindakan_select.destroy(); }
-                    choice_pemeriksaan_kesimpulan_tindakan_select = new Choices(pemeriksaan_kesimpulan_tindakan_select_id, {
-                        searchEnabled: true,
-                        shouldSort: false,
-                        placeholder: true,
-                        placeholderValue: 'Silahkan Pilih Satuan',
-                    });
+                pemeriksaan_kesimpulan_tindakan_select_id.innerHTML = '';
+                console.log(hierarchicalData);
+                hierarchicalData.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = `${category.status} ${category.kategori} [${category.catatan}]`;
+                    pemeriksaan_kesimpulan_tindakan_select_id.appendChild(option);
+                });
+                if (choice_pemeriksaan_kesimpulan_tindakan_select) { choice_pemeriksaan_kesimpulan_tindakan_select.destroy(); }
+                choice_pemeriksaan_kesimpulan_tindakan_select = new Choices(pemeriksaan_kesimpulan_tindakan_select_id, {
+                    searchEnabled: true,
+                    shouldSort: false,
+                    placeholder: true,
+                    placeholderValue: 'Silahkan Pilih Satuan',
+                });
                 if (response.data_poliklinik.count_poliklinik_spirometri > 0) {
                     $(".pemeriksaan_spirometri").show();
                 }

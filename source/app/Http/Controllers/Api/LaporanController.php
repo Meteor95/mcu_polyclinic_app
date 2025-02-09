@@ -360,7 +360,8 @@ class LaporanController extends Controller
                 $id_mcu = Transaksi::where('no_transaksi', $req->nomor_mcu_let)->first()->id;
             }
             $informasi_mcu = Kesimpulan::where('id_mcu', $id_mcu)->first();
-            $kesimpulan_tindakan = KesimpulanLabStatus::where('id', $informasi_mcu->kesimpulan_keseluruhan)->first();
+            $kesimpulan_tindakan = KesimpulanLabStatus::all();
+            $kesimpulan_tindakan_status = KesimpulanLabStatus::where('id', $informasi_mcu->kesimpulan_keseluruhan)->first();
             $count_poliklinik_spirometri = DB::table('mcu_poli_spirometri')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_ekg = DB::table('mcu_poli_ekg')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_threadmill = DB::table('mcu_poli_threadmill')->where('transaksi_id', $id_mcu)->count();
@@ -382,6 +383,7 @@ class LaporanController extends Controller
             $dynamicAttributes = [
                 'data' => $informasi_mcu,
                 'data_kesimpulan_tindakan' => $kesimpulan_tindakan,
+                'data_kesimpulan_tindakan_status' => $kesimpulan_tindakan_status,
                 'data_poliklinik' => $data_poliklinik,
             ];
             return ResponseHelper::data('Informasi Kesimpulan', $dynamicAttributes);

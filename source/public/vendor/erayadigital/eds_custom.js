@@ -75,12 +75,19 @@ function addCategoryOptions(categories, depth = 0) {
 }
 function formatAngkaSingkatan(angka) {
     if (angka >= 1_000_000_000) {
-        return (angka / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'M'; // Miliar
+        return (angka / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
     } else if (angka >= 1_000_000) {
-        return (angka / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'Jt'; // Juta
+        return (angka / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'Jt';
     } else if (angka >= 1_000) {
-        return (angka / 1_000).toFixed(1).replace(/\.0$/, '') + 'Rb'; // Ribu
+        return (angka / 1_000).toFixed(1).replace(/\.0$/, '') + 'Rb';
     } else {
-        return angka.toString(); // Angka kecil tetap
+        return angka.toString();
+    }
+}
+function onloadfromnavigation(param_nomor_identitas, param_nama_peserta){
+    if (param_nomor_identitas || param_nama_peserta){
+        let newOption = new Option('['+param_nomor_identitas+'] - '+param_nama_peserta, param_nomor_identitas, true, false);
+        $("#pencarian_member_mcu").append(newOption).trigger('change');
+        $("#pencarian_member_mcu").val(param_nomor_identitas).trigger('change');
     }
 }

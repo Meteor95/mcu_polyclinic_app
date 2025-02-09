@@ -9,6 +9,7 @@ const quill_detail = new Quill('#editor_riwayat_kecelakaan_kerja', {
 $(document).ready(function(){
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onload_datatables_daftar_kecelakaan_kerja();
+    onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
 });
 function onload_datatables_daftar_kecelakaan_kerja(){
     $.get('/generate-csrf-token', function(response) {

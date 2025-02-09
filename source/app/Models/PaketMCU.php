@@ -14,6 +14,7 @@ class PaketMCU extends Model
         'nama_paket',
         'harga_paket',
         'keterangan',
+        'akses_tindakan',
     ];
 
     public static function listPaketMcu($req, $perHalaman, $offset)

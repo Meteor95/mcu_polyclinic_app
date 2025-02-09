@@ -12,6 +12,10 @@ $(document).ready(function() {
     callselect2mcu()
     
 });
+$("#select2_paket_mcu").on('change', function(){
+    let selectedData = $(this).val();
+    console.log(selectedData);
+});
 $("#btnKonfirmasiPendaftaran").on("click", function(event) {
     event.preventDefault();
     formValidasi.addClass('was-validated');
@@ -164,6 +168,7 @@ function callselect2mcu(){
                             return {
                                 text: `[${item.kode_paket}] - ${item.nama_paket} | Harga : Rp ${new Intl.NumberFormat('id-ID').format(item.harga_paket)}`,
                                 id: `${item.id}|${item.kode_paket}|${item.nama_paket}|${item.harga_paket}`,
+                                akses_tindakan: item.akses_tindakan,
                             };
                         })
                     };
@@ -172,6 +177,45 @@ function callselect2mcu(){
                     return createToast('Kesalahan Penggunaan', 'top-right', xhr.responseJSON.message, 'error', 3000);
                 }
             }
+        }).on('select2:select', function (e) {
+            let data = e.params.data;
+            let aksesTindakan = JSON.parse(data.akses_tindakan || "[]");
+            let tableHTML = `
+                <table class="table table-bordered table-padding-sm-no-datatable">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <th>No</th>
+                            <th>Akses Tindakan Diizinkan</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            if (aksesTindakan.length === 0) {
+                tableHTML += `
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: red;">Tidak ada data</td>
+                    </tr>
+                `;
+            } else {
+                aksesTindakan.forEach((item, index) => {
+                    let formattedName = item.akses.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    let status = item.status === "true" ? "Aktif" : "Tidak Aktif";
+                    let color = item.status === "true" ? "green" : "red";
+
+                    tableHTML += `
+                        <tr>
+                            <td style="text-align: center;">${index + 1}</td>
+                            <td>${formattedName}</td>
+                            <td style="color: ${color};">${status}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            tableHTML += `</tbody></table>`;
+            $('#tabel_akses_tindakan').html(tableHTML);
         });
         $('#select2_departemen').select2({ 
             placeholder: 'Pilih Departemen',

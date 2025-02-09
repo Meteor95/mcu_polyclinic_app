@@ -11,6 +11,7 @@ let cropper;
 $(document).ready(function(){
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onloadcropperjs();
+    onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
     onloaddatatables();
 });
 function onloaddatatables(){

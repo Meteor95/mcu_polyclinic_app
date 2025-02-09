@@ -1,9 +1,22 @@
 let status_atribut_pemeriksaan = 0,tables,isedit;
 $(document).ready(function(){
+    $('.normal-checkbox').prop('checked', true);
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onload_datatables();
     onload_kondisi_fisik();
+    cek_ab_normal_header();
+    onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
 });
+function cek_ab_normal_header() {
+    $('#header_abnormal').click(function() {
+        $('.ab-normal-checkbox').prop('checked', true);
+        $('.normal-checkbox').prop('checked', false);
+    });
+    $('#header_normal').click(function() {
+        $('.normal-checkbox').prop('checked', true);
+        $('.ab-normal-checkbox').prop('checked', false);
+    });
+}
 function onload_datatables(){
     let tables = [];
     let table = $('#datatables_kondisi_fisik').DataTable({

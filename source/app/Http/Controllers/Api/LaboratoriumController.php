@@ -659,6 +659,7 @@ class LaboratoriumController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
+            $kesimpulan = Kesimpulan::all();
             if($req->kondisi == 'pemeriksaan_kesimpulan_tindakan'){
                 $kesimpulan = Kesimpulan::all();
             }else{
