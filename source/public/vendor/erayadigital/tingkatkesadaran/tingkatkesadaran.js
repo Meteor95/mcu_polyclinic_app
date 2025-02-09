@@ -3,9 +3,16 @@ $(document).ready(function(){
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onload_datatables_tingkat_kesadaran();
     onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
+    if (param_nomor_identitas == "" && param_nama_peserta == ""){
+        $("#kunci_id_tingkat_kesadaran").addClass("btn-danger").removeClass("btn-success");
+    }else{
+        $("#kunci_id_tingkat_kesadaran").addClass("btn-success").removeClass("btn-danger");
+    }
 });
 $("#kunci_id_tingkat_kesadaran").on("click", function(){
+    $(this).removeClass("btn-danger").addClass("btn-success");
     if ($("#nomor_identitas_temp").html() == "" || $("#nama_peserta_temp_1").html() == ""){
+        $(this).removeClass("btn-success").addClass("btn-danger");
         return createToast('Kesalahan Penyimpanan', 'top-right', 'Kunci ID Navigasi hanya bisa aktif ketika ada data peserta MCU yang dipilih', 'error', 3000);
     }
     location.href = baseurl + '/pemeriksaan_fisik/tingkat_kesadaran?nomor_identitas=' + $("#nomor_identitas_temp").html() + '&nama_peserta=' + $("#nama_peserta_temp_1").html();

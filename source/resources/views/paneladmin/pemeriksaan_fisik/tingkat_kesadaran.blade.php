@@ -53,7 +53,7 @@
                 <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
                     <button class="btn btn-danger w-100 mt-3" id="bersihkan_tingkat_kesadaran"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
                     <button class="btn btn-success w-100 mt-3" id="simpan_tingkat_kesadaran"><i class="fa fa-save"></i> Simpan Data</button>
-                    <button class="btn btn-success w-100 mt-3" id="kunci_id_tingkat_kesadaran"><i class="fa fa-lock"></i> ID Navigasi</button>                   
+                    <button class="btn w-100 mt-3" id="kunci_id_tingkat_kesadaran"><i class="fa fa-lock"></i> ID Navigasi</button>                   
                 </div>
               </div>
             </div>
