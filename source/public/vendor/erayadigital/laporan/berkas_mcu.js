@@ -272,7 +272,7 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu, button) {
                 }
                 $("#id_mcu_berkas_mcu").html(id_mcu);
                 $("#riwayat_khusus_wanita_section").hide();
-                $("#berkas_mcu_foro_peserta").html(`<img src="${response.informasi_data_diri.data_foto}" class="img-fluid rounded scaled-image_0_3">`);
+                $("#berkas_mcu_foro_peserta").html(`<img src="${response.riwayat_informasi_foto.data_foto}" class="img-fluid rounded scaled-image_0_3">`);
                 $("#berkas_mcu_nomor_mcu").html(no_transaksi);
                 $("#berkas_mcu_nama_peserta").html(nama_peserta);
                 $("#berkas_mcu_nik").html(response.informasi_data_diri.nomor_identitas);

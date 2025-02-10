@@ -152,7 +152,6 @@ function validasi_rekap_kesimpulan_nota(no_mcu_js) {
                 nomor_mcu_let: atob(no_mcu_js),
             },
             success: function(response) {
-                console.log(response);
                 if (response.data_poliklinik.count_poliklinik_spirometri > 0) {
                     $(".pemeriksaan_spirometri").show();
                 }
