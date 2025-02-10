@@ -1,3 +1,4 @@
+var global_akses_tindakan = [];
 function setDefaultDate(namaid,mundurberapatahunkebelakakang) {
     let currentDate = new Date();
     currentDate.setFullYear(currentDate.getFullYear() - mundurberapatahunkebelakakang);
@@ -70,6 +71,20 @@ $("#pencarian_member_mcu").on('change', function() {
                 },
                 success: function(response) {
                     if (response.success) {
+                        $(".formulir_group").removeClass('blur-grayscale');
+                        let div_formulir_group = document.querySelector('.formulir_group');
+                        if (div_formulir_group){
+                            let elemen = div_formulir_group.querySelectorAll('input, button, select, textarea, a');
+                            elemen.forEach((item) => {
+                                item.disabled = false;
+                            });
+                            $(".formulir_group_button").show();
+                        }
+                        let currentLocation = window.location.pathname;
+                        let pathParts = currentLocation.split('/').filter(Boolean);
+                        if (response.data.akses_tindakan != null){
+                            izinkan_akses_tindakan(response.data.akses_tindakan,pathParts);
+                        }
                         $("#id_transaksi_mcu").text(response.data.id_transaksi);
                         $("#user_id_temp").text(response.data.user_id);
                         $("#nomor_identitas_temp").text(response.data.nomor_identitas);
@@ -87,3 +102,30 @@ $("#pencarian_member_mcu").on('change', function() {
         });
     }
 });
+function izinkan_akses_tindakan(hak_akses,pathParts){
+    let div_formulir_group = document.querySelector('.formulir_group');
+    let elemen = div_formulir_group.querySelectorAll('input, button, select, textarea, a');
+    let cari_hak_akses = ""
+    switch(pathParts[1]){
+        case "foto_pasien":
+            cari_hak_akses = "foto_data_diri";
+            break;
+        case "lingkungan_kerja":
+            cari_hak_akses = "lingkungan_kerja";
+            break;
+    }
+    let hasil = JSON.parse(hak_akses).find(item => item.akses === cari_hak_akses);
+    if (hasil.status.toLowerCase() === "true"){
+        $(".formulir_group").removeClass('blur-grayscale');
+        elemen.forEach((item) => {
+            item.disabled = false;
+        });
+        $(".formulir_group_button").show();
+    }else{
+        $(".formulir_group").addClass('blur-grayscale');
+        elemen.forEach((item) => {
+            item.disabled = true;
+        });
+        $(".formulir_group_button").hide();
+    }
+}

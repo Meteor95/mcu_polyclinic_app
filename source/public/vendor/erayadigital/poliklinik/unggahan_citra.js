@@ -267,7 +267,7 @@ $("#simpan_foto_perserta").on('click', function() {
     if ($("#pencarian_member_mcu").val() == null){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
-    if (croppedImages.length == 0){
+    if (croppedImages.length == 0 && (title_poliklinik.toLowerCase().replace(/ /g, "") !== "poliklinikfarminghamscore")){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan foto dari '+title_poliklinik+' minimal 1 Foto terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
     if ($("#judul_citra_unggah_poli").val() == ""){

@@ -51,8 +51,10 @@ function updateProgress(selector, condition, text, response = null) {
         : '<i style="color:red" class="fa-regular fa-thumbs-down fa-lg"></i>';
     $(selector).html(icon + ' ' + text);
     if (text == 'LAB') {
-        let detail_transaksi_code = encodeURIComponent(btoa(response.detail_informasi_user.id+'|'+response.detail_informasi_user.no_mcu+'|'+response.detail_informasi_user.nomor_identitas+'|'+response.detail_informasi_user.nama_peserta));
-        $(selector+"_bawah").html(`<a href="/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}" target="_blank" class="btn btn-amc-orange w-100"><i class="fa fa-edit"></i> Buka Tindakan</a>`);
+        if (response.detail_informasi_user) {
+            let detail_transaksi_code = encodeURIComponent(btoa(response.detail_informasi_user.id+'|'+response.detail_informasi_user.no_mcu+'|'+response.detail_informasi_user.nomor_identitas+'|'+response.detail_informasi_user.nama_peserta));
+            $(selector+"_bawah").html(`<a href="/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}" target="_blank" class="btn btn-amc-orange w-100"><i class="fa fa-edit"></i> Buka Tindakan</a>`);
+        }
     }
 }
 function load_data_document() {
@@ -102,9 +104,9 @@ function load_data_document() {
                 updateProgress('.progress_farmingham_score', response.jumlah_data_farmingham_score > 0, 'FS');
                 updateProgress('.progress_au', response.jumlah_data_audiometri > 0, 'AU');
                 /* Lab */
-                updateProgress('.progress_lab', response.jumlah_data_lab > 0, 'LAB', response);
+                updateProgress('.progress_lab', (response.jumlah_data_lab > 0) ? 'LAB' : response);
                 $("#btn_lab_url").attr('href', response.url_lab);
-                if (response.detail_informasi_user === null) {
+                if (response.detail_informasi_user) {
                     $('#error_transaksi').show();
                     return createToast('Tidak Ada Tindakan', 'top-right', 'Pengguna ini tidak memiliki data Tindakan. Silahkan lakukan tindakan pada menu TINDAKAN baik MCU atau NON MCU', 'error', 3000);
                 }

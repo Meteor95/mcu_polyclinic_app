@@ -95,7 +95,7 @@ class TransaksiController extends Controller
                 ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
                 ->leftJoin('paket_mcu', 'paket_mcu.id', '=', 'mcu_transaksi_peserta.id_paket_mcu')
                 ->leftJoin('lab_template_tindakan', 'lab_template_tindakan.id_paket_mcu', '=', 'mcu_transaksi_peserta.id_paket_mcu')
-                ->select('users_member.*', 'users_member.id as user_id', 'mcu_transaksi_peserta.no_transaksi', 'mcu_transaksi_peserta.id as id_transaksi', 'departemen_peserta.nama_departemen', 'company.company_name','paket_mcu.id as id_paket_mcu', 'paket_mcu.nama_paket', 'paket_mcu.harga_paket', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran','lab_template_tindakan.id as id_template_tindakan')
+                ->select('users_member.*', 'users_member.id as user_id', 'mcu_transaksi_peserta.no_transaksi', 'mcu_transaksi_peserta.id as id_transaksi', 'departemen_peserta.nama_departemen', 'company.company_name','paket_mcu.id as id_paket_mcu', 'paket_mcu.nama_paket', 'paket_mcu.harga_paket', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran','lab_template_tindakan.id as id_template_tindakan','paket_mcu.akses_tindakan')
                 ->where('users_member.nomor_identitas', $request->nomor_identitas)
                 ->first();
             if (!$data) {

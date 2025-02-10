@@ -154,7 +154,7 @@ function loadDataPasien() {
                     title: "Aksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `<div class="d-flex justify-content-between gap-2"><button onclick="lihat_berkas_mcu('${row.no_transaksi}', '${row.nama_peserta}', '${row.id}')" class="btn btn-danger w-100"><i class="fa fa-print"></i> Lihat Berkas</button></div>`;
+                            return `<div class="d-flex justify-content-between gap-2"><button onclick="lihat_berkas_mcu('${row.no_transaksi}', '${row.nama_peserta}', '${row.id}',this)" class="btn btn-danger w-100"><i class="fa fa-print"></i> Lihat Berkas</button></div>`;
                         }       
                         return data;
                     }
@@ -244,7 +244,10 @@ function renderRow(item, level = 0, tbody, datadiri) {
 function clear_berkas_mcu(){
     
 }
-function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu) {
+function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu, button) {
+    let button_element = $(button);
+    button_element.prop('disabled', true);
+    button_element.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
             url: baseurlapi + '/laporan/informasi_mcu',
@@ -257,9 +260,19 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu) {
                 nama_peserta: nama_peserta,
             },
             success: function(response) {
+                if (!response.informasi_data_diri.data_foto) {
+                    button_element.prop('disabled', false);
+                    button_element.html('<i class="fa fa-print"></i> Lihat Berkas');
+                    return createToast('Kesalahan', 'top-right', nama_peserta+' belum melakukan foto data diri, silahkan lakukan foto data diri terlebuh dahulu agar dapat mengakses laporan ini', 'error', 3000);
+                }
+                if (!response.kesimpulan_tindakan) {
+                    button_element.prop('disabled', false);
+                    button_element.html('<i class="fa fa-print"></i> Lihat Berkas');
+                    return createToast('Kesalahan', 'top-right', nama_peserta+' belum diberikan kesimpulan tindakan, konsultasikan dengan dokter atau admin untuk permasalahan ini', 'error', 3000);
+                }
                 $("#id_mcu_berkas_mcu").html(id_mcu);
                 $("#riwayat_khusus_wanita_section").hide();
-                $("#berkas_mcu_foro_peserta").html(`<img src="${response.riwayat_informasi_foto.data_foto   }" class="img-fluid rounded scaled-image_0_3">`);
+                $("#berkas_mcu_foro_peserta").html(`<img src="${response.informasi_data_diri.data_foto}" class="img-fluid rounded scaled-image_0_3">`);
                 $("#berkas_mcu_nomor_mcu").html(no_transaksi);
                 $("#berkas_mcu_nama_peserta").html(nama_peserta);
                 $("#berkas_mcu_nik").html(response.informasi_data_diri.nomor_identitas);
@@ -534,9 +547,13 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu) {
                 response.laboratorium.forEach(kategori => {
                     renderKategori(kategori, 1, response.informasi_data_diri);
                 });
+                button_element.prop('disabled', false);
+                button_element.html('<i class="fa fa-print"></i> Lihat Berkas');
                 $("#modal_lihat_berkas_mcu").modal('show');
             },
             error: function(xhr, status, error) {
+                button_element.prop('disabled', false);
+                button_element.html('<i class="fa fa-print"></i> Lihat Berkas');
                 createToast('Kesalahan Validasi Kesimpulan', 'top-right', error, 'error', 3000);
             }
         });

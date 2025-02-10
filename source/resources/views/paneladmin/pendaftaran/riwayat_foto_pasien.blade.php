@@ -7,7 +7,7 @@
           @include('komponen.information_user', ['title_card' => "Foto Diri", 'informasi_apa' => "informasi foto peserta"])
         </div>
         <div class="card-body">
-          <div class="row">
+          <div class="row formulir_group">
             <div class="col-md-6">
               <h3>Citra Sebelum</h3>
               <button id="ambil_dari_webcame" class="btn btn-warning mt-2 mb-2 w-100"><i class="fa fa-camera"></i> Ambil Dari Device</button>
@@ -28,7 +28,7 @@
               </div>
             </div>
           </div>
-          <button class="btn w-100 btn-primary mt-3" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Foto</button>
+          <button class="btn w-100 btn-primary mt-3 formulir_group formulir_group_button" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Foto</button>
           @if (isset($data['dataNavigasi']))
             @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
           @endif

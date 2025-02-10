@@ -14,7 +14,7 @@ class FileController extends Controller
     public function download_foto(Request $req)
     {
         try {
-            $fileName = $req->file_name;
+            $fileName = $req->file_name == "" ? 'logo_amc.png' : $req->file_name;
             $filePath = 'mcu/foto_peserta/' . $fileName;
             if (!Storage::disk('public')->exists($filePath)) {
                 return response()->json([

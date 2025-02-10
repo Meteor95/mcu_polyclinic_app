@@ -129,7 +129,7 @@ function loadDataPasien() {
                     title: "Aksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `<div class="d-flex justify-content-between gap-2"><button onclick="lihat_laboratorium('${row.no_transaksi}', '${row.nama_peserta}', '${row.id}')" class="btn btn-success w-100"><i class="fa fa-print"></i> Berkas Laboratorium</button></div>`;
+                            return `<div class="d-flex justify-content-between gap-2"><button onclick="lihat_laboratorium('${row.no_transaksi}', '${row.nama_peserta}', '${row.id}',this)" class="btn btn-success w-100"><i class="fa fa-print"></i> Berkas Laboratorium</button></div>`;
                         }       
                         return data;
                     }
@@ -217,7 +217,10 @@ function renderRow(item, level = 0, tbody, datadiri) {
         item.sub.forEach(subItem => renderRow(subItem, level + 1, tbody));
     }
 }
-function lihat_laboratorium(no_transaksi, nama_peserta, id_mcu) {
+function lihat_laboratorium(no_transaksi, nama_peserta, id_mcu, button) {
+    let button_element = $(button);
+    button_element.prop('disabled', true);
+    button_element.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
             url: baseurlapi + '/laporan/informasi_mcu',
@@ -230,6 +233,16 @@ function lihat_laboratorium(no_transaksi, nama_peserta, id_mcu) {
                 nama_peserta: nama_peserta,
             },
             success: function(response) {
+                if (!response.informasi_data_diri.data_foto) {
+                    button_element.prop('disabled', false);
+                    button_element.html('<i class="fa fa-print"></i> Berkas Laboratorium');
+                    return createToast('Kesalahan', 'top-right', nama_peserta+' belum melakukan foto data diri, silahkan lakukan foto data diri terlebuh dahulu agar dapat mengakses laporan ini', 'error', 3000);
+                }
+                if (!response.kesimpulan_tindakan) {
+                    button_element.prop('disabled', false);
+                    button_element.html('<i class="fa fa-print"></i> Berkas Laboratorium');
+                    return createToast('Kesalahan', 'top-right', nama_peserta+' belum diberikan kesimpulan tindakan, konsultasikan dengan dokter atau admin untuk permasalahan ini', 'error', 3000);
+                }
                 $("#id_mcu_berkas_mcu").html(id_mcu);
                 $("#riwayat_khusus_wanita_section").hide();
                 $("#berkas_mcu_foro_peserta").html(`<img src="${response.riwayat_informasi_foto.data_foto   }" class="img-fluid rounded scaled-image_0_3">`);
@@ -278,9 +291,13 @@ function lihat_laboratorium(no_transaksi, nama_peserta, id_mcu) {
                 response.laboratorium.forEach(kategori => {
                     renderKategori(kategori, 1, response.informasi_data_diri);
                 });
+                button_element.prop('disabled', false);
+                button_element.html('<i class="fa fa-print"></i> Berkas Laboratorium');
                 $("#modal_lihat_berkas_laboratorium").modal('show');
             },
             error: function(xhr, status, error) {
+                button_element.prop('disabled', false);
+                button_element.html('<i class="fa fa-print"></i> Berkas Laboratorium');
                 createToast('Kesalahan Validasi Kesimpulan', 'top-right', error, 'error', 3000);
             }
         });

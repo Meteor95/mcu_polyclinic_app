@@ -23,6 +23,7 @@ sudo chown -R $CURRENT_USER:$CURRENT_GROUP source/database/factories
 sudo mkdir -p source/storage/app/public/file_surat_pengantar
 sudo mkdir -p source/storage/app/public/mcu/foto_peserta
 sudo mkdir -p source/storage/app/public/mcu/berkas/mcu
+sudo mkdir -p source/storage/app/public/mcu/berkas/laboratorium
 sudo mkdir -p source/storage/app/public/mcu/poliklinik/audiometri
 sudo mkdir -p source/storage/app/public/mcu/poliklinik/ekg
 sudo mkdir -p source/storage/app/public/mcu/poliklinik/rontgen_thorax

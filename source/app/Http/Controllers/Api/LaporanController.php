@@ -78,6 +78,9 @@ class LaporanController extends Controller
                 ->limit(1)
                 ->orderBy('terakhir_datang', 'desc')
                 ->first();
+            if (!$informasi_user) {
+                $informasi_user = Transaksi::join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id');
+            }
             /* Riwayat Informasi */
             $data_unggahan = UnggahCitra::where('transaksi_id', $transaksi_id->transaksi_id)->first();
             $jumlah_data_foto_data_diri = $data_unggahan ? $data_unggahan->count() : 0;
@@ -361,7 +364,7 @@ class LaporanController extends Controller
             }
             $informasi_mcu = Kesimpulan::where('id_mcu', $id_mcu)->first();
             $kesimpulan_tindakan = KesimpulanLabStatus::all();
-            $kesimpulan_tindakan_status = KesimpulanLabStatus::where('id', $informasi_mcu->kesimpulan_keseluruhan)->first();
+            $kesimpulan_tindakan_status = KesimpulanLabStatus::where('id', $informasi_mcu->kesimpulan_keseluruhan ?? "")->first();
             $count_poliklinik_spirometri = DB::table('mcu_poli_spirometri')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_ekg = DB::table('mcu_poli_ekg')->where('transaksi_id', $id_mcu)->count();
             $count_poliklinik_threadmill = DB::table('mcu_poli_threadmill')->where('transaksi_id', $id_mcu)->count();
@@ -461,7 +464,11 @@ class LaporanController extends Controller
                 ->select('users_member.nama_peserta', 'users_member.nomor_identitas', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'users_member.jenis_kelamin', 'users_member.alamat', 'company.company_name', 'departemen_peserta.nama_departemen', 'mcu_transaksi_peserta.tanggal_transaksi as tanggal_mcu', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran')
                 ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
                 ->where('mcu_transaksi_peserta.id', $req->id_mcu)->first();
-            $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
+            if ($riwayat_informasi_foto) {
+                $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . ($riwayat_informasi_foto->lokasi_gambar ?? ""));
+            }else{
+                $informasi_data_diri->data_foto = "";
+            }
             $kesimpulan_tindakan = Kesimpulan::where('id_mcu', $req->id_mcu)->first();
             $penyakit_terdahulu = RiwayatPenyakitTerdahulu::where('transaksi_id', $req->id_mcu)->get();
             $riwayat_penyakit_keluarga = RiwayatPenyakitKeluarga::where('transaksi_id', $req->id_mcu)->get();

@@ -4,7 +4,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4>Validasi Laporan Tindakan MCU atau Pengobatan Pasien</h4><span>Pada tabel ini adalah pasien yang sudah mendapatkan jadwal MCU atau Pengobatan dan belum melakukan validasi tindakan, silahkan lakukan validasi pada masing masing pasien agar dapat melihat apakah pasien tersebut sudah melakukan tindakan atau belum atau bahkan tindakan yang diterima apakah sesuai paket atau tidak.</span>
+          <h4>Validasi Kesimpulan Tindakan MCU atau Pengobatan Pasien</h4><span>Pada tabel ini adalah pasien yang sudah mendapatkan jadwal MCU atau Pengobatan dan belum melakukan validasi tindakan, silahkan lakukan validasi pada masing masing pasien agar dapat melihat apakah pasien tersebut sudah melakukan tindakan atau belum atau bahkan tindakan yang diterima apakah sesuai paket atau tidak.</span>
         </div>
         <div class="card-body">
           <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data berdasarkan nama peserta">

@@ -50,7 +50,6 @@ let choice_pemeriksaan_kesimpulan_tindakan_select = null;
 let quillInstances = {};
 $(document).ready(function() {
     pemeriksaanConfig.forEach(item => {
-        console.log(item.id);
         quillInstances[item.id] = new Quill(`#${item.id}_quill`, {
             placeholder: item.placeholder,
             theme: 'snow'
@@ -281,7 +280,6 @@ function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
                 clear_pemeriksaan_kesimpulan();
                 const hierarchicalData = response.data_kesimpulan_tindakan;
                 pemeriksaan_kesimpulan_tindakan_select_id.innerHTML = '';
-                console.log(hierarchicalData);
                 hierarchicalData.forEach(category => {
                     const option = document.createElement('option');
                     option.value = category.id;
@@ -340,8 +338,6 @@ function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
                     choice_pemeriksaan_kesimpulan_non_status_kesehatan_select.setChoiceByValue(response.data.kesimpulan_hasil_medical_checkup);
                     quillInstances['pemeriksaan_tindakan_saran'].setContents(JSON.parse(response.data.saran_keseluruhan));
                 }
-            },
-            complete: function(xhr, status) {
                 $("#modal_validasi_rekap_kesimpulan_text").html('Validasi Kesimpulan Nama: '+nama_peserta+"<br>Nomor MCU: "+no_transaksi);
                 $("#modal_validasi_rekap_kesimpulan").modal('show');
             },
@@ -361,8 +357,6 @@ $("#konfirmasi_validasi_rekap_kesimpulan").on('click', function() {
         cancelButtonText: 'Nanti Dulu!!',
     }).then((result) => {
         if (result.isConfirmed) {
-            console.log(id_mcu_let);
-            console.log(nomor_mcu_let);
             $.get('/generate-csrf-token', function(response) {
                 $.ajax({
                     url: baseurlapi + '/laporan/validasi_rekap_kesimpulan',
@@ -395,7 +389,6 @@ $("#konfirmasi_validasi_rekap_kesimpulan").on('click', function() {
                         $("#modal_validasi_rekap_kesimpulan").modal('hide');
                     },
                     error: function(xhr, status, error) {
-                        console.log(xhr.responseText);
                         createToast('Kesalahan Validasi Kesimpulan', 'top-right', error, 'error', 3000);
                     }
                 });
