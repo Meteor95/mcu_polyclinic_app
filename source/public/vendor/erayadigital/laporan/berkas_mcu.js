@@ -260,7 +260,7 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu, button) {
                 nama_peserta: nama_peserta,
             },
             success: function(response) {
-                if (!response.informasi_data_diri.data_foto) {
+                if (!response.riwayat_informasi_foto) {
                     button_element.prop('disabled', false);
                     button_element.html('<i class="fa fa-print"></i> Lihat Berkas');
                     return createToast('Kesalahan', 'top-right', nama_peserta+' belum melakukan foto data diri, silahkan lakukan foto data diri terlebuh dahulu agar dapat mengakses laporan ini', 'error', 3000);

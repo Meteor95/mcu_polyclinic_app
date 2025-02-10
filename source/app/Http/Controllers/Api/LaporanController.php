@@ -78,9 +78,6 @@ class LaporanController extends Controller
                 ->limit(1)
                 ->orderBy('terakhir_datang', 'desc')
                 ->first();
-            if (!$informasi_user) {
-                $informasi_user = Transaksi::join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id');
-            }
             /* Riwayat Informasi */
             $data_unggahan = UnggahCitra::where('transaksi_id', $transaksi_id->transaksi_id)->first();
             $jumlah_data_foto_data_diri = $data_unggahan ? $data_unggahan->count() : 0;
