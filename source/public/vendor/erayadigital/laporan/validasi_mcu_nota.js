@@ -105,11 +105,11 @@ function load_data_document() {
                 updateProgress('.progress_au', response.jumlah_data_audiometri > 0, 'AU');
                 /* Lab */
                 updateProgress('.progress_lab', (response.jumlah_data_lab > 0) ? 'LAB' : response);
-                $("#btn_lab_url").attr('href', response.url_lab);
                 if (!response.detail_informasi_user) {
                     $('#error_transaksi').show();
                     return createToast('Tidak Ada Tindakan', 'top-right', 'Pengguna ini tidak memiliki data Tindakan. Silahkan lakukan tindakan pada menu TINDAKAN baik MCU atau NON MCU', 'error', 3000);
                 }
+                $("#btn_lab_url").attr('href', response.url_lab);
                 $('#data_transaksi').show();
                 if (response.data_foto_diri) {
                     $('#foto_peserta_mcu').attr('src', response.data_foto_diri);
