@@ -34,13 +34,11 @@ class TransaksiController extends Controller
             $data = $request->all();
             $file = $request->file('nama_file_surat_pengantar');
             $return_transaksi = $transaksiService->handleTransactionPeserta($data,$request->attributes->get('user_id'),$file);
-            Log::info($return_transaksi);
             if (!$return_transaksi) {
                 return ResponseHelper::data_conflict('Pasien dengan Nama '.$data['nama_peserta'].' sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya');
             }
             return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil didaftarkan kedalam sistem MCU Artha Medica. Silahkan tambah informasi detail MCU berdasarkan Nomor Indetitas yang sudah didaftarkan [' . $request->input('nomor_identitas') . ']');
         } catch (\Throwable $th) {
-            Log::info($th);
             return ResponseHelper::error($th);
         }
     }
@@ -209,7 +207,6 @@ class TransaksiController extends Controller
             TransaksiLab::where('id', $id_transaksi)->update($dataInformasi);
             return ResponseHelper::success('Informasi transaksi dengan No Nota: ' . $no_nota . ' dan No MCU: ' . $no_mcu . ' berhasil dikonfirmasi menjadi Status Pembayaran: ');
         } catch (\Throwable $th) {
-            Log::info($th);
             return ResponseHelper::error($th);
         }
     }

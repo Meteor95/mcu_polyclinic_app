@@ -11,7 +11,8 @@ use App\Models\Laboratorium\{Transaksi as TransaksiLab, Kategori, TransaksiDetai
 use App\Models\Laporan\Kesimpulan;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
-use Illuminate\Support\Facades\{Log, DB};
+use Illuminate\Support\Facades\{Log, DB, Storage};
+
 
 class LaporanController extends Controller
 {
@@ -302,8 +303,19 @@ class LaporanController extends Controller
             Transaksi::where('no_transaksi', $no_nota)->update([
                 'status_peserta' => $req->status,
             ]);
+            $infromasi_nama_file = Transaksi::join('users_member','users_member.id','=','mcu_transaksi_peserta.user_id')
+                ->select('users_member.nomor_identitas','mcu_transaksi_peserta.id as transaksi_id')
+                ->where('no_transaksi', $no_nota)->first();
             $dynamicAttributes = [];
-            return ResponseHelper::success('Validasi atas nomor dokumen '.$no_nota.' berhasil diubah menjadi '.$req->status_text, $dynamicAttributes);
+            $folderPathMCU = 'mcu/berkas/mcu/';
+            $file_mcu_lama = "MCU_" . str_replace('/', '_', $no_nota) . '_' . $infromasi_nama_file->transaksi_id . '_' . $infromasi_nama_file->nomor_identitas . '.pdf';
+            $folderPathLab = 'mcu/berkas/laboratorium/';
+            $file_lab_lama = "LAB_" . str_replace('/', '_', $no_nota) . '_' . $infromasi_nama_file->transaksi_id . '_' . $infromasi_nama_file->nomor_identitas . '.pdf';
+            $relativePathMCU = $folderPathMCU . $file_mcu_lama;
+            $relativePathLAB = $folderPathLab . $file_lab_lama;
+            Storage::disk('public')->delete($relativePathMCU);
+            Storage::disk('public')->delete($relativePathLAB);
+            return ResponseHelper::success('Validasi atas nomor dokumen '.$no_nota.' berhasil diubah menjadi '.$req->status_text.'. Berkas lama akan dihapus dan digantikan dengan yang baru', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

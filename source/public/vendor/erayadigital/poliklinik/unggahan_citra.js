@@ -451,7 +451,7 @@ function lihatFotoDetail(id_trx_poli,nama_peserta){
                 $("#modalLihatFotoDetail").modal('show');
             },
             error: function(xhr, status, error) {
-                console.log(xhr);
+                return createToast('Kesalahan Lihat Foto Detail', 'top-right', xhr.responseJSON.message, 'error', 3000);
             }
         })
     })

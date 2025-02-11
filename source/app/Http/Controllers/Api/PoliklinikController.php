@@ -86,7 +86,6 @@ class PoliklinikController extends Controller
     {
         try {
             if ($req->jenis_modal === "lihat_foto_detail") {
-                Log::info($req->all());
                 $citra_unggahan_poliklinik = UnggahanCitra::where('id_trx_poli', $req->id_trx_poli)->where('jenis_poli', 'poli_'.$req->jenis_poli)->get();
                 $dataWithFoto = collect($citra_unggahan_poliklinik)->map(function ($item) {
                     $item->data_foto = url(env('APP_VERSI_API')."/file/unduh_citra_poliklinik?jenis_poli=".$item->jenis_poli ."&file_name=" . $item->nama_file);

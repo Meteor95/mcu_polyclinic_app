@@ -14,7 +14,6 @@ $(document).ready(function() {
 });
 $("#select2_paket_mcu").on('change', function(){
     let selectedData = $(this).val();
-    console.log(selectedData);
 });
 $("#btnKonfirmasiPendaftaran").on("click", function(event) {
     event.preventDefault();

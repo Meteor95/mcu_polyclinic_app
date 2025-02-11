@@ -36,7 +36,6 @@ function detail_addons_kondisi_fisik(lokasi_fisik,response_array,detail = false)
                 ['atas', 'bawah'].forEach(posisi => {
                     ['kanan', 'kiri'].forEach(sisi => {
                         for (let i = 1; i <= 8; i++) {
-                            console.log(detail);
                             if (detail) {
                                 $(`#${posisi}_${sisi}_${i}_modal`).text(data[`${posisi}_${sisi}_${i}`]);
                             }else{

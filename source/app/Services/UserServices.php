@@ -43,7 +43,6 @@ class UserServices
             $user = User::find($orm_user->id);
             $role = Role::where('name', 'owner')->first();
             if ($role) {
-                Log::info($user);
                 $user->assignRole($role);
             } else {
                 dd('Role "owner" tidak ditemukan');
@@ -115,7 +114,6 @@ class UserServices
             $tanda_tangan = Pegawai::where('id', '=', $data['id_pengguna'])->first();
             Pegawai::where('id', '=', $data['id_pengguna'])->update($datapegawai);
             $user_assign = User::find($data['id_pengguna']);
-            Log::info(strtolower(str_replace(' ', '_', $data['idhakakses'])));
             $user_assign->syncRoles(strtolower(str_replace(' ', '_', $data['idhakakses'])));
             if (isset($ttd)) {
                 Storage::disk('public')->delete('user/ttd/' . $tanda_tangan->tanda_tangan_pegawai);

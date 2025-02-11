@@ -276,7 +276,6 @@ function konfirmasi_pembayaran(id_transaksi){
                 id_transaksi:id_transaksi,
             },
             success: function(response) {
-                console.log(response);
                 id_transaksi_konfirmasi = id_transaksi;
                 $("#status_pembayaran_terakhir").val(response.transaksi[0].status_pembayaran).trigger('change');
                 nominalBayarKonfirmasi.set(response.transaksi[0].total_transaksi);

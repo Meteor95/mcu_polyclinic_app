@@ -61,7 +61,6 @@
 
   $(".prooduct-details-box .close").on("click", function (e) {
     var tets = $(this).parent().parent().parent().parent().addClass("d-none");
-    console.log(tets);
   });
 
   // tap-top 

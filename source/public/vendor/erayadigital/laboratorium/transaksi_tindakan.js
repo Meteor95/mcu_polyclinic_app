@@ -689,7 +689,6 @@ function calculateWidth(value,type) {
 function initAutoNumeric(index, kode_item, harga_paket = null) {
     const fields = ['harga_jual', 'diskon', 'harga_setelah_diskon', 'total_harga', 'jumlah'];
     fields.forEach(function (field, indexx) {
-        console.log(field+" Ke "+indexx)
         const elementId = `#${field}_${kode_item}_${index}`;
         const inputElement = $(elementId);
         inputElement.off('keyup');
