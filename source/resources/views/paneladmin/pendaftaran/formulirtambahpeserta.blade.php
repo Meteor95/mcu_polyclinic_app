@@ -251,6 +251,9 @@
                 </div>
             </div>
             </form>
+            @if(isset($data['dataNavigasi']))
+                @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
+            @endif
         </div>
       </div>
     </div>
