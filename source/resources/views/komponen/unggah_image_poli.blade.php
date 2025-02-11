@@ -1,4 +1,5 @@
 
+<div class="formulir_group">
 <div class="row">
     @if ($unggahan_citra_aktif)
     <div class="col-md-12 mb-2">
@@ -88,11 +89,12 @@
     <textarea class="form-control" id="catatan_kaki_citra_unggah_poli" placeholder="Isikan catatan kaki pada laporan {{$data['title']}} jika memungkinkan">{{$data['catatan_kaki']}}</textarea>
   </div>
 </div>
+</div>
 <div class="row">
   <div class="col-md-6">
-    <button class="btn btn-danger w-100 mt-2 mb-2" id="bersihkan_formulir_unggah_citra"><i class="fa fa-trash"></i> Bersihkan Formulir </button>
+    <button class="btn btn-danger w-100 mt-2 mb-2 formulir_group_button" id="bersihkan_formulir_unggah_citra"><i class="fa fa-trash"></i> Bersihkan Formulir </button>
   </div>
   <div class="col-md-6">
-    <button class="btn btn-primary w-100 mt-2 mb-2" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Data {{ucwords($data['title'])}} </button>
+    <button class="btn btn-primary w-100 mt-2 mb-2 formulir_group_button" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Data {{ucwords($data['title'])}} </button>
   </div>
 </div>

@@ -7,11 +7,13 @@
           @include('komponen.information_user', ['title_card' => "Riwayat Kecelakaan Kerja", 'informasi_apa' => "informasi riwayat kecelakaan kerja"])
         </div>
         <div class="card-body">
+            <div class="row formulir_group">
             <h1 class="mb-2 text-center">Formulir Riwayat Kecelakaan Kerja</h1>
             <div id="editor_kecelakaan_kerja"></div>
+          </div>
             <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-                <button class="btn btn-danger w-100 mt-2" id="bersihkan_data_riwayat_kecelakaan_kerja"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
-                <button class="mt-2 btn btn-success w-100" id="btnSimpanRiwayatKecelakaanKerja">Simpan Riwayat Kecelakaan Kerja</button>
+                <button class="btn btn-danger w-100 mt-2 formulir_group_button" id="bersihkan_data_riwayat_kecelakaan_kerja"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
+                <button class="mt-2 btn btn-success w-100 formulir_group_button" id="btnSimpanRiwayatKecelakaanKerja">Simpan Riwayat Kecelakaan Kerja</button>
             </div>
             @if(isset($data['dataNavigasi']))
                 @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])

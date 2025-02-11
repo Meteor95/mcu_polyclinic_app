@@ -8,7 +8,7 @@
           </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-sm-12 col-md-12">
+                <div class="col-sm-12 col-md-12 formulir_group">
                     <h1>Tanda Vital</h1>
                     <table class="table display datatables_tanda_vital" id="datatables_tanda_vital">
                         <thead>
@@ -64,8 +64,8 @@
                         </tbody>
                     </table> 
                     <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-                        <button class="btn btn-danger w-100 mt-3" id="bersihkan_tanda_vital"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
-                        <button class="btn btn-success w-100 mt-3" id="simpan_tanda_vital"><i class="fa fa-save"></i> Simpan Data</button>                   
+                        <button class="btn btn-danger w-100 mt-3 formulir_group_button" id="bersihkan_tanda_vital"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
+                        <button class="btn btn-success w-100 mt-3 formulir_group_button" id="simpan_tanda_vital"><i class="fa fa-save"></i> Simpan Data</button>                   
                     </div>
                 </div>
             </div>

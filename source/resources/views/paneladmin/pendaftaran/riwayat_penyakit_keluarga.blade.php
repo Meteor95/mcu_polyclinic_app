@@ -7,6 +7,7 @@
           @include('komponen.information_user', ['title_card' => "Riwayat Penyakit Keluarga", 'informasi_apa' => "informasi riwayat penyakit keluarga"])
         </div>
         <div class="card-body">
+          <div class="row formulir_group">
             <h1 class="mb-2 text-center">Formulir Riwayat Penyakit Keluarga</h1>
             <table class="table display" id="datatables_riwayat_penyakit_keluarga">
               <thead>
@@ -35,9 +36,10 @@
                 @endforeach
               </tbody>
             </table>     
+          </div>
             <div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-              <button class="btn btn-danger w-100 mt-3" id="bersihkan_data_riwayat_penyakit_keluarga"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
-              <button class="btn btn-success w-100 mt-3" id="simpan_riwayat_penyakit_keluarga"><i class="fa fa-save"></i> Simpan Data</button>                   
+              <button class="btn btn-danger w-100 mt-3 formulir_group_button" id="bersihkan_data_riwayat_penyakit_keluarga"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
+              <button class="btn btn-success w-100 mt-3 formulir_group_button" id="simpan_riwayat_penyakit_keluarga"><i class="fa fa-save"></i> Simpan Data</button>                   
             </div>
             @if(isset($data['dataNavigasi']))
                 @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])

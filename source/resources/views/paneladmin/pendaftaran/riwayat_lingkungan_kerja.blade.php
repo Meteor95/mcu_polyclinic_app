@@ -45,9 +45,9 @@
               </tbody>
             </table>     
             </div>
-            <div class="d-flex justify-content-between gap-2 background_fixed_right_row formulir_group formulir_group_button">
-              <button class="btn btn-danger w-100 mt-3 " id="bersihkan_data_riwayat_lingkungan_kerja"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
-              <button class="btn btn-success w-100 mt-3" id="simpan_riwayat_lingkungan_kerja"><i class="fa fa-save"></i> Simpan Data</button>                   
+            <div class="d-flex justify-content-between gap-2 background_fixed_right_row formulir_group">
+              <button class="btn btn-danger w-100 mt-3 formulir_group_button" id="bersihkan_data_riwayat_lingkungan_kerja"><i class="fa fa-refresh"></i> Bersihkan Data</button>                   
+              <button class="btn btn-success w-100 mt-3 formulir_group_button" id="simpan_riwayat_lingkungan_kerja"><i class="fa fa-save"></i> Simpan Data</button>                   
             </div>
             @if (isset($data['dataNavigasi']))
               @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
