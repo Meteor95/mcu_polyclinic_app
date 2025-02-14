@@ -62,6 +62,13 @@
             </a>
           </li>
           @endif
+          <li class="sidebar-list">
+            <i class="fa fa-thumb-tack"></i>
+            <a class="sidebar-link sidebar-title" href="{{ route('admin.antrian') }}">
+              <i class="fa-solid fa-list-check" style="padding-right: 8px;font-size: 18px;color: #fff;"></i>
+              <span>Antrian</span>
+            </a>
+          </li>
           <!-- Medical Check Up Section -->
           <li class="sidebar-main-title">
             <div>

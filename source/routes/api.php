@@ -42,6 +42,10 @@ Route::prefix('v1')->group(function () {
             Route::post('editrole', [RoleAndPermissionController::class,"editrole"]);
         });
         Route::prefix('komponen')->group(function () {
+            Route::get('daftarantrian_beranda', [MasterdataController::class,"daftarantrian_beranda"]);
+            Route::post('daftarantrian', [MasterdataController::class,"daftarantrian"]);
+            Route::get('daftarantrian', [MasterdataController::class,"daftarantrian_get"]);
+            Route::get('statusantrian', [MasterdataController::class,"statusantrian"]);
             Route::get('daftarpoli', [MasterdataController::class,"getpoli"]);
         });
         Route::prefix('pendaftaran')->group(function () {

@@ -31,4 +31,11 @@ class BerandaController extends Controller
         $data['bank'] = DaftarBank::all();
         return view('paneladmin.beranda.kasir', ['data' => $data]);
     }
+    public function antrian(Request $request)
+    {
+        $data = $this->getData($request, 'Antrian Pasien Di Ruangan', [
+            'Antrian Pasien' => route('admin.antrian'),
+        ]);
+        return view('paneladmin.beranda.antrian', ['data' => $data]);
+    }
 }

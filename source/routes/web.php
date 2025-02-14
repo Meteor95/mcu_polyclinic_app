@@ -14,6 +14,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     });
     Route::prefix('admin')->group(function () {
         Route::get('beranda', [BerandaController::class,"index"])->middleware('permission_cache:akses_beranda')->name('admin.beranda');
+        Route::get('antrian', [BerandaController::class,"antrian"])->middleware('permission_cache:akses_antrian')->name('admin.antrian');
         Route::get('kasir', [BerandaController::class,"kasir"])->middleware('permission_cache:akses_kasir')->name('admin.kasir');
         Route::get('pengguna_aplikasi', [HakaksesController::class,"pengguna_aplikasi"])->middleware('permission_cache:akses_petugas')->name('admin.pengguna_aplikasi');
         Route::get('permission', [HakaksesController::class,"permission"])->middleware('permission_cache:akses_hak_permission')->name('admin.permission');

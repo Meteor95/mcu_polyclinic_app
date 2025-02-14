@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{Perusahaan, PaketMCU};
-use App\Models\Komponen\Poli;
+use App\Models\Komponen\{Poli,Antrian};
 use App\Models\Masterdata\{Jasalayanan, DepartemenPerusahaan, MemberMCU, DaftarBank};
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\Validator;
@@ -555,6 +555,123 @@ class MasterdataController extends Controller
                 'keterangan' => $request->keteranganbank,
             ]);
             return ResponseHelper::success("Informasi bank penerima dengan nama " . $request->namabank . " berhasil diubah.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function daftarantrian_get(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 1;
+            $nomorHalaman = (int) $request->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman; 
+            $datatabel = Antrian::daftarantrian($request, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $datatabel['data'],
+                'recordsFiltered' => $datatabel['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Antrian Pengguna']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function daftarantrian_beranda(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 1;
+            $nomorHalaman = (int) $request->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman; 
+            $datatabel = Antrian::daftarantrian_beranda($request, $perHalaman, $offset);
+            $dynamicAttributes = [
+                'data' => $datatabel['data'],
+                'recordsFiltered' => $datatabel['total'],
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Antrian Pengguna']), $dynamicAttributes);
+        }catch (\Throwable $th) {
+            return ResponseHelper::error($th); 
+        }
+    }
+    public function daftarantrian(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'id_pendaftaran' => 'required',
+                'jenis_kategori' => 'required',
+                'nama_peserta' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $data = [
+                'id_pendaftaran' => $request->id_pendaftaran,
+                'jenis_kategori' => $request->jenis_kategori,
+                'waktu_masuk' => Carbon::now(),
+                'status' => 0,
+                'keterangan' => '',
+                
+            ];
+            $kategori = str_replace('_', ' ', $request->jenis_kategori);
+            $nama_antrian_sudah_ada = Antrian::where('id_pendaftaran', $request->id_pendaftaran)
+            ->where('status','<>', 1)
+            ->first();
+            if ($nama_antrian_sudah_ada) {
+                return ResponseHelper::data_conflict("Antrian atas nama " . ucwords($request->nama_peserta) . " sudah ada pada lokasi " . ucwords(str_replace('_', ' ', $nama_antrian_sudah_ada->jenis_kategori))." dan status masih belum selesai. Silahkan koordinasikan kepada kategori yang bersangkutan.");
+            }
+            Antrian::create($data);
+            return ResponseHelper::success("Antrian atas nama " . ucwords($request->nama_peserta) . " berhasil ditambahkan pada lokasi ".ucwords($kategori));
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }    
+    public function statusantrian(Request $request){
+        try {
+            $id_pendaftaran = $request->id_pendaftaran;
+            $jenis_kategori = $request->jenis_kategori;
+            $nama_peserta = $request->nama_peserta;
+            $status = $request->status;
+            $jenis_kategori_sekarang = $request->jenis_kategori_sekarang;
+            $keterangan = $request->keterangan;
+            $waktu_selesai = '';
+            if ($status == 1) {
+                $waktu_selesai = Carbon::now();
+            }
+            if ($status == 2) {
+                $waktu_selesai = null;
+            }
+            $data = [
+                'id_pendaftaran' => $id_pendaftaran,
+                'jenis_kategori' => $jenis_kategori_sekarang,
+                'waktu_selesai' => $waktu_selesai,
+                'status' => $status,
+                'keterangan' => $keterangan,
+            ];
+            if ($request->status == 0) {
+                if ($request->status_saat_ini == 1) {
+                    return ResponseHelper::data_conflict("Antrian atas nama " . ucwords($request->nama_peserta) . " sudah selesai pada lokasi ".ucwords($request->jenis_kategori)." sudah selesai jadi tidak bisa dihapus, silahkan ubah ke <strong>PROSES</strong> dahulu");
+                }
+                Antrian::where('id_pendaftaran', $request->id_pendaftaran)->where('jenis_kategori', $jenis_kategori_sekarang)->delete();
+            }else{
+                Antrian::where('id_pendaftaran', $request->id_pendaftaran)->where('jenis_kategori', $jenis_kategori_sekarang)->update($data);
+            }
+            $status_text = '';
+            switch ($request->status) {
+                case '0':
+                    $status_text = 'Hapus Antrian';
+                    break;
+                case '1':
+                    $status_text = 'Tindakan Selesai';
+                    break;
+                case '2':
+                    $status_text = 'Tindakan Diproses';
+                    break;
+            }
+            return ResponseHelper::success("Status antrian atas nama " . ucwords($request->nama_peserta) . " berhasil diperbarui pada lokasi ".ucwords($request->jenis_kategori)." dengan status ".$status);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
