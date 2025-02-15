@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController, FileController, PendaftaranController, ProfileController, PemeriksaanFisikController, LaboratoriumController, PoliklinikController, LaporanController};
+use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesController, MasterdataController, FileController, PendaftaranController, ProfileController, PemeriksaanFisikController, LaboratoriumController, PoliklinikController, LaporanController,DeveloperController};
 use Illuminate\Http\Request;
 
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
@@ -11,6 +11,9 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     Route::get('pintukeluar', [AuthController::class, "logout"]);
     Route::prefix('akun')->group(function () {
         Route::get('profile', [ProfileController::class,"profile"])->name('admin.akun.profile');
+    });
+    Route::prefix('dev')->group(function () {
+        Route::get('error_log_app', [DeveloperController::class,"error_log"])->middleware('permission_cache:akses_error_log')->name('dev.error_log');
     });
     Route::prefix('admin')->group(function () {
         Route::get('beranda', [BerandaController::class,"index"])->middleware('permission_cache:akses_beranda')->name('admin.beranda');

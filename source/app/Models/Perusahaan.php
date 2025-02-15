@@ -23,11 +23,11 @@ class Perusahaan extends Model
             $query->where('company_name', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('company_code', 'LIKE', '%' . $parameterpencarian . '%');
         }
+        $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
             ->skip($offset)
             ->orderBy('company_name', 'ASC')
             ->get();
-        $jumlahdata = $query->count();
         return [
             'data' => $result,
             'total' => $jumlahdata

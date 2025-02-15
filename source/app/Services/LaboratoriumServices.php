@@ -85,10 +85,7 @@ class LaboratoriumServices
                 $meta_data_jasa = json_decode(base64_decode($item['meta_jasa']), true);
                 $jsonError = json_last_error(); 
                 if($jsonError !== JSON_ERROR_NONE){
-                    ErrorLog::create([
-                        'jenis_error' => 'Transaksi Tindakan',
-                        'log_error' => json_encode($jsonError),
-                    ]);
+                    
                 }else{
                     $bulkData = [];
                     foreach ($meta_data_jasa as $key => $items) {

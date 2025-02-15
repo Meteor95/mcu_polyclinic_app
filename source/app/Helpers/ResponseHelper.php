@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class ResponseHelper
 {
@@ -59,6 +60,18 @@ class ResponseHelper
         if ((bool)env('APP_DEBUG_MESSAGE') && !is_int($th)){
             $message .= ". Pesan Kesalahan : ".$th->getMessage();
         }
+        DB::table('log_error_app')->insert([
+            'level' => 'error',
+            'messages' => $th->getMessage(),
+            'context' => json_encode([
+                'code' => is_int($th) ? $th : $th->getCode(),
+                'file' => !is_int($th) ? $th->getFile() : null,
+                'line' => !is_int($th) ? $th->getLine() : null,
+                'trace' => !is_int($th) ? $th->getTraceAsString() : null
+            ]),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
         return response()->json([
             'success' => false,
             'rc' => (int)(is_int($th) == true ? $th : $th->getCode()),

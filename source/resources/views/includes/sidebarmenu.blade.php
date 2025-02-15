@@ -319,7 +319,25 @@
             <ul class="sidebar-submenu">
               @foreach([
                 ['condition' => $hasAccessPenggunaAplikasi || $hasAccessPermission, 'url' => 'admin/pengguna_aplikasi', 'label' => 'Pengguna Aplikasi'],
-                ['condition' => $hasAccessHakAkses || $hasAccessPermission, 'url' => 'admin/role', 'label' => 'Hak Akses']
+                ['condition' => $hasAccessHakAkses || $hasAccessPermission, 'url' => 'admin/role', 'label' => 'Hak Akses'],
+              ] as $menuItem)
+                @if ($menuItem['condition'])
+                  <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
+                @endif
+              @endforeach
+            </ul>
+          </li>
+          @endif
+          @if ($hasAccessDeveloperArea)
+          <li class="sidebar-list">
+            <i class="fa fa-thumb-tack"></i>
+            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+              <i class="fa fa-dev" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+              <span>Developer Area</span>
+            </a>
+            <ul class="sidebar-submenu">
+              @foreach([
+                ['condition' => $hasAccessDeveloperArea || $hasAccessErrorLog, 'url' => 'dev/error_log_app', 'label' => 'Error Log'],
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>

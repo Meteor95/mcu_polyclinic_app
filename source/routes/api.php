@@ -2,10 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController, PoliklinikController, LaboratoriumController, LaporanController};
+use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController, PoliklinikController, LaboratoriumController, LaporanController, DeveloperController};
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
+    Route::prefix('developer')->group(function () {
+        Route::get('error_log_app', [DeveloperController::class, "error_log_app"]);
+        Route::delete('error_log_app/{id}', [DeveloperController::class, "hapus_error_log_app"]);
+    });
     Route::prefix('auth')->group(function () {
         Route::post('pintupendaftaran', [AuthController::class,"register"]);
         Route::post('pintumasuk', [AuthController::class,"login"]);

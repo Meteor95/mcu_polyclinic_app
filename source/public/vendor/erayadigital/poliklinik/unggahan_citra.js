@@ -1,4 +1,4 @@
-let isedit;
+let isedit,jenis_poli_kolom = true;
 const webcamButton = $('#ambil_dari_webcame');
 const webcamPreview = $('#webcam-preview');
 const tampil_canvas = $('#panggil_webcame');
@@ -73,6 +73,11 @@ $('#detail_penjelasan_citra_unggah_poli').on('change', function () {
 });
 function onloaddatatables(){
     $.get('/generate-csrf-token', function(response) {
+        switch(jenis_poli){
+            case 'farmingham_score':
+                jenis_poli_kolom = false;
+                break;
+        }
         $("#datatables_daftarpeserta_unggah_citra").DataTable({
             searching: false,
             bProcessing: true,
@@ -132,6 +137,7 @@ function onloaddatatables(){
                 {
                     title: "Foto "+title_poliklinik,
                     className: "text-center align-middle",
+                    visible: jenis_poli_kolom,
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             return `<img onclick="lihatFoto('${row.id_trx_poli}','${row.nama_peserta}','${row.data_foto}')" class="rounded img-thumbnail" src="${row.data_foto}" style="width: 100px; height: auto; aspect-ratio: 3 / 4; object-fit: cover;border-radius: 25%;cursor: pointer;"><br><button onclick="lihatFotoDetail('${row.id_trx_poli}','${row.nama_peserta}')" class="btn btn-success w-100">

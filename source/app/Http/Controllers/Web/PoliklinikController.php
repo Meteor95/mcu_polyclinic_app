@@ -8,7 +8,7 @@ use App\Models\Komponen\{PoliKesumpulan, PoliDetailKesimpulan};
 use App\Models\User;
 class PoliklinikController extends Controller
 {
-    private function getData($req, $title, $breadcrumb, $catatan_kaki = "", $jenis_poli, $jenis_poli_db = "") {
+    private function getData($req, $title, $breadcrumb, $catatan_kaki = "", $jenis_poli = "", $jenis_poli_db = "") {
         return [
             'title' => $title,
             'breadcrumb' => $breadcrumb,

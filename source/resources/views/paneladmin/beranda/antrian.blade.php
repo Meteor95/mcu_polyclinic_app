@@ -80,9 +80,6 @@
                 </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" id="konfirmasi_cetak_laboratorium"><i class="fa fa-file-pdf-o"></i> Unduh Berkas PDF</button>
-          </div>
         </div>
     </div>
 </div>>

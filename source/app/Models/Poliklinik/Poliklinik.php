@@ -61,7 +61,7 @@ class Poliklinik extends Model
     {
         $tablePrefix = config('database.connections.mysql.prefix');
         $query = DB::table($jenis_poli)
-            ->join('mcu_poli_citra', 'mcu_poli_citra.id_trx_poli', '=', $jenis_poli . '.id')
+            ->leftJoin('mcu_poli_citra', 'mcu_poli_citra.id_trx_poli', '=', $jenis_poli . '.id')
             ->join('users_member', 'users_member.id', '=', $jenis_poli . '.user_id')
             ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', $jenis_poli . '.transaksi_id')
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
@@ -83,13 +83,16 @@ class Poliklinik extends Model
                 'DATE_FORMAT(' . $tablePrefix . 'mcu_transaksi_peserta.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_mcu, ' .
                 'TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur'
             );
-        $query->where('mcu_poli_citra.jenis_poli', str_replace("mcu_", "", $jenis_poli));
+        if ($jenis_poli != "mcu_poli_farmingham_score") {
+            $query->where('mcu_poli_citra.jenis_poli', str_replace("mcu_", "", $jenis_poli));
+        }
         if (!empty($parameterPencarian)) {
             $query->where(function ($query) use ($parameterPencarian) {
                 $query->where('users_member.nama_peserta', 'LIKE', '%' . $parameterPencarian . '%')
                     ->orWhere('mcu_transaksi_peserta.no_transaksi', 'LIKE', '%' . $parameterPencarian . '%');
             });
         }
-        return $query->groupBy($jenis_poli . '.user_id', $jenis_poli . '.transaksi_id');
+        $query->groupBy($jenis_poli . '.user_id', $jenis_poli . '.transaksi_id');
+        return $query;
     }
 }

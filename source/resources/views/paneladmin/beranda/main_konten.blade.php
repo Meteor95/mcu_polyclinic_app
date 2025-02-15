@@ -8,10 +8,16 @@
         <p>Informasi pada tabel ini akan menghilang jikalau peserta sudah selesai dan tervalidasi oleh dokter pada menu VALIDASI MCU baik Paket atau Non Paket</p>
       </div>
       <div class="card-body">
-        <div class="input-group mb-3 gap-2">
-          <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data berdasarkan nama peserta">
-          <button class="btn btn-primary" id="segarkan_antrian"><i class="fa fa-refresh"></i> Segarkan</button>
-          <button class="btn btn-success" id="cek_kosong_semua"><i class="fa fa-refresh"></i> Cek Yang Kosong Semua</button>
+        <div class="row">
+          <div class="col-sm-12 col-md-7 mb-2">
+            <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data berdasarkan nama peserta">
+          </div>
+          <div class="col-sm-6 col-md-2 mb-2">
+            <button class="btn btn-primary w-100" id="segarkan_antrian"><i class="fa fa-refresh"></i> Segarkan</button>
+          </div>
+          <div class="col-sm-6 col-md-3 mb-2">
+            <button class="btn btn-success w-100" id="cek_kosong_semua"><i class="fa fa-refresh"></i> Cek Kosong Semua</button>
+          </div>
         </div>
         <table id="daftar_status_peserta_beranda" class="table table-striped table-bordered table-hover table-padding-sm"></table>
         LEGEND : <br>

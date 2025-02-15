@@ -92,6 +92,9 @@ class CheckPermission
             'hasAccessPenggunaAplikasi' => 'akses_pengguna_aplikasi',
             'hasAccessHakAkses' => 'akses_hak_akses',
             'hasAccessPermission' => 'akses_hak_permission',
+            /* Developer Area */
+            'hasAccessDeveloperArea' => 'akses_developer_area',
+            'hasAccessErrorLog' => 'akses_error_log',
         ];
         $permissionsShared = [];
         foreach ($permissionsToCheck as $key => $permissionName) {

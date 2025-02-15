@@ -146,7 +146,7 @@ class PoliklinikServices
                 $model->setTableName('mcu_poli_usg_ubdomain');
                 $namafolder = 'usg_ubdomain';
             }
-            $model->where('id', $data['id_trx_poli'])->delete();
+            $model->where('idd', $data['id_trx_poli'])->delete();
             $unggahan_citra = UnggahanCitra::where('id_trx_poli', $data['id_trx_poli'])->get();
             foreach ($unggahan_citra as $item) {
                 Storage::disk('public')->delete('mcu/poliklinik/' . $namafolder . '/' . $item->nama_file);
