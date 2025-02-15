@@ -34,7 +34,7 @@ class PoliklinikController extends Controller
             $dynamicAttributes = [
                 'data' => $data,
             ];
-            return ResponseHelper::data('Informasi unggahan Poliklinik '.ucfirst($jenis_poli).' pada transaksi '.$data['transaksi_id'].' berhasil disimpan', $dynamicAttributes);
+            return ResponseHelper::data('Informasi unggahan data Poliklinik '.ucwords(str_replace('_', ' ', $jenis_poli)).' pada transaksi '.$data['transaksi_id'].' berhasil disimpan', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -112,11 +112,13 @@ class PoliklinikController extends Controller
                 $tableName = $this->determineTableName($req->jenis_poli);
                 if (!$tableName) return ResponseHelper::error('Invalid location.');
                 $model->setTableName($tableName);
-                $informasi_poliklik = $model->join('mcu_poli_citra', 'mcu_poli_citra.id_trx_poli', '=', $tableName.'.id')
-                ->select($tableName.'.*', 'mcu_poli_citra.*', 'mcu_poli_citra.id as id_each_citra')
-                ->where($tableName.'.id', $req->id_trx_poli)
-                ->where('mcu_poli_citra.jenis_poli', 'poli_'.$req->jenis_poli)
-                ->get();
+                $query = $model->join('mcu_poli_citra', 'mcu_poli_citra.id_trx_poli', '=', "$tableName.id")
+                    ->select("$tableName.*", 'mcu_poli_citra.*', 'mcu_poli_citra.id as id_each_citra')
+                    ->where("$tableName.id", $req->id_trx_poli);
+                if ($req->jenis_poli !== "farmingham_score") {
+                    $query->where('mcu_poli_citra.jenis_poli', 'poli_' . $req->jenis_poli);
+                }
+                $informasi_poliklik = $query->get();
                 $dataWithFoto = collect($informasi_poliklik)->map(function ($item) {
                     $item->data_foto = url(env('APP_VERSI_API')."/file/unduh_citra_poliklinik?jenis_poli=".$item->jenis_poli ."&file_name=" . $item->nama_file);
                     return $item;

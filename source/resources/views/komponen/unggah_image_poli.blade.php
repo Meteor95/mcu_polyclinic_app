@@ -61,7 +61,7 @@
   </div>
   <div class="col-md-12">
       <label>Judul Citra {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
-      <input type="text" id="judul_citra_unggah_poli" class="form-control" placeholder="Hasil scan citra {{$data['title']}} pasien MCU">
+      <input type="text" id="judul_citra_unggah_poli" class="form-control" value="Hasil scan citra {{$data['title']}} pasien MCU" placeholder="Hasil scan citra {{$data['title']}} pasien MCU">
   </div>
   <div class="col-md-12">
     <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>

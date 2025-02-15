@@ -51,7 +51,7 @@ $(document).ready(function(){
         placeholderValue: 'Pilih detail penjelasan yang sesuai dengan kondisi pasien',
     });
     quill = new Quill('#editor_poliklinik', {
-        placeholder: 'Tuliskan Riwayat Kecelakaan Kerja',
+        placeholder: 'Berikan keterangan secara jelas mengenai hasil scan citra pada poliklinik ini',
         modules: {
             toolbar: {
               container: toolbarOptions,
@@ -60,7 +60,7 @@ $(document).ready(function(){
         theme: 'snow'
     });
     quill_informasi = new Quill('#detail_kesimpulan_informasi', {
-        placeholder: 'Tuliskan Riwayat Kecelakaan Kerja',
+        placeholder: 'Ketikkan Kesimpulan atas tindakan pada poliklinik ini',
         modules: {
             "toolbar": false
         },
@@ -500,6 +500,7 @@ function ubah_informasi(id_trx_poli,nomor_identitas,nama_peserta){
                 jenis_poli: jenis_poli
             },
             success: function(response) {
+                console.log(response);
                 isedit = true;
                 let newOption = new Option('['+nomor_identitas+'] - '+nama_peserta, nomor_identitas, true, false);
                 $("#pencarian_member_mcu").append(newOption).trigger('change');
