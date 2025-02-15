@@ -180,14 +180,15 @@ function onloaddatatables(){
                     className: "dtfc-fixed-right_header align-middle",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
+                            id = row.id_trx_poli ?? row.id;
                             return `<div class="d-flex justify-content-between gap-2 background_fixed_right_row">
-                                <button class="btn btn-success w-100" onclick="lihatInformasi('${row.id_trx_poli}','${row.nama_peserta}')">
+                                <button class="btn btn-success w-100" onclick="lihatInformasi('${id}','${row.nama_peserta}')">
                                     <i class="fa fa-file"></i> Lihat Informasi 
                                 </button>
-                                <button class="btn btn-success w-100" onclick="ubah_informasi('${row.id_trx_poli}','${row.nomor_identitas}','${row.nama_peserta}')">
+                                <button class="btn btn-success w-100" onclick="ubah_informasi('${id}','${row.nomor_identitas}','${row.nama_peserta}')">
                                     <i class="fa fa-edit"></i> Ubah Informasi 
                                 </button>
-                                <button onclick="hapusunduhanFoto('${row.id_trx_poli}','${row.nama_peserta}','${row.transaksi_id}','${row.no_transaksi}')" class="btn btn-danger w-100">
+                                <button onclick="hapusunduhanFoto('${id}','${row.nama_peserta}','${row.transaksi_id}','${row.no_transaksi}')" class="btn btn-danger w-100">
                                     <i class="fa fa-trash-o"></i> Hapus Foto
                                 </button>
                             </div>`;
@@ -500,7 +501,6 @@ function ubah_informasi(id_trx_poli,nomor_identitas,nama_peserta){
                 jenis_poli: jenis_poli
             },
             success: function(response) {
-                console.log(response);
                 isedit = true;
                 let newOption = new Option('['+nomor_identitas+'] - '+nama_peserta, nomor_identitas, true, false);
                 $("#pencarian_member_mcu").append(newOption).trigger('change');
@@ -569,11 +569,12 @@ function hapus_foto_unggahan(id_each_citra,nama_file_asli,id_trx_poli){
                             if (response.refresh){
                                 $("#datatables_daftarpeserta_unggah_citra").DataTable().ajax.reload();
                             }
-                            createToast('Sukses Hapus Foto', 'top-right', response.message, 'success', 3000);
+                            return createToast('Sukses Hapus Foto', 'top-right', response.message, 'success', 3000);
                         }
+                        return createToast('Gagal Hapus Foto', 'top-right', response.message, 'error', 3000);
                     },
                     error: function(xhr, status, error) {
-                        createToast('Kesalahan Hapus Foto', 'top-right', xhr.responseJSON.message, 'error', 3000);
+                        return createToast('Kesalahan Hapus Foto', 'top-right', xhr.responseJSON.message, 'error', 3000);
                     }
                 });
             })

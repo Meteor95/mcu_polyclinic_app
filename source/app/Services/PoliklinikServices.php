@@ -146,12 +146,16 @@ class PoliklinikServices
                 $model->setTableName('mcu_poli_usg_ubdomain');
                 $namafolder = 'usg_ubdomain';
             }
-            $model->where('id', $data['id_trx_poli'])->delete();
-            $unggahan_citra = UnggahanCitra::where('id_trx_poli', $data['id_trx_poli'])->get();
-            foreach ($unggahan_citra as $item) {
-                Storage::disk('public')->delete('mcu/poliklinik/' . $namafolder . '/' . $item->nama_file);
+            if ($data['jenis_poli'] !== "farmingham_score") {
+                $model->where('id', $data['id_trx_poli'])->delete();
+                $unggahan_citra = UnggahanCitra::where('id_trx_poli', $data['id_trx_poli'])->get();
+                foreach ($unggahan_citra as $item) {
+                    Storage::disk('public')->delete('mcu/poliklinik/' . $namafolder . '/' . $item->nama_file);
+                }
+                UnggahanCitra::where('id_trx_poli', $data['id_trx_poli'])->where('jenis_poli', 'poli_'.$data['jenis_poli'])->delete();
+            }else{
+                $model->where('transaksi_id', $data['id_trx_poli'])->delete();
             }
-            UnggahanCitra::where('id_trx_poli', $data['id_trx_poli'])->where('jenis_poli', 'poli_'.$data['jenis_poli'])->delete();
         });
     }
 }

@@ -101,7 +101,11 @@ class PoliklinikController extends Controller
                 $tableName = $this->determineTableName($req->jenis_poli);
                 if (!$tableName) return ResponseHelper::error('Invalid location.');
                 $model->setTableName($tableName);
-                $informasi_poliklik = $model->where('id', $req->id_trx_poli)->first();
+                if ($req->jenis_poli !== "farmingham_score") {
+                    $informasi_poliklik = $model->where('id', $req->id_trx_poli)->first();
+                }else{
+                    $informasi_poliklik = $model->where('transaksi_id', $req->id_trx_poli)->first();
+                }
                 $dynamicAttributes = [
                     'data' => $informasi_poliklik,
                 ];
@@ -112,17 +116,22 @@ class PoliklinikController extends Controller
                 $tableName = $this->determineTableName($req->jenis_poli);
                 if (!$tableName) return ResponseHelper::error('Invalid location.');
                 $model->setTableName($tableName);
-                $query = $model->join('mcu_poli_citra', 'mcu_poli_citra.id_trx_poli', '=', "$tableName.id")
-                    ->select("$tableName.*", 'mcu_poli_citra.*', 'mcu_poli_citra.id as id_each_citra')
-                    ->where("$tableName.id", $req->id_trx_poli);
+                $query = $model->leftJoin('mcu_poli_citra', 'mcu_poli_citra.id_trx_poli', '=', "$tableName.id")
+                    ->select("$tableName.*", 'mcu_poli_citra.*', 'mcu_poli_citra.id as id_each_citra');
                 if ($req->jenis_poli !== "farmingham_score") {
-                    $query->where('mcu_poli_citra.jenis_poli', 'poli_' . $req->jenis_poli);
+                    $query->where("$tableName.id", $req->id_trx_poli)
+                    ->where('mcu_poli_citra.jenis_poli', 'poli_' . $req->jenis_poli);
+                }else{
+                    $query->where("$tableName.transaksi_id", $req->id_trx_poli);
                 }
                 $informasi_poliklik = $query->get();
-                $dataWithFoto = collect($informasi_poliklik)->map(function ($item) {
-                    $item->data_foto = url(env('APP_VERSI_API')."/file/unduh_citra_poliklinik?jenis_poli=".$item->jenis_poli ."&file_name=" . $item->nama_file);
-                    return $item;
-                });
+                $dataWithFoto = collect($informasi_poliklik);
+                if ($req->jenis_poli !== "farmingham_score") {
+                    $dataWithFoto = $dataWithFoto->map(function ($item) {
+                        $item->data_foto = url(env('APP_VERSI_API') . "/file/unduh_citra_poliklinik?jenis_poli=" . $item->jenis_poli . "&file_name=" . $item->nama_file);
+                        return $item;
+                    });
+                }
                 $dynamicAttributes = [
                     'data' => $dataWithFoto,
                 ];
@@ -165,6 +174,10 @@ class PoliklinikController extends Controller
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $total_citra = UnggahanCitra::where('id_trx_poli', $req->id_trx_poli)->where('jenis_poli', 'poli_'.$req->jenis_poli)->count();
+            if ($total_citra == 1) {
+                return ResponseHelper::data_conflict('Tidak dapat menghapus citra terakhir. Jika ingin menghapus citra ini silahkan hapus transaksi poliklinik terlebih dahulu atau tambahkan citra 1 lagi kemudian hapus citra ini');
             }
             $hapus_foto = UnggahanCitra::where('id', $req->id_each_citra)->first();
             Storage::disk('public')->delete('mcu/poliklinik/' . str_replace('poli_', '', $hapus_foto->jenis_poli) . '/' . $hapus_foto->nama_file);
