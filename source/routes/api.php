@@ -216,6 +216,7 @@ Route::prefix('v1')->group(function () {
             Route::get('informasi_mcu', [LaporanController::class,"informasi_mcu"]);
             /* Transaksi Tindakan */
             Route::get('tindakan/{jenis_laporan}', [LaporanController::class,"laporan_tindakan"]);
+            Route::get('insentif/{jenis_laporan}', [LaporanController::class,"laporan_insentif"]);
         });
     });
 });

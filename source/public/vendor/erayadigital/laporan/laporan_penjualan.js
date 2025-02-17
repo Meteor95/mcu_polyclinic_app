@@ -307,9 +307,15 @@ function report_show_modal(jenis_laporan,id_tombol) {
                     totalTindakan = result.reduce((acc, item) => acc + item.total_bayar_tindakan, 0);
                     totalAll = totalApotek + totalTindakan;
                 }
-                $("#total_apotek").html(totalApotek.toLocaleString('id-ID'));
-                $("#total_tindakan").html(totalTindakan.toLocaleString('id-ID'));
-                $("#total_all").html(totalAll.toLocaleString('id-ID'));
+                if (jenis_laporan === 'transaksi_tindakan_terbanyak') {
+                    $("#footer_total").hide();
+                    return false;
+                }else{
+                    $("#total_apotek").html(totalApotek.toLocaleString('id-ID'));
+                    $("#total_tindakan").html(totalTindakan.toLocaleString('id-ID'));
+                    $("#total_all").html(totalAll.toLocaleString('id-ID'));
+                    $("#footer_total").show();
+                }
             }
         });
     };

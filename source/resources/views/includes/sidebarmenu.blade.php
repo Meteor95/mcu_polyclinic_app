@@ -251,8 +251,7 @@
             <ul class="sidebar-submenu">
               @foreach([
                 ['condition' => $hasAccessArciveMCU, 'url' => 'laporan/berkas/mcu', 'label' => 'MCU'],
-                ['condition' => $hasAccessArciveLaboratorium, 'url' => 'laporan/berkas/laboratorium', 'label' => 'Laboratorium'],
-                ['condition' => $hasAccessArciveNota, 'url' => 'laporan/berkas/kuitansi', 'label' => 'Kuitansi']
+                ['condition' => $hasAccessArciveLaboratorium, 'url' => 'laporan/berkas/laboratorium', 'label' => 'Laboratorium']
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
@@ -261,7 +260,7 @@
             </ul>
           </li>
           @endif
-          @if ($hasAccessLaporanPenjualan || $hasAccessLaporanHutang)
+          @if ($hasAccessLaporanPenjualan || $hasAccessLaporanHutang || hasAccessLaporanInsentif)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -271,7 +270,7 @@
             <ul class="sidebar-submenu">
               @foreach([
                 ['condition' => $hasAccessLaporanPenjualan, 'url' => 'laporan/transaksi/penjualan', 'label' => 'Penjualan'],
-                ['condition' => $hasAccessLaporanHutang, 'url' => 'laporan/transaksi/hutang', 'label' => 'Hutang'],
+                ['condition' => $hasAccessLaporanInsentif, 'url' => 'laporan/transaksi/insentif', 'label' => 'Insentif'],
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>

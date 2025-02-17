@@ -643,5 +643,56 @@ class LaporanController extends Controller
             return ResponseHelper::error($th);
         }
     }
-
+    public function laporan_insentif(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 0;
+            $nomorHalaman = ($perHalaman > 0) ? (int) $request->start / $perHalaman : 0;
+            $offset = $nomorHalaman * $perHalaman;
+            $parameterpencarian = $request->parameter_pencarian;
+            $status_pembayaran = $request->status_pembayaran;
+            $jenis_layanan = $request->jenis_layanan;
+            $jenis_transaksi = $request->jenis_transaksi;
+            $jenis_laporan = $request->jenis_laporan;
+            $tanggal_awal = Carbon::parse($request->tanggal_awal)->startOfDay();
+            $tanggal_akhir = Carbon::parse($request->tanggal_akhir)->endOfDay();
+            $tablePrefix = config('database.connections.mysql.prefix');
+            if ($jenis_laporan == "insentif_tindakan") { 
+                $query = TransaksiLab::selectRaw('
+                    '.$tablePrefix.'transaksi_fee.id_petugas AS id_petugas,
+                    '.$tablePrefix.'transaksi_fee.nama_petugas AS nama_petugas,
+                    SUM('.$tablePrefix.'transaksi_fee.nominal_fee) AS total_insentif
+                ')
+                ->join('transaksi_fee', 'transaksi_fee.id_transaksi', '=', 'transaksi.id')
+                ->whereBetween('transaksi.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($jenis_transaksi != ""){
+                    $query->where('transaksi.jenis_transaksi', $jenis_transaksi);
+                }
+                if ($jenis_layanan != ""){
+                }
+                if ($jenis_layanan != ""){
+                    $query->where('transaksi.jenis_layanan', $jenis_layanan);
+                }
+                if ($status_pembayaran != ""){
+                    $query->where('transaksi.status_pembayaran', $status_pembayaran);
+                }
+                $query->groupBy(['transaksi_fee.id_petugas'])->orderByRaw($tablePrefix.'transaksi_fee.nama_petugas ASC');
+            }
+            $dataSUMGlobal = $query->get();
+            $jumlahdata = $query->count();
+            $fetchdata = ($perHalaman > 0)
+                ? $query->skip($offset)->take($perHalaman)->get()
+                : $query->get();
+            return response()->json([
+                'data' => $fetchdata,
+                'data_total' => $dataSUMGlobal,
+                'recordsFiltered' => $jumlahdata,
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
 }

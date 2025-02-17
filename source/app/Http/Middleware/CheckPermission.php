@@ -79,6 +79,7 @@ class CheckPermission
             'hasAccessBerkasMCU' => 'akses_berkas_tindakan_mcu',
             'hasAccessLaporanPenjualan' => 'akses_laporan_penjualan',
             'hasAccessLaporanHutang' => 'akses_laporan_hutang',
+            'hasAccessLaporanInsentif' => 'akses_laporan_insentif',
             /* Master Data */
             'hasAccessMasterData' => 'akses_master_data',
             'hasAccessMasterPerusahaan' => 'akses_master_perusahaan',

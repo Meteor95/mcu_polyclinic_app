@@ -79,6 +79,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::prefix('transaksi')->group(function () {
             Route::get('penjualan',[LaporanController::class,"laporan_penjualan"])->middleware('permission_cache:akses_laporan_penjualan')->name('admin.laporan.laporan_penjualan');
             Route::get('hutang',[LaporanController::class,"laporan_hutang"])->middleware('permission_cache:akses_laporan_hutang')->name('admin.laporan.laporan_hutang');
+            Route::get('insentif',[LaporanController::class,"laporan_insentif"])->middleware('permission_cache:akses_laporan_insentif')->name('admin.laporan.laporan_insentif');
         });
     });
 });

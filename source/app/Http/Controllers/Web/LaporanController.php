@@ -390,5 +390,12 @@ class LaporanController extends Controller
         ]);
         return view('paneladmin.laporan.transaksi.laporan_hutang', ['data' => $data]);
     }
+    public function laporan_insentif(Request $req){
+        $data = $this->getData($req, 'Laporan Insentif', [
+            'Beranda' => route('admin.beranda'),
+            'Laporan' => route('admin.laporan.laporan_insentif'),
+        ]);
+        return view('paneladmin.laporan.transaksi.laporan_insentif', ['data' => $data]);
+    }
 }
 
