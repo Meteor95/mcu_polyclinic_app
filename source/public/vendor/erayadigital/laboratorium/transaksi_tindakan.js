@@ -998,6 +998,7 @@ function getKeranjangTindakan() {
     return keranjangTindakan;
 }
 function simpan_konfirmasi(){
+    $("#btnSimpanPendaftaran").prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memproses Simpan Data...');
     let jenis_transaksi = $('input[name="tipe_pembayaran"]:checked').val();
     let metode_pembayaran = "";
     let keranjangTindakan = getKeranjangTindakan();
@@ -1050,6 +1051,7 @@ function simpan_konfirmasi(){
             success: function(response_data){
                 if (response_data.rc == 200) {
                     createToast('Berhasil', 'top-right', response_data.message, 'success', 3000);
+                    $("#btnSimpanPendaftaran").prop('disabled', false).html('<i class="fa fa-save"></i> Simpan Data');
                     return Swal.fire({
                         html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/bf2bdd2d-1dac-4285-aa3d-9548be13b15d/zzf9qF3Q23.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player>Informasi berhasil disimpan ke dalam sistem MCU Artha Medica. Silahkan tambah informasi detail MCU berdasarkan Nomor Indetitas yang sudah didaftarkan ['+$('#nomor_identitas').val()+']. Aksi apa yang ingin anda lakukan selanjutnya?<div>',
                         showCancelButton: true,

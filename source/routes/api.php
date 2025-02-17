@@ -214,6 +214,8 @@ Route::prefix('v1')->group(function () {
             Route::post('validasi_rekap_kesimpulan', [LaporanController::class,"validasi_rekap_kesimpulan"]);
             Route::get('validasi_rekap_kesimpulan', [LaporanController::class,"validasi_rekap_kesimpulan_get"]);
             Route::get('informasi_mcu', [LaporanController::class,"informasi_mcu"]);
+            /* Transaksi Tindakan */
+            Route::get('tindakan/{jenis_laporan}', [LaporanController::class,"laporan_tindakan"]);
         });
     });
 });

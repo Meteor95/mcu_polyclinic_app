@@ -12,6 +12,7 @@ use App\Models\Laporan\Kesimpulan;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\{Log, DB, Storage};
+use Carbon\Carbon;
 
 
 class LaporanController extends Controller
@@ -530,4 +531,117 @@ class LaporanController extends Controller
             return ResponseHelper::error($th);
         }
     }
+    public function laporan_tindakan(Request $request)
+    {
+        $perHalaman = (int) $request->length > 0 ? (int) $request->length : 0;
+        $nomorHalaman = ($perHalaman > 0) ? (int) $request->start / $perHalaman : 0;
+        $offset = $nomorHalaman * $perHalaman;
+        $parameterpencarian = $request->parameter_pencarian;
+        $status_pembayaran = $request->status_pembayaran;
+        $jenis_layanan = $request->jenis_layanan;
+        $jenis_transaksi = $request->jenis_transaksi;
+        $jenis_laporan = $request->jenis_laporan;
+        $tanggal_awal = Carbon::parse($request->tanggal_awal)->startOfDay();
+        $tanggal_akhir = Carbon::parse($request->tanggal_akhir)->endOfDay();
+        $tablePrefix = config('database.connections.mysql.prefix');
+        try {
+            if ($jenis_laporan === 'transaksi_tindakan') {
+                $query = TransaksiLab::selectRaw('
+                    '.$tablePrefix.'transaksi.jenis_transaksi AS jenis_transaksi,
+                    '.$tablePrefix.'transaksi.status_pembayaran AS status_pembayaran,
+                    '.$tablePrefix.'transaksi.jenis_layanan AS jenis_layanan,
+                    '.$tablePrefix.'mcu_transaksi_peserta.no_transaksi AS nomor_mcu,
+                    '.$tablePrefix.'transaksi.no_nota AS nomor_nota,
+                    '.$tablePrefix.'transaksi.waktu_trx AS waktu_trx,
+                    '.$tablePrefix.'transaksi.waktu_trx_sample AS waktu_trx_sample,
+                    '.$tablePrefix.'transaksi.total_transaksi AS total_bayar_tindakan,
+                    '.$tablePrefix.'transaksi.nominal_apotek AS total_bayar_apotek,
+                    '.$tablePrefix.'transaksi.nama_dokter AS nama_dokter,
+                    '.$tablePrefix.'transaksi.nama_pj AS nama_penanggung_jawab,
+                    '.$tablePrefix.'transaksi.nama_paket_mcu AS paket_yang_diambil
+                ')
+                ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
+                ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+                ->whereBetween('transaksi.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($jenis_transaksi != ""){
+                    $query->where('transaksi.jenis_transaksi', $jenis_transaksi);
+                }
+                if ($jenis_layanan != ""){
+                    $query->where('transaksi.jenis_layanan', $jenis_layanan);
+                }
+                if ($status_pembayaran != ""){
+                    $query->where('transaksi.status_pembayaran', $status_pembayaran);
+                }
+            } else if ($jenis_laporan === 'transaksi_tindakan_detail' ) {
+                $query = TransaksiLab::selectRaw('
+                    '.$tablePrefix.'transaksi.id AS id_transaksi,
+                    '.$tablePrefix.'transaksi.no_nota AS nomor_nota,
+                    '.$tablePrefix.'mcu_transaksi_peserta.no_transaksi AS no_mcu,
+                    '.$tablePrefix.'transaksi.waktu_trx AS waktu_trx,
+                    '.$tablePrefix.'transaksi_detail.kode_item AS kode_item,
+                    '.$tablePrefix.'transaksi_detail.nama_item AS nama_item,
+                    '.$tablePrefix.'transaksi_detail.harga AS harga,
+                    '.$tablePrefix.'transaksi_detail.diskon AS diskon,
+                    '.$tablePrefix.'transaksi_detail.harga_setelah_diskon AS harga_setelah_diskon,
+                    '.$tablePrefix.'transaksi_detail.jumlah AS jumlah,
+                    '.$tablePrefix.'transaksi.nominal_apotek AS total_bayar_apotek,
+                    '.$tablePrefix.'transaksi.total_transaksi AS total_bayar_tindakan
+                ')
+                ->join('transaksi_detail', 'transaksi_detail.id_transaksi', '=', 'transaksi.id')
+                ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
+                ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+                ->whereBetween('transaksi.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($jenis_transaksi != ""){
+                    $query->where('transaksi.jenis_transaksi', $jenis_transaksi);
+                }
+                if ($jenis_layanan != ""){
+                    $query->where('transaksi.jenis_layanan', $jenis_layanan);
+                }
+                if ($status_pembayaran != ""){
+                    $query->where('transaksi.status_pembayaran', $status_pembayaran);
+                }
+            } else if ($jenis_laporan === 'transaksi_tindakan_terbanyak') {
+                $query = TransaksiLab::selectRaw('
+                    '.$tablePrefix.'transaksi.id AS id_transaksi,
+                    '.$tablePrefix.'transaksi.no_nota AS nomor_nota,
+                    '.$tablePrefix.'transaksi.waktu_trx AS waktu_trx,
+                    '.$tablePrefix.'transaksi_detail.kode_item AS kode_item,
+                    '.$tablePrefix.'transaksi_detail.nama_item AS nama_item,
+                    SUM('.$tablePrefix.'transaksi_detail.jumlah) AS jumlah
+
+                ')
+                ->join('transaksi_detail', 'transaksi_detail.id_transaksi', '=', 'transaksi.id')
+                ->whereBetween('transaksi.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($jenis_transaksi != ""){
+                    $query->where('transaksi.jenis_transaksi', $jenis_transaksi);
+                }
+                if ($jenis_layanan != ""){
+                    $query->where('transaksi.jenis_layanan', $jenis_layanan);
+                }
+                if ($status_pembayaran != ""){
+                    $query->where('transaksi.status_pembayaran', $status_pembayaran);
+                }
+                $query->groupBy(['transaksi_detail.kode_item'])->orderByRaw('jumlah DESC, waktu_trx DESC');
+            } else {
+                return ResponseHelper::data_not_found('Jenis laporan tidak valid.');
+            }
+            $dataSUMGlobal = $query->get();
+            $jumlahdata = $query->count();
+            $fetchdata = ($perHalaman > 0)
+                ? $query->skip($offset)->take($perHalaman)->get()
+                : $query->get();
+            return response()->json([
+                'data' => $fetchdata,
+                'data_total' => $dataSUMGlobal,
+                'recordsFiltered' => $jumlahdata,
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+
 }

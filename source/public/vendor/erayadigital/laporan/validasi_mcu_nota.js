@@ -46,7 +46,6 @@ $(document).ready(function() {
     });
 });
 function updateProgress(selector, condition, text, response = null) {
-    console.log(response);
     let detail_transaksi_code = '';
     const icon = condition 
         ? '<i style="color:green" class="fa-regular fa-thumbs-up fa-lg"></i>' 
