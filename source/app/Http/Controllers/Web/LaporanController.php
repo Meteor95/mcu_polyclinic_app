@@ -535,6 +535,7 @@ class LaporanController extends Controller
     
     public function cetak_kuitansi_tagihan_perusahaan(Request $req){
         $dataparameter = json_decode(base64_decode($req->query('data')), true);
+        Log::info($dataparameter);
         $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
         $id_perusahaan = $dataparameter['id_perusahaan'];
         $kode_perusahaan = $dataparameter['kode_perusahaan'];
@@ -549,15 +550,7 @@ class LaporanController extends Controller
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
             ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
             ->selectRaw('
-                '.$tablePrefix.'transaksi.no_nota AS no_nota,
-                '.$tablePrefix.'company.id AS id_perusahaan,
-                '.$tablePrefix.'company.company_name AS nama_peserta,
-                SUM('.$tablePrefix.'transaksi.total_transaksi) AS total_pembayaran,
-                SUM('.$tablePrefix.'transaksi.nominal_apotek) AS nominal_apotek,
-                '.$tablePrefix.'transaksi.jenis_layanan AS jenis_layanan,
-                COUNT('.$tablePrefix.'transaksi.no_nota) AS jumlah_peserta,
-                MIN('.$tablePrefix.'transaksi.waktu_trx) AS tanggal_awal,
-                MAX('.$tablePrefix.'transaksi.waktu_trx) AS tanggal_akhir
+                '.$tablePrefix.'transaksi.no_nota AS no_nota
             ');
         if ($jenis_transaksi != ""){
             $data_informasi->where('transaksi.jenis_transaksi', $jenis_transaksi);
@@ -568,7 +561,7 @@ class LaporanController extends Controller
         if ($status_pembayaran != ""){
             $data_informasi->where('transaksi.status_pembayaran', $status_pembayaran);
         } 
-        $data_informasi = $data_informasi->first();
+        $data_informasi = $data_informasi->get();
         $qrcode_no_nota = base64_encode(QrCode::format('svg')
             ->size(75)
             ->margin(1)
@@ -591,14 +584,14 @@ class LaporanController extends Controller
             'total_pembayaran' => "Rp ".number_format($data_informasi->total_pembayaran + $data_informasi->nominal_apotek,2,",","."),
             'terbilang' => ucwords(GlobalHelper::terbilang($data_informasi->total_pembayaran + $data_informasi->nominal_apotek))." Rupiah"
         ];
-        $folderPath = 'public/kuitansi/perusahaan/';
-        $filename = "KUITANSI_".date('YmdHis').".pdf";
+        $folderPath = 'public/kuitansi/tagihan/';
+        $filename = "TAGIHAN_".date('YmdHis').".pdf";
         $fullPath = storage_path("app/$folderPath$filename");
         if (!Storage::exists($folderPath)) {
             Storage::makeDirectory($folderPath, 0755, true);
         }
         if (!file_exists($fullPath)) {
-            $pdf = PDF::loadView('paneladmin.laporan.kuitansi.pdf_kuitansi_perusahaan', ['data' => $data])
+            $pdf = PDF::loadView('paneladmin.laporan.kuitansi.pdf_kuitansi_tagihan_perusahaan', ['data' => $data])
                 ->setPaper('legal', 'portrait')
                 ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
             $pdf->render();

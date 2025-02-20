@@ -17,7 +17,7 @@ $(document).ready(function(){
 });
 function getRowGroupConfig(jenis_laporan) {
     let rowGroupConfig = {};
-    if (jenis_laporan == "kuitansi_personal" || jenis_laporan == "kuitansi_perusahaan") {
+    if (jenis_laporan == "kuitansi_personal" || jenis_laporan == "kuitansi_perusahaan" || jenis_laporan == "tagihan_perusahaan") {
         rowGroupConfig = false;
     } else {
         rowGroupConfig = false;
@@ -43,6 +43,9 @@ function report_show_modal(jenis_laporan,id_tombol) {
             break;
         case 'kuitansi_perusahaan':
             $("#modal_title").html("Cetak Kuitansi Perusahaan Periode : "+tanggal_awal_nilai+" s.d "+tanggal_akhir_nilai);
+            break;
+        case 'tagihan_perusahaan':
+            $("#modal_title").html("Cetak Kuitansi Tagihan Periode : "+tanggal_awal_nilai+" s.d "+tanggal_akhir_nilai);
             break;
         default:
             $("#modal_title").html("Laporan Penjualan");
@@ -138,9 +141,38 @@ function report_show_modal(jenis_laporan,id_tombol) {
     } else if (jenis_laporan == "tagihan_perusahaan") {
         columnsConfig = [
             { title: "No", className: "text-center align-middle", render: function(data, type, row, meta) {
-                return meta.row + 1;
+                return meta.row + meta.settings._iDisplayStart + 1;
             }},
-            { title: "Data Tidak Ditemukan", className: "align-middle" },
+            { title: "Kode Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${row.kode_perusahaan}`;
+                }
+                return data;
+            }},
+            { title: "Nama Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${row.nama_perusahaan}`;
+                }
+                return data;
+            }},
+            { title: "Alamat Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${row.alamat_perusahaan}`;
+                }
+                return data;
+            }},
+            { title: "Total Tagihan", className: "text-end align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${(row.total_transaksi).toLocaleString('id-ID')}`;
+                }
+                return data;
+            }},
+            { title: "Aksi", className: "text-end align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `<button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('tagihan_perusahaan','${row.id_perusahaan}','${row.kode_perusahaan}','${row.nama_perusahaan}')"><i class="fa fa-print"></i> Cetak Tagihan</button>`;
+                }
+                return data;
+            }}
         ];
     } else {
         columnsConfig = [
@@ -252,7 +284,7 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
             if (jenis_kuitansi == "kuitansi_personal") {
                 dataparameter = btoa(JSON.stringify({id_mcu: param1, nomor_mcu: param2, nik_peserta: param3, jenis_kuitansi: jenis_kuitansi, keterangan: $('#keterangan_cetak_kuitansi').val()}));
                 window.open(baseurl + '/laporan/kuitansi/personal/cetak?data='+dataparameter,'_blank');
-            }else if (jenis_kuitansi == "kuitansi_perusahaan") {
+            }else if (jenis_kuitansi == "kuitansi_perusahaan" || jenis_kuitansi == "tagihan_perusahaan") {
                 dataparameter = btoa(JSON.stringify({
                     id_perusahaan: param1, 
                     kode_perusahaan: param2, 
@@ -263,7 +295,11 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
                     status_pembayaran: $("#status_pembayaran").val(),
                     keterangan: $('#keterangan_cetak_kuitansi').val()
                 }));
-                window.open(baseurl + '/laporan/kuitansi/perusahaan/cetak?data='+dataparameter,'_blank');
+                if (jenis_kuitansi == "kuitansi_perusahaan") {
+                    window.open(baseurl + '/laporan/kuitansi/perusahaan/cetak?data='+dataparameter,'_blank');  
+                }else if (jenis_kuitansi == "tagihan_perusahaan") {
+                    window.open(baseurl + '/laporan/kuitansi/tagihan_perusahaan/cetak?data='+dataparameter,'_blank');  
+                }
             }
         }
     })
