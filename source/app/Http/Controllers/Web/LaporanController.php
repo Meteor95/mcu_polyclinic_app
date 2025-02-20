@@ -535,7 +535,6 @@ class LaporanController extends Controller
     
     public function cetak_kuitansi_tagihan_perusahaan(Request $req){
         $dataparameter = json_decode(base64_decode($req->query('data')), true);
-        Log::info($dataparameter);
         $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
         $id_perusahaan = $dataparameter['id_perusahaan'];
         $kode_perusahaan = $dataparameter['kode_perusahaan'];
@@ -550,7 +549,9 @@ class LaporanController extends Controller
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
             ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
             ->selectRaw('
-                '.$tablePrefix.'transaksi.no_nota AS no_nota
+                '.$tablePrefix.'transaksi.no_nota AS no_nota,
+                '.$tablePrefix.'company.id AS id_perusahaan,
+                '.$tablePrefix.'company.company_name AS nama_perusahaan
             ');
         if ($jenis_transaksi != ""){
             $data_informasi->where('transaksi.jenis_transaksi', $jenis_transaksi);
@@ -565,7 +566,7 @@ class LaporanController extends Controller
         $qrcode_no_nota = base64_encode(QrCode::format('svg')
             ->size(75)
             ->margin(1)
-            ->generate(base64_encode($data_informasi->id_perusahaan)));
+            ->generate(base64_encode($data_informasi->first()->id_perusahaan)));
         $atas_nama_nota = Pegawai::where('atas_nama_kuitansi', 1)->first();
         $qrcode_dokter = base64_encode(QrCode::format('svg')
             ->size(75)
@@ -573,8 +574,8 @@ class LaporanController extends Controller
             ->generate($atas_nama_nota->nik));
         $data = [
             'title' => 'Cetak Kuitansi Perusahaan',
-            'nama_perusahaan' => $data_informasi->nama_peserta,
-            'jumlah_peserta' => $data_informasi->jumlah_peserta,
+            'nama_perusahaan' => $data_informasi->first()->nama_perusahaan,
+            'jumlah_peserta' => "",
             'qrcode_no_nota' => $qrcode_no_nota,
             'qrcode_dokter' => $qrcode_dokter,
             'atas_nama_nota' => $atas_nama_nota->nama_pegawai,
