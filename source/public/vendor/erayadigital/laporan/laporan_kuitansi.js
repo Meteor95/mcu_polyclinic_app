@@ -135,6 +135,13 @@ function report_show_modal(jenis_laporan,id_tombol) {
                 return data;
             }}
         ];
+    } else if (jenis_laporan == "tagihan_perusahaan") {
+        columnsConfig = [
+            { title: "No", className: "text-center align-middle", render: function(data, type, row, meta) {
+                return meta.row + 1;
+            }},
+            { title: "Data Tidak Ditemukan", className: "align-middle" },
+        ];
     } else {
         columnsConfig = [
             { title: "No", className: "text-center align-middle", render: function(data, type, row, meta) {

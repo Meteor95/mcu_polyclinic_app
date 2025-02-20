@@ -35,6 +35,8 @@ RUN apk add --no-cache \
   php83-pear \
   php83-redis \
   php83-iconv \
+  imagemagick \
+  imagemagick-dev \
   supervisor \
   autoconf \
   automake \
