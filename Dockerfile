@@ -3,50 +3,51 @@ FROM alpine:${ALPINE_VERSION}
 LABEL Maintainer="Mochmad Aries Setyawan <seira@erayadigital.co.id>"
 LABEL Description="Container for Laravel Octane Artha Medica MCU"
 
-# Setup document root
 WORKDIR /var/www/html
 
-# Install packages and PHP extensions
+# Install system dependencies, including build tools and necessary libraries
 RUN apk add --no-cache \
-  curl \
-  php83 \
-  php83-ctype \
-  php83-curl \
-  php83-dom \
-  php83-fileinfo \
-  php83-fpm \
-  php83-gd \
-  php83-intl \
-  php83-mbstring \
-  php83-mysqli \
-  php83-opcache \
-  php83-openssl \
-  php83-phar \
-  php83-session \
-  php83-tokenizer \
-  php83-xml \
-  php83-xmlreader \
-  php83-xmlwriter \
-  php83-simplexml \
-  php83-pdo_mysql \
-  php83-sqlite3 \
-  php83-pdo_sqlite \
-  php83-pdo \
-  php83-pear \
-  php83-redis \
-  php83-iconv \
-  imagemagick \
-  imagemagick-dev \
-  supervisor \
-  autoconf \
-  automake \
-  make \
-  gcc \
-  g++ \
-  libtool \
-  pkgconfig \
-  php83-dev \
-  nginx
+    build-essential \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    imagemagick-dev \
+    autoconf \
+    automake \
+    libtool \
+    pkgconfig \
+    curl \
+    nginx \
+    supervisor
+
+# Install PHP and extensions (grouped for efficiency)
+RUN apk add --no-cache \
+    php83 \
+    php83-ctype \
+    php83-curl \
+    php83-dom \
+    php83-fileinfo \
+    php83-fpm \
+    php83-gd \
+    php83-intl \
+    php83-mbstring \
+    php83-mysqli \
+    php83-opcache \
+    php83-openssl \
+    php83-phar \
+    php83-session \
+    php83-tokenizer \
+    php83-xml \
+    php83-xmlreader \
+    php83-xmlwriter \
+    php83-simplexml \
+    php83-pdo_mysql \
+    php83-sqlite3 \
+    php83-pdo_sqlite \
+    php83-pdo \
+    php83-pear \
+    php83-redis \
+    php83-iconv \
+    php83-dev
 
 # Install Composer globally
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -54,9 +55,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Install OpenSwoole
 RUN pecl install openswoole
 
-# Install necessary packages for compiling Imagick
-RUN apk add --update --no-cache autoconf g++ imagemagick imagemagick-dev libtool make pcre-dev
-
+# Install Imagick (AFTER all PHP dependencies are in place)
+RUN pecl install imagick
 # Configure PHP-FPM
 ENV PHP_INI_DIR=/etc/php83
 COPY config/php.ini ${PHP_INI_DIR}/conf.d/custom.ini

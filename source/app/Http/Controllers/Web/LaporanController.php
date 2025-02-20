@@ -547,11 +547,23 @@ class LaporanController extends Controller
         $tablePrefix = config('database.connections.mysql.prefix');
         $data_informasi = TransaksiLab::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+            ->join('transaksi_detail', 'transaksi_detail.id_transaksi', '=', 'transaksi.id')
             ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
             ->selectRaw('
-                '.$tablePrefix.'transaksi.no_nota AS no_nota,
+                '.$tablePrefix.'transaksi_detail.id_item AS id_item,
+                '.$tablePrefix.'mcu_transaksi_peserta.no_transaksi AS no_nota,
+                '.$tablePrefix.'transaksi_detail.nama_item AS nama_item,
                 '.$tablePrefix.'company.id AS id_perusahaan,
-                '.$tablePrefix.'company.company_name AS nama_perusahaan
+                '.$tablePrefix.'company.company_name AS nama_perusahaan,
+                '.$tablePrefix.'mcu_transaksi_peserta.jenis_transaksi_pendaftaran AS jenis_layanan,
+                '.$tablePrefix.'transaksi.waktu_trx AS tanggal_awal,
+                '.$tablePrefix.'transaksi.waktu_trx AS tanggal_akhir,
+                SUM('.$tablePrefix.'transaksi_detail.jumlah) AS jumlah_qty,
+                '.$tablePrefix.'transaksi_detail.harga_setelah_diskon AS harga_setelah_diskon,
+                SUM('.$tablePrefix.'transaksi.nominal_apotek) AS nominal_apotek,
+                SUM('.$tablePrefix.'transaksi.total_transaksi) AS total_transaksi,
+                '.$tablePrefix.'transaksi.is_paket_mcu AS apakah_paket,
+                '.$tablePrefix.'transaksi.nama_paket_mcu AS nama_paket_mcu
             ');
         if ($jenis_transaksi != ""){
             $data_informasi->where('transaksi.jenis_transaksi', $jenis_transaksi);
@@ -562,11 +574,16 @@ class LaporanController extends Controller
         if ($status_pembayaran != ""){
             $data_informasi->where('transaksi.status_pembayaran', $status_pembayaran);
         } 
-        $data_informasi = $data_informasi->get();
+        $data_informasi = $data_informasi->groupby('mcu_transaksi_peserta.jenis_transaksi_pendaftaran','transaksi_detail.id_item')->get();
+        $first_row = $data_informasi->first();
+        $pattern = '/\/MCU\/(?:[^\/]+)\/(.+)/';
+        preg_match($pattern, $first_row->no_nota, $matches);
+        $bagian_dinamis = Carbon::parse($first_row->tanggal_awal)->format('dmY') . Carbon::parse($first_row->tanggal_akhir)->format('dmY');
+        $new_nota = 'T/' . $bagian_dinamis."/".$matches[1];;
         $qrcode_no_nota = base64_encode(QrCode::format('svg')
             ->size(75)
             ->margin(1)
-            ->generate(base64_encode($data_informasi->first()->id_perusahaan)));
+            ->generate(base64_encode($first_row->id_perusahaan)));
         $atas_nama_nota = Pegawai::where('atas_nama_kuitansi', 1)->first();
         $qrcode_dokter = base64_encode(QrCode::format('svg')
             ->size(75)
@@ -574,16 +591,15 @@ class LaporanController extends Controller
             ->generate($atas_nama_nota->nik));
         $data = [
             'title' => 'Cetak Kuitansi Perusahaan',
-            'nama_perusahaan' => $data_informasi->first()->nama_perusahaan,
-            'jumlah_peserta' => "",
+            'detail_tagihan' => $data_informasi,
+            'nama_perusahaan' => $first_row->nama_perusahaan,
+            'no_transaksi_combine' => $new_nota,
             'qrcode_no_nota' => $qrcode_no_nota,
             'qrcode_dokter' => $qrcode_dokter,
             'atas_nama_nota' => $atas_nama_nota->nama_pegawai,
             'nip' => $atas_nama_nota->nik,
-            'keterangan' => $keterangan == "" ? "Kuitansi Untuk Perusahaan Periode ".Carbon::parse($data_informasi->first()->tanggal_awal)->format('d M Y')." s/d ".Carbon::parse($data_informasi->first()->tanggal_akhir)->format('d M Y') : $keterangan,
+            'keterangan' => $keterangan == "" ? "Kuitansi Untuk Perusahaan Periode ".Carbon::parse($first_row->tanggal_awal)->format('d M Y')." s/d ".Carbon::parse($first_row->tanggal_akhir)->format('d M Y') : $keterangan,
             'tanggal_cetak' => $tanggal_cetak,
-            'total_pembayaran' => "Rp ".number_format($data_informasi->first()->total_pembayaran + $data_informasi->first()->nominal_apotek,2,",","."),
-            'terbilang' => ucwords(GlobalHelper::terbilang($data_informasi->first()->total_pembayaran + $data_informasi->first()->nominal_apotek))." Rupiah"
         ];
         $folderPath = 'public/kuitansi/tagihan/';
         $filename = "TAGIHAN_".date('YmdHis').".pdf";
