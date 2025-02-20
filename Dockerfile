@@ -55,8 +55,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN pecl install openswoole
 
 # Install imagick
-RUN apt-get update && \
-    apt-get install -y libmagickwand-dev && \
+RUN apk update && \
+    apk add --no-cache imagemagick imagemagick-dev && \
     pecl install imagick && \
     docker-php-ext-enable imagick
 
