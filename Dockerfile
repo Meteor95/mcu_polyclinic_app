@@ -57,10 +57,6 @@ RUN pecl install openswoole
 # Install necessary packages for compiling Imagick
 RUN apk add --update --no-cache autoconf g++ imagemagick imagemagick-dev libtool make pcre-dev
 
-# Install Imagick extension
-RUN pecl install imagick \
-    && docker-php-ext-enable imagick
-
 # Configure PHP-FPM
 ENV PHP_INI_DIR=/etc/php83
 COPY config/php.ini ${PHP_INI_DIR}/conf.d/custom.ini

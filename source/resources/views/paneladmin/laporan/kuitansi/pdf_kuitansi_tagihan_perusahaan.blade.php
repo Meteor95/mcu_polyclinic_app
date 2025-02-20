@@ -12,7 +12,7 @@
 <body>
     <div class="header">
         <img src="{{ asset('mofi/assets/images/logo/border_hasil_mcu_atas.png') }}" alt="Border Hasil MCU" style="position: absolute;top: 0;right: 0;width: 100%;z-index: -1;opacity: 0.6;">
-        <table style="width: 100%;padding-right: 25px;">
+        <table style="width: 100%;">
             <tr>
                 <td style="width:30%; vertical-align: center;">
                     <img src="{{ asset('mofi/assets/images/logo/Logo_AMC_Full.png') }}" alt="Logo AMC" style="width: 100%;padding-top: 20px;">
@@ -29,7 +29,13 @@
         </table>
         <hr style="border: 2px solid #000;">
     </div>
-    <main>
-        
+    <main style="margin-left: 25px; margin-right: 25px;">
+        <h1 style="text-align: center;margin-top: 0">TAGIHAN</h1>
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 50%;">Kepada Yth.<br>{{ $data['nama_perusahaan'] }}<br>Cq. BAGIAN KEUANGAN<br>Di Tempat</td>
+                <td style="width: 50%; text-align: right;">Tanggal : {{ $data['tanggal'] }}<br>Nomor Transaksi : {{ $data['nomor_transaksi'] }}</td>
+            </tr>
+        </table>
     </main>
 </body></html>
