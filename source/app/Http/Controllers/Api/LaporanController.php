@@ -695,4 +695,83 @@ class LaporanController extends Controller
             return ResponseHelper::error($th);
         }
     }
+    public function laporan_kuitansi(Request $request){
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 0;
+            $nomorHalaman = ($perHalaman > 0) ? (int) $request->start / $perHalaman : 0;
+            $offset = $nomorHalaman * $perHalaman;
+            $parameterpencarian = $request->parameter_pencarian;
+            $status_pembayaran = $request->status_pembayaran;
+            $jenis_layanan = $request->jenis_layanan;
+            $jenis_transaksi = $request->jenis_transaksi;
+            $jenis_laporan = $request->jenis_laporan;
+            $tanggal_awal = Carbon::parse($request->tanggal_awal)->startOfDay();
+            $tanggal_akhir = Carbon::parse($request->tanggal_akhir)->endOfDay();
+            $tablePrefix = config('database.connections.mysql.prefix');
+            if ($jenis_laporan == "kuitansi_personal") { 
+                $query = TransaksiLab::selectRaw('
+                    '.$tablePrefix.'mcu_transaksi_peserta.id AS id_mcu,
+                    '.$tablePrefix.'mcu_transaksi_peserta.no_transaksi AS nomor_mcu,
+                    '.$tablePrefix.'users_member.nomor_identitas AS nik_peserta,
+                    '.$tablePrefix.'users_member.nama_peserta AS nama_peserta,
+                    '.$tablePrefix.'mcu_transaksi_peserta.jenis_transaksi_pendaftaran AS jenis_tindakan,
+                    '.$tablePrefix.'company.company_name AS nama_perusahaan,
+                    '.$tablePrefix.'departemen_peserta.nama_departemen AS nama_departemen,
+                    '.$tablePrefix.'transaksi.total_transaksi + '.$tablePrefix.'transaksi.nominal_apotek AS total_transaksi
+                ')
+                ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
+                ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+                ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+                ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
+                ->whereBetween('transaksi.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($jenis_transaksi != ""){
+                    $query->where('transaksi.jenis_transaksi', $jenis_transaksi);
+                }
+                if ($jenis_layanan != ""){
+                    $query->where('transaksi.jenis_layanan', $jenis_layanan);
+                }
+                if ($status_pembayaran != ""){
+                    $query->where('transaksi.status_pembayaran', $status_pembayaran);
+                }
+                $query->orderByRaw($tablePrefix.'transaksi.waktu_trx DESC');
+            }else if($jenis_laporan == "kuitansi_perusahaan"){
+                $query = TransaksiLab::selectRaw('
+                    '.$tablePrefix.'company.id AS id_perusahaan,
+                    '.$tablePrefix.'company.company_code AS kode_perusahaan,
+                    '.$tablePrefix.'company.company_name AS nama_perusahaan,
+                    '.$tablePrefix.'company.alamat AS alamat_perusahaan,
+                    SUM('.$tablePrefix.'transaksi.total_transaksi + '.$tablePrefix.'transaksi.nominal_apotek) AS total_transaksi
+                ')
+                ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
+                ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+                ->whereBetween('transaksi.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($jenis_transaksi != ""){
+                    $query->where('transaksi.jenis_transaksi', $jenis_transaksi);
+                }
+                if ($jenis_layanan != ""){
+                    $query->where('transaksi.jenis_layanan', $jenis_layanan);
+                }
+                if ($status_pembayaran != ""){
+                    $query->where('transaksi.status_pembayaran', $status_pembayaran);
+                }
+                $query->groupBy('company.id')->orderByRaw($tablePrefix.'company.company_name ASC');
+            }
+            $dataSUMGlobal = $query->get();
+            $jumlahdata = $query->count();
+            $fetchdata = ($perHalaman > 0)
+                ? $query->skip($offset)->take($perHalaman)->get()
+                : $query->get();
+            return response()->json([
+                'data' => $fetchdata,
+                'data_total' => $dataSUMGlobal,
+                'recordsFiltered' => $jumlahdata,
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
 }

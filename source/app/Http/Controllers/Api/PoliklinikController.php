@@ -30,7 +30,7 @@ class PoliklinikController extends Controller
             }
             $data = $req->all();
             $userId = $req->attributes->get('user_id');
-            $poliklinikServices->handleTransactionPoliklinik($data, $req->file('citra_unggahan_poliklinik'),$jenis_poli, $userId);
+            $poliklinikServices->handleTransactionPoliklinik($data, $req->file('citra_unggahan_poliklinik'),$jenis_poli, $userId, $req->file('citra_unggahan_poliklinik_pdf'));
             $dynamicAttributes = [
                 'data' => $data,
             ];

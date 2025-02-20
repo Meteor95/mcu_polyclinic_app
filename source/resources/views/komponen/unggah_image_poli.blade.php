@@ -12,7 +12,7 @@
       </div>
     </div>
     @endif
-    <div class="col-md-12">
+    <div class="col-md-12 mb-2">
       <h3>Tentukan Dokter Bertugas</h3>
       <select class="form-select" data-choices name="dokter_citra_unggah_poli" id="dokter_citra_unggah_poli">
         @foreach ($data['daftar_dokter'] as $item)
@@ -21,6 +21,13 @@
       </select>
     </div>
     @if ($unggahan_citra_aktif)
+    <div class="col-md-12">
+      <h3>Unggah PDF ke Gambar</h3>
+      <input type="file" class="form-control mb-2" id="pdf_file" accept="application/pdf">
+    </div>
+    <div class="card-body main-divider mb-0">
+      <div class="divider-body divider-body-3 divider-primary"> Atau </div>
+    </div>
     <div class="col-md-6">
       <h3>Citra Sebelum</h3>
       <input type="file" id="citra_pasien" class="form-control mt-2 mb-2" accept="image/*">

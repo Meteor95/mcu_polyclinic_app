@@ -16,6 +16,7 @@ RUN apk add --no-cache \
   php83-fileinfo \
   php83-fpm \
   php83-gd \
+  php83-imagick \
   php83-intl \
   php83-mbstring \
   php83-mysqli \

@@ -14,6 +14,7 @@
         "nadar/quill-delta-parser": "^3.4",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.9",
+        "spatie/pdf-to-image": "^3.1",
         "symfony/dom-crawler": "^7.2",
         "tymon/jwt-auth": "^2.1"
     },

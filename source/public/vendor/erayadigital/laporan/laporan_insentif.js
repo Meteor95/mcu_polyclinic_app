@@ -135,7 +135,7 @@ function report_show_modal(jenis_laporan,id_tombol) {
                 let totalAll = 0;
                 if (jenis_laporan === 'insentif_tindakan') {
                     dataTotal.forEach(function (item) {
-                        totalAll += totalAll + item.total_insentif;
+                        totalAll += item.total_insentif;
                     });   
                 }
                 $("#total_all").html(totalAll.toLocaleString('id-ID'));

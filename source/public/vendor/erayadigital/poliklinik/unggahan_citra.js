@@ -268,6 +268,7 @@ $(document).on('click', '.btn-lihat', function () {
     $('#imageModal').modal('show');
 });
 $("#simpan_foto_perserta").on('click', function() {
+
     if ($("#dokter_citra_unggah_poli").val() == null){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan dokter yang bertugas terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
@@ -280,6 +281,7 @@ $("#simpan_foto_perserta").on('click', function() {
     if ($("#judul_citra_unggah_poli").val() == ""){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan kesimpulan dan judul dari '+title_poliklinik+' terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
+    $("#simpan_foto_perserta").prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Proses Simpan Data');
     Swal.fire({
         html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penyimpanan Data '+title_poliklinik+'</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menyimpan informasi member MCU <strong>'+$("#nama_peserta_temp_1").text()+'</strong> ?. Jika sudah silahkan tentukan paket MCU. OH ya citra unggahan akan disimpan dalam bentuk PNG dengan TRANSPARANSI AKTIF',
         showCancelButton: true,
@@ -306,6 +308,7 @@ $("#simpan_foto_perserta").on('click', function() {
             formData.append('kesimpulan', $('#kesimpulan_citra_unggah_poli option:selected').text());
             formData.append('detail_kesimpulan', detail_kesimpulan);
             formData.append('catatan_kaki', $("#catatan_kaki_citra_unggah_poli").val());
+            formData.append('citra_unggahan_poliklinik_pdf', $("#pdf_file")[0].files[0]);
             croppedImages.forEach((base64Image, index) => {
                 const isURL = (str) => {
                     const urlPattern = /^(http|https):\/\/[^\s$.?#].[^\s]*$/;
@@ -326,6 +329,7 @@ $("#simpan_foto_perserta").on('click', function() {
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    $("#simpan_foto_perserta").prop('disabled', false).html('<i class="fa fa-save"></i> Simpan Data');
                     if (!response.success){
                         return createToast('Data Conflict '+response.rc, 'top-right', response.message, 'error', 3000);
                     }

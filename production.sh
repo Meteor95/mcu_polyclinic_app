@@ -33,6 +33,10 @@ sudo mkdir -p source/storage/app/public/mcu/poliklinik/farmingham_score
 sudo mkdir -p source/storage/app/public/mcu/poliklinik/spirometri
 sudo mkdir -p source/storage/app/public/mcu/poliklinik/threadmill
 sudo mkdir -p source/storage/app/public/user/ttd
+sudo mkdir -p source/storage/app/public/kuitansi/personal
+sudo mkdir -p source/storage/app/public/kuitansi/perusahaan
+sudo mkdir -p source/storage/app/public/kuitansi/tagihan
+sudo mkdir -p source/storage/app/public/kuitansi/tindakan
 sudo mkdir -p source/storage/app/public/upload/apotek
 
 # Ensure necessary permissions

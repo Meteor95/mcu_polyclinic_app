@@ -76,9 +76,13 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
             Route::get('mcu/cetak',[LaporanController::class,"cetak_berkas_mcu"])->middleware('permission_cache:akses_berkas_tindakan_mcu')->name('admin.laporan.cetak_berkas_mcu');
             Route::get('mcu/cetak_laboratorium',[LaporanController::class,"cetak_berkas_laboratorium"])->middleware('permission_cache:akses_berkas_tindakan_laboratorium')->name('admin.laporan.cetak_berkas_laboratorium');
         });
+        Route::prefix('kuitansi')->group(function () {
+            Route::get('personal/cetak',[LaporanController::class,"cetak_kuitansi_personal"])->middleware('permission_cache:akses_berkas_tindakan_personal')->name('admin.laporan.berkas_personal');
+            Route::get('perusahaan/cetak',[LaporanController::class,"cetak_kuitansi_perusahaan"])->middleware('permission_cache:akses_berkas_tindakan_perusahaan')->name('admin.laporan.berkas_perusahaan');
+        });
         Route::prefix('transaksi')->group(function () {
             Route::get('penjualan',[LaporanController::class,"laporan_penjualan"])->middleware('permission_cache:akses_laporan_penjualan')->name('admin.laporan.laporan_penjualan');
-            Route::get('hutang',[LaporanController::class,"laporan_hutang"])->middleware('permission_cache:akses_laporan_hutang')->name('admin.laporan.laporan_hutang');
+            Route::get('kuitansi',[LaporanController::class,"laporan_kuitansi"])->middleware('permission_cache:akses_laporan_kuitansi')->name('admin.laporan.laporan_kuitansi');
             Route::get('insentif',[LaporanController::class,"laporan_insentif"])->middleware('permission_cache:akses_laporan_insentif')->name('admin.laporan.laporan_insentif');
         });
     });
