@@ -48,8 +48,6 @@ RUN apk add --no-cache \
   php83-dev \
   nginx
 
-# Install Imagick
-RUN pecl install imagick && echo "extension=imagick.so" > /etc/php83/conf.d/imagick.ini
 # Install Composer globally
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
