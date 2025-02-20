@@ -16,7 +16,6 @@ RUN apk add --no-cache \
   php83-fileinfo \
   php83-fpm \
   php83-gd \
-  php83-imagick \
   php83-intl \
   php83-mbstring \
   php83-mysqli \
@@ -47,6 +46,8 @@ RUN apk add --no-cache \
   php83-dev \
   nginx
 
+# Install Imagick
+RUN pecl install imagick && docker-php-ext-enable imagick
 # Install Composer globally
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
