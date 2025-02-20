@@ -54,12 +54,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Install OpenSwoole
 RUN pecl install openswoole
 
-# Install imagick
-# imagick
-RUN apk add --update --no-cache autoconf g++ imagemagick imagemagick-dev libtool make pcre-dev \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
-    && apk del autoconf g++ libtool make pcre-dev
+# Install necessary packages for compiling Imagick
+RUN apk add --update --no-cache autoconf g++ imagemagick imagemagick-dev libtool make pcre-dev
+
+# Install Imagick extension
+RUN pecl install imagick \
+    && docker-php-ext-enable imagick
 
 # Configure PHP-FPM
 ENV PHP_INI_DIR=/etc/php83

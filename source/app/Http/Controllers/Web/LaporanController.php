@@ -580,10 +580,10 @@ class LaporanController extends Controller
             'qrcode_dokter' => $qrcode_dokter,
             'atas_nama_nota' => $atas_nama_nota->nama_pegawai,
             'nip' => $atas_nama_nota->nik,
-            'keterangan' => $keterangan == "" ? "Kuitansi Untuk Perusahaan Periode ".Carbon::parse($data_informasi->tanggal_awal)->format('d M Y')." s/d ".Carbon::parse($data_informasi->tanggal_akhir)->format('d M Y') : $keterangan,
+            'keterangan' => $keterangan == "" ? "Kuitansi Untuk Perusahaan Periode ".Carbon::parse($data_informasi->first()->tanggal_awal)->format('d M Y')." s/d ".Carbon::parse($data_informasi->first()->tanggal_akhir)->format('d M Y') : $keterangan,
             'tanggal_cetak' => $tanggal_cetak,
-            'total_pembayaran' => "Rp ".number_format($data_informasi->total_pembayaran + $data_informasi->nominal_apotek,2,",","."),
-            'terbilang' => ucwords(GlobalHelper::terbilang($data_informasi->total_pembayaran + $data_informasi->nominal_apotek))." Rupiah"
+            'total_pembayaran' => "Rp ".number_format($data_informasi->first()->total_pembayaran + $data_informasi->first()->nominal_apotek,2,",","."),
+            'terbilang' => ucwords(GlobalHelper::terbilang($data_informasi->first()->total_pembayaran + $data_informasi->first()->nominal_apotek))." Rupiah"
         ];
         $folderPath = 'public/kuitansi/tagihan/';
         $filename = "TAGIHAN_".date('YmdHis').".pdf";
