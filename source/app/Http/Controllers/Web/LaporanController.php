@@ -532,5 +532,79 @@ class LaporanController extends Controller
         }
         return response()->file($fullPath);
     }
+    
+    public function cetak_kuitansi_tagihan_perusahaan(Request $req){
+        $dataparameter = json_decode(base64_decode($req->query('data')), true);
+        $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
+        $id_perusahaan = $dataparameter['id_perusahaan'];
+        $kode_perusahaan = $dataparameter['kode_perusahaan'];
+        $nama_perusahaan = $dataparameter['nama_perusahaan'];
+        $keterangan = $dataparameter['keterangan'];
+        $jenis_kuitansi = $dataparameter['jenis_kuitansi'];
+        $jenis_transaksi = $dataparameter['jenis_transaksi'];
+        $jenis_layanan = $dataparameter['jenis_layanan'];
+        $status_pembayaran = $dataparameter['status_pembayaran'];
+        $tablePrefix = config('database.connections.mysql.prefix');
+        $data_informasi = TransaksiLab::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
+            ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+            ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
+            ->selectRaw('
+                '.$tablePrefix.'transaksi.no_nota AS no_nota,
+                '.$tablePrefix.'company.id AS id_perusahaan,
+                '.$tablePrefix.'company.company_name AS nama_peserta,
+                SUM('.$tablePrefix.'transaksi.total_transaksi) AS total_pembayaran,
+                SUM('.$tablePrefix.'transaksi.nominal_apotek) AS nominal_apotek,
+                '.$tablePrefix.'transaksi.jenis_layanan AS jenis_layanan,
+                COUNT('.$tablePrefix.'transaksi.no_nota) AS jumlah_peserta,
+                MIN('.$tablePrefix.'transaksi.waktu_trx) AS tanggal_awal,
+                MAX('.$tablePrefix.'transaksi.waktu_trx) AS tanggal_akhir
+            ');
+        if ($jenis_transaksi != ""){
+            $data_informasi->where('transaksi.jenis_transaksi', $jenis_transaksi);
+        }
+        if ($jenis_layanan != ""){
+            $data_informasi->where('transaksi.jenis_layanan', $jenis_layanan);
+        }
+        if ($status_pembayaran != ""){
+            $data_informasi->where('transaksi.status_pembayaran', $status_pembayaran);
+        } 
+        $data_informasi = $data_informasi->first();
+        $qrcode_no_nota = base64_encode(QrCode::format('svg')
+            ->size(75)
+            ->margin(1)
+            ->generate(base64_encode($data_informasi->id_perusahaan)));
+        $atas_nama_nota = Pegawai::where('atas_nama_kuitansi', 1)->first();
+        $qrcode_dokter = base64_encode(QrCode::format('svg')
+            ->size(75)
+            ->margin(1)
+            ->generate($atas_nama_nota->nik));
+        $data = [
+            'title' => 'Cetak Kuitansi Perusahaan',
+            'nama_perusahaan' => $data_informasi->nama_peserta,
+            'jumlah_peserta' => $data_informasi->jumlah_peserta,
+            'qrcode_no_nota' => $qrcode_no_nota,
+            'qrcode_dokter' => $qrcode_dokter,
+            'atas_nama_nota' => $atas_nama_nota->nama_pegawai,
+            'nip' => $atas_nama_nota->nik,
+            'keterangan' => $keterangan == "" ? "Kuitansi Untuk Perusahaan Periode ".Carbon::parse($data_informasi->tanggal_awal)->format('d M Y')." s/d ".Carbon::parse($data_informasi->tanggal_akhir)->format('d M Y') : $keterangan,
+            'tanggal_cetak' => $tanggal_cetak,
+            'total_pembayaran' => "Rp ".number_format($data_informasi->total_pembayaran + $data_informasi->nominal_apotek,2,",","."),
+            'terbilang' => ucwords(GlobalHelper::terbilang($data_informasi->total_pembayaran + $data_informasi->nominal_apotek))." Rupiah"
+        ];
+        $folderPath = 'public/kuitansi/perusahaan/';
+        $filename = "KUITANSI_".date('YmdHis').".pdf";
+        $fullPath = storage_path("app/$folderPath$filename");
+        if (!Storage::exists($folderPath)) {
+            Storage::makeDirectory($folderPath, 0755, true);
+        }
+        if (!file_exists($fullPath)) {
+            $pdf = PDF::loadView('paneladmin.laporan.kuitansi.pdf_kuitansi_perusahaan', ['data' => $data])
+                ->setPaper('legal', 'portrait')
+                ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+            $pdf->render();
+            $pdf->save($fullPath);
+        }
+        return response()->file($fullPath);
+    }
 }
 

@@ -79,6 +79,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::prefix('kuitansi')->group(function () {
             Route::get('personal/cetak',[LaporanController::class,"cetak_kuitansi_personal"])->middleware('permission_cache:akses_berkas_tindakan_personal')->name('admin.laporan.berkas_personal');
             Route::get('perusahaan/cetak',[LaporanController::class,"cetak_kuitansi_perusahaan"])->middleware('permission_cache:akses_berkas_tindakan_perusahaan')->name('admin.laporan.berkas_perusahaan');
+            Route::get('tagihan_perusahaan/cetak',[LaporanController::class,"cetak_kuitansi_tagihan_perusahaan"])->middleware('permission_cache:akses_berkas_tindakan_tagihan_perusahaan')->name('admin.laporan.berkas_tagihan_perusahaan');
         });
         Route::prefix('transaksi')->group(function () {
             Route::get('penjualan',[LaporanController::class,"laporan_penjualan"])->middleware('permission_cache:akses_laporan_penjualan')->name('admin.laporan.laporan_penjualan');
