@@ -21,8 +21,6 @@ class PoliklinikController extends Controller
                 'user_id' => 'required',
                 'transaksi_id' => 'required',
                 'judul_laporan' => 'required',
-                'kesimpulan' => 'required',
-                'citra_unggahan_poliklinik.*' => 'file|mimes:png,jpg,jpeg|max:20480',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -36,6 +34,7 @@ class PoliklinikController extends Controller
             ];
             return ResponseHelper::data('Informasi unggahan data Poliklinik '.ucwords(str_replace('_', ' ', $jenis_poli)).' pada transaksi '.$data['transaksi_id'].' berhasil disimpan', $dynamicAttributes);
         } catch (\Throwable $th) {
+            Log::error($th);
             return ResponseHelper::error($th);
         }
     }

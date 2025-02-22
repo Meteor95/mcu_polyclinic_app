@@ -275,8 +275,10 @@ $("#simpan_foto_perserta").on('click', function() {
     if ($("#pencarian_member_mcu").val() == null){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
-    if (croppedImages.length == 0 && (title_poliklinik.toLowerCase().replace(/ /g, "") !== "poliklinikfarminghamscore")){
-        return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan foto dari '+title_poliklinik+' minimal 1 Foto terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
+    if ($("#pdf_file")[0].files[0] == null){
+        if (croppedImages.length == 0 && (title_poliklinik.toLowerCase().replace(/ /g, "") !== "poliklinikfarminghamscore")){
+            return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan foto dari '+title_poliklinik+' minimal 1 Foto terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
+        }
     }
     if ($("#judul_citra_unggah_poli").val() == ""){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan kesimpulan dan judul dari '+title_poliklinik+' terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
@@ -338,9 +340,12 @@ $("#simpan_foto_perserta").on('click', function() {
                     $("#datatables_daftarpeserta_unggah_citra").DataTable().ajax.reload();
                 },
                 error: function(xhr, status, error) {
+                    $("#simpan_foto_perserta").prop('disabled', false).html('<i class="fa fa-save"></i> Simpan Data');
                     createToast('Kesalahan Unggah Citra', 'top-right', xhr.responseJSON.message, 'error', 3000);
                 }
             });
+        }else{
+            $("#simpan_foto_perserta").prop('disabled', false).html('<i class="fa fa-save"></i> Simpan Data');
         }
     });
 });
@@ -349,6 +354,7 @@ $("#bersihkan_formulir_unggah_citra").on('click', function(){
 });
 function clear_form(){
     isedit = false;
+    $("#simpan_foto_perserta").prop('disabled', false).html('<i class="fa fa-save"></i> Simpan Data');
     $("#nomor_identitas_temp").text("");
     $("#id_transaksi_mcu").text("");
     $("#nama_peserta_temp_1").text("");
@@ -365,6 +371,7 @@ function clear_form(){
     $("#detail_penjelasan_citra_unggah_poli").val(null).trigger('change');
     quill.setContents([]);
     $("#preview-list").empty();
+    $("#pdf_file").val('');
     croppedImages = []; 
     originalFileNames = [];
     citra_proses_crop.hide();

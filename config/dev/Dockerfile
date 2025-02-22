@@ -40,6 +40,7 @@ RUN apk add --no-cache \
     php83-posix \   
     php83-pecl-imagick \
     imagemagick \
+    ghostscript \
     curl
 
 # Install and configure OpenSwoole

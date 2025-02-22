@@ -69,39 +69,40 @@ class PoliklinikServices
             if (!is_dir($directory)) {
                 mkdir($directory, 0755, true);
             }
-            if ($hasFilePdf) {
+            if (!empty($hasFilePdf)) {
                 $konversipdf = new KonversiPDFtoImage($hasFilePdf);
                 $numberOfPages = $konversipdf->pageCount();
-                for ($i=1; $i <= $numberOfPages; $i++) {
+                $originalName = pathinfo($hasFilePdf->getClientOriginalName(), PATHINFO_FILENAME);
+                $sanitizedName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', strtolower($originalName));
+                $timestamp = round(microtime(true) * 1000);
+            
+                for ($i = 1; $i <= $numberOfPages; $i++) {
                     $uuid = (string) Str::uuid();
-                    $originalName = pathinfo($hasFilePdf->getClientOriginalName(), PATHINFO_FILENAME);
-                    $sanitizedName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', strtolower($originalName));
-                    $timestamp = round(microtime(true) * 1000);
                     $filename = "{$i}_{$uuid}_{$sanitizedName}_{$timestamp}.jpg";
-                    $konversipdf->selectPages($i);
-                    $konversipdf->save($directory . '/' . $filename);
-                    $imageSize = getimagesize($directory . '/' . $filename);
+                    $konversipdf->selectPages($i)->save("{$directory}/{$filename}");
+                    $filePath = "{$directory}/{$filename}";
                     $dataToInsert[] = [
                         'id_trx_poli' => $unggahan_poliklinik->id,
-                        'jenis_poli' => "poli_".$jenis_poli,
-                        'nama_file_asli' => $i."_".$hasFilePdf->getClientOriginalName(),
+                        'jenis_poli' => "poli_{$jenis_poli}",
+                        'nama_file_asli' => "{$i}_{$hasFilePdf->getClientOriginalName()}",
                         'nama_file' => $filename,
                         'meta_citra' => json_encode([
-                            'hash_file' => md5_file($directory . '/' . $filename),
-                            'size' => filesize($directory . '/' . $filename),
-                            'mime' => mime_content_type($directory . '/' . $filename),
+                            'hash_file' => md5_file($filePath),
+                            'size' => filesize($filePath),
+                            'mime' => mime_content_type($filePath),
                             'owner' => env('APP_NAME'),
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]),
-                        'width' => $imageSize[0],
-                        'height' => $imageSize[1],
+                        'width' => getimagesize($filePath)[0],
+                        'height' => getimagesize($filePath)[1],
                         'created_at' => now(),
                         'updated_at' => now(),
-                    ]; 
+                    ];
                 }
             }
-            if ($hasFile && $unggahan_poliklinik) {
+            
+            if (!empty($hasFile)) {
                 foreach ($hasFile as $file) {
                     $uuid = (string) Str::uuid();
                     $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -143,9 +144,9 @@ class PoliklinikServices
                         'updated_at' => now(),
                     ];
                 }
-                if (!empty($dataToInsert)) {
-                    UnggahanCitra::insert($dataToInsert);
-                }
+            }
+            if (!empty($dataToInsert)) {
+                UnggahanCitra::insert($dataToInsert);
             }
         });
     }

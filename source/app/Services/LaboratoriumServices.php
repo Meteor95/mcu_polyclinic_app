@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\{DB, Hash, Storage};
 use Carbon\Carbon;
-use App\Models\Laboratorium\{Transaksi , TransaksiDetail, TransaksiFee};
+use App\Models\Laboratorium\{Transaksi , TransaksiDetail, TransaksiFee, TransaksiApotek};
 use App\Models\Transaksi\Transaksi as TransaksiMCU;
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Str;
@@ -19,6 +19,8 @@ class LaboratoriumServices
     {
         return DB::transaction(function () use ($data, $user_id, $file) {
             $filename = "";
+            $id_transaksi_lama = "";
+            $is_edit = $data['is_edit_transaksi'];
             $jenis_layanan = TransaksiMCU::where('id',$data['no_mcu'])->first();
             $informasi_file = Transaksi::where('id', $data['id_transaksi'])->first();
             $filename = $informasi_file->nama_file_surat_pengantar ?? "";
@@ -29,7 +31,8 @@ class LaboratoriumServices
                 $timestamp = microtime(true);
                 $filename = str_replace('/','_',$nomor_transaksi_mcu) . '_' . $sanitizedName . '_' . $timestamp . '.' . $file->getClientOriginalExtension();
             }
-            if (filter_var($data['is_edit_transaksi'], FILTER_VALIDATE_BOOLEAN)){
+            if (filter_var($is_edit, FILTER_VALIDATE_BOOLEAN)){
+                $id_transaksi_lama = TransaksiApotek::where('id_transaksi', $data['id_transaksi'])->first();
                 if ($informasi_file){
                     if (($informasi_file->nama_file_surat_pengantar != $filename) && ($file)){
                         Storage::disk('public')->delete('file_surat_pengantar/' . $informasi_file->nama_file_surat_pengantar);
@@ -61,8 +64,14 @@ class LaboratoriumServices
                 'nama_file_surat_pengantar' => $filename,
                 'is_paket_mcu' => $data['is_paket_mcu'],
                 'nama_paket_mcu' => $data['nama_paket_mcu'],
+                'nominal_apotek' => $informasi_file->nominal_apotek,
             ];
             $hasil_query_tranaksi = Transaksi::create($data);
+            if (filter_var($is_edit, FILTER_VALIDATE_BOOLEAN)){
+                TransaksiApotek::where('id_transaksi', $id_transaksi_lama->id_transaksi)->update([
+                    'id_transaksi' => $hasil_query_tranaksi->id
+                ]);
+            }
             foreach ($keranjangTindakan as $item) {
                 $data_tindakan[] = [
                     'id_transaksi' => $hasil_query_tranaksi->id,
@@ -117,7 +126,7 @@ class LaboratoriumServices
                         $groupedData[$kode_jasa] = $items;
                     }
                     $updatedData = array_merge(...array_values($groupedData));
-                    TransaksiFee::insert($updatedData);
+                    TransaksiFee::insert($updatedData); 
                 }
             }
             TransaksiDetail::insert($data_tindakan);
