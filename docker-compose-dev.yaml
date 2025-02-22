@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: config/dev/Dockerfile
+    volumes:
+      # Source code file
+      - ./source/:/var/www/html/
+      - ./source/storage/app/public/:/var/www/html/public/storage/
+
+    ports:
+      - target: 8080
+        published: 11103
+        mode: ingress
+
+    # Limit default logging container
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+        mode: non-blocking
+networks:
+  default:
+    name: main-network
+    external: true

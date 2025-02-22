@@ -10,6 +10,7 @@ RUN apk add --no-cache \
     php83 \
     php83-ctype \
     php83-curl \
+    php83-pcntl \
     php83-dom \
     php83-fileinfo \
     php83-fpm \
@@ -36,6 +37,7 @@ RUN apk add --no-cache \
     php83-dev \
     php83-cli \
     php83-zip \
+    php83-posix \   
     php83-pecl-imagick \
     imagemagick \
     curl
@@ -49,7 +51,6 @@ RUN apk add --no-cache \
     pkgconfig \
     git && \
     pecl install openswoole && \
-    echo "extension=openswoole.so" > /etc/php83/conf.d/50_openswoole.ini && \
     # Clean up build dependencies
     apk del gcc g++ make autoconf pkgconfig git
 
