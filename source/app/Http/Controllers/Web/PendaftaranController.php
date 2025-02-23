@@ -26,10 +26,20 @@ class PendaftaranController extends Controller
     }
     /* Area Landing Formulir Pendaftaran */
     public function formulir_pendaftaran(Request $req){
+        $lingkungan_kerja = LingkunganKerja::all();
+        $kebiasaan_hidup = KebiasaanHidup::all();
+        $penyakit_keluarga = PenyakitKeluarga::all();
+        $imunisasi = Imunisasi::all();
+        $penyakit_terdahulu = PenyakitTerdahulu::all();
         $data = [
             'tipe_halaman' => 'landing',
             'menu_utama_aktif' => 'formulir_pendaftaran',
-            'dataNavigasi' => $dataNavigasi,
+            'dataNavigasi' => "",
+            'lingkungan_kerja' => $lingkungan_kerja,
+            'kebiasaan_hidup' => $kebiasaan_hidup,
+            'penyakit_keluarga' => $penyakit_keluarga,
+            'imunisasi' => $imunisasi,
+            'penyakit_terdahulu' => $penyakit_terdahulu,
         ];
         return view('preregister.landingpage_form', ['data' => $data]);
     }

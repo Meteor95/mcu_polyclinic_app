@@ -19,8 +19,7 @@
               <nav class="navbar navbar-b navbar-dark navbar-trans navbar-expand-xl fixed-top nav-padding" id="sidebar-menu"><a class="navbar-brand p-0" href="#"><img class="img-fluid for-light mx-auto d-block" style="width:130px;height:60px" src="{{asset('mofi/assets/images/logo/Logo_AMC_Full.png')}}" alt="looginpage"></a>
                 <button class="navbar-toggler navabr_btn-set custom_nav" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDefault" aria-controls="navbarDefault" aria-expanded="false" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
                 <div class="navbar-collapse justify-content-center collapse hidenav" id="navbarDefault">
-                  <ul class="navbar-nav navbar_nav_modify" id="scroll-spy">
-                    <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="document.getElementById('home').scrollIntoView({ behavior: 'smooth' });">Beranda</a>
+                  <ul class="navbar-nav navbar_nav_modify" id="scroll-spy">>
                     <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="document.getElementById('formulir_mcu').scrollIntoView({ behavior: 'smooth' });">Formulir MCU</a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="document.getElementById('frameworks').scrollIntoView({ behavior: 'smooth' });">Alur Pendaftaran</a>
@@ -30,464 +29,282 @@
                     <li class="nav-item"><a class="nav-link" href="https://docs.pixelstrap.net/mofi/document/" target="_blank">Website</a></li>
                   </ul>
                 </div>
-                <div class="buy-btn"><a class="nav-link js-scroll" href="https://themeforest.net/user/pixelstrap/portfolio" target="_blank">Cek Kode Pemesanan</a></div>
               </nav>
             </header>
           </div>
         </div>
-        <div class="home-bg" id="home">
-          <ul> 
-            <li> <img src="{{asset('mofi/assets/images/landing/home/4.png')}}" alt=""></li>
-            <li> <img src="{{asset('mofi/assets/images/landing/home/5.png')}}" alt=""></li>
-            <li> <img src="{{asset('mofi/assets/images/landing/home/6.png')}}" alt=""></li>
-            <li> <img src="{{asset('mofi/assets/images/landing/home/7.png')}}" alt=""></li>
-            <li> <img src="{{asset('mofi/assets/images/landing/home/8.png')}}" alt=""></li>
-            <li> <img src="{{asset('mofi/assets/images/landing/home/9.png')}}" alt=""></li>
-          </ul>
-          <div class="row align-items-center justify-content-center">
-            <div class="col-lg-6 col-md-7">
-              <div class="home-text">
-                <div class="main-title">
-                  <div class="d-flex align-items-center gap-2">
-                    <div class="flex-shrink-0"><img src="{{asset('mofi/assets/images/landing/icon/Rocket.png')}}" alt=""></div>
-                    <div class="flex-grow-1">
-                      <p class="m-0">Layanan Kesehatan Masyarakat Terpercaya</p>
+      </div>
+      <section class="section-space app-section overflow-hidden" id="header_formulir">
+      <div class="row default-dashboard demo-section">
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <img src="{{asset('mofi/assets/images/landing/header_formulir.gif')}}" style="width:100%" alt="Header Image">
+              <h2>INFORM CONSENT<br>SAYA YANG BERTANDA TANGAN DIBAWAH INI MENYATAKAN :</h2>
+                <ol class="text-start">
+                  <li>Mengetahui jenis pemeriksaan yang akan dilakukan</li>
+                  <li>Bersedia mengikuti pemeriksaan kesehatan (Medical Check Up) tanpa paksaan</li>
+                  <li>Mengizinkan Klinik Artha Medical Center menyerahkan hasil MCU kepada perusahaan yang mengirim saya</li>
+                </ol> 
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between mt-3 step-indicators">
+                <button class="btn btn-outline-primary step-indicator" data-step="0">Data Pribadi</button>
+                <button class="btn btn-outline-primary step-indicator" data-step="1">Lingkungan Kerja</button>
+                <button class="btn btn-outline-primary step-indicator" data-step="2">Kecelakaan Kerja</button>
+                <button class="btn btn-outline-primary step-indicator" data-step="3">Kebiasaan Hidup</button>
+                <button class="btn btn-outline-primary step-indicator" data-step="4">Penyakit Terdahulu</button>
+                <button class="btn btn-outline-primary step-indicator" data-step="5">Penyakit Keluarga</button>
+                <button class="btn btn-outline-primary step-indicator" data-step="6">Imunisasi</button>
+              </div>
+              <div class="steps">
+                <!-- Step 1 -->
+                <div class="step active" data-step="1">
+                  <h5>Formulir Data Pribadi</h5>
+                  <div class="formulir_group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="nomor_identitas_temp" style="font-weight:bold" class="form-label">Nomor Identitas (KTP /SIM / Paspor)</label>
+                                <input placeholder="Ex: 3602041211870001" type="text" class="form-control" id="nomor_identitas_temp" name="nomor_identitas_temp">
+                                <div class="invalid-feedback">Masukan nomor identitas yang valid</div>
+                                <div class="valid-feedback">Terlihat bagus! Nomor identitas sudah terisi</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nama_peserta_temp" style="font-weight:bold"  class="form-label">Nama Peserta</label>
+                                <input placeholder="Ex: John Doe" type="text" class="form-control" id="nama_peserta_temp" name="nama_peserta_temp">
+                                <div class="invalid-feedback">Masukan nama peserta yang valid</div>
+                                <div class="valid-feedback">Terlihat bagus! Nama peserta sudah terisi</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tempat_lahir_temp" style="font-weight:bold"  class="form-label">Tempat Lahir</label>
+                                <input placeholder="Ex: Jakarta" type="text" class="form-control" id="tempat_lahir_temp" name="tempat_lahir_temp">
+                                <div class="invalid-feedback">Masukan tempat lahir yang valid</div>
+                                <div class="valid-feedback">Terlihat bagus! Tempat lahir sudah terisi</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tanggal_lahir_peserta_temp" style="font-weight:bold"  class="form-label">Tanggal Lahir</label>
+                                <input type="text" class="form-control" id="tanggal_lahir_peserta_temp" name="tanggal_lahir_peserta_temp" placeholder="dd-mm-yyyy">
+                                <div class="invalid-feedback">Masukan tanggal lahir yang valid</div>
+                                <div class="valid-feedback">Terlihat bagus! Tanggal lahir sudah terisi</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tipe_identitas_temp" style="font-weight:bold"  class="form-label">Tipe Identitas</label>
+                                <select class="form-select" id="tipe_identitas_temp" name="tipe_identitas_temp" required>
+                                    <option value="KTP">KTP</option>
+                                    <option value="SIM">SIM</option>
+                                    <option value="Paspor">Paspor</option>
+                                    <option value="Visa">Visa</option>
+                                </select>
+                                <div class="invalid-feedback">Pilih tipe identitas</div>
+                                <div class="valid-feedback">Terlihat bagus! Tipe identitas sudah dipilih</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="jenis_kelamin_temp" style="font-weight:bold"  class="form-label">Jenis Kelamin</label>
+                                <select class="form-select" id="jenis_kelamin_temp" name="jenis_kelamin_temp" required>
+                                    <option value="Laki-Laki">Laki-Laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                    <option value="Alien">Alien</option>
+                                </select>
+                                <div class="invalid-feedback">Pilih jenis kelamin</div>
+                                <div class="valid-feedback">Terlihat bagus! Jenis kelamin sudah dipilih</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="status_perkawinan_temp" style="font-weight:bold"  class="form-label">Status Perkawinan</label>
+                                <select class="form-select" id="status_perkawinan_temp" name="status_perkawinan_temp" required>
+                                    <option value="Belum Menikah">Belum Menikah</option>
+                                    <option value="Menikah">Menikah</option>
+                                    <option value="Cerai Hidup">Cerai Hidup</option>
+                                    <option value="Cerai Mati">Cerai Mati</option>
+                                </select>
+                                <div class="invalid-feedback">Pilih status perkawinan</div>
+                                <div class="valid-feedback">Terlihat bagus! Status perkawinan sudah dipilih</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="no_telepon_temp" style="font-weight:bold"  class="form-label">Nomor Telepon (Rekomendasi Whatsapp)</label>
+                                <input placeholder="Ex: 081234567890" type="tel" class="form-control" id="no_telepon_temp" name="no_telepon_temp" required>
+                                <div class="invalid-feedback">Masukan nomor telepon yang valid</div>
+                                <div class="valid-feedback">Terlihat bagus! Nomor telepon sudah terisi</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="alamat_surel_temp" style="font-weight:bold"  class="form-label">Alamat surel</label>
+                                <input placeholder="Ex: aries@erayadigital.co.id" type="text" class="form-control" id="alamat_surel_temp" name="alamat_surel_temp">
+                            </div>
+                            <div class="mb-3">
+                              <label for="proses_kerja_temp" style="font-weight:bold"  class="form-label">Tentukan Proses Kerja</label>
+                              <div class="form-check-size" style="padding-top:10px">
+                                  <div class="form-check form-check-inline checkbox checkbox-dark mb-0">
+                                      <input class="form-check-input" name="proses_kerja_temp" id="duduk" value="Duduk" type="checkbox">
+                                      <label class="form-check-label" for="duduk">Duduk</label>
+                                  </div>
+                                  <div class="form-check form-check-inline checkbox checkbox-dark mb-0">
+                                      <input class="form-check-input" name="proses_kerja_temp" id="berdiri" value="Berdiri" type="checkbox">
+                                      <label class="form-check-label" for="berdiri">Berdiri</label>
+                                  </div>
+                                  <div class="form-check form-check-inline checkbox checkbox-dark mb-0">
+                                      <input checked class="form-check-input" name="proses_kerja_temp" id="kombinasi" value="Kombinasi" type="checkbox">
+                                      <label class="form-check-label" for="kombinasi">Kombinasi</label>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="alamat_tempat_tinggal_temp" style="font-weight:bold"  class="form-label">Alamat</label>
+                                <textarea class="form-control" id="alamat_tempat_tinggal_temp" name="alamat_tempat_tinggal_temp" rows="3" placeholder="Melak Ulu, Kec. Melak, Kabupaten Kutai Barat, Kalimantan Timur 75775" required></textarea>
+                                <div class="invalid-feedback">Masukan alamat yang valid</div>
+                                <div class="valid-feedback">Terlihat bagus! Alamat sudah terisi</div>
+                            </div>
+                        </div>
                     </div>
                   </div>
+                <button class="btn btn-primary next-btn">Selanjutnya <i class="fa fa-arrow-right"></i> </button>
                 </div>
-                <h2><span>AMC</span> - <img class="line-text" src="{{asset('mofi/assets/images/landing/home/line.png')}}" alt=""> Artha Medical Center</h2>
-                <p>Mau MCU yang cepat, harga bersaing serta dengan ditunjang sistem dan tenaga admin yang berpengalaman, hasil dapat keluar 12 - 24 jam kerja. Silahkan isi formulir dibawah ini untuk mendapatkan <strong>kode pemesanan</strong></p>
-                <div class="docutment-button"><a class="btn-amc-orange btn text-white" href="https://docs.pixelstrap.net/mofi/document/" target="_blank"> 
-                    <svg>
-                      <use href="{{asset('mofi/assets/svg/icon-sprite.svg')}}#fill-layout"></use>
-                    </svg>Isi Formulir Peserta MCU</a></div>
+
+                <!-- Step 2 -->
+                <div class="step" data-step="2">
+                  <h5>Formulir Lingkungan Kerja</h5>
+                  <div class="row">
+                      @foreach ($data['lingkungan_kerja'] as $index => $lk)
+                      <div class="mb-3 col-lg-4 text-start">
+                          <span class="nama-atribut-lingkungan-kerja" data-index="{{$index}}">{{$lk->nama_atribut_lk}}</span>
+                      </div>
+                      <div class="mb-3 col-lg-4">
+                          <select class="form-select status-atribut-lingkungan-kerja" data-index="{{$index}}" aria-label="Status">
+                              <option value="" selected>Status {{$lk->nama_atribut_lk}}</option>
+                              <option value="1">Ya</option>
+                              <option value="0">Tidak</option>
+                          </select>
+                      </div>
+                      <div class="mb-3 col-lg-2">
+                          <input type="text" class="form-control jamperhari-atribut" data-index="{{$index}}" placeholder="Berapa Jam / Hari">
+                      </div>
+                      <div class="mb-3 col-lg-2">
+                          <input type="text" class="form-control selamaxtahun-atribut" data-index="{{$index}}" placeholder="Selama Berapa Tahun">
+                      </div>
+                      @endforeach
+                  </div>
+                  <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
+                  <button class="btn btn-primary next-btn">Selanjutnya <i class="fa fa-arrow-right"></i> </button>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step" data-step="3">
+                  <h5>Formulir Kecalakan Kerja</h5>
+                  <div class="mb-3">
+                    <textarea placeholder="Jelaskan kecelakaan kerja jikalau ada" class="form-control" name="informasi_kecelakaan_kerja" id="informasi_kecelakaan_kerja_temp" rows="3"></textarea>
+                  </div>
+                  <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
+                  <button class="btn btn-primary next-btn">Selanjutnya <i class="fa fa-arrow-right"></i> </button>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step" data-step="4">
+                  <h5>Formulir Kebiasaan Hidup</h5>
+                  <div class="row">
+                  @foreach ($data['kebiasaan_hidup'] as $index => $kh)
+                  <div class="mb-3 col-lg-4 col-sm-12 text-start nama-atribut-kebiasaan-hidup" data-index="{{$index}}">
+                    {{$kh->nama_atribut_kb}}
+                  </div>
+                  <div class="mb-3 col-lg-3 col-sm-12">
+                    <select class="form-select status-atribut-kebiasaan-hidup" data-index="{{$index}}" aria-label="Status">
+                      <option value="" selected>Status {{$kh->nama_atribut_kb}}</option>
+                      <option value="1">Ya</option>
+                      <option value="0">Tidak</option>
+                    </select>
+                  </div>
+                  <div class="mb-3 col-lg-5 col-sm-6">
+                    <input type="text" class="form-control nilai-atribut-kebiasaan-hidup" id="nilai_kebiasaan_hidup" placeholder="Berapa Kali {{$kh->nama_atribut_kb}} {{$kh->nama_satuan_kb}}" data-index="{{$index}}">
+                  </div>
+                  <div style="display: none;" class="info-atribut-kebiasaan-hidup" data-index="{{$index}}">{{$kh->nama_atribut_kb}} {{$kh->nama_satuan_kb}}</div>
+                  @endforeach
+                  </div>
+                  <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
+                  <button class="btn btn-primary next-btn">Selanjutnya <i class="fa fa-arrow-right"></i> </button>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="step" data-step="5">
+                  <h5>Formulir Penyakit Terdahulu</h5>
+                  <div class="row">
+                  @foreach ($data['penyakit_terdahulu'] as $index => $pt)
+                  <div class="mb-4 col-md-4 text-start nama-atribut-penyakit-terdahulu" data-index="{{$index}}">
+                    {{$pt->nama_atribut_pt}}
+                  </div>
+                  <div class="mb-3 col-md-4">
+                    <select class="form-select status-atribut-penyakit-terdahulu" data-index="{{$index}}" aria-label="Status">
+                      <option value="" selected>Status {{$pt->nama_atribut_pt}}</option>
+                      <option value="1">Ya</option>
+                      <option value="0">Tidak</option>
+                    </select>
+                  </div>
+                  <div class="mb-3 col-md-4">
+                    <input type="text" class="form-control keterangan-atribut-penyakit-terdahulu" id="keterangan_penyakit_terdahulu" placeholder="Keterangan {{$pt->nama_atribut_pt}}" data-index="{{$index}}">
+                  </div>
+                  @endforeach
+                  </div>
+                  <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
+                  <button class="btn btn-primary next-btn">Selanjutnya <i class="fa fa-arrow-right"></i> </button>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="step" data-step="6">
+                  <h5>Formuilr Penyakit Keluarga</h5>
+                  <div class="row">
+                  @foreach ($data['penyakit_keluarga'] as $index => $pk)
+                  <div class="mb-4 col-md-4 text-start nama-atribut-penyakit-keluarga" data-index="{{$index}}">
+                    {{$pk->nama_atribut_pk}}
+                  </div>
+                  <div class="mb-3 col-md-4">
+                    <select class="form-select status-atribut-penyakit-keluarga" data-index="{{$index}}" aria-label="Status">
+                      <option value="" selected>Status {{$pk->nama_atribut_pk}}</option>
+                      <option value="1">Ya</option>
+                      <option value="0">Tidak</option>
+                    </select>
+                  </div>
+                  <div class="mb-3 col-md-4">
+                    <input type="text" class="form-control keterangan-atribut-penyakit-keluarga" id="keterangan_penyakit_keluarga" placeholder="Keterangan {{$pk->nama_atribut_pk}}" data-index="{{$index}}">
+                  </div>
+                  @endforeach
+                  </div>
+                  <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
+                  <button class="btn btn-primary next-btn">Selanjutnya <i class="fa fa-arrow-right"></i> </button>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="step" data-step="7">
+                  <h5>Formuilr Imunisasi</h5>
+                  <div class="row">
+                  @foreach ($data['imunisasi'] as $index => $im)
+                  <div class="mb-4 col-md-4 text-start nama-atribut-imunisasi" data-index="{{$index}}">
+                    {{$im->nama_atribut_im}}
+                  </div>
+                  <div class="mb-3 col-md-4">
+                    <select class="form-select status-atribut-imunisasi" data-index="{{$index}}" aria-label="Status">
+                      <option value="" selected>Status {{$im->nama_atribut_im}}</option>
+                      <option value="1">Ya</option>
+                      <option value="0">Tidak</option>
+                    </select>
+                  </div>
+                  <div class="mb-3 col-md-4">
+                    <input type="text" class="form-control keterangan-atribut-imunisasi" id="keterangan_imunisasi" placeholder="Keterangan {{$im->nama_atribut_im}}" data-index="{{$index}}">
+                  </div>
+                  @endforeach
+                  </div>
+                  <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
+                </div>
               </div>
             </div>
-            <div class="col-lg-6 col-md-5">
-              <div class="home-screen">
-                <div class="screen-1"><img class="img-fluid" src="{{asset('mofi/assets/images/landing/home/1.png')}}" alt=""></div>
-                <div class="screen-2"><img class="img-fluid" src="{{asset('mofi/assets/images/landing/home/2.png')}}" alt=""></div>
-                <div class="screen-3"><img class="img-fluid" src="{{asset('mofi/assets/images/landing/home/3.png')}}" alt=""></div>
-              </div>
+            <div class="card-footer">
+            <button id="pratinjau_halaman" class="btn btn-success next-btn w-100"><i class="fa fa-eye"></i> Pratinjau</button>
             </div>
           </div>
         </div>
       </div>
-      <section class="section-space app-section overflow-hidden" id="formulir_mcu">
-        <div class="container-fluid">
-          <div class="title">
-            <h5 class="sub-title">AMC - Artha Medical Clinic</h5>
-            <h2>Formulir Pengambila Kode Pemesanan MCU</h2>
-            <p>Silahkan isi formulir dibawah ini dengan tepat, akurat, benar dan jujur demi mendapatkan informasi MCU yang akurat dan benar. Jangan lupa simpan kode pemesanan untuk diberikan ke ADMIN MCU saat melakukan TEST MCU</p>
-          </div>
-        </div>
-        <div class="container demo-section">
-          <div class="row demo-block">
-            <div class="col-xl-12">
-              <div class="card height-equal">
-                <div class="card-header">
-                  <h2>INFORM CONSENT<br>SAYA YANG BERTANDA TANGAN DIBAWAH INI MENYATAKAN :</h2>
-                  <ol class="text-start">
-                    <li>Mengetahui jenis pemeriksaan yang akan dilakukan</li>
-                    <li>Bersedia mengikuti pemeriksaan kesehatan (Medical Check Up) tanpa paksaan</li>
-                    <li>Mengizinkan Klinik Artha Medical Center menyerahkan hasil MCU kepada perusahaan yang mengirim saya</li>
-                  </ol> 
-                </div>
-                <div class="card-body basic-wizard important-validation">
-                  <div class="stepper-horizontal theme-scrollbar" id="stepper1">
-                    <div class="stepper-one stepper step editing active">
-                      <div class="step-circle"><span>1</span></div>
-                      <div class="step-title">Informasi Biodata</div>
-                      <div class="step-bar-left"></div>
-                      <div class="step-bar-right"></div>
-                    </div>
-                    <div class="stepper-two step">
-                      <div class="step-circle"><span>2</span></div>
-                      <div class="step-title">Riwayat Bahaya<br>Lingkungan Kerja</div>
-                      <div class="step-bar-left"></div>
-                      <div class="step-bar-right"></div>
-                    </div>
-                    <div class="stepper-three step">
-                      <div class="step-circle"><span>3</span></div>
-                      <div class="step-title">Riwayat Penyakit<br>Keluarga dan Rutinitas</div>
-                      <div class="step-bar-left"></div>
-                      <div class="step-bar-right"></div>
-                    </div>
-                    <div class="stepper-four step">
-                      <div class="step-circle"><span>4</span></div>
-                      <div class="step-title">Rekap Formulir<br>Pendaftaran</div>
-                      <div class="step-bar-left"></div>
-                      <div class="step-bar-right"></div>
-                    </div>
-                    <div class="stepper-five step">
-                      <div class="step-circle"><span>5</span></div>
-                      <div class="step-title">Pendaftaran Selesai</div>
-                      <div class="step-bar-left"></div>
-                      <div class="step-bar-right"></div>
-                    </div>
-                  </div>
-                  <div id="msform">
-                    <form class="stepper-one row g-3 needs-validation custom-input" novalidate="">
-                      <div class="row">
-                        <div class="col mt-3 text-start">
-                          <div class="mb-3 row">
-                            <label class="col-sm-3" for="landing_nama_lengkap">Nama Lengkap</label>
-                            <div class="col-sm-9">
-                              <input id="landing_nama_lengkap" class="form-control" type="text" placeholder="Ex: Mochamad Aries Setyawan">
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label for="landing_alamat" class="col-sm-3">Alamat</label>
-                            <div class="col-sm-9">
-                              <input id="landing_alamat" class="form-control" type="text" placeholder="Ex: Jl. Tarupala Gang 2 No 2">
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label for="landing_nik" class="col-sm-3">NIK / KTP / SIM</label>
-                            <div class="col-sm-9">
-                              <input id="landing_nik" class="form-control" type="text" placeholder="Pastikan identitas resmi masih aktiv dan benar">
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label for="landing_dept" class="col-sm-3">Dept / Bagian</label>
-                            <div class="col-sm-9">
-                              <input id="landing_dept" class="form-control" type="text" placeholder="Ex: Chef Officer Technologi">
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label for="landing_no_hp" class="col-sm-3">No Telepon / HP<br><span>(Rekomendasi WA)</span></label>
-                            <div class="col-sm-9">
-                              <input id="landing_no_hp" class="form-control" type="text" id="nomorwa" placeholder="Pastikan nomor telpon anda aktif">
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label for="landing_email" class="col-sm-3">E-Mail</label>
-                            <div class="col-sm-9">
-                              <input id="landing_email" class="form-control" type="text" placeholder="Pastikan alamat surel aktif dan benar">
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label for="landing_tempat_lahir" class="col-sm-3">Tempat Tanggal Lahir</label>
-                            <div class="col-sm-5">
-                              <input id="landing_tempat_lahir" class="form-control" type="text" placeholder="Tempat Lahir. Ex: Malang">
-                            </div>
-                            <div class="col-sm-4">
-                              <input id="landing_tanggal_lahir" class="form-control digits" id="tanggal_lahir" type="datetime-local" value="">
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label class="col-sm-3">Jenis Kelamin</label>
-                            <div class="col-sm-9">
-                              <div class="card-wrapper border rounded-3 checkbox-checked">
-                                <div class="form-check">
-                                  <input class="form-check-input" id="jklaki" type="radio" name="jeniskelamin" checked=>
-                                  <label class="form-check-label" for="jklaki">Laki-Laki</label>
-                                </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" id="jkperempuan" type="radio" name="jeniskelamin">
-                                  <label class="form-check-label" for="jkperempuan">Perempuan</label>
-                                </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" id="jkalien" type="radio" name="jeniskelamin">
-                                  <label class="form-check-label" for="jkalien">Alien</label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label class="col-sm-3">Status Menikah</label>
-                            <div class="col-sm-9">
-                              <div class="card-wrapper border rounded-3 checkbox-checked">
-                                <div class="form-check">
-                                  <input class="form-check-input" id="menikah" type="radio" name="statusmenikah" checked=>
-                                  <label class="form-check-label" for="menikah">Menikah</label>
-                                </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" id="belummenikah" type="radio" name="statusmenikah">
-                                  <label class="form-check-label" for="belummenikah">Belum Menikah</label>
-                                </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" id="dudajanda" type="radio" name="statusmenikah">
-                                  <label class="form-check-label" for="dudajanda">Duda / Janda</label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label class="col-sm-3">Jenis Pekerjaan</label>
-                            <div class="col-sm-9">
-                              <div class="card-wrapper border rounded-3 checkbox-checked">
-                                <div class="form-check">
-                                  <input class="form-check-input" id="operator" type="radio" name="jenispekerjaan" checked=>
-                                  <label class="form-check-label" for="operator">Operator</label>
-                                </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" id="andministrasi" type="radio" name="jenispekerjaan">
-                                  <label class="form-check-label" for="andministrasi">Administrasi</label>
-                                </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" id="manajerial" type="radio" name="jenispekerjaan">
-                                  <label class="form-check-label" for="manajerial">Manajerial</label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label class="col-sm-3">Proses Kerja</label>
-                            <div class="col-sm-9">
-                              <div class="card-wrapper border rounded-3 checkbox-checked">
-                                <div class="form-check">
-                                  <input class="form-check-input" id="duduk" type="radio" name="proseskerja" checked=>
-                                  <label class="form-check-label" for="duduk">Duduk</label>
-                                </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" id="berdiri" type="radio" name="proseskerja">
-                                  <label class="form-check-label" for="berdiri">Berdiri</label>
-                                </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" id="kombinasi" type="radio" name="proseskerja">
-                                  <label class="form-check-label" for="kombinasi">Kombinasi</label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="mb-3 row">
-                            <label class="col-sm-3">Sampling Darah</label>
-                            <div class="col-sm-4">
-                              <div class="form-floating">
-                                <input id="landing_sampling_darah" class="form-control digits" id="tanggal_pemgambila_sample" type="datetime-local" value="">
-                                <label for="landing_sampling_darah">Waktu Terakhir Pengambilan</label>
-                              </div>
-                            </div>
-                            <div class="col-sm-5">
-                              <div class="form-floating">
-                                <select class="form-select" id="landing_goldar" aria-label="Goldar">
-                                  <option value="NO">Sudah Test Tapi Tidak Bisa Baca</option>
-                                  <option value="A+">A+</option>
-                                  <option value="A-">A-</option>
-                                  <option value="B+">B+</option>
-                                  <option value="B-">B-</option>
-                                  <option value="AB+">AB+</option>
-                                  <option value="AB-">AB-</option>
-                                  <option value="O+">O+</option>
-                                  <option value="O-">O-</option>
-                                </select>
-                                <label for="landing_goldar">Pilih Golongan Darah</label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <div class="form-check">
-                        </div>
-                      </div>
-                    </form>
-                    <form class="stepper-two row g-3 needs-validation custom-input" novalidate="">
-                      <div class="row">
-                        <div class="col-md-12 text-start">
-                          <label for="landing_rblk_bising" class="form-label">Bising</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input id="landing_rblk_bising"  class="form-control" type="text">
-                            <span class="input-group-text"> jam/hari, selama </span>
-                            <input class="form-control" type="text" placeholder="">
-                            <span class="input-group-text">Tahun</span>
-                          </div>
-                          <label id="landing_rblk_getaran" class="form-label">Getaran</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input id="landing_rblk_getaran" class="form-control" type="text">
-                            <span class="input-group-text"> jam/hari, selama </span>
-                            <input class="form-control" type="text" placeholder="">
-                            <span class="input-group-text">Tahun</span>
-                          </div>
-                          <label for="landing_rblk_debu" class="form-label">Debu</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input id="landing_rblk_debu" class="form-control" type="text">
-                            <span class="input-group-text"> jam/hari, selama </span>
-                            <input class="form-control" type="text" placeholder="">
-                            <span class="input-group-text">Tahun</span>
-                          </div>
-                          <label for="landing_rblk_zat_kimia" class="form-label">Zat Kimia</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input id="landing_rblk_zat_kimia" class="form-control" type="text">
-                            <span class="input-group-text"> jam/hari, selama </span>
-                            <input class="form-control" type="text" placeholder="">
-                            <span class="input-group-text">Tahun</span>
-                          </div>
-                          <label for="landing_rblk_prod_makanan" class="form-label">Mengelola Prod. Makanan</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input id="landing_rblk_prod_makanan" class="form-control" type="text">
-                            <span class="input-group-text"> jam/hari, selama </span>
-                            <input class="form-control" type="text" placeholder="">
-                            <span class="input-group-text">Tahun</span>
-                          </div>
-                          <label for="landing_rblk_monitor_komputer" class="form-label">Monitor Komputer</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input id="landing_rblk_monitor_komputer" class="form-control" type="text">
-                            <span class="input-group-text"> jam/hari, selama </span>
-                            <input class="form-control" type="text" placeholder="">
-                            <span class="input-group-text">Tahun</span>
-                          </div>
-                          <label for="landing_rblk_gerakan_berulang" class="form-label">Gerakan Berulang-ulang</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input id="landing_rblk_gerakan_berulang" class="form-control" type="text">
-                            <span class="input-group-text"> jam/hari, selama </span>
-                            <input class="form-control" type="text" placeholder="">
-                            <span class="input-group-text">Tahun</span>
-                          </div>
-                          <label for="landing_rblk_mendoro_menarik" class="form-label">Mendorong / Menarik</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input id="landing_rblk_mendorong_menarik" class="form-control" type="text">
-                            <span class="input-group-text"> jam/hari, selama </span>
-                            <input class="form-control" type="text" placeholder="">
-                            <span class="input-group-text">Tahun</span>
-                          </div>
-                          <label for="landing_rblk_berat_25" class="form-label">Angkat beban tanpa alat seberat 25Kg</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input id="landing_rblk_berat_25" class="form-control" type="text">
-                            <span class="input-group-text"> jam/hari, selama </span>
-                            <input class="form-control" type="text" placeholder="">
-                            <span class="input-group-text">Tahun</span>
-                          </div>
-                        </div>
-                        <div class="col-md-12 text-start">
-                          <label for="landing_rblk_riwayat_kecelakaan_kerja" class="form-label">Riwayat Kecelakaan Kerja</label>
-                          <textarea id="landing_rblk_riwayat_kecelakaan_kerja" class="form-control" id="keterangan_riwayat_kecelakaan_kerja" placeholder="Berikan keterangan secara detail JIKALAU anda pernah mengalami atau memiliki RIWAYAT KECELAKAN KERJA, jika TIDAK maka anda bisa abaikan" rows="5"></textarea>
-                        </div>
-                        <div class="col-12">
-                          <div class="form-check">
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                    <form class="stepper-three row g-3 needs-validation custom-input" novalidate="">
-                      <div class="row">
-                        <h2>Riwayat Penyakit Keluarga</h2>
-                        <div class="col-sm-4 text-start">
-                          <div class="card-wrapper rounded-3 checkbox-checked">
-                            <input class="checkbox_animated" id="penyakit_jantung" type="checkbox"><span style="cursor:pointer;" onclick="document.getElementById('penyakit_jantung').click()">Penyakit Jantung</span>
-                            <label class="d-block" for="chk-ani1"></label>
-                            <input class="checkbox_animated" id="penyakit_darah_tinggi" type="checkbox"><span style="cursor:pointer;" onclick="document.getElementById('penyakit_darah_tinggi').click()">Penyakit Darah Tinggi</span>
-                            <label class="d-block" for="chk-ani2"></label>
-                            <input class="checkbox_animated" id="penyakit_diabetes_melitus" type="checkbox"><span style="cursor:pointer;" onclick="document.getElementById('penyakit_diabetes_melitus').click()">Penyakit Kencing Manis / Diabetes Melitus</span>
-                          </div>
-                        </div>
-                        <div class="col-sm-4 text-start">
-                          <div class="card-wrapper rounded-3 checkbox-checked">
-                            <input class="checkbox_animated" id="penyakit_jantung" type="checkbox"><span style="cursor:pointer;" onclick="document.getElementById('penyakit_jantung').click()">Penyakit Stroke</span>
-                            <label class="d-block" for="chk-ani1"></label>
-                            <input class="checkbox_animated" id="penyakit_darah_tinggi" type="checkbox"><span style="cursor:pointer;" onclick="document.getElementById('penyakit_darah_tinggi').click()">Penyakit Paru-Paru Menaun / Asma / TBC</span>
-                            <label class="d-block" for="chk-ani2"></label>
-                            <input class="checkbox_animated" id="penyakit_diabetes_melitus" type="checkbox"><span style="cursor:pointer;" onclick="document.getElementById('penyakit_diabetes_melitus').click()">Penyakit Kangker Tumor</span>
-                          </div>
-                        </div>
-                        <div class="col-sm-4 text-start">
-                          <div class="card-wrapper rounded-3 checkbox-checked">
-                            <label class="d-block" for="chk-ani2"></label>
-                            <input class="checkbox_animated" id="chk-ani2" type="checkbox">Penyakit Hemofilia
-                            <label class="d-block" for="chk-ani2"></label>
-                            <input class="checkbox_animated" id="chk-ani2" type="checkbox">Penyakit Thalassemia
-                            <label class="d-block" for="chk-ani2"></label>
-                            <input class="checkbox_animated" id="chk-ani2" type="checkbox">Penyakit Buta Warna
-                          </div>
-                        </div>
-                        <div class="col-sm-12 text-start">
-                          <label for="tags-input" class="form-label">Punya Penyakit Lainnya ? Ketikkan Namanya Pisahkan Dengan Koma Antar Penyakit</label>
-                          <div class="tags-input form-control" data-placeholder="Ex: Vertigo, Nyeri Otot" data-splitchars="[,]"></div>
-                        </div>
-                        <h2>Khusus Wanita</h2>
-                        <div class="col mt-3 text-start">
-                          <div class="mb-3 row">
-                            <label class="col-sm-3">Hadi Pertama dan Haid Terakhir</label>
-                            <div class="col-sm-9">
-                              <input class="form-control" id="range-date-haid" type="date" placeholder="">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col mt-3 text-start">
-                          <div class="mb-3 row">
-                            <label class="col-sm-3">Keluarga Berencana (KB)</label>
-                            <div class="col-sm-9">
-                              <div class="input-group flatpicker-calender">
-                                <input class="form-control" type="text">
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <h2>Formulir Kebiasaan Gaya Hidup</h2>
-                        <div class="col-md-12 text-start">
-                          <label class="form-label">Olahraga</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input class="form-control" type="text">
-                            <span class="input-group-text"> kali dalam 1 Minggu </span>
-                          </div>
-                        </div>
-                        <div class="col-md-12 text-start">
-                          <label class="form-label">Merokok</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input class="form-control" type="text">
-                            <span class="input-group-text"> batang per hari </span>
-                          </div>
-                        </div>
-                        <div class="col-md-12 text-start">
-                          <label class="form-label">Minum Alkohol</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input class="form-control" type="text">
-                            <span class="input-group-text"> botol per hari </span>
-                          </div>
-                        </div>
-                        <div class="col-md-12 text-start">
-                          <label class="form-label">Minum Kopi</label>
-                          <div class="input-group mb-2"><span class="input-group-text list-light-primary">
-                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label=""></span>
-                            <input class="form-control" type="text">
-                            <span class="input-group-text"> gelas per hari </span>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <div class="form-check">
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                    <form class="stepper-four row g-3 needs-validation" novalidate="">
-                      <div class="col-12 m-0">
-                        <div class="successful-form"><img class="img-fluid" src="{{asset('mofi/assets/images/gif/dashboard-8/successful.gif')}}" alt="successful">
-                          <h6>Congratulations </h6>
-                          <p>Well done! You have successfully completed. </p>
-                        </div>
-                      </div>
-                    </form>
-                    <form class="stepper-five row g-3 needs-validation" novalidate="">
-                      <div class="col-12 m-0">
-                        <div class="successful-form"><img class="img-fluid" src="{{asset('mofi/assets/images/gif/dashboard-8/successful.gif')}}" alt="successful">
-                          <h6>Kode Pemesanan Anda </h6>
-                          <p>Silahkan simpan kode pemesanan anda dan informasikan kepada petugas jikalau ingin melanjutkan proses MCU. Masa tenggang 30 Hari. </p>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <div class="wizard-footer d-flex gap-2 justify-content-end">
-                    <button class="btn badge-light-primary" id="backbtn" onclick="backStep()">Sebelumnya</button>
-                    <button class="btn btn-primary" id="nextbtn" onclick="nextStep()">Selanjutnya</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
       <section class="faq-section section-space overflow-hidden" id="faq">
         <div class="container-fluid">
@@ -523,38 +340,155 @@
               </div>
             </div>
             <div class="col-lg-8 col-12"> 
-              <div class="faq-img"> <img class="img-fluid" src="{{asset('mofi/assets/images/landing/mi1.png')}}" alt="faq">
-                <div class="faq-bg">  <img class="img-fluid" src="{{asset('mofi/assets/images/landing/faq/1.png')}}" alt=""></div>
+              <div class="faq-img"><img class="img-fluid" src="{{asset('mofi/assets/images/landing/mi1.png')}}" alt="faq">
+                <div class="faq-bg"><img class="img-fluid" src="{{asset('mofi/assets/images/landing/faq/1.png')}}" alt=""></div>
               </div>
             </div>
           </div>
         </div>
       </section>
     </div>
+  </div>
+  <div class="modal fade" id="modalPratinjau" tabindex="-1" role="dialog" aria-labelledby="modalPratinjauLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-fullscreen" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modalPratinjauLabel">Pratinjau Formulir Pendaftaran</h5>
+              <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
+          </div>
+          <div class="modal-body">
+            <h5 class="text-center"> Pratinjau Formulir Data Pribadi</h5>
+            <table class="table table-striped table-padding-sm-no-datatable">
+              <tr>
+                <th>Nomor Identitas</th><td>: <span id="modal_nomor_identitas"></span></td></tr>
+              <tr>
+                <th>Nama Peserta</th><td>: <span id="modal_nama_peserta"></span></td>
+              </tr>
+              <tr>
+                <th>Tempat Lahir</th><td>: <span id="modal_tempat_lahir"></span></td></tr>
+              <tr>
+                <th>Tanggal Lahir</th><td>: <span id="modal_tanggal_lahir"></span></td>
+              </tr>
+              <tr>
+                <th>Tipe Identitas</th><td>: <span id="modal_tipe_identitas"></span></td>
+              </tr>
+              <tr>
+                <th>Jenis Kelamin</th><td>: <span id="modal_jenis_kelamin"></span></td>
+              </tr>
+              <tr>
+                <th>Status Perkawaninan</th><td>: <span id="modal_status_perkawinan"></span></td>
+              </tr>
+              <tr>
+                <th>No Telpon (Whatsapp Direkomendasikan)</th><td>: <span id="modal_no_telepon"></span></td>
+              </tr>
+              <tr>
+                <th>Alamat Surel</th><td>: <span id="modal_alamat_surel"></span></td>
+              </tr>
+              <tr>
+                <th>Alamat Tempat Tinggal</th><td>: <span id="modal_alamat_tempat_tinggal"></span></td>
+              </tr>
+              <tr>
+                <th>Proses Kerja</th><td>: <span id="modal_proses_kerja"></span></td>
+              </tr>
+            </table>
+            <h5 class="text-center"> Pratinjau Lingkungan Kerja</h5>
+            <table class="table table-striped table-padding-sm-no-datatable" id="tabel_ini"></table>
+            <h5 class="text-center"> Pratinjau Kecelakaan Kerja</h5>
+            <div id="modal_informasi_kecelakaan_kerja"></div>
+            <h5 class="text-center"> Pratinjau Kebiasaan Hidup</h5>
+            <table class="table table-striped table-padding-sm-no-datatable" id="tabel_ini_kebiasaan_hidup"></table>
+            <h5 class="text-center"> Pratinjau Penyakit Terdahulu</h5>
+            <table class="table table-striped table-padding-sm-no-datatable" id="tabel_ini_penyakit_terdahulu"></table>
+            <h5 class="text-center"> Pratinjau Penyakit Keluarga</h5>
+            <table class="table table-striped table-padding-sm-no-datatable" id="tabel_ini_penyakit_keluarga"></table>
+            <h5 class="text-center"> Pratinjau Imunisasi</h5>
+            <table class="table table-striped table-padding-sm-no-datatable" id="tabel_ini_imunisasi"></table>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-primary w-100" id="btn_kirim_formulir">Saya Yakin Data Benar dan Kirim Data</button>
+          </div>
+          </div>
+      </div>
+  </div>
+</div>
 @endsection
 @section('css_load')
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/bt5-tag-input/tags.css')}}">
+<style>
+.demo-section{
+    padding-top:10px;
+    max-width:1320px;
+    margin:0 auto;
+  }
+@media only screen and (max-width: 600px) {
+  .step-indicators {
+    overflow-x: auto;
+    white-space: nowrap;
+    -ms-overflow-style: none;  /* untuk Internet Explorer dan Edge */
+    scrollbar-width: none;     /* untuk Firefox */
+  }
+  .step-indicators::-webkit-scrollbar {
+    display: none;             /* untuk Chrome, Safari, dan Opera */
+  }
+  .step-indicator {
+    flex-shrink: 0;
+    margin-right: 10px;
+  }
+  .demo-section{
+    padding-top:60px;
+  }
+}
+.form-control, .form-select{
+  border: 2px dashed rgba(106, 113, 133, 0.3);
+}
+/* Container untuk steps */
+.steps {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Setiap step */
+.step {
+  display: none;
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.step.active {
+  display: block;
+}
+/* Indikator Step */
+.step-indicators {
+  margin-bottom: 20px;
+}
+.step-indicator {
+  margin: 0 5px;
+  flex: 1 0 auto; 
+  padding: 10px 20px;
+}
+.btn.active {
+  background-color: #D77748 !important;
+    border-color: #D77748 !important;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+  color: white !important;
+}
+/* Responsive untuk mobile */
+@media (max-width: 768px) {
+  .steps {
+    overflow-y: auto;
+    height: 60vh; /* Sesuaikan tinggi sesuai kebutuhan */
+  }
+
+  .step {
+    padding-bottom: 20px; /* Memberikan ruang untuk scroll */
+  }
+}
+</style>
 @endsection
 @section('js_load')
-<script src="{{asset('mofi/assets/js/flat-pickr/flatpickr.js')}}"></script>
-<script src="{{asset('mofi/assets/js/bt5-tag-input/tags.js')}}"></script>
-<script src="{{asset('mofi/assets/js/cleave/cleave.min.js')}}"></script>
-<script src="{{asset('mofi/assets/js/form-wizard/form-wizard.js')}}"></script>
-<script>
-(function () {
-initTags();
-let cleave = new Cleave("#nomorwa", {
-    delimiters: ["", "-", "-"],
-    blocks: [3, 3, 4, 5],
-    numericOnly: true,
-    prefix: "+62",
-    noImmediatePrefix: true,
-});
-flatpickr("#range-date-haid", {
-    mode: "range",
-});
-})();
-
-</script>
+<script src="{{asset('vendor/erayadigital/landingpage.js')}}"></script>
 @endsection
