@@ -88,8 +88,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         });
     });
 });
-Route::domain(config('app.domains.pendaftaran_mandiri'))->prefix('landing')->group(function () {
-    Route::get('formulir', [PendaftaranController::class,"formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
-    Route::get('no_antrian/{kode_antrian}', [PendaftaranController::class,"formulir_no_antrian"])->name('landing.formulir_no_antrian');
+Route::domain(config('app.domains.pendaftaran_mandiri'))->group(function () {
+    Route::get('/', [PendaftaranController::class, "formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
+    Route::get('no_antrian/{kode_antrian}', [PendaftaranController::class, "formulir_no_antrian"])->name('landing.formulir_no_antrian');
 });
-
