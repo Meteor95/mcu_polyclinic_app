@@ -14,24 +14,7 @@
           </div>
         </div>
         <div class="container-fluid">
-          <div class="sticky-header">
-            <header>                       
-              <nav class="navbar navbar-b navbar-dark navbar-trans navbar-expand-xl fixed-top nav-padding" id="sidebar-menu"><a class="navbar-brand p-0" href="#"><img class="img-fluid for-light mx-auto d-block" style="width:130px;height:60px" src="{{asset('mofi/assets/images/logo/Logo_AMC_Full.png')}}" alt="looginpage"></a>
-                <button class="navbar-toggler navabr_btn-set custom_nav" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDefault" aria-controls="navbarDefault" aria-expanded="false" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
-                <div class="navbar-collapse justify-content-center collapse hidenav" id="navbarDefault">
-                  <ul class="navbar-nav navbar_nav_modify" id="scroll-spy">>
-                    <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="document.getElementById('formulir_mcu').scrollIntoView({ behavior: 'smooth' });">Formulir MCU</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="document.getElementById('frameworks').scrollIntoView({ behavior: 'smooth' });">Alur Pendaftaran</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="document.getElementById('feature').scrollIntoView({ behavior: 'smooth' });">Info MCU Terkini</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="https://docs.pixelstrap.net/mofi/document/" target="_blank">Website</a></li>
-                  </ul>
-                </div>
-              </nav>
-            </header>
-          </div>
+          @include('includes.EndUser.header_formulir')
         </div>
       </div>
       <section class="section-space app-section overflow-hidden" id="header_formulir">
@@ -296,11 +279,11 @@
                   @endforeach
                   </div>
                   <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
+                  <button id="pratinjau_halaman" class="btn btn-success next-btn"><i class="fa fa-eye"></i> Pratinjau</button>
                 </div>
               </div>
             </div>
             <div class="card-footer">
-            <button id="pratinjau_halaman" class="btn btn-success next-btn w-100"><i class="fa fa-eye"></i> Pratinjau</button>
             </div>
           </div>
         </div>
@@ -405,7 +388,9 @@
             <table class="table table-striped table-padding-sm-no-datatable" id="tabel_ini_imunisasi"></table>
           </div>
           <div class="modal-footer">
-              <button type="button" class="btn btn-primary w-100" id="btn_kirim_formulir">Saya Yakin Data Benar dan Kirim Data</button>
+              <input type="checkbox" style="cursor: pointer;" class="form-check-input" id="setuju_data_benar" name="setuju_data_benar">
+              <label class="form-check-label" style="font-size: 20px;cursor: pointer;" for="setuju_data_benar">Data Sudah Benar dan Akurat</label>
+              <button disabled class="btn btn-primary w-100" id="btn_kirim_formulir"><i class="fa fa-paper-plane"></i> Kirim Data</button>
           </div>
           </div>
       </div>

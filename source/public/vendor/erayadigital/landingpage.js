@@ -37,7 +37,13 @@ function showStep(stepIndex) {
     // Update currentStep
     currentStep = stepIndex;
 }
-
+function focuskestep(offset) {
+    const elementPosition = document.querySelector('.step-indicators').getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+        top: elementPosition - offset,
+        behavior: 'smooth'
+    });
+}
 // Event listener untuk tombol "Next"
 nextButtons.forEach((button) => {
     button.addEventListener('click', () => {
@@ -45,6 +51,7 @@ nextButtons.forEach((button) => {
         currentStep++;
         showStep(currentStep);
     }
+    focuskestep(100);
     });
 });
 
@@ -55,6 +62,7 @@ prevButtons.forEach((button) => {
         currentStep--;
         showStep(currentStep);
     }
+    focuskestep(100);
     });
 });
 
@@ -76,6 +84,13 @@ $('input[name="proses_kerja_temp"]').on('change', function() {
         selectedTexts.push($('label[for="'+$(this).attr('id')+'"]').text());
     });
 });
+$("#setuju_data_benar").click(function() {
+    if ($(this).is(':checked')) {
+        $("#btn_kirim_formulir").removeAttr('disabled');
+    } else {
+        $("#btn_kirim_formulir").attr('disabled', 'disabled');
+    }
+})
 $("#pratinjau_halaman").click(function() {
     $("#modal_nomor_identitas").text($("#nomor_identitas_temp").val());
     $("#modal_nama_peserta").text($("#nama_peserta_temp").val());
@@ -177,3 +192,136 @@ $("#pratinjau_halaman").click(function() {
     /*END FORMULIR IMUNISASI*/
     $("#modalPratinjau").modal("show");
 });
+$("#btn_kirim_formulir").click(function() {
+    if (!$("#setuju_data_benar").is(':checked')) {
+        createToast('Kesalahan', 'top-right', "Centang terlebih dahulu jikalau anda ingin mengirimkan formulir ini untuk mendapatkan nomor antrian atau kode pemesanan", 'error', 3000);
+    }
+    if ($("#modal_nomor_identitas").text() == "" || $("#modal_nama_peserta").text() == "") {
+        createToast('Kesalahan', 'top-right', "Nama serta Nomor Identitas tidak boleh kosong karena dibutuhkan untuk kode unik pendaftaran peserta", 'error', 3000);
+        return false;
+    }
+    const formDataDataDiri = {
+        nomor_identitas_temp: document.getElementById('nomor_identitas_temp').value,
+        nama_peserta_temp: document.getElementById('nama_peserta_temp').value,
+        tempat_lahir_temp: document.getElementById('tempat_lahir_temp').value,
+        tanggal_lahir_peserta_temp: document.getElementById('tanggal_lahir_peserta_temp').value,
+        tipe_identitas_temp: document.getElementById('tipe_identitas_temp').value,
+        jenis_kelamin_temp: document.getElementById('jenis_kelamin_temp').value,
+        status_perkawinan_temp: document.getElementById('status_perkawinan_temp').value,
+        no_telepon_temp: document.getElementById('no_telepon_temp').value,
+        alamat_surel_temp: document.getElementById('alamat_surel_temp').value,
+        proses_kerja_temp: Array.from(document.querySelectorAll('input[name="proses_kerja_temp"]:checked')).map((el) => el.value),
+        alamat_tempat_tinggal_temp: document.getElementById('alamat_tempat_tinggal_temp').value
+    };
+    const lingkunganKerjaData = [];
+    document.querySelectorAll('.nama-atribut-lingkungan-kerja').forEach((el) => {
+        const index = el.getAttribute('data-index');
+        lingkunganKerjaData.push({
+            nama_atribut_lk: el.textContent,
+            status: document.querySelector(`.status-atribut-lingkungan-kerja[data-index="${index}"]`).value,
+            jam_per_hari: document.querySelector(`.jamperhari-atribut[data-index="${index}"]`).value,
+            selama_x_tahun: document.querySelector(`.selamaxtahun-atribut[data-index="${index}"]`).value
+        });
+    });
+    const informasiKecelakaanKerja = document.getElementById('informasi_kecelakaan_kerja_temp').value;
+    let kebiasaanHidupData = [];
+    $('.status-atribut-kebiasaan-hidup').each(function() {
+        const index = $(this).data('index');
+        const status = $(this).val();
+        const nilai = $(`.nilai-atribut-kebiasaan-hidup[data-index="${index}"]`).val();
+        const info = $(`.info-atribut-kebiasaan-hidup[data-index="${index}"]`).text();
+
+        kebiasaanHidupData.push({
+            index: index,
+            status: status,
+            nilai: nilai,
+            info: info
+        });
+    });
+    let penyakitTerdahuluData = [];
+    $('.status-atribut-penyakit-terdahulu').each(function() {
+        const index = $(this).data('index');
+        const status = $(this).val();
+        const keterangan = $(`.keterangan-atribut-penyakit-terdahulu[data-index="${index}"]`).val();
+        const info = $(`.nama-atribut-penyakit-terdahulu[data-index="${index}"]`).text();
+
+        penyakitTerdahuluData.push({
+            index: index,
+            status: status,
+            keterangan: keterangan,
+            info: info
+        });
+    });
+
+    let penyakitKeluargaData = [];
+    $('.status-atribut-penyakit-keluarga').each(function() {
+        const index = $(this).data('index');
+        const status = $(this).val();
+        const keterangan = $(`.keterangan-atribut-penyakit-keluarga[data-index="${index}"]`).val();
+        const info = $(`.nama-atribut-penyakit-keluarga[data-index="${index}"]`).text();
+
+        penyakitKeluargaData.push({
+            index: index,
+            status: status,
+            keterangan: keterangan,
+            info: info
+        });
+    });
+
+    let imunisasiData = [];
+    $('.status-atribut-imunisasi').each(function() {
+        const index = $(this).data('index');
+        const status = $(this).val();
+        const keterangan = $(`.keterangan-atribut-imunisasi[data-index="${index}"]`).val();
+        const info = $(`.nama-atribut-imunisasi[data-index="${index}"]`).text();
+    
+        imunisasiData.push({
+            index: index,
+            status: status,
+            keterangan: keterangan,
+            info: info
+        });
+    });
+    Swal.fire({
+        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Akhir Verif Data</h4><p class="text-muted mx-4 mb-0">Kurang satu langkah lagi untuk mendapatkan nomor pesanan atas nama <strong>' + $("#modal_nama_peserta").text() + '</strong> dengan nomor identitas <strong>' + $("#modal_nomor_identitas").text() + '</strong> ?. Pastikan anda mengingat dan menginformasian kepada CS ketika mengunjukin Clinic</p></div></div>',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: 'orange',
+        confirmButtonText: 'Dapatkan No Pesanan',
+        cancelButtonText: 'Nanti Dulu!!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.get('/generate-csrf-token', function(response) {
+                $.ajax({
+                    url: baseurlapi + '/enduser/formulir/1',
+                    type: 'POST',
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
+                    },
+                    data: {
+                        _token: response.csrf_token,
+                        formDataDataDiri: JSON.stringify(formDataDataDiri),
+                        formDataLingkunganKerja: JSON.stringify({ lingkungan_kerja: lingkunganKerjaData }),
+                        formDataKecelakaanKerja: JSON.stringify({ informasi_kecelakaan_kerja: informasiKecelakaanKerja }),
+                        formDataKebiasaanHidup: JSON.stringify({ kebiasaan_hidup: kebiasaanHidupData }),
+                        formDataPenyakitTerdahulu: JSON.stringify({ penyakit_terdahulu: penyakitTerdahuluData }),
+                        formDataPenyakitKeluarga: JSON.stringify({ penyakit_keluarga: penyakitKeluargaData }),
+                        formDataImunisasi: JSON.stringify({ imunisasi: imunisasiData })
+                    },
+                    success: function(response){
+                        if(!response.success){
+                            createToast('Terjadi Kesalahan', 'top-right', response.message, 'error', 3000);
+                        }
+                        createToast('Berhasil', 'top-right', response.message, 'success', 3000);
+                        setTimeout(function() {
+                            window.location.href = baseurl + '/landing/no_antrian/'+response.data.no_pemesanan;
+                        }, 1000);
+                    },
+                    error: function(xhr, status, error){
+                        createToast('Kesalahan', 'top-right', xhr.responseJSON.message, 'error', 3000);
+                    }
+                });
+            })
+        }
+    });
+})

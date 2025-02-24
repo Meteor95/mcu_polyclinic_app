@@ -12,6 +12,7 @@ use App\Models\{Perusahaan, PaketMCU};
 use App\Models\Masterdata\DepartemenPerusahaan;
 use App\Models\Komponen\{LingkunganKerja, KebiasaanHidup, PenyakitKeluarga, Imunisasi, PenyakitTerdahulu};
 use Illuminate\Support\Facades\Log;
+use App\Models\EndUser\Formulir;
 use App\Models\User;
 
 class PendaftaranController extends Controller
@@ -42,6 +43,17 @@ class PendaftaranController extends Controller
             'penyakit_terdahulu' => $penyakit_terdahulu,
         ];
         return view('preregister.landingpage_form', ['data' => $data]);
+    }
+    public function formulir_no_antrian(Request $req, $uuid){
+        $peserta_sudah_ada = Formulir::where('no_pemesanan', $uuid)->count();
+        $data = [
+            'tipe_halaman' => 'landing',
+            'menu_utama_aktif' => 'formulir_pendaftaran',
+            'dataNavigasi' => "",
+            'uuid' => $uuid,
+            'peserta_sudah_ada' => $peserta_sudah_ada
+        ];
+        return view('preregister.landingpage_nomor_pesanan', ['data' => $data]);
     }
     /* Area Admin Pendaftaran */
     public function list_pasien(Request $req){

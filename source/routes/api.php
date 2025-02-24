@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController, PoliklinikController, LaboratoriumController, LaporanController, DeveloperController};
+use App\Http\Controllers\Api\EndUser\FormulirController;
 
 Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
 Route::prefix('v1')->group(function () {
@@ -219,6 +220,9 @@ Route::prefix('v1')->group(function () {
             Route::get('kuitansi/{jenis_laporan}', [LaporanController::class,"laporan_kuitansi"]);
             Route::get('insentif/{jenis_laporan}', [LaporanController::class,"laporan_insentif"]);
         });
+    });
+    Route::prefix('enduser')->group(function () {
+        Route::post('formulir/{status_formulir}', [FormulirController::class,"kirim_data_permohonan"]);
     });
 });
 
