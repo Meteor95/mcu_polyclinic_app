@@ -314,7 +314,7 @@ $("#btn_kirim_formulir").click(function() {
                         }
                         createToast('Berhasil', 'top-right', response.message, 'success', 3000);
                         setTimeout(function() {
-                            window.location.href = baseurl_pendaftaran_mandiri + '/no_antrian/'+response.data.no_pemesanan;
+                            window.location.href = '/no_antrian/'+response.data.no_pemesanan;
                         }, 1000);
                     },
                     error: function(xhr, status, error){

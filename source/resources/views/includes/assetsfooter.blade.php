@@ -43,5 +43,4 @@
 <script>
     var baseurlapi = "{{ url(env('APP_VERSI_API')) }}";
     var baseurl = "{{ url('') }}";
-    var baseurl_pendaftaran_mandiri = "{{ env('URL_MANDIRI_DOMAIN') }}";
 </script>

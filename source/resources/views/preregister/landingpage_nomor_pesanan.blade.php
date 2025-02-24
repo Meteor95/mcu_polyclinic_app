@@ -44,8 +44,8 @@
                         <h2 class="headline" id="nomor_antrian_uuid">{{strtoupper($data['uuid'])}}</h2>
                     </div>
                     <div class="text-center">
-                        <button class="btn btn-success"><i class="fa fa-whatsapp"></i> Kirim WhatsApp</button>
-                        <button class="btn btn-danger"><i class="fa fa-envelope"></i> Kirim Email</button>
+                        <button class="btn btn-success" disabled><i class="fa fa-whatsapp"></i> Kirim WhatsApp</button>
+                        <button class="btn btn-danger" disabled><i class="fa fa-envelope"></i> Kirim Email</button>
                         <button id="salin_ke_clip" class="btn btn-primary"><i class="fa fa-clone"></i> Salin Ke Clip</button>
                     </div>
                     </div>
