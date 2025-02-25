@@ -201,7 +201,7 @@
                     {{$kh->nama_atribut_kb}}
                   </div>
                   <div class="mb-3 col-lg-3 col-sm-12">
-                    <div class="status-parameter-wrapper-{{$index}}">{{$kh->status}}</div>
+                    <div style="display: none;" class="status-parameter-wrapper-{{$index}}">{{$kh->status}}</div>
                     <select class="form-select status-atribut-kebiasaan-hidup" data-index="{{$index}}" aria-label="Status">
                       <option value="" selected>Status {{$kh->nama_atribut_kb}}</option>
                       <option value="1">Ya</option>
