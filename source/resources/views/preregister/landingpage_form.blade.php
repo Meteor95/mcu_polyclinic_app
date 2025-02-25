@@ -191,7 +191,7 @@
                   <div class="row">
                   @foreach ($data['kebiasaan_hidup'] as $index => $kh)
                   @php
-                    $kalimat = "Berapa Kali " . $kh->nama_atribut_kb . " " . $kh->nama_satuan_kb;
+                    $kalimat = "Jumlah " . $kh->nama_atribut_kb . " " . $kh->nama_satuan_kb;
                     if ($kh->status == 2) {
                       $kalimat = "Kapan " . $kh->nama_atribut_kb;
                     }
@@ -211,7 +211,7 @@
                   <div class="mb-3 col-lg-5 col-sm-6">
                     <input type="text" class="form-control nilai-atribut-kebiasaan-hidup" id="nilai_kebiasaan_hidup" placeholder="{{$kalimat}}" data-index="{{$index}}">
                   </div>
-                  <div style="display: none;" class="info-atribut-kebiasaan-hidup" data-index="{{$index}}">{{$kh->nama_atribut_kb}} {{$kh->nama_satuan_kb}}</div>
+                  <div style="display: none;" class="info-atribut-kebiasaan-hidup" data-index="{{$index}}"> {{$kh->nama_satuan_kb}}</div>
                   </div>
                   @endforeach
                   </div>
