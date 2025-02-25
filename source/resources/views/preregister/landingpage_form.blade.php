@@ -190,10 +190,18 @@
                   <h5>Formulir Kebiasaan Hidup</h5>
                   <div class="row">
                   @foreach ($data['kebiasaan_hidup'] as $index => $kh)
-                  <div class="mb-3 col-lg-4 col-sm-12 text-start nama-atribut-kebiasaan-hidup" data-index="{{$index}}">
+                  @php
+                    $kalimat = "Berapa Kali " . $kh->nama_atribut_kb . " " . $kh->nama_satuan_kb;
+                    if ($kh->status == 2) {
+                      $kalimat = "Kapan " . $kh->nama_atribut_kb;
+                    }
+                  @endphp
+                  <div class="row status_{{$kh->status}}">
+                  <div class="mb-3 col-lg-4 col-sm-12 text-start nama-atribut-kebiasaan-hidup kebiasaan-hidup-wrapper" data-index="{{$index}}">
                     {{$kh->nama_atribut_kb}}
                   </div>
                   <div class="mb-3 col-lg-3 col-sm-12">
+                    <div class="status-parameter-wrapper-{{$index}}">{{$kh->status}}</div>
                     <select class="form-select status-atribut-kebiasaan-hidup" data-index="{{$index}}" aria-label="Status">
                       <option value="" selected>Status {{$kh->nama_atribut_kb}}</option>
                       <option value="1">Ya</option>
@@ -201,9 +209,10 @@
                     </select>
                   </div>
                   <div class="mb-3 col-lg-5 col-sm-6">
-                    <input type="text" class="form-control nilai-atribut-kebiasaan-hidup" id="nilai_kebiasaan_hidup" placeholder="Berapa Kali {{$kh->nama_atribut_kb}} {{$kh->nama_satuan_kb}}" data-index="{{$index}}">
+                    <input type="text" class="form-control nilai-atribut-kebiasaan-hidup" id="nilai_kebiasaan_hidup" placeholder="{{$kalimat}}" data-index="{{$index}}">
                   </div>
                   <div style="display: none;" class="info-atribut-kebiasaan-hidup" data-index="{{$index}}">{{$kh->nama_atribut_kb}} {{$kh->nama_satuan_kb}}</div>
+                  </div>
                   @endforeach
                   </div>
                   <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
@@ -401,6 +410,7 @@
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/bt5-tag-input/tags.css')}}">
 <style>
+.d-none{display: none;}
 .demo-section{
     padding-top:10px;
     max-width:1320px;
@@ -427,14 +437,11 @@
 .form-control, .form-select{
   border: 2px dashed rgba(106, 113, 133, 0.3);
 }
-/* Container untuk steps */
 .steps {
   position: relative;
   overflow: hidden;
   width: 100%;
 }
-
-/* Setiap step */
 .step {
   display: none;
   width: 100%;
@@ -444,7 +451,6 @@
 .step.active {
   display: block;
 }
-/* Indikator Step */
 .step-indicators {
   margin-bottom: 20px;
 }
@@ -461,7 +467,6 @@
             transform: translateZ(0);
   color: white !important;
 }
-/* Responsive untuk mobile */
 @media (max-width: 768px) {
   .steps {
     overflow-y: auto;
@@ -475,5 +480,6 @@
 </style>
 @endsection
 @section('js_load')
+<script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="{{asset('vendor/erayadigital/landingpage.js')}}"></script>
 @endsection

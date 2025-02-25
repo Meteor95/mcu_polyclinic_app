@@ -4,10 +4,26 @@ const nextButtons = document.querySelectorAll('.next-btn');
 const prevButtons = document.querySelectorAll('.prev-btn');
 const stepIndicators = document.querySelectorAll('.step-indicator');
 let currentStep = 0;
-
-// Fungsi untuk menampilkan step saat ini
+$(document).ready(function() {
+    let selectedGender = $("#jenis_kelamin_temp").val();
+    $('.kebiasaan-hidup-wrapper').each(function() {
+        if (selectedGender === "Laki-Laki") {
+            $(".status_2").hide();
+            $(".table_status_2").addClass('d-none');
+        } else {
+            $(".status_2").show();
+            $(".table_status_2").removeClass('d-none');
+        }
+    });
+    $('.status_2 .nilai-atribut-kebiasaan-hidup').each(function() {
+        flatpickr(this, {
+            dateFormat: 'd-m-Y',
+            maxDate: new Date(),
+            allowInput: true
+        });
+    });
+})
 function showStep(stepIndex) {
-    // Sembunyikan semua step
     steps.forEach((step, index) => {
     if (index === stepIndex) {
         step.classList.add('active');
@@ -15,8 +31,6 @@ function showStep(stepIndex) {
         step.classList.remove('active');
     }
     });
-
-    // Update indikator step
     stepIndicators.forEach((indicator, index) => {
     if (index === stepIndex) {
         indicator.classList.add('active');
@@ -24,7 +38,6 @@ function showStep(stepIndex) {
         indicator.classList.remove('active');
     }
     });
-    // Auto-scroll ke step indicator yang aktif
     const activeIndicator = document.querySelector('.step-indicator.active');
     if (activeIndicator) {
     activeIndicator.scrollIntoView({
@@ -33,8 +46,6 @@ function showStep(stepIndex) {
         inline: 'center'
     });
     }
-
-    // Update currentStep
     currentStep = stepIndex;
 }
 function focuskestep(offset) {
@@ -44,7 +55,6 @@ function focuskestep(offset) {
         behavior: 'smooth'
     });
 }
-// Event listener untuk tombol "Next"
 nextButtons.forEach((button) => {
     button.addEventListener('click', () => {
     if (currentStep < steps.length - 1) {
@@ -54,8 +64,6 @@ nextButtons.forEach((button) => {
     focuskestep(100);
     });
 });
-
-// Event listener untuk tombol "Previous"
 prevButtons.forEach((button) => {
     button.addEventListener('click', () => {
     if (currentStep > 0) {
@@ -65,16 +73,12 @@ prevButtons.forEach((button) => {
     focuskestep(100);
     });
 });
-
-// Event listener untuk indikator step
 stepIndicators.forEach((indicator) => {
     indicator.addEventListener('click', () => {
     const stepIndex = parseInt(indicator.getAttribute('data-step'));
     showStep(stepIndex);
     });
 });
-
-// Tampilkan step pertama saat halaman dimuat
 showStep(currentStep);
 });
 let selectedTexts = [];
@@ -137,16 +141,23 @@ $("#pratinjau_halaman").click(function() {
     $('.nama-atribut-kebiasaan-hidup').each(function() {
         let index = $(this).data('index');
         let namaAtribut = $(this).text();
+        let status_parameter = $('.status-parameter-wrapper-' + index).text();
         let status = $('.status-atribut-kebiasaan-hidup[data-index="' + index + '"]').val();
         let berapakali = $('.nilai-atribut-kebiasaan-hidup[data-index="' + index + '"]').val();
         let infoAtribut = $('.info-atribut-kebiasaan-hidup[data-index="' + index + '"]').text();
-        hasilKebiasaanHidup += '<tr>' +
+        hasilKebiasaanHidup += '<tr class="table_status_' + status_parameter + '">' +
             '<td style="text-align:left;width:50%;">' + namaAtribut + '</td>' +
             '<td style="width:25%;">' + (status == "" ? "Tidak" : status == 0 ? "Tidak" : "Ya") + '</td>' +
             '<td style="width:25%;">' + (berapakali == "" ? 0 : berapakali)  + ' '+infoAtribut+'</td>' +
         '</tr>';
     });
-    $("#tabel_ini_kebiasaan_hidup").append(hasilKebiasaanHidup);
+    $("#tabel_ini_kebiasaan_hidup").html(hasilKebiasaanHidup);
+    let selectedGender = $('#jenis_kelamin_temp').val();
+    if (selectedGender === "Laki-Laki") {
+        $("#tabel_ini_kebiasaan_hidup .table_status_2").addClass('d-none');
+    } else {
+        $("#tabel_ini_kebiasaan_hidup .table_status_2").removeClass('d-none');
+    }
     /*END FORMULIR KEBIASAAAN HIDUP*/
     /*FORMULIR PENYAKIT TERDAHULU*/
     $('.nama-atribut-penyakit-terdahulu').each(function() {
@@ -325,3 +336,15 @@ $("#btn_kirim_formulir").click(function() {
         }
     });
 })
+$('#jenis_kelamin_temp').on('change', function() {
+    let selectedGender = $(this).val();
+    if (selectedGender === "Laki-Laki") {
+        $(".status_2").hide();
+        $("#tabel_ini_kebiasaan_hidup .table_status_2").addClass('d-none');
+    } else {
+        $(".status_2").show();
+        $("#tabel_ini_kebiasaan_hidup .table_status_2").removeClass('d-none');
+    }
+}).trigger('change');
+
+document.getElementById('jenis_kelamin_temp').dispatchEvent(new Event('change'));
