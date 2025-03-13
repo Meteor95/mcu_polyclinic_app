@@ -8,7 +8,7 @@
           <a href="{{ route('admin.pendaftaran.formulir_tambah_peserta') }}" class="btn btn-success w-100 mt-2" id="btn_tambahpeserta">Tambah Peserta MCU</a>
         </div>
         <div class="card-body">
-          <input type="text" class="form-control" id="kotak_pencarian_daftarpeserta" placeholder="Cari data berdasarkan nama peserta">
+          <input type="text" class="form-control" id="kotak_pencarian_daftarpeserta" placeholder="Cari informasi berdasarkan No Pemesanan, Identifikasi atau Nama Peserta">
           <table class="table display" id="datatables_daftarpeserta"></table>
         </div>
       </div>

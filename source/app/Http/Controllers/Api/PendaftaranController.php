@@ -38,7 +38,7 @@ class PendaftaranController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'id' => 'required',
+                'nama_peserta' => 'required',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -46,7 +46,7 @@ class PendaftaranController extends Controller
             }
             $data = $request->all();
             $registrationMCUServices->handleTransactionDeletePeserta($data);
-            return ResponseHelper::success_delete("Informasi Peserta berhasil dihapus beserta paramter lainnya");
+            return ResponseHelper::success_delete("Informasi daftar peserta dengan nama <strong>".$data['nama_peserta']."</strong> dengan nomor antrian <strong>".$data['no_pemesanan']."</strong> berhasil dihapus beserta paramter lainnya");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

@@ -14,7 +14,7 @@ class RegistrationMCUServices
 {
     function handleTransactionDeletePeserta($data)
     {
-        return Peserta::where('uuid', '=', $data['id'])->delete();
+        return Peserta::where('no_pemesanan', '=', $data['no_pemesanan'])->delete();
     }
     public function handleTransactionInsertLingkunganKerjaPeserta($request)
     {

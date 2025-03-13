@@ -7,36 +7,34 @@ use Illuminate\Support\Facades\DB;
 
 class Peserta extends Model
 {
-    protected $table = 'users_member_temp';
+    protected $table = 'mcu_transaksi_pemesanan';
     protected $fillable = [
-        'uuid',
-        'nomor_identitas',
+        'no_pemesanan',
+        'nomor_identifikasi',
         'nama_peserta',
-        'tempat_lahir',
-        'tanggal_lahir',
-        'tipe_identitas',
-        'jenis_kelamin',
-        'alamat',
-        'status_kawin',
-        'no_telepon',
-        'email',
+        'json_data_diri',
+        'json_lingkungan_kerja',
+        'json_kecelakaan_kerja',
+        'json_kebiasaan_hidup',
+        'json_penyakit_terdahulu',
+        'json_penyakit_keluarga',
+        'json_imunisasi',
     ];
 
     public static function listPesertaTabel($req, $perHalaman, $offset)
     {
         $parameterpencarian = $req->parameter_pencarian;
         $tablePrefix = config('database.connections.mysql.prefix');
-        $query = DB::table((new self())->getTable())
-            ->select('users_member_temp.*')
-            ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member_temp.tanggal_lahir, CURDATE()) AS umur, DATE_FORMAT(created_at, "%d-%m-%Y %H:%i:%s") as created_at, DATE_FORMAT(created_at + INTERVAL 7 DAY, "%d-%m-%Y %H:%i:%s") as created_at_delete ');
+        $query = DB::table((new self())->getTable());
         if (!empty($parameterpencarian)) {
-            $query->where('nomor_identitas', 'LIKE', '%' . $parameterpencarian . '%')
+            $query->where('no_pemesanana', 'LIKE', '%' . $parameterpencarian . '%')
+                  ->orWhere('nomor_identifikasi', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');
         }
         $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
             ->skip($offset)
-            ->orderBy('nama_peserta', 'ASC')
+            ->orderBy('created_at', 'DESC')
             ->get();
         return [
             'data' => $result,

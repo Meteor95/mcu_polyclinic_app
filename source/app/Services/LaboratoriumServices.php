@@ -64,7 +64,7 @@ class LaboratoriumServices
                 'nama_file_surat_pengantar' => $filename,
                 'is_paket_mcu' => $data['is_paket_mcu'],
                 'nama_paket_mcu' => $data['nama_paket_mcu'],
-                'nominal_apotek' => $informasi_file->nominal_apotek,
+                'nominal_apotek' => $informasi_file->nominal_apotek ?? 0,
             ];
             $hasil_query_tranaksi = Transaksi::create($data);
             if (filter_var($is_edit, FILTER_VALIDATE_BOOLEAN)){
