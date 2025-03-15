@@ -30,7 +30,7 @@
                     <label for="grup_item">Grup Item</label>
                     <select name="grup_item" data-choices id="grup_item" class="form-control">
                         <option value="laboratorium">Laboratorium</option>
-                        <option value="non_laboratorium">Non Laboratorium</option>
+                        <option value="tindakan">Tindakan</option>
                     </select>
                 </div>
                 <div class="col-sm-6">
@@ -237,7 +237,7 @@
                   <select id="jenis_item_tampilkan" class="form-select">
                     <option value="">Semua</option>
                     <option value="laboratorium">Laboratorium</option>
-                    <option value="non_laboratorium">Non Laboratorium</option>
+                    <option value="tindakan">Tindakan</option>
                   </select>
                 </div>
                 <div class="col-md-8">

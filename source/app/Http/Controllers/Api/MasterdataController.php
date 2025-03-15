@@ -131,7 +131,7 @@ class MasterdataController extends Controller
                 'data' => $datatabel['data'],
                 'recordsFiltered' => $jumlahdata,
             ];
-            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi paket tersedia di MCU Artha Medica Clinic']), $dynamicAttributes);
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi paket tersedia di MCU '.config('app.name')]), $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -227,7 +227,7 @@ class MasterdataController extends Controller
                 'data' => $datatabel['data'],
                 'recordsFiltered' => $jumlahdata,
             ];
-            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi fee atau nominal jasa pelayanan tersedia di MCU Artha Medica Clinic']), $dynamicAttributes);
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi fee atau nominal jasa pelayanan tersedia di MCU '.config('app.name')]), $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

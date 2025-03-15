@@ -72,7 +72,7 @@ class PendaftaranController extends Controller
                 $data = Peserta::where('nomor_identitas', $request->nomor_identitas)->first();
                 $dynamicAttributes = [  
                     'data' => $data,
-                    'message_info' => '<h4>Informasi Peserta dengan Nama : <strong>'.$data->nama_peserta.'</strong></h4><span style="color:red">BELUM TERDAFTAR PADA SISTEM MCU</span>. Informasi member ini akan ditambahkan menjadi member di Artha Medica Clinic secara otomatis jika selesai melakukan transaksi MCU',
+                    'message_info' => '<h4>Informasi Peserta dengan Nama : <strong>'.$data->nama_peserta.'</strong></h4><span style="color:red">BELUM TERDAFTAR PADA SISTEM MCU</span>. Informasi member ini akan ditambahkan menjadi member di '.config('app.name').' secara otomatis jika selesai melakukan transaksi MCU',
                 ];
                 if ($data) {
                     return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta Temporari']), $dynamicAttributes);

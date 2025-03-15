@@ -283,7 +283,7 @@ function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
                 hierarchicalData.forEach(category => {
                     const option = document.createElement('option');
                     option.value = category.id;
-                    option.textContent = `${category.status} ${category.kategori} [${category.catatan}]`;
+                    option.textContent = `${category.kategori} - ${category.catatan}`;
                     pemeriksaan_kesimpulan_tindakan_select_id.appendChild(option);
                 });
                 if (choice_pemeriksaan_kesimpulan_tindakan_select) { choice_pemeriksaan_kesimpulan_tindakan_select.destroy(); }

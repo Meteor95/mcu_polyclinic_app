@@ -171,7 +171,7 @@ if (!function_exists('header_mcu')) {
                 </td>
                 <td style="width:70%; text-align: right;">
                     <p>
-                        <span style="font-size: 25px; font-weight: bold;">KLINIK ARTHA MEDICAL CENTRE</span><br>
+                        <span style="font-size: 25px; font-weight: bold;">Klinik {{ config('app.name') }}</span><br>
                         <span style="font-size: 15px;">Alamat: Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765</span><br>
                         <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: arthamedicalcentre.com</span><br>
                         <span style="font-size: 15px;">Contact Person: 0812-3456-7890 | 0812-3456-7890</span>

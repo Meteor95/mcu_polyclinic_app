@@ -23,6 +23,7 @@ class CheckPermission
         $permissionsToCheck = [
             'hasAccessBeranda' => 'akses_beranda',
             'hasAccessKasir' => 'akses_kasir',
+            'hasAccessAntrian' => 'akses_antrian',
             /* Pendaftaran */
             'hasAccessPendaftaran' => 'akses_pendaftaran',
             'hasAccessPendaftaranDaftarPeserta' => 'akses_pendaftaran_daftar_peserta',
@@ -36,7 +37,6 @@ class CheckPermission
             'hasAccessPendaftaranPenyakitKeluarga' => 'akses_pendaftaran_penyakit_keluarga',
             'hasAccessPendaftaranImunisasi' => 'akses_pendaftaran_imunisasi',
             /* Pemeriksaan Fisik */
-            'hasAccessPemeriksaanFisik' => 'akses_pemeriksaan_fisik',
             'hasAccessTingkatKesadaran' => 'akses_pemeriksaan_fisik_tingkat_kesadaran',
             'hasAccessTandaVital' => 'akses_pemeriksaan_fisik_tanda_vital',
             'hasAccessPenglihatan' => 'akses_pemeriksaan_fisik_penglihatan',
@@ -53,7 +53,6 @@ class CheckPermission
             'hasAccessKondisiFisikEkstremitas' => 'akses_pemeriksaan_fisik_kondisi_fisik_ekstremitas',
             'hasAccessKondisiFisikNeurologis' => 'akses_pemeriksaan_fisik_kondisi_fisik_neurologis',
             /* Poliklinik */
-            'hasAccessPoliklinik' => 'akses_poliklinik',
             'hasAccessSpirometri' => 'akses_spirometri',
             'hasAccessAudiometri' => 'akses_audiometri',
             'hasAccessEkg' => 'akses_ekg',
@@ -70,16 +69,14 @@ class CheckPermission
             'hasAccessRentangTemplating' => 'akses_rentang_templating',
             /* Pemeriksaan */
             'hasAccessTindakanLaboratorium' => 'akses_tindakan_laboratorium',
-            'hasAccessTindakanObat' => 'akses_tindakan_obat',
             /* Laporan */
             'hasAccessValidasiMcu' => 'akses_validasi_mcu',
             'hasAccessArciveMCU' => 'akses_berkas_tindakan_mcu',
             'hasAccessArciveLaboratorium' => 'akses_berkas_tindakan_laboratorium',
-            'hasAccessArciveNota' => 'akses_berkas_tindakan_kwitansi',
-            'hasAccessBerkasMCU' => 'akses_berkas_tindakan_mcu',
             'hasAccessLaporanPenjualan' => 'akses_laporan_penjualan',
-            'hasAccessLaporanKuitansi' => 'akses_laporan_kuitansi',
+            'hasAccessLaporanKuitansi' => 'akses_berkas_tindakan_kwitansi',
             'hasAccessLaporanInsentif' => 'akses_laporan_insentif',
+            'hasAccessHasilKesimpulan' => 'akses_hasil_kesimpulan',
             /* Master Data */
             'hasAccessMasterData' => 'akses_master_data',
             'hasAccessMasterPerusahaan' => 'akses_master_perusahaan',
@@ -94,8 +91,8 @@ class CheckPermission
             'hasAccessHakAkses' => 'akses_hak_akses',
             'hasAccessPermission' => 'akses_hak_permission',
             /* Developer Area */
-            'hasAccessDeveloperArea' => 'akses_developer_area',
             'hasAccessErrorLog' => 'akses_error_log',
+            'hasVisiblePrice' => 'akses_informasi_harga_kasir',
         ];
         $permissionsShared = [];
         foreach ($permissionsToCheck as $key => $permissionName) {

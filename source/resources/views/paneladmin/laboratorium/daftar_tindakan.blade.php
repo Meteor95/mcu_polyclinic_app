@@ -4,7 +4,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4>Daftar Tindakan Laboratorium dan Pengobatan Artha Medica Centre</h4><span>
+          <h4>Daftar Tindakan Laboratorium dan Pengobatan {{ config('app.name') }}</h4><span>
             Semua transkasi dari berbagai jenis layanan baik MCU atau NON MCU akan terekam pada tabel berikut. Silahkan lakukan pencarian sesuai dengan kriteria yang diinginkan, jika terdapat kesalahan silahkan hubungi admin atau hak akses yang diizinkan untuk melakukan penyesuaian data.
           </span>
           <div class="row mt-2">

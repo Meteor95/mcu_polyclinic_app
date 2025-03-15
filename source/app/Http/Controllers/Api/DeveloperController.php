@@ -25,7 +25,7 @@ class DeveloperController extends Controller
                     'offset' => $offset,
                 ],
             ];
-            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Pengguna Aplikasi MCU Artha Medica']), $dynamicAttributes);
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Pengguna Aplikasi MCU '.config('app.name')]), $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

@@ -43,7 +43,7 @@ class UserController extends Controller
                     'offset' => $offset,
                 ],
             ];
-            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Pengguna Aplikasi MCU Artha Medica']), $dynamicAttributes);
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Pengguna Aplikasi MCU '.config('app.name')]), $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -73,7 +73,7 @@ class UserController extends Controller
             $data = $request->all();
             $ttd = $request->file('tanda_tangan_pegawai');
             $registerService->handleTransactionRegisterUser($data, $ttd);
-            return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil didaftarkan kedalam sistem MCU Artha Medica.');
+            return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil didaftarkan kedalam sistem MCU '.config('app.name').'.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -89,7 +89,7 @@ class UserController extends Controller
             }
             $data = $request->all();
             $userService->handleTransactionDeleteUser($data);
-            return ResponseHelper::success('Pengguna ' . $request->input('username') . ' berhasil dihapus dari sistem MCU Artha Medica.');
+            return ResponseHelper::success('Pengguna ' . $request->input('username') . ' berhasil dihapus dari sistem MCU '.config('app.name').'.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -108,7 +108,7 @@ class UserController extends Controller
         $dynamicAttributes = [
             'data' => $detailuser,
         ];
-        return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Detail Pengguna ' . $detailuser->nama_pegawai . ' Aplikasi MCU Artha Medica']), $dynamicAttributes);
+        return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Detail Pengguna ' . $detailuser->nama_pegawai . ' Aplikasi MCU '.config('app.name')]), $dynamicAttributes);
        } catch (\Throwable $th) {
         return ResponseHelper::error($th);
        }
@@ -125,7 +125,7 @@ class UserController extends Controller
             $data = $request->all();
             $ttd = $request->file('tanda_tangan_pegawai');
             $userService->handleTransactionEditUser($data, $ttd);
-            return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil diubah. Silahkan masukkan kembali pada halaman pengguna aplikasi MCU Artha Medica.');
+            return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil diubah. Silahkan masukkan kembali pada halaman pengguna aplikasi MCU '.config('app.name').'.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

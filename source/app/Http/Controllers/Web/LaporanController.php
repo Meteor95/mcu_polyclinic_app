@@ -299,6 +299,7 @@ class LaporanController extends Controller
                     $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
                 }
             });
+            Log::info($fullPath);
             $pdf->save($fullPath);
         } 
         return response()->file($fullPath);

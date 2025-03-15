@@ -28,7 +28,7 @@
             <input class="form-control" type="text" placeholder="Ex: Status role pengguna paling tinggi pada aplikasi MCU Artha Medica" id="keterangan_role">
           </div>
           <div class="title text-center mt-2">
-            <h2 class="sub-title">Role Yang Tersedia Pada Sistem MCU Artha Medica</h2>
+            <h2 class="sub-title">Role Yang Tersedia Pada Sistem {{ config('app.name') }}</h2>
           </div>
           <div class="col-md-12">
             <div class="row">

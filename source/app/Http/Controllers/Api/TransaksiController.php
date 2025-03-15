@@ -37,7 +37,7 @@ class TransaksiController extends Controller
             if (!$return_transaksi) {
                 return ResponseHelper::data_conflict('Pasien dengan Nama '.$data['nama_peserta'].' sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya');
             }
-            return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil didaftarkan kedalam sistem MCU Artha Medica. Silahkan tambah informasi detail MCU berdasarkan Nomor Indetitas yang sudah didaftarkan [' . $request->input('nomor_identitas') . ']');
+            return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil didaftarkan kedalam sistem MCU '.config('app.name').'. Silahkan tambah informasi detail MCU berdasarkan Nomor Indetitas yang sudah didaftarkan [' . $request->input('nomor_identitas') . ']');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -146,7 +146,7 @@ class TransaksiController extends Controller
             $user_id = MemberMCU::where('nomor_identitas', $request->input('nomor_identitas'))->first();
             $citra_peserta = UnggahCitra::where('user_id', $user_id->id)->where('transaksi_id', $request->input('id_transaksi'))->first();
             if ($citra_peserta) {
-                return ResponseHelper::data_conflict("Informasi unggahan foto peserta MCU : " . $request->input('informasimember') . " sudah terdaftar dalam sistem MCU Artha Medica. Silahkan hapus terlebih dahulu informasi peserta MCU sebelum melakukan unggahan foto");
+                return ResponseHelper::data_conflict("Informasi unggahan foto peserta MCU : " . $request->input('informasimember') . " sudah terdaftar dalam sistem MCU " . config('app.name') . ". Silahkan hapus terlebih dahulu informasi peserta MCU sebelum melakukan unggahan foto");
             }
             $uuid = (string) Str::uuid();
             $foto = $request->file('foto');

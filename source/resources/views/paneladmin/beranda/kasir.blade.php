@@ -4,7 +4,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4>Daftar Tindakan Laboratorium dan Pengobatan Artha Medica Centre</h4><span>
+          <h4>Daftar Tindakan Laboratorium dan Pengobatan {{ config('app.name') }}</h4><span>
             Silahkan lakukan pentagihan pada pasien yang sudah melakukan pendaftaran dan terdaftar pada tabel berikut. Halaman ini sebagai penentu apakah transaksi yang dilakukan oleh peserta sudah selesai atau belum dalam hal administrasi pembayaran.
           </span>
         </div>

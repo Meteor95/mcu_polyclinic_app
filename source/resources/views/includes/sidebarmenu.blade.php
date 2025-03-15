@@ -2,7 +2,7 @@
   <div>
     <div class="logo-wrapper">
       <a href="{{ url('/admin/beranda') }}">
-        <img class="img-fluid" src="{{asset('mofi/assets/images/logo/Logo_AMC_Full.png')}}" alt="Logo MCU Artha Medical Center" style="height: 100%;width: 75%;">
+        <img class="img-fluid" src="{{asset('mofi/assets/images/logo/Logo_AMC_Full.png')}}" alt="Logo MCU {{ config('app.name') }}" style="height: 100%;width: 75%;">
       </a>
       <div class="back-btn"><i class="fa fa-angle-left"></i></div>
       <div class="toggle-sidebar">
@@ -62,6 +62,7 @@
             </a>
           </li>
           @endif
+          @if ($hasAccessAntrian)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="{{ route('admin.antrian') }}">
@@ -69,6 +70,7 @@
               <span>Antrian</span>
             </a>
           </li>
+          @endif
           <!-- Medical Check Up Section -->
           <li class="sidebar-main-title">
             <div>
@@ -115,7 +117,7 @@
             </ul>
           </li>
           @endif
-          @if ($hasAccessPemeriksaanFisik)
+          @if ($hasAccessTingkatKesadaran || $hasAccessPenglihatan || $hasAccessKondisiFisikKepala || $hasAccessKondisiFisikTelinga || $hasAccessKondisiFisikMata || $hasAccessKondisiFisikTenggorokan || $hasAccessKondisiFisikMulut || $hasAccessKondisiFisikGigi || $hasAccessKondisiFisikLeher || $hasAccessKondisiFisikThorax || $hasAccessKondisiFisikAbdomenUrogenital || $hasAccessKondisiFisikAnorectalGenital || $hasAccessKondisiFisikEkstremitas || $hasAccessKondisiFisikNeurologis)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -162,7 +164,7 @@
             </ul>
           </li>
           @endif
-          @if ($hasAccessPoliklinik)
+          @if ($hasAccessTandaVital || $hasAccessSpirometri || $hasAccessAudiometri || $hasAccessEkg || $hasAccessThreadmill || $hasAccessRontgenThorax || $hasAccessRontgenLumbosacral || $hasAccessUSGUbdomain || $hasAccessFarminghamScore)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -186,6 +188,7 @@
             </ul>
           </li>
           @endif
+          @if ($hasAccessTarifLaboratorium || $hasAccessKategoriLaboratorium || $hasAccessSatuanLaboratorium || $hasAccessRentangKenormalanLaboratorium || $hasAccessRentangTemplating)
           <li class="sidebar-main-title">
             <div>
               <h6>LAB & OBAT</h6>
@@ -211,6 +214,7 @@
               @endforeach
             </ul>
           </li>
+          @endif
           @if ($hasAccessTindakanLaboratorium)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
@@ -225,6 +229,7 @@
               <h6>LAPORAN</h6>
             </div>
           </li>
+          @if ($hasAccessHasilKesimpulan)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="{{ route('admin.laporan.validasi_rekap_kesimpulan') }}">
@@ -232,6 +237,7 @@
               <span>Hasil Kesimpulan</span>
             </a>
           </li>
+          @endif
           @if ($hasAccessValidasiMcu)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
@@ -241,7 +247,7 @@
             </a>
           </li>
           @endif
-          @if ($hasAccessArciveMCU || $hasAccessArciveLaboratorium || $hasAccessArciveNota)
+          @if ($hasAccessArciveMCU || $hasAccessArciveLaboratorium)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -260,7 +266,7 @@
             </ul>
           </li>
           @endif
-          @if ($hasAccessLaporanPenjualan || $hasAccessLaporanKuitansi || hasAccessLaporanInsentif)
+          @if ($hasAccessLaporanPenjualan || $hasAccessLaporanKuitansi || $hasAccessLaporanInsentif)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -328,7 +334,7 @@
             </ul>
           </li>
           @endif
-          @if ($hasAccessDeveloperArea)
+          @if ($hasAccessErrorLog)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -337,7 +343,7 @@
             </a>
             <ul class="sidebar-submenu">
               @foreach([
-                ['condition' => $hasAccessDeveloperArea || $hasAccessErrorLog, 'url' => 'dev/error_log_app', 'label' => 'Error Log'],
+                ['condition' => $hasAccessErrorLog, 'url' => 'dev/error_log_app', 'label' => 'Error Log'],
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>

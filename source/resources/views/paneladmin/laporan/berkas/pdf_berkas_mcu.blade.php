@@ -171,7 +171,7 @@ watermark {
                 </td>
                 <td style="width:70%; text-align: right;">
                     <p>
-                        <span style="font-size: 25px; font-weight: bold;">KLINIK ARTHA MEDICAL CENTRE</span><br>
+                        <span style="font-size: 25px; font-weight: bold;">Klinik {{ config('app.name') }}</span><br>
                         <span style="font-size: 15px;">Alamat: Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765</span><br>
                         <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: arthamedicalcentre.com</span><br>
                         <span style="font-size: 15px;">Contact Person: 0812-3456-7890 | 0812-3456-7890</span>
@@ -188,7 +188,6 @@ watermark {
                         <img src="{{ asset('mofi/assets/images/logo/IASCB.png') }}" alt="Logo IASCB" style="height: 50px;">
                         <img src="{{ asset('mofi/assets/images/logo/KEMENTAKER.png') }}" alt="Logo Kementerian Ketenagakerjaan" style="height: 50px;">
                         <img src="{{ asset('mofi/assets/images/logo/VRC.png') }}" alt="Logo VRC" style="height: 50px;">
-                        <img src="{{ asset('mofi/assets/images/logo/ISO91001400.png') }}" alt="Logo ISO" style="height: 50px;">
                     </div>
                 </td>
                 <td style="width: 50%; text-align: right; padding-right: 25px; vertical-align: middle;">
@@ -252,6 +251,18 @@ watermark {
                     <td style="white-space: nowrap;">TANGGAL MCU / TIPE MCU</td>
                     <td>:</td>
                     <td>{{ date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_mcu'])) }} / {{ $data['informasi_data_diri']['jenis_transaksi_pendaftaran'] }}</td>
+                </tr>
+            </table>
+            <table style="width: 100%; text-align: center; border-collapse: collapse;">
+                <tr>
+                    <td style="width: 50%; padding: 10px;">
+                        <strong>ISO 9001:2015 Certified</strong><br>
+                        2410010019699K001
+                    </td>
+                    <td style="width: 50%; padding: 10px;">
+                        <strong>ISO 14001:2015 Certified</strong><br>
+                        24100100196914K001
+                    </td>
                 </tr>
             </table>
         </div>

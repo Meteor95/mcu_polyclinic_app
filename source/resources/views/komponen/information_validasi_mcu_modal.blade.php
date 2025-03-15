@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title" id="modalTambahPenggunaLabel">Foto Pasien MCU Artha Medica Clinic</h5>
+              <h5 class="modal-title" id="modalTambahPenggunaLabel">Foto Pasien MCU {{ config('app.name') }}</h5>
               <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
           </div>
           <div class="modal-body">

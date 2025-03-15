@@ -67,6 +67,9 @@ $(document).ready(function(){
     document.querySelectorAll('[data-state]').forEach(element => {
         element.classList.add('close_icon');
     });
+    if (!hasAtribut) {
+        $(".label_total_harga").css('display', 'none');
+    }
     callGlobalSelect2SearchByMember('pencarian_member_mcu', 'tindakan');
     load_data_tindakan();
     updateCardStyles();
@@ -445,7 +448,7 @@ function load_data_tindakan(){
         keys: true,
         columnDefs: [
             {
-                targets: [10, 11, 12, 13, 14],
+                targets: hasAtribut == false ? [3, 4, 5, 6, 8, 10, 11, 12, 13, 14] : [10, 11, 12, 13, 14],
                 className: "d-none",
             },
             {

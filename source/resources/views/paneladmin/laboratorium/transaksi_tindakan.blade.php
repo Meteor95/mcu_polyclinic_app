@@ -108,7 +108,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row label_total_harga">
                 <div class="col-md-12">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="input-group">
@@ -216,7 +216,7 @@
                 <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
             </div>
             <div class="modal-body">
-                <div class="row mb-2">
+                <div class="row mb-2 label_total_harga">
                     <div class="col-md-4">
                         <span class="text-start" style="margin-top: 5px; padding-right: 10px; font-family: 'DS-Digital', sans-serif; font-size: 30px; color: red;">
                             <strong>Grand Total</strong>
@@ -416,4 +416,5 @@
 <script src="{{ asset('mofi/assets/js/select2/tagify.polyfills.min.js') }}"></script>
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="{{ asset('vendor/erayadigital/laboratorium/transaksi_tindakan.js') }}"></script>
+<script> var hasAtribut = {{ $hasVisiblePrice ? 'true' : 'false' }}; </script>
 @endsection
