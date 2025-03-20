@@ -9,6 +9,7 @@ use App\Models\Transaksi\Transaksi;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\{PaketMCU,Perusahaan};
 use App\Helpers\ResponseHelper;
+use App\Models\Transaksi\{LingkunganKerjaPeserta, RiwayatKecelakaanKerja, RiwayatKebiasaanHidup, RiwayatPenyakitKeluarga, RiwayatImunisasi, RiwayatPenyakitTerdahulu};
 use Illuminate\Support\Facades\Log;
 
 use Exception;
@@ -78,6 +79,21 @@ class TransaksiServices
                 }
                 $transaksi = Transaksi::create($dataToInsert);
             }
+             /* Insert jika pendaftaran mandiri */
+             $dari_pendaftaran_mandiri = Peserta::where('nomor_identitas', $data['nomor_identitas'])->first();
+             if($dari_pendaftaran_mandiri){
+                 /*Insert lingkungan kerja */
+                 LingkunganKerjaPeserta::create([
+                     'user_id' => $member->id,
+                     'transaksi_id' => $transaksi->id,
+                     'id_atribut_lk' => $data['id_atribut_lk'],
+                     'nama_atribut_saat_ini' => $data['nama_atribut_saat_ini'],
+                     'status' => $data['status'],
+                     'nilai_jam_per_hari' => $data['nilai_jam_per_hari'],
+                     'nilai_selama_x_tahun' => $data['nilai_selama_x_tahun'],
+                     'keterangan' => $data['keterangan'],
+                 ]);
+             }
         });
         return $is_finish;
     }

@@ -54,7 +54,11 @@ Route::prefix('v1')->group(function () {
             Route::get('daftarpoli', [MasterdataController::class,"getpoli"]);
         });
         Route::prefix('pendaftaran')->group(function () {
+            /*peserta*/
+            Route::get('validasi_peserta', [PendaftaranController::class,"validasi_peserta"]);
+            Route::post('validasi_peserta', [PendaftaranController::class,"validasi_pasien"]);
             Route::get('daftarpeserta', [PendaftaranController::class,"getpeserta"]);
+            /*pasien*/
             Route::get('getdatapasien', [TransaksiController::class,"getdatapasien"]);
             Route::get('hapuspeserta', [PendaftaranController::class,"deletepeserta"]);
             Route::get('getdatapeserta', [PendaftaranController::class,"getdatapeserta"]);

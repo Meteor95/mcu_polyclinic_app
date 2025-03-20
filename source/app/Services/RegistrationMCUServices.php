@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\{DB, Hash, Storage};
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\Pendaftaran\Peserta;
-use App\Models\Transaksi\{LingkunganKerjaPeserta, RiwayatKebiasaanHidup, RiwayatPenyakitKeluarga, RiwayatImunisasi, RiwayatPenyakitTerdahulu};
+use App\Models\Transaksi\{LingkunganKerjaPeserta, RiwayatKebiasaanHidup, RiwayatPenyakitKeluarga, RiwayatImunisasi, RiwayatPenyakitTerdahulu, Transaksi};
 use App\Models\PemeriksaanFisik\TandaVital;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +14,15 @@ class RegistrationMCUServices
 {
     function handleTransactionDeletePeserta($data)
     {
-        return Peserta::where('no_pemesanan', '=', $data['no_pemesanan'])->delete();
+        return Peserta::where('nomor_identifikasi', '=', $data['nomor_identifikasi'])->delete();
+    }
+    function handleValidasiPeserta($data)
+    {
+        return DB::transaction(function () use ($data) {
+            Log::info($data['jsonDataDataDiri']);
+            /* simpan informasi data diri */;
+            
+        });
     }
     public function handleTransactionInsertLingkunganKerjaPeserta($request)
     {

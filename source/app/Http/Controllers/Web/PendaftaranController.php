@@ -68,20 +68,20 @@ class PendaftaranController extends Controller
         ]);
         return view('paneladmin.pendaftaran.daftarpeserta', ['data' => $data]);
     }
-    public function add_form_patien_mcu(Request $req, $uuid = null){
+    public function add_form_patien_mcu(Request $req, $nomor_identifikasi = null){
         $data = $this->getData($req, 'Formulir Pendaftaran', [
             'Daftar Peserta' => route('admin.pendaftaran.daftar_peserta'),
         ]);
-        if($uuid != null){
-            $data['peserta'] = Peserta::where('uuid', $uuid)
-                ->selectRaw('*, TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) AS umur')
+        if($nomor_identifikasi != null){
+            $data['peserta'] = Peserta::where('nomor_identifikasi', $nomor_identifikasi)
                 ->first();
         }else{
             $data['peserta'] = null;
         }
         $data['bank'] = DaftarBank::all();
         $data['ubah'] = "";
-        $data['uuid'] = $uuid;
+        $data['nomor_identifikasi'] = $nomor_identifikasi;
+        $data['json_data_diri'] = $data['peserta'] ? json_decode($data['peserta']->json_data_diri, true) : null;
         return view('paneladmin.pendaftaran.formulirtambahpeserta', ['data' => $data]);
     }
     public function update_form_patien_mcu(Request $req, $uuid = null){

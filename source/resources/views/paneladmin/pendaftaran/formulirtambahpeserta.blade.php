@@ -11,7 +11,7 @@
                 @if (isset($data['peserta']))
                     <input type="hidden" id="type_data_peserta" value="1">
                     <div class="row" id="kartu_informasi_peserta">
-                        <div class="col-xl-7 col-md-6 proorder-xl-1 proorder-md-1">
+                        <div class="col-xl-6 col-md-6 proorder-xl-1 proorder-md-1">
                             <div class="card profile-greeting p-0">
                                 <div class="card-body">
                                     <div class="img-overlay">
@@ -22,7 +22,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-5 col-md-6 proorder-md-5">
+                        <div class="col-xl-6 col-md-6 proorder-md-5">
                             <div class="card">
                                 <div class="card-header card-no-border pb-0">
                                     <div class="header-top">
@@ -34,26 +34,48 @@
                                 </div>
                                 <div class="card-body live-meet">
                                     <div class="row">
-                                        <div class="col-4">
-                                            Nomor Identitas<br>
-                                            Nama Peserta<br>
-                                            Jenis Kelamin<br>
-                                            Alamat Peserta<br>
-                                            No. HP Peserta<br>
-                                            Email Peserta<br>
-                                            Tempat Tanggal Lahir<br>
-                                            Status Perkawinan<br>
-                                        </div>
-                                        <div class="col-8">
-                                            : <span id="nomor_identitas_temp">{{ $data['peserta']->nomor_identitas }}</span><br>
-                                            : <span id="nama_peserta_temp">{{ $data['peserta']->nama_peserta }}</span><br>
-                                            : <span id="jenis_kelamin_temp">{{ $data['peserta']->jenis_kelamin }}</span><br>
-                                            : <span id="alamat_temp">{{ $data['peserta']->alamat }}</span><br>
-                                            : <span id="no_telepon_temp">{{ $data['peserta']->no_telepon }}</span><br>
-                                            : <span id="email_temp">{{ $data['peserta']->email }}</span><br>
-                                            : <span>{{ $data['peserta']->tempat_lahir." ".\Carbon\Carbon::parse($data['peserta']->tanggal_lahir)->format('d-m-Y') }} ({{ $data['peserta']->umur }} Tahun)</span><br>
-                                            : <span>{{ $data['peserta']->status_kawin }}</span><br>
-                                        </div>
+                                        <table class="table table-padding-sm-no-datatable">
+                                            <tr>
+                                                <th>Nomor Identitas</th>
+                                                <td id="nomor_identitas_temp">{{ $data['json_data_diri']['nomor_identitas_temp'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Nama Peserta</th>
+                                                <td id="nama_peserta_temp">{{ $data['json_data_diri']['nama_peserta_temp'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Jenis Kelamin</th>
+                                                <td id="jenis_kelamin_temp">{{ $data['json_data_diri']['jenis_kelamin_temp'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Alamat Tempat Tinggal</th>
+                                                <td id="alamat_temp">{{ $data['json_data_diri']['alamat_tempat_tinggal_temp'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>No Telepon</th>
+                                                <td id="no_telepon_temp">{{ $data['json_data_diri']['no_telepon_temp'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Email</th>
+                                                <td id="email_temp">{{ $data['json_data_diri']['alamat_surel_temp'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tempat Lahir & Tanggal Lahir</th>
+                                                <td>
+                                                    @php 
+                                                        $birthDate = \Carbon\Carbon::parse($data['json_data_diri']['tanggal_lahir_peserta_temp']);
+                                                        $age = $birthDate->age;
+                                                    @endphp    
+                                                    {{ $data['json_data_diri']['tempat_lahir_temp'] }} 
+                                                    {{ \Carbon\Carbon::parse($data['json_data_diri']['tanggal_lahir_peserta_temp'])->format('d-m-Y') }} 
+                                                    ({{ $age }} Tahun)
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status Perkawinan</th>
+                                                <td>{{ $data['json_data_diri']['status_perkawinan_temp'] }}</td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
                             </div>

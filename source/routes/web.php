@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
 Route::get('/', function (Request $req) { $data = [ 'tipe_halaman' => 'login']; return view('login', ['data' => $data]); })->name('login');
 Route::get('403', function () { return view('error.403_error'); });
+Route::domain(config('app.domains.pendaftaran_mandiri'))->group(function () {
+    Route::get('/mcu', [PendaftaranController::class, "formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
+    Route::get('no_antrian/{kode_antrian}', [PendaftaranController::class, "formulir_no_antrian"])->name('landing.formulir_no_antrian');
+});
 Route::group(['middleware' => ['jwt.cookie']], function () {
     Route::get('pintukeluar', [AuthController::class, "logout"]);
     Route::prefix('akun')->group(function () {
@@ -26,7 +30,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     Route::prefix('pendaftaran')->group(function () {
         Route::get('daftar_peserta', [PendaftaranController::class,"list_peserta"])->middleware('permission_cache:akses_pendaftaran_daftar_peserta')->name('admin.pendaftaran.daftar_peserta');
         Route::get('daftar_pasien', [PendaftaranController::class,"list_pasien"])->middleware('permission_cache:akses_pendaftaran_daftar_pasien')->name('admin.pendaftaran.daftar_pasien');
-        Route::get('formulir_tambah_peserta/{uuid?}', [PendaftaranController::class,"add_form_patien_mcu"])->middleware('permission_cache:akses_pendaftaran_daftar_peserta')->name('admin.pendaftaran.formulir_tambah_peserta');
+        Route::get('formulir_tambah_peserta/{nomor_identifikasi?}', [PendaftaranController::class,"add_form_patien_mcu"])->middleware('permission_cache:akses_pendaftaran_daftar_peserta')->name('admin.pendaftaran.formulir_tambah_peserta');
         Route::get('formulir_ubah_peserta/{uuid?}', [PendaftaranController::class,"update_form_patien_mcu"])->middleware('permission_cache:akses_pendaftaran_daftar_peserta')->name('admin.pendaftaran.formulir_ubah_peserta');
         /* Riwayat Informasi */
         Route::get('foto_pasien', [PendaftaranController::class,"foto_pasien"])->middleware('permission_cache:akses_pendaftaran_foto_pasien')->name('admin.pendaftaran.foto_pasien');
@@ -87,8 +91,4 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
             Route::get('insentif',[LaporanController::class,"laporan_insentif"])->middleware('permission_cache:akses_laporan_insentif')->name('admin.laporan.laporan_insentif');
         });
     });
-});
-Route::domain(config('app.domains.pendaftaran_mandiri'))->group(function () {
-    Route::get('/', [PendaftaranController::class, "formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
-    Route::get('no_antrian/{kode_antrian}', [PendaftaranController::class, "formulir_no_antrian"])->name('landing.formulir_no_antrian');
 });

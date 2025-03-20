@@ -304,53 +304,34 @@ $("#btnIsiFormulirPakaiDataIni").on("click", function(){
                 nomor_identitas: $("#nomor_identitas_temp").html(),
             },
             success: function(response){
-                if (response.rc == 200) {
-                    Swal.fire({
-                        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/bf2bdd2d-1dac-4285-aa3d-9548be13b15d/zzf9qF3Q23.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player>'+response.message_info+'<div>',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: 'orange',
-                        confirmButtonText: 'Gunakan Data Ini',
-                        cancelButtonText: 'Nanti Dulu!!',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $("#nomor_identitas").val(response.data.nomor_identitas);
-                            $("#nama_peserta").val(response.data.nama_peserta);
-                            $("#jenis_kelamin").val(response.data.jenis_kelamin);
-                            $("#tempat_lahir").val(response.data.tempat_lahir);
-                            $("#tanggal_lahir_peserta").val(moment(response.data.tanggal_lahir).format('DD-MM-YYYY'));
-                            $("#alamat").val(response.data.alamat);
-                            $("#no_telepon").val(response.data.no_telepon);
-                            $("#email").val(response.data.email);
-                            $("#jenis_kelamin").val(response.data.jenis_kelamin).trigger('change');
-                            $("#status_kawin").val(response.data.status_kawin).trigger('change');
-                            $("#tipe_identitas").val(response.data.tipe_identitas).trigger('change');
-                        }
-                    });
-                }else{
-                    Swal.fire({
-                        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/8a0f0bc2-25f9-446a-b59c-3d8b15262c0a/kSttVfRFiv.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player>'+response.message_info+'<div>',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: 'orange',
-                        confirmButtonText: 'Daftar dan Gunakan Data Ini',
-                        cancelButtonText: 'Nanti Dulu!!',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $("#nomor_identitas").val(response.data.nomor_identitas);
-                            $("#nama_peserta").val(response.data.nama_peserta);
-                            $("#jenis_kelamin").val(response.data.jenis_kelamin);
-                            $("#tempat_lahir").val(response.data.tempat_lahir);
-                            $("#tanggal_lahir_peserta").val(moment(response.data.tanggal_lahir).format('DD-MM-YYYY'));
-                            $("#alamat").val(response.data.alamat);
-                            $("#no_telepon").val(response.data.no_telepon);
-                            $("#email").val(response.data.email);
-                            $("#jenis_kelamin").val(response.data.jenis_kelamin).trigger('change');
-                            $("#status_kawin").val(response.data.status_kawin).trigger('change');
-                            $("#tipe_identitas").val(response.data.tipe_identitas).trigger('change');
-                        }
-                    });
-                }
+                Swal.fire({
+                    html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/bf2bdd2d-1dac-4285-aa3d-9548be13b15d/zzf9qF3Q23.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player>'+response.message_info+'<div>',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: 'orange',
+                    confirmButtonText: 'Daftar dan Gunakan Data Ini',
+                    cancelButtonText: 'Nanti Dulu!!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        inforamasi_diri = JSON.parse(response.data.json_data_diri);
+                        $("#nomor_identitas").val(inforamasi_diri.nomor_identitas_temp);
+                        $("#nama_peserta").val(inforamasi_diri.nama_peserta_temp);
+                        $("#tempat_lahir").val(inforamasi_diri.tempat_lahir_temp);
+                        $("#tanggal_lahir_peserta").val(inforamasi_diri.tanggal_lahir_peserta_temp);
+                        $("#alamat").val(inforamasi_diri.alamat_tempat_tinggal_temp);
+                        $("#no_telepon").val(inforamasi_diri.no_telepon_temp);
+                        $("#email").val(inforamasi_diri.alamat_surel_temp);
+                        $("#jenis_kelamin").val(inforamasi_diri.jenis_kelamin_temp).trigger('change');
+                        $("#status_kawin").val(inforamasi_diri.status_perkawinan_temp).trigger('change');
+                        $("#tipe_identitas").val(inforamasi_diri.tipe_identitas_temp).trigger('change');
+                        inforamasi_diri.proses_kerja_temp.forEach(proses => {
+                            const checkbox = document.getElementById(proses.toLowerCase());
+                            if (checkbox) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    }
+                });
             },
             error: function(xhr, status, error){
                 createToast('Kesalahan Cek Data', 'top-right', xhr.responseJSON.message, 'error', 3000);

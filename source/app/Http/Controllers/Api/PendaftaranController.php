@@ -8,8 +8,10 @@ use App\Helpers\ResponseHelper;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\Masterdata\MemberMCU;
 use App\Models\Transaksi\{LingkunganKerjaPeserta,RiwayatKecelakaanKerja,RiwayatKebiasaanHidup,RiwayatPenyakitKeluarga,RiwayatImunisasi,RiwayatPenyakitTerdahulu};
+use App\Models\EndUser\Formulir;
 use App\Services\RegistrationMCUServices;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class PendaftaranController extends Controller
 {
@@ -30,6 +32,61 @@ class PendaftaranController extends Controller
                 ],
             ];
             return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function validasi_peserta(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'nomor_identitas' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $informasi_formulir = Formulir::where('nomor_identifikasi', $request->nomor_identitas)->first();
+            if (!$informasi_formulir) {
+                return ResponseHelper::data_not_found("Informasi member dengan nomor identitas <strong>".$request->nomor_identitas."</strong> belum terdaftar pada sistem MCU");
+            }
+            $data = [
+                'nomor_identifikasi' => $request->nomor_identitas,
+                'nama_peserta' => $informasi_formulir->nama_peserta,
+                'json_data_diri' => $informasi_formulir->json_data_diri,
+                'json_lingkungan_kerja' => $informasi_formulir->json_lingkungan_kerja,
+                'json_kecelakaan_kerja' => $informasi_formulir->json_kecelakaan_kerja,
+                'json_kebiasaan_hidup' => $informasi_formulir->json_kebiasaan_hidup,
+                'json_penyakit_terdahulu' => $informasi_formulir->json_penyakit_terdahulu,
+                'json_penyakit_keluarga' => $informasi_formulir->json_penyakit_keluarga,
+                'json_imunisasi' => $informasi_formulir->json_imunisasi,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Calon Peserta']), $data);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function validasi_pasien(RegistrationMCUServices $registrationMCUServices,Request $request){
+        $validator = Validator::make($request->all(), [
+            'jsonDataDataDiri' => 'required',
+            'jsonDataLingkunganKerja' => 'required',
+            'jsonDataKecelakaanKerja' => 'required',
+            'jsonDataKebiasaanHidup' => 'required',
+            'jsonDataPenyakitTerdahulu' => 'required',
+            'jsonDataPenyakitKeluarga' => 'required',
+            'jsonDataImunisasi' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $dynamicAttributes = ['errors' => $validator->errors()];
+            return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+        }
+        try {
+            $data = $request->all();
+            $hasilquery = $registrationMCUServices->handleValidasiPeserta($data);
+            if (!$hasilquery) {
+                return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Informasi Peserta']));
+            }
+            return ResponseHelper::success(__('common.data_ready', ['namadata' => 'Informasi Peserta']));
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -69,7 +126,8 @@ class PendaftaranController extends Controller
             if ($data) {
                 return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta']), $dynamicAttributes);
             } else {
-                $data = Peserta::where('nomor_identitas', $request->nomor_identitas)->first();
+                $data = Peserta::where('nomor_identifikasi', $request->nomor_identitas)->first();
+                Log::info($data->json_lingkungan_kerja);
                 $dynamicAttributes = [  
                     'data' => $data,
                     'message_info' => '<h4>Informasi Peserta dengan Nama : <strong>'.$data->nama_peserta.'</strong></h4><span style="color:red">BELUM TERDAFTAR PADA SISTEM MCU</span>. Informasi member ini akan ditambahkan menjadi member di '.config('app.name').' secara otomatis jika selesai melakukan transaksi MCU',

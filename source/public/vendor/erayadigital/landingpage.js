@@ -124,7 +124,6 @@ $("#pratinjau_halaman").click(function() {
         let status = $('.status-atribut-lingkungan-kerja[data-index="' + index + '"]').val();
         let jamPerHari = $('.jamperhari-atribut[data-index="' + index + '"]').val();
         let selamaXTahun = $('.selamaxtahun-atribut[data-index="' + index + '"]').val();
-        console.log(status);
         hasilLingkunganKerja += '<tr>' +
             '<td>' + namaAtribut + '</td>' +
             '<td>' + (status == "" ? "Tidak" : status == 0 ? "Tidak" : "Ya") + '</td>' +
@@ -241,11 +240,13 @@ $("#btn_kirim_formulir").click(function() {
         const status = $(this).val();
         const nilai = $(`.nilai-atribut-kebiasaan-hidup[data-index="${index}"]`).val();
         const info = $(`.info-atribut-kebiasaan-hidup[data-index="${index}"]`).text();
+        const nama_atribut_kb = $(`.nama-atribut-kebiasaan-hidup[data-index="${index}"]`).text();
 
         kebiasaanHidupData.push({
             index: index,
             status: status,
             nilai: nilai,
+            nama_atribut_kb: nama_atribut_kb,
             info: info
         });
     });
