@@ -154,6 +154,7 @@
                   <div class="row">
                       @foreach ($data['lingkungan_kerja'] as $index => $lk)
                       <div class="mb-3 col-lg-4 text-start">
+                          <span data-index="{{$index}}" class="id-atribut-lingkungan-kerja">{{$lk->id}}</span>
                           <span class="nama-atribut-lingkungan-kerja" data-index="{{$index}}">{{$lk->nama_atribut_lk}}</span>
                       </div>
                       <div class="mb-3 col-lg-4">
@@ -197,6 +198,7 @@
                     }
                   @endphp
                   <div class="row status_{{$kh->status}}">
+                  <span data-index="{{$index}}" class="id-atribut-kebiasaan-hidup">{{$kh->id}}</span>
                   <div class="mb-3 col-lg-4 col-sm-12 text-start nama-atribut-kebiasaan-hidup kebiasaan-hidup-wrapper" data-index="{{$index}}">
                     {{$kh->nama_atribut_kb}}
                   </div>
@@ -224,6 +226,7 @@
                   <h5>Formulir Penyakit Terdahulu</h5>
                   <div class="row">
                   @foreach ($data['penyakit_terdahulu'] as $index => $pt)
+                  <span data-index="{{$index}}" class="id-atribut-penyakit-terdahulu">{{$pt->id}}</span>
                   <div class="mb-4 col-md-4 text-start nama-atribut-penyakit-terdahulu" data-index="{{$index}}">
                     {{$pt->nama_atribut_pt}}
                   </div>
@@ -248,6 +251,7 @@
                   <h5>Formuilr Penyakit Keluarga</h5>
                   <div class="row">
                   @foreach ($data['penyakit_keluarga'] as $index => $pk)
+                  <span data-index="{{$index}}" class="id-atribut-penyakit-keluarga">{{$pk->id}}</span>
                   <div class="mb-4 col-md-4 text-start nama-atribut-penyakit-keluarga" data-index="{{$index}}">
                     {{$pk->nama_atribut_pk}}
                   </div>
@@ -272,6 +276,7 @@
                   <h5>Formuilr Imunisasi</h5>
                   <div class="row">
                   @foreach ($data['imunisasi'] as $index => $im)
+                  <span data-index="{{$index}}" class="id-atribut-lingkungan-kerja">{{$im->id}}</span>
                   <div class="mb-4 col-md-4 text-start nama-atribut-imunisasi" data-index="{{$index}}">
                     {{$im->nama_atribut_im}}
                   </div>

@@ -190,7 +190,7 @@ function validasi_peserta(nomor_identitas, idButton){
                 let hasilPenyakitTerdahulu = '';
                 json_penyakit_terdahulu = JSON.parse(response.json_penyakit_terdahulu);
                 json_penyakit_terdahulu.penyakit_terdahulu.forEach(function(item) {
-                    let namaAtribut = item.info;
+                    let namaAtribut = item.nama_atribut_penyakit_terdahulu;
                     let status = item.status;
                     let nilai = item.keterangan;
                     hasilPenyakitTerdahulu += '<tr>' +
@@ -205,7 +205,7 @@ function validasi_peserta(nomor_identitas, idButton){
                 let hasilPenyakitKeluarga = '';
                 json_penyakit_keluarga = JSON.parse(response.json_penyakit_keluarga);
                 json_penyakit_keluarga.penyakit_keluarga.forEach(function(item) {
-                    let namaAtribut = item.info;
+                    let namaAtribut = item.nama_atribut_penyakit_keluarga;
                     let status = item.status;
                     let nilai = item.keterangan;
                     hasilPenyakitKeluarga += '<tr>' +
@@ -220,7 +220,7 @@ function validasi_peserta(nomor_identitas, idButton){
                 let hasilImunisasi = '';
                 json_imunisasi = JSON.parse(response.json_imunisasi);
                 json_imunisasi.imunisasi.forEach(function(item) {
-                    let namaAtribut = item.info;
+                    let namaAtribut = item.nama_atribut_imunisasi;
                     let status = item.status;
                     let nilai = item.keterangan;
                     hasilImunisasi += '<tr>' +

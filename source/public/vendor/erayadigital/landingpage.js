@@ -144,6 +144,7 @@ $("#pratinjau_halaman").click(function() {
         let status = $('.status-atribut-kebiasaan-hidup[data-index="' + index + '"]').val();
         let berapakali = $('.nilai-atribut-kebiasaan-hidup[data-index="' + index + '"]').val();
         let infoAtribut = $('.info-atribut-kebiasaan-hidup[data-index="' + index + '"]').text();
+        let idAtribut = $('.id-atribut-kebiasaan-hidup[data-index="' + index + '"]').val();
         hasilKebiasaanHidup += '<tr class="table_status_' + status_parameter + '">' +
             '<td style="text-align:left;width:50%;">' + namaAtribut + '</td>' +
             '<td style="width:25%;">' + (status == "" ? "Tidak" : status == 0 ? "Tidak" : "Ya") + '</td>' +
@@ -227,71 +228,55 @@ $("#btn_kirim_formulir").click(function() {
     document.querySelectorAll('.nama-atribut-lingkungan-kerja').forEach((el) => {
         const index = el.getAttribute('data-index');
         lingkunganKerjaData.push({
+            id_atribut_lk: $(`.id-atribut-lingkungan-kerja[data-index="${index}"]`).text(),
             nama_atribut_lk: el.textContent,
-            status: document.querySelector(`.status-atribut-lingkungan-kerja[data-index="${index}"]`).value,
-            jam_per_hari: document.querySelector(`.jamperhari-atribut[data-index="${index}"]`).value,
-            selama_x_tahun: document.querySelector(`.selamaxtahun-atribut[data-index="${index}"]`).value
+            status: $(`.status-atribut-lingkungan-kerja[data-index="${index}"]`).val(),
+            jam_per_hari: $(`.jamperhari-atribut[data-index="${index}"]`).val(),
+            selama_x_tahun: $(`.selamaxtahun-atribut[data-index="${index}"]`).val()
         });
     });
     const informasiKecelakaanKerja = document.getElementById('informasi_kecelakaan_kerja_temp').value;
     let kebiasaanHidupData = [];
     $('.status-atribut-kebiasaan-hidup').each(function() {
-        const index = $(this).data('index');
-        const status = $(this).val();
-        const nilai = $(`.nilai-atribut-kebiasaan-hidup[data-index="${index}"]`).val();
-        const info = $(`.info-atribut-kebiasaan-hidup[data-index="${index}"]`).text();
-        const nama_atribut_kb = $(`.nama-atribut-kebiasaan-hidup[data-index="${index}"]`).text();
-
         kebiasaanHidupData.push({
-            index: index,
-            status: status,
-            nilai: nilai,
-            nama_atribut_kb: nama_atribut_kb,
-            info: info
+            index: $(this).data('index'),
+            status: $(this).val(),
+            nilai: $(`.nilai-atribut-kebiasaan-hidup[data-index="${$(this).data('index')}"]`).val(),
+            id_atribu_kb: $(`.id-atribut-kebiasaan-hidup[data-index="${$(this).data('index')}"]`).text(),
+            nama_atribut_kb: $(`.nama-atribut-kebiasaan-hidup[data-index="${$(this).data('index')}"]`).text(),
+            info: $(`.info-atribut-kebiasaan-hidup[data-index="${$(this).data('index')}"]`).text()
         });
     });
     let penyakitTerdahuluData = [];
     $('.status-atribut-penyakit-terdahulu').each(function() {
-        const index = $(this).data('index');
-        const status = $(this).val();
-        const keterangan = $(`.keterangan-atribut-penyakit-terdahulu[data-index="${index}"]`).val();
-        const info = $(`.nama-atribut-penyakit-terdahulu[data-index="${index}"]`).text();
-
         penyakitTerdahuluData.push({
-            index: index,
-            status: status,
-            keterangan: keterangan,
-            info: info
+            index: $(this).data('index'),
+            status: $(this).val(),
+            keterangan: $(`.keterangan-atribut-penyakit-terdahulu[data-index="${$(this).data('index')}"]`).val(),
+            id_atribut_penyakit_terdahulu: $(`.id-atribut-penyakit-terdahulu[data-index="${$(this).data('index')}"]`).text(),
+            nama_atribut_penyakit_terdahulu: $(`.nama-atribut-penyakit-terdahulu[data-index="${$(this).data('index')}"]`).text()
         });
     });
 
     let penyakitKeluargaData = [];
     $('.status-atribut-penyakit-keluarga').each(function() {
-        const index = $(this).data('index');
-        const status = $(this).val();
-        const keterangan = $(`.keterangan-atribut-penyakit-keluarga[data-index="${index}"]`).val();
-        const info = $(`.nama-atribut-penyakit-keluarga[data-index="${index}"]`).text();
-
         penyakitKeluargaData.push({
-            index: index,
-            status: status,
-            keterangan: keterangan,
-            info: info
+            index: $(this).data('index'),
+            status: $(this).val(),
+            keterangan: $(`.keterangan-atribut-penyakit-keluarga[data-index="${$(this).data('index')}"]`).val(),
+            id_atribut_penyakit_keluarga: $(`.d-atribut-penyakit-keluarga[data-index="${$(this).data('index')}"]`).text(),
+            nama_atribut_penyakit_keluarga: $(`.nama-atribut-penyakit-keluarga[data-index="${$(this).data('index')}"]`).text()
         });
     });
 
     let imunisasiData = [];
     $('.status-atribut-imunisasi').each(function() {
-        const index = $(this).data('index');
-        const status = $(this).val();
-        const keterangan = $(`.keterangan-atribut-imunisasi[data-index="${index}"]`).val();
-        const info = $(`.nama-atribut-imunisasi[data-index="${index}"]`).text();
-    
         imunisasiData.push({
-            index: index,
-            status: status,
-            keterangan: keterangan,
-            info: info
+            index: $(this).data('index'),
+            status: $(this).val(),
+            keterangan: $(`.keterangan-atribut-imunisasi[data-index="${$(this).data('index')}"]`).val(),
+            id_atribut_imunisasi: $(`.id-atribut-imunisasi[data-index="${$(this).data('index')}"]`).text(),
+            nama_atribut_imunisasi: $(`.nama-atribut-imunisasi[data-index="${$(this).data('index')}"]`).text(),
         });
     });
     Swal.fire({
