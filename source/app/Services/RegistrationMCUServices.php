@@ -19,8 +19,7 @@ class RegistrationMCUServices
     function handleValidasiPeserta($data)
     {
         return DB::transaction(function () use ($data) {
-            Log::info($data['jsonDataDataDiri']);
-            /* simpan informasi data diri */;
+            
             
         });
     }
