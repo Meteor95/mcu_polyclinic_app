@@ -126,6 +126,6 @@ return [
         'ResponseHelper' => App\Facades\ResponseHelperFacade::class,
     ],
     'domains' => [
-        'pendaftaran_mandiri' => env('URL_MANDIRI_DOMAIN'),
+        'pendaftaran_mandiri' => env('URL_MANDIRI_DOMAIN','https://mcu.arthamedical.com'),
     ],
 ];

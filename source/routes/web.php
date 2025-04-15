@@ -5,12 +5,12 @@ use App\Http\Controllers\Web\{AuthController, BerandaController, HakaksesControl
 use Illuminate\Http\Request;
 
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
-Route::get('/', function (Request $req) { $data = [ 'tipe_halaman' => 'login']; return view('login', ['data' => $data]); })->name('login');
 Route::get('403', function () { return view('error.403_error'); });
 Route::domain(config('app.domains.pendaftaran_mandiri'))->group(function () {
     Route::get('/', [PendaftaranController::class, "formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
     Route::get('no_antrian/{kode_antrian}', [PendaftaranController::class, "formulir_no_antrian"])->name('landing.formulir_no_antrian');
 });
+Route::get('/', function (Request $req) { $data = [ 'tipe_halaman' => 'login']; return view('login', ['data' => $data]); })->name('login');
 Route::group(['middleware' => ['jwt.cookie']], function () {
     Route::get('pintukeluar', [AuthController::class, "logout"]);
     Route::prefix('akun')->group(function () {
