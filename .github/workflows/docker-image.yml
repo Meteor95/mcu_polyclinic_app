@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build the Docker image artha_medica
+      - name: Build the Docker image artha_medical_centre
         run: |
-          VERSION=1.20.0
+          VERSION=1.20.1
           echo "Building Docker image with tag: ghcr.io/meteor95/artha_medica-ghcr:$VERSION"
           docker login ghcr.io --username meteor95 --password ${{ secrets.SEIRA_ERAYA_DIGITAL }}
           docker build . --tag ghcr.io/meteor95/artha_medica-ghcr:$VERSION
