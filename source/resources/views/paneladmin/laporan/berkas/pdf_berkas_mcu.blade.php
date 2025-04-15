@@ -396,7 +396,7 @@ watermark {
                         @if ($item->id == $id_terpilih)
                             @php $background_color = $id_terpilih_hex; @endphp
                         @endif
-                        @if ($item->status == $data['kesimpulan_tindakan']->status)
+                        @if (strtolower(str_replace(' ', '_', $item->status)) == $data['kesimpulan_hasil_medical_checkup'])
                             @php $background_color_kategori = $id_terpilih_hex; @endphp
                         @endif
                         <tr>
