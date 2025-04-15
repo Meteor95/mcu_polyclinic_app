@@ -8,7 +8,7 @@ Route::get('generate-csrf-token', function () { $token = csrf_token(); return re
 Route::get('/', function (Request $req) { $data = [ 'tipe_halaman' => 'login']; return view('login', ['data' => $data]); })->name('login');
 Route::get('403', function () { return view('error.403_error'); });
 Route::domain(config('app.domains.pendaftaran_mandiri'))->group(function () {
-    Route::get('/mcu', [PendaftaranController::class, "formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
+    Route::get('/', [PendaftaranController::class, "formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
     Route::get('no_antrian/{kode_antrian}', [PendaftaranController::class, "formulir_no_antrian"])->name('landing.formulir_no_antrian');
 });
 Route::group(['middleware' => ['jwt.cookie']], function () {

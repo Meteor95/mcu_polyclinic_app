@@ -211,6 +211,8 @@ $("#btn_kirim_formulir").click(function() {
         createToast('Kesalahan', 'top-right', "Nama serta Nomor Identitas tidak boleh kosong karena dibutuhkan untuk kode unik pendaftaran peserta", 'error', 3000);
         return false;
     }
+    $("#btn_kirim_formulir").prop('disabled', true);
+    $("#btn_kirim_formulir").html('<i class="fa fa-spinner fa-spin"></i> Proses Pendaftaran');
     const formDataDataDiri = {
         nomor_identitas_temp: document.getElementById('nomor_identitas_temp').value,
         nama_peserta_temp: document.getElementById('nama_peserta_temp').value,
@@ -307,6 +309,8 @@ $("#btn_kirim_formulir").click(function() {
                     },
                     success: function(response){
                         if(!response.success){
+                            $("#btn_kirim_formulir").prop('disabled', false);
+                            $("#btn_kirim_formulir").html('<i class="fa fa-paper-plane"></i> Kirim Data');
                             createToast('Terjadi Kesalahan', 'top-right', response.message, 'error', 3000);
                         }
                         createToast('Berhasil', 'top-right', response.message, 'success', 3000);
@@ -320,6 +324,8 @@ $("#btn_kirim_formulir").click(function() {
                 });
             })
         }
+        $("#btn_kirim_formulir").prop('disabled', false);
+        $("#btn_kirim_formulir").html('<i class="fa fa-paper-plane"></i> Kirim Data');
     });
 })
 $('#jenis_kelamin_temp').on('change', function() {
