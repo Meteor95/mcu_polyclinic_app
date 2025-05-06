@@ -13,7 +13,7 @@ $(document).ready(function() {
     
 });
 $("#select2_paket_mcu").on('change', function(){
-    let selectedData = $(this).val();
+    $("#tabel_akses_tindakan").show();
 });
 $("#btnKonfirmasiPendaftaran").on("click", function(event) {
     event.preventDefault();

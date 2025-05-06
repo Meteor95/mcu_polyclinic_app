@@ -246,7 +246,7 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div id="tabel_akses_tindakan" style="display: none;">
+                            <div id="tabel_akses_tindakan" style="display: none">
                                 <table class="table table-bordered table-padding-sm-no-datatable">
                                     <thead>
                                         <tr style="text-align: center;">

@@ -314,13 +314,16 @@
                         <th>Kesimpulan</th>
                         <th>
                             <div class="row">
-                                <div class="col-md-12 mb-1">
+                                <div class="col-md-10 mb-1">
                                     <select class="form-control" id="pemeriksaan_kesimpulan_non_status_kesehatan_select">
                                         <option value="fit_to_work">FIT TO WORK</option>
                                         <option value="fit_with_note">FIT WITH NOTE</option>
                                         <option value="temporary_unfit">TEMPORARY UNFIT</option>
                                         <option value="unfit">UNFIT</option>
                                     </select>
+                                </div>
+                                <div class="col-md-2 mb-1">
+                                    <input type="color" class="form-control" id="favcolor" name="favcolor" value="#ff0000">
                                 </div>
                             </div>
                         </th>

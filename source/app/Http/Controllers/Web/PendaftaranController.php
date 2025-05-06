@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Traits\NavigasiTrait;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\Transaksi\Transaksi;
-use App\Models\Masterdata\DaftarBank;
+use App\Models\Masterdata\{DaftarBank, MemberMCU};
 use App\Models\{Perusahaan, PaketMCU};
 use App\Models\Masterdata\DepartemenPerusahaan;
 use App\Models\Komponen\{LingkunganKerja, KebiasaanHidup, PenyakitKeluarga, Imunisasi, PenyakitTerdahulu};
@@ -91,6 +91,7 @@ class PendaftaranController extends Controller
         $datatransaksi = Transaksi::getPasienById($uuid);
         $informasipaket = PaketMCU::find($datatransaksi->id_paket_mcu);
         $data['dataNavigasi'] = $this->getNavigasi('', '', 'Foto Data Diri', route('admin.pendaftaran.foto_pasien', ['nomor_identitas' => $datatransaksi->nomor_identitas, 'nama_peserta' => $datatransaksi->nama_peserta]), false, true);
+        $informasi_peserta = MemberMCU::where('nomor_identitas', $datatransaksi->nomor_identitas)->first();
         $data = array_merge($data, [
             'bank' => DaftarBank::all(),
             'ubah' => true,
@@ -100,6 +101,17 @@ class PendaftaranController extends Controller
             'akses_tindakan' => json_decode($informasipaket->akses_tindakan, true),
             'uuid' => $uuid,
             'peserta' => $uuid ? $datatransaksi : null,
+            'json_data_diri' => $informasi_peserta ? [
+                'nomor_identitas_temp' => $informasi_peserta->nomor_identitas,
+                'nama_peserta_temp' => $informasi_peserta->nama_peserta,
+                'tempat_lahir_temp' => $informasi_peserta->tempat_lahir,
+                'tanggal_lahir_peserta_temp' => $informasi_peserta->tanggal_lahir,
+                'jenis_kelamin_temp' => $informasi_peserta->jenis_kelamin,
+                'alamat_tempat_tinggal_temp' => $informasi_peserta->alamat,
+                'status_perkawinan_temp' => $informasi_peserta->status_kawin,
+                'no_telepon_temp' => $informasi_peserta->no_telepon,
+                'alamat_surel_temp' => $informasi_peserta->email,
+            ] : null,
             'proses_kerja' => json_decode($datatransaksi->proses_kerja, true),
         ]);
         return view('paneladmin.pendaftaran.formulirtambahpeserta', compact('data'));

@@ -99,7 +99,7 @@ function loadDataPeserta() {
                     className: "text-center",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return "<div class=\"d-flex justify-content-between gap-2 background_fixed_right_row\"><button class=\"btn btn-success w-100\" id=\"btn_validasi_peserta_"+row.nomor_identifikasi+"\" onclick=\"validasi_peserta('" + row.nomor_identifikasi + "',this.id)\"><i class=\"fa fa-check\"></i> Validasi Peserta</button><button class=\"btn btn-danger w-100\" id=\"btn_hapus_peserta_"+row.nomor_identifikasi+"\" onclick=\"hapus_peserta('" + row.nomor_identifikasi + "','"+row.nama_peserta+"',this.id)\"><i class=\"fa fa-trash-o\"></i> Hapus Peserta</button></div>";
+                            return "<div class=\"d-flex justify-content-between gap-2 background_fixed_right_row\"><button class=\"btn btn-success w-100\" id=\"btn_validasi_peserta_"+row.nomor_identifikasi+"\" onclick=\"validasi_peserta('" + row.nomor_identifikasi + "',this.id)\"><i class=\"fa fa-check\"></i> Validasi Peserta</button><button class=\"btn btn-danger w-100\" id=\"btn_hapus_peserta_"+row.nomor_identifikasi+"\" onclick=\"hapus_peserta('" + row.nomor_identifikasi + "','"+row.nama_peserta+"','"+row.no_pemesanan+"',this.id)\"><i class=\"fa fa-trash-o\"></i> Hapus Peserta</button></div>";
                         }       
                         return data;
                     }
@@ -242,7 +242,7 @@ function validasi_peserta(nomor_identitas, idButton){
         });
     });
 }
-function hapus_peserta(nomor_identifikasi, nama_peserta, idButton) {
+function hapus_peserta(nomor_identifikasi, nama_peserta, no_pemesanan, idButton) {
     $("#"+idButton).prop('disabled', true);
     $("#"+idButton).html('<i class="fa fa-spinner fa-spin"></i> Akan Menghapus Data');
     Swal.fire({
@@ -265,6 +265,7 @@ function hapus_peserta(nomor_identifikasi, nama_peserta, idButton) {
                         _token: response.csrf_token,
                         nomor_identifikasi: nomor_identifikasi,
                         nama_peserta: nama_peserta,
+                        no_pemesanan: no_pemesanan
                     },
                     success: function(response) {
                         $("#datatables_daftarpeserta").DataTable().ajax.reload();

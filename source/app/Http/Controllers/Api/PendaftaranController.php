@@ -96,6 +96,8 @@ class PendaftaranController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'nama_peserta' => 'required',
+                'nomor_identifikasi' => 'required',
+                'no_pemesanan' => 'required'
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];

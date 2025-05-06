@@ -26,16 +26,11 @@ class TransaksiServices
         return $map[$number - 1];
     }
 
-    public function handleTransactionPeserta($data, $user_id_petugas, $file)
+    public function handleTransactionPeserta(array $data, $user_id_petugas, $file)
     {
-        $is_finish = 1;
-        DB::transaction(function () use ($data, $user_id_petugas, $file, &$is_finish) {
-            $kodeperusahaan = Perusahaan::where('id', $data['perusahaan_id'])->first()->company_code;
-            $kodepdepartemen = DepartemenPerusahaan::where('id', $data['departemen_id'])->first()->kode_departemen;
-            $baseCount = Transaksi::count() + 1;
-            $paket_mcu = PaketMCU::find($data['id_paket_mcu']);
-            $dataMember = [
-                'nomor_identitas' => $data['nomor_identitas'],
+        $member = MemberMCU::firstOrCreate(
+            ['nomor_identitas' => $data['nomor_identitas']],
+            [
                 'nama_peserta' => $data['nama_peserta'],
                 'tempat_lahir' => $data['tempat_lahir'],
                 'tanggal_lahir' => Carbon::parse($data['tanggal_lahir_peserta'])->format('Y-m-d'),
@@ -45,19 +40,31 @@ class TransaksiServices
                 'status_kawin' => $data['status_kawin'],
                 'no_telepon' => $data['no_telepon'],
                 'email' => $data['email'],
-            ];
-            $member = MemberMCU::where('nomor_identitas', $data['nomor_identitas'])->first();
-            if(!$member){
-                $member = MemberMCU::create($dataMember);
-            }else{
-                $member->update($dataMember);
+            ]
+        );
+        // Jika bukan edit, pastikan tidak ada transaksi PROSES
+        if (!filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
+            $existing = Transaksi::where('user_id', $member->id)
+                ->where('status_peserta', 'proses')
+                ->first();
+            Log::info($existing);
+            if ($existing) {
+                return false;
             }
-            $nomor_transaksi_mcu = str_pad($baseCount + 1, 4, '0', STR_PAD_LEFT);
-            $nomor_transaksi_mcu = $nomor_transaksi_mcu . "/MCU/" . $kodeperusahaan . "-" . $kodepdepartemen . "/AMC/" . $this->convertToRoman(date('m')) . "/" . date('Y');
+        }
+        DB::transaction(function () use ($data, $member, $user_id_petugas) {
+            $kodeperusahaan = Perusahaan::find($data['perusahaan_id'])->company_code;
+            $kodepdepartemen = DepartemenPerusahaan::find($data['departemen_id'])->kode_departemen;
+
+            $baseCount = Transaksi::count() + 1;
+            $nomor_transaksi_mcu = str_pad($baseCount, 4, '0', STR_PAD_LEFT);
+            $nomor_transaksi_mcu .= "/MCU/{$kodeperusahaan}-{$kodepdepartemen}/AMC/" . $this->convertToRoman(date('m')) . "/" . date('Y');
+
             $parts = explode('|', $data['id_paket_mcu']);
+
             $dataToInsert = [
                 'no_transaksi' => $nomor_transaksi_mcu,
-                'tanggal_transaksi' => Carbon::parse($data['tanggal_transaksi']." ".Carbon::now()->format('H:i:s'))->format('Y-m-d H:i:s'),
+                'tanggal_transaksi' => Carbon::parse($data['tanggal_transaksi'] . ' ' . Carbon::now()->format('H:i:s')),
                 'user_id' => $member->id,
                 'perusahaan_id' => $data['perusahaan_id'],
                 'departemen_id' => $data['departemen_id'],
@@ -67,35 +74,32 @@ class TransaksiServices
                 'jenis_transaksi_pendaftaran' => $data['jenis_transaksi_pendaftaran'],
                 'status_peserta' => 'proses',
             ];
+
             if (filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
-                $transaksi = Transaksi::where('id', $data['id_detail_transaksi_mcu'])->first();
+                $transaksi = Transaksi::find($data['id_detail_transaksi_mcu']);
                 $transaksi->update($dataToInsert);
-            }else{
-                $datatransaksi = Transaksi::where('user_id', $member->id)
-                    ->where('status_peserta', 'proses')
-                    ->first();
-                if ($datatransaksi) {
-                    $is_finish = 0;
-                }
+            } else {
                 $transaksi = Transaksi::create($dataToInsert);
             }
-             /* Insert jika pendaftaran mandiri */
-             $dari_pendaftaran_mandiri = Peserta::where('nomor_identitas', $data['nomor_identitas'])->first();
-             if($dari_pendaftaran_mandiri){
-                 /*Insert lingkungan kerja */
-                 LingkunganKerjaPeserta::create([
-                     'user_id' => $member->id,
-                     'transaksi_id' => $transaksi->id,
-                     'id_atribut_lk' => $data['id_atribut_lk'],
-                     'nama_atribut_saat_ini' => $data['nama_atribut_saat_ini'],
-                     'status' => $data['status'],
-                     'nilai_jam_per_hari' => $data['nilai_jam_per_hari'],
-                     'nilai_selama_x_tahun' => $data['nilai_selama_x_tahun'],
-                     'keterangan' => $data['keterangan'],
-                 ]);
-             }
+
+            // Jika data berasal dari pendaftaran mandiri, insert lingkungan kerja
+            $dari_pendaftaran_mandiri = Peserta::where('nomor_identifikasi', $data['nomor_identitas'])->first();
+            if ($dari_pendaftaran_mandiri) {
+                LingkunganKerjaPeserta::create([
+                    'user_id' => $member->id,
+                    'transaksi_id' => $transaksi->id,
+                    'id_atribut_lk' => $data['id_atribut_lk'],
+                    'nama_atribut_saat_ini' => $data['nama_atribut_saat_ini'],
+                    'status' => $data['status'],
+                    'nilai_jam_per_hari' => $data['nilai_jam_per_hari'],
+                    'nilai_selama_x_tahun' => $data['nilai_selama_x_tahun'],
+                    'keterangan' => $data['keterangan'],
+                ]);
+            }
         });
-        return $is_finish;
+        Log::info("TRUUEEEE");
+        return true;
     }
+
 }
 
