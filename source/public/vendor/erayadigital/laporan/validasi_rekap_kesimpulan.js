@@ -383,6 +383,7 @@ $("#konfirmasi_validasi_rekap_kesimpulan").on('click', function() {
                         hasil_kesimpulan_pemeriksaan_kesimpulan_tindakan: $("#pemeriksaan_kesimpulan_tindakan_select").val(),
                         kesimpulan_hasil_medical_checkup: $("#pemeriksaan_kesimpulan_non_status_kesehatan_select").val(),
                         hasil_kesimpulan_pemeriksaan_tindakan_saran: JSON.stringify(quillInstances['pemeriksaan_tindakan_saran'].getContents().ops),
+                        kesimpulan_warna: $("#favcolor").val(),
                     },
                     success: function(response) {
                         createToast('Berhasil Validasi Kesimpulan', 'top-right', response.message, 'success', 3000);

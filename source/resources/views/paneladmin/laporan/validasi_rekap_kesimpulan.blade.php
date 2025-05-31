@@ -323,7 +323,18 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1">
-                                    <input type="color" class="form-control" id="favcolor" name="favcolor" value="#ff0000">
+                                    <div class="dropdown" style="width: 100%;" id="colorDropdown">
+                                        <div class="dropdown-toggle">
+                                            <div class="color-box" id="selectedColor" style="background-color: #90ee90;"></div>
+                                        </div>
+                                        <div class="dropdown-menu">
+                                            <div class="option" data-color="#90ee90"><div class="color-box" style="background-color: #90ee90;"></div></div>
+                                            <div class="option" data-color="#ffff00"><div class="color-box" style="background-color: #ffff00;"></div></div>
+                                            <div class="option" data-color="#ffa500"><div class="color-box" style="background-color: #ffa500;"></div></div>
+                                            <div class="option" data-color="#f8786e"><div class="color-box" style="background-color: #f8786e;"></div></div>
+                                        </div>
+                                        <input type="hidden" name="favcolor" id="favcolor" value="#90ee90">
+                                    </div>
                                 </div>
                             </div>
                         </th>
@@ -366,7 +377,54 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 <style>
 .modal-body {
-  overflow-y: auto;
+    overflow-y: auto;
+}
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.dropdown-toggle {
+    width: 200px;
+    height: 40px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+.dropdown-toggle .color-box {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    display: none;
+}
+
+.dropdown-menu .option {
+    height: 40px;
+    cursor: pointer;
+}
+
+.dropdown-menu .option:hover {
+    outline: 2px solid black;
+}
+
+.option .color-box {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
 }
 </style>
 @endsection
@@ -374,4 +432,30 @@
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <script src="{{ asset('vendor/erayadigital/laporan/validasi_rekap_kesimpulan.js') }}"></script>
+<script>
+    const dropdown = document.getElementById("colorDropdown");
+    const toggle = dropdown.querySelector(".dropdown-toggle");
+    const menu = dropdown.querySelector(".dropdown-menu");
+    const selectedColorBox = document.getElementById("selectedColor");
+    const hiddenInput = document.getElementById("favcolor");
+
+    toggle.addEventListener("click", () => {
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    });
+
+    dropdown.querySelectorAll(".option").forEach(option => {
+        option.addEventListener("click", () => {
+            const color = option.getAttribute("data-color");
+            selectedColorBox.style.backgroundColor = color;
+            hiddenInput.value = color;
+            menu.style.display = "none";
+        });
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!dropdown.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
+</script>
 @endsection

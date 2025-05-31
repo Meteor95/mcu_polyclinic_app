@@ -70,20 +70,21 @@ watermark {
   padding: 5px;
 }
 .box {
-  display: inline-block;
-  width: 100px;
-  height: 20px;
-  margin-right: 8px;
-  vertical-align: middle;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+    border: 1px solid #000;
+    vertical-align: middle;
 }
 .sehat-resiko-ringan {
-  background-color: yellow;
+  background-color: #ffff00;
 }
 .sehat {
-  background-color: lightgreen;
+  background-color: #90ee90;
 }
 .resiko-sedang-tinggi {
-  background-color: orange;
+  background-color: #ffa500;
 }
 .tidak-sehat {
   background-color: #f8786e;
@@ -253,13 +254,11 @@ watermark {
                     <td>{{ date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_mcu'])) }} / {{ $data['informasi_data_diri']['jenis_transaksi_pendaftaran'] }}</td>
                 </tr>
             </table>
-            <table style="width: 100%; text-align: center; border-collapse: collapse;">
+            <table style="width: 100%; text-align: left; border-collapse: collapse; position: absolute; bottom: 80px;">
                 <tr>
                     <td style="width: 50%; padding: 10px;">
                         <strong>ISO 9001:2015 Certified</strong><br>
-                        2410010019699K001
-                    </td>
-                    <td style="width: 50%; padding: 10px;">
+                        2410010019699K001<br>
                         <strong>ISO 14001:2015 Certified</strong><br>
                         24100100196914K001
                     </td>
@@ -276,75 +275,122 @@ watermark {
             <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">LAPORAN HASIL MEDICAL CHECKUP</h3> 
             <h4 style="padding:0px;margin:0px;">HASIL PEMERIKSAAN</h4>
             <table style="width: 100%; font-size: 13px;">
+                @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_riwayat_medis'])) != '')
                 <tr>
-                    <td style="width: 1%;text-align: center;">1</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">RIWAYAT MEDIS</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">{!! $data['quill_pemeriksaan_riwayat_medis'] !!}</td>
                 </tr>
+                @endif
+
+                @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_fisik'])) != '')
                 <tr>
-                    <td style="width: 1%;text-align: center;">2</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">PEMERIKSAAN FISIK</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">{!! $data['quill_pemeriksaan_fisik'] !!}</td>
                 </tr>
+                @endif
+
+                @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_laboratorium'])) != '')
                 <tr>
-                    <td style="width: 1%;text-align: center;">3</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">HASIL LABORATORIUM</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">{!! $data['quill_pemeriksaan_laboratorium'] !!}</td>
                 </tr>
+                @endif
+
+                @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_rontgen_thorax'])) != '')
                 <tr>
-                    <td style="width: 1%;text-align: center;">4</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">RO THORAX</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">{!! $data['quill_pemeriksaan_rontgen_thorax'] !!}</td>
                 </tr>
+                @endif
+
+                @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_rontgen_lumbosacral'])) != '')
                 <tr>
-                    <td style="width: 1%;text-align: center;">5</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">RO LUMBOSACRAL</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">{!! $data['quill_pemeriksaan_rontgen_lumbosacral'] !!}</td>
                 </tr>
+                @endif
+
+                @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_usg_ubdomain'])) != '')
                 <tr>
-                    <td style="width: 1%;text-align: center;">6</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">USG UB DOMAIN</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">{!! $data['quill_pemeriksaan_usg_ubdomain'] !!}</td>
                 </tr>
+                @endif
+
+                @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_ekg'])) != '')
                 <tr>
-                    <td style="width: 1%;text-align: center;">7</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">EKG</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">{!! $data['quill_pemeriksaan_ekg'] !!}</td>
                 </tr>
+                @endif
+
+                @if (
+                    preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_audio_kiri'])) != '' ||
+                    preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_audio_kanan'])) != ''
+                )
                 <tr>
-                    <td style="width: 1%;text-align: center;">8</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">AUDIOMETRI</td>
                     <td style="width: 5%;">:</td>
-                    <td style="width: 70%;"><span style="font-weight: bold;">Kiri</span> : {!! $data['quill_pemeriksaan_audio_kiri'] !!}<span style="font-weight: bold;">Kanan</span> : {!! $data['quill_pemeriksaan_audio_kanan'] !!}</td>
+                    <td style="width: 70%;">
+                        <span style="font-weight: bold;">Kiri</span>: {!! trim(strip_tags($data['quill_pemeriksaan_audio_kiri'])) !!}&nbsp;&nbsp;
+                        <span style="font-weight: bold;">Kanan</span>: {!! trim(strip_tags($data['quill_pemeriksaan_audio_kanan'])) !!}
+                    </td>
                 </tr>
+                @endif
+
+                @if (
+                    preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_spiro_restriksi'])) != '' ||
+                    preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_spiro_obstruksi'])) != ''
+                )
                 <tr>
-                    <td style="width: 1%;text-align: center;">9</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">SPIROMETRI</td>
                     <td style="width: 5%;">:</td>
-                    <td style="width: 70%;"><span style="font-weight: bold;">Restriksi</span> : {!! $data['quill_pemeriksaan_spiro_restriksi'] !!}<span style="font-weight: bold;">Obstruksi</span> : {!! $data['quill_pemeriksaan_spiro_obstruksi'] !!}</td>
+                    <td style="width: 70%;">
+                        <span style="font-weight: bold;">Restriksi</span>: {!! trim(strip_tags($data['quill_pemeriksaan_spiro_restriksi'])) !!}&nbsp;&nbsp;
+                        <span style="font-weight: bold;">Obstruksi</span>: {!! trim(strip_tags($data['quill_pemeriksaan_spiro_obstruksi'])) !!}
+                    </td>
                 </tr>
+                @endif
+
+                @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_farmingham_score'])) != '')
                 <tr>
-                    <td style="width: 1%;text-align: center;">10</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">FARMINGHAM SCORE</td>
                     <td style="width: 5%;">:</td>
-                    <td style="width: 70%;">{!! $data['quill_pemeriksaan_farmingham_score'] !!}</td>
+                    <td style="width: 70%;">{{ $data['quill_pemeriksaan_farmingham_score'] }}</td>
                 </tr>
+                @endif
+
+                @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_threadmill'])) != '')
                 <tr>
-                    <td style="width: 1%;text-align: center;">11</td>
+                    <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">THREADMILL</td>
                     <td style="width: 5%;">:</td>
-                    <td style="width: 70%;">{!! $data['quill_pemeriksaan_threadmill'] !!}</td>
+                    <td style="width: 70%;">{{ $data['quill_pemeriksaan_threadmill'] }}</td>
                 </tr>
+                @endif
             </table>
+
             <h4 style="padding-top: 10px;padding-bottom: 0px;margin:0px;">KESIMPULAN HASIL MEDICAL CHECKUP</h4>
-            <div style="border: 1px solid black;padding: 10px;font-weight: bold;font-size: 20px;text-align: center;">{{ strtoupper(str_replace("_", " ", $data['kesimpulan_hasil_medical_checkup'])) }}</div>
+            <div style="display: inline-block; border: 3px solid black; padding: 10px 100px 10px 100px; font-weight: bold; font-size: 20px; text-align: left;">
+                {{ strtoupper(str_replace("_", " ", $data['kesimpulan_hasil_medical_checkup'])) }}
+            </div>  
             <h4 style="padding-top: 10px;padding-bottom: 0px;margin:0px;">SARAN HASIL MEDICAL CHECKUP</h4>
             <div style="font-size: 13px;">{!! $data['quill_tindakan_saran'] !!}</div>
             <div style="position: absolute;width: 100%;">
@@ -374,55 +420,95 @@ watermark {
         <div style="page-break-after: always;">
             @php header_mcu($data); @endphp
             <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">STATUS KESEHATAN</h3> 
-            <table id="medical-checkup-table">
+                <table id="medical-checkup-table" style="width: 100%; border-collapse: separate; border-spacing: 3px;">
                 <thead>
-                    <tr>
-                        <th>STATUS</th>
-                        <th>KATEGORI</th>
-                        <th>CATATAN</th>
+                    <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 14px;">
+                        <th style="width: 30%;">STATUS</th>
+                        <th style="width: 20%;">KATEGORI</th>
+                        <th style="width: 50%;">CATATAN</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data['status_kesimpulan_lab'] as $status => $items)
                     @php
-                        $rowspan = count($items);
-                        $firstRow = true;
-                        $background_color = 'white';
-                        $background_color_kategori = 'white';
+                        // 1. Gabungkan status berdasarkan kategori normalisasi
+                        $groupedItems = [];
+
+                        foreach ($data['status_kesimpulan_lab'] as $status => $items) {
+                            foreach ($items as $item) {
+                                $raw_status = strtoupper(trim($item->status));
+                                $normalized_status = (str_contains($raw_status, 'FIT TO WORK') || str_contains($raw_status, 'FIT WITH NOTE'))
+                                    ? 'FIT'
+                                    : $raw_status;
+                                $groupedItems[$normalized_status][] = $item;
+                            }
+                        }
+
+                        // 2. Normalisasi juga target kesimpulan user
+                        $target_kesimpulan = strtoupper(trim($data['kesimpulan_hasil_medical_checkup']));
+                        if (str_contains($target_kesimpulan, 'FIT_TO_WORK') || str_contains($target_kesimpulan, 'FIT_WITH_NOTE')) {
+                            $target_kesimpulan = 'FIT';
+                        }
+
+                        // 3. Data referensi warna
                         $id_terpilih = $data['kesimpulan_tindakan']->kesimpulan_keseluruhan;
-                        $id_terpilih_kategori = $id_terpilih_hex = $data['kesimpulan_tindakan']->hex_color;
+                        $id_terpilih_hex = $data['kesimpulan_tindakan']->kesimpulan_warna;
                     @endphp
-                    @foreach ($items as $item)
-                        @if ($item->id == $id_terpilih)
-                            @php $background_color = $id_terpilih_hex; @endphp
-                        @endif
-                        @if (strtolower(str_replace(' ', '_', $item->status)) == $data['kesimpulan_hasil_medical_checkup'])
-                            @php $background_color_kategori = $id_terpilih_hex; @endphp
-                        @endif
-                        <tr>
-                        @if ($firstRow)
-                            <td style="text-align: center;background-color: {{ $background_color_kategori }} !important;" rowspan="{{ $rowspan }}">{{ $status }}</td>
-                            @php $firstRow = false; @endphp
-                        @endif
-                        <td style="text-align: center;background-color: {{ $background_color }};">{{ $item->kategori }}</td>
-                        <td style="text-align: left;background-color: {{ $background_color }};">{{ $item->catatan }}</td>
-                        </tr>
-                        @php $background_color = 'white'; $background_color_kategori = 'white'; @endphp
+
+                    @foreach ($groupedItems as $normalized_status => $items)
+                        @php
+                            $rowspan = count($items);
+                            $firstRow = true;
+                            $highlight_kategori = ($normalized_status == $target_kesimpulan);
+                        @endphp
+
+                        @foreach ($items as $item)
+                            @php
+                                $background_color = 'white';
+                                $background_color_kategori = $highlight_kategori ? $id_terpilih_hex : 'white';
+
+                                if ($item->id == $id_terpilih) {
+                                    $background_color = $id_terpilih_hex;
+                                }
+                            @endphp
+                            <tr>
+                                @if ($firstRow)
+                                    <td style="text-align: center; background-color: {{ $background_color_kategori }} !important;" rowspan="{{ $rowspan }}">
+                                        {{ $normalized_status }}
+                                    </td>
+                                    @php $firstRow = false; @endphp
+                                @endif
+                                <td style="text-align: center; background-color: {{ $background_color }};">{{ $item->kategori }}</td>
+                                <td style="text-align: left; background-color: {{ $background_color }};">{{ $item->catatan }}</td>
+                            </tr>
+                        @endforeach
                     @endforeach
-                    @endforeach
+
+
                 </tbody>
                 </table>
                 <div class="keterangan">
-                <table style="width: 100%;font-size: 13px;margin-bottom: 10px;">
+                <span style="font-weight: bold">KETERANGAN:</span>
+                <table style="width: 100%; font-size: 12px; margin-bottom: 10px; text-align: center;">
                     <tr>
-                    <td>
-                        <div class="box sehat"></div> SEHAT<br>
-                        <div class="box sehat-resiko-ringan"></div> SEHAT RESIKO RINGAN<br>
-                        <div class="box resiko-sedang-tinggi"></div> RESIKO SEDANG / TINGGI DAN PERLU PENGOBATAN<br>
-                        <div class="box tidak-sehat"></div> TIDAK SEHAT / PERLU PENGOBATAN DAN PERAWATAN RUTIN
-                    </td>
+                       <td style="width: 20%;">
+                            <div class="box sehat" style="margin: 0 auto; width: 100%;"></div>
+                            <div><br>SEHAT</div>
+                        </td>
+                        <td style="width: 20%;">
+                            <div class="box sehat-resiko-ringan" style="margin: 0 auto; width: 100%;"></div>
+                            <div><br>SEHAT RESIKO RINGAN</div>
+                        </td>
+                        <td style="width: 30%;">
+                            <div class="box resiko-sedang-tinggi" style="margin: 0 auto; width: 100%;"></div>
+                            <div>RESIKO SEDANG / TINGGI DAN PERLU PENGOBATAN</div>
+                        </td>
+                        <td style="width: 30%;">
+                            <div class="box tidak-sehat" style="margin: 0 auto; width: 100%;"></div>
+                            <div>TIDAK SEHAT / PERLU PENGOBATAN DAN PERAWATAN RUTIN</div>
+                        </td>
                     </tr>
                 </table>
+
                 </div>
                 <span style="font-weight: bold">CATATAN:</span>
                 <ol style="margin-top: 0px;font-size: 13px;">
@@ -762,101 +848,100 @@ watermark {
             @php header_mcu($data); @endphp
             <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">PEMERIKSAAN KONDISI FISIK</h3><br>
             <h4 class="judul_kondisi_fisik">TINGKAT KESADARAN</h4>
-            <table class="tabel_riwayat" style="width: 100%;font-size: 13px;border: 1px solid black;">
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 15px;">
-                    <th>PARAMTER</th>
-                    <th>KETERANGAN</th>
+            <table style="width: 100%;font-size: 14px;">
+                <tr>
+                    <td style="padding-left:5px;padding-top:10px;padding-bottom:10px;border: 1px solid black; width: 33%;">Keadaan Umum : {{ ucfirst($data['tingkat_kesadaran']->nama_atribut_tingkat_kesadaran) }}</td>
+                    <td style="padding-left:5px;padding-top:10px;padding-bottom:10px;border: 1px solid black; width: 33%;">Status Kesanaran : {{ ucfirst($data['tingkat_kesadaran']->nama_atribut_status_tingkat_kesadaran) }}</td>
+                    <td style="padding-left:5px;padding-top:10px;padding-bottom:10px;border: 1px solid black; width: 34%;">Keluahan : {{ $data['tingkat_kesadaran']->keluhan == "" ? "-" : $data['tingkat_kesadaran']->keluhan }}</td>
                 </tr>
                 <tr>
-                    <td>KEADAAN UMUM {{ strtoupper($data['tingkat_kesadaran']->nama_atribut_tingkat_kesadaran) }}</td>
-                    <td>{{ $data['tingkat_kesadaran']->keterangan_tingkat_kesadaran }}</td>
-                </tr>
-                <tr>
-                    <td>STATUS KESADARAN {{ strtoupper($data['tingkat_kesadaran']->nama_atribut_status_tingkat_kesadaran) }}</td>
-                    <td>{{ $data['tingkat_kesadaran']->keterangan_status_tingkat_kesadaran }}</td>
-                </tr>
-                <tr>
-                    <td>KELUHAN</td>
-                    <td>{{ $data['tingkat_kesadaran']->keluhan == "" ? "-" : $data['tingkat_kesadaran']->keluhan }}</td>
+                    <td colspan="3">Keterangan : {!! $data['tingkat_kesadaran']->keterangan_status_tingkat_kesadaran !!}</td>
                 </tr>
             </table>
             <h4 class="judul_kondisi_fisik" style="margin-top: 10px;">TANDA VITAL DAN GIZI</h4>
-            <div style="margin-top: 0px;font-weight: bold;text-align: center;">VITAL</div>
-            <table class="tabel_riwayat" style="width: 100%;font-size: 13px;border: 1px solid black;">
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 15px;">
-                    <th style="width: 30%;">PARAMETER</th>
-                    <th style="width: 15%;">NILAI</th>
-                    <th>KETERANGAN</th>
-                </tr>
-                @foreach ($data['tanda_vital'] as $item)
-                @if ($item->jenis_tanda_vital == 'tanda_vital')
-                    <tr>
-                        <td>{{ $item->nama_atribut_saat_ini }}</td>
-                        <td style="text-align: center;">{{ $item->nilai_tanda_vital }} {{ $item->satuan_tanda_vital }}</td>
-                        <td style="text-align: center;">{{ $item->keterangan_tanda_vital == "" ? "-" : $item->keterangan_tanda_vital }}</td>
-                    </tr>
-                @endif
-                @endforeach
-            </table>
-            <div style="font-weight: bold;text-align: center;">GIZI</div>
-            <table class="tabel_riwayat" style="width: 100%;font-size: 13px;border: 1px solid black;">
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 15px;">
-                    <th style="width: 30%;">PARAMETER</th>
-                    <th style="width: 15%;">NILAI</th>
-                    <th>KETERANGAN</th>
-                </tr>
-                @php
-                $BMI = 0;
+            @php
+                $items = collect($data['tanda_vital'])->values();
+
+                // Hitung BMI
                 $BB = 0;
                 $TB = 0;
-                $status_gizi = "";
-                @endphp
-                @foreach ($data['tanda_vital'] as $item)
-                @if ($item->jenis_tanda_vital == 'tanda_gizi')
-                    <tr>
-                        <td>{{ $item->nama_atribut_saat_ini }}</td>
-                        <td style="text-align: center;">{{ $item->nilai_tanda_vital }} {{ $item->satuan_tanda_vital }}</td>
-                        <td style="text-align: center;">{{ $item->keterangan_tanda_vital == "" ? "-" : $item->keterangan_tanda_vital }}</td>
-                    </tr>
-                    @if (strtolower(str_replace(' ', '', $item->nama_atribut_saat_ini)) === 'beratbadan')
-                        @php
+                foreach ($items as $item) {
+                    $name = strtolower(str_replace(' ', '', $item->nama_atribut_saat_ini));
+                    if ($name === 'beratbadan') {
                         $BB = $item->nilai_tanda_vital;
-                        @endphp
-                    @endif
-                    @if (strtolower(str_replace(' ', '', $item->nama_atribut_saat_ini)) === 'tinggibadan')
-                        @php
+                    } elseif ($name === 'tinggibadan') {
                         $TB = $item->nilai_tanda_vital / 100;
-                        @endphp
-                    @endif
-                @endif
-                @endforeach
-            </table>
-            @php
-            $BMI = $BB / ($TB * $TB);
+                    }
+                }
+
+                $BMI = 0;
+                $status_gizi = "-";
+                $color = "black";
+                if ($TB > 0) {
+                    $BMI = $BB / ($TB * $TB);
+                    $BMI_formatted = number_format(ceil($BMI * 100) / 100, 2);
+                    if ($BMI < 18.5) {
+                        $status_gizi = "KEKURANGAN BERAT BADAN";
+                        $color = "orange";
+                    } elseif ($BMI >= 18.5 && $BMI <= 24.9) {
+                        $status_gizi = "NORMAL";
+                        $color = "green";
+                    } elseif ($BMI >= 25 && $BMI <= 29.9) {
+                        $status_gizi = "KELEBIHAN BERAT BADAN";
+                        $color = "red";
+                    } else {
+                        $status_gizi = "OBESITAS";
+                        $color = "darkred";
+                    }
+
+                    // Tambahkan item BMI dan Status Gizi
+                    $items->push((object)[
+                        'nama_atribut_saat_ini' => 'BMI',
+                        'nilai_tanda_vital' => $BMI_formatted,
+                        'satuan_tanda_vital' => 'IMT',
+                    ]);
+
+                    $items->push((object)[
+                        'nama_atribut_saat_ini' => 'Status Gizi',
+                        'nilai_tanda_vital' => '',
+                        'satuan_tanda_vital' => '',
+                        'keterangan' => "<span style='color: {$color}; font-weight:bold;'>{$status_gizi}</span>",
+                    ]);
+                }
+
+                $total = $items->count();
+                $columns = 3;
+                $rows = ceil($total / $columns);
             @endphp
-            @if ($BMI < 18.5)
-                @php
-                $status_gizi = "<span style='color: orange;'>KEKURANGAN BERAT BADAN</span>";
-                @endphp
-            @elseif ($BMI >= 18.5 && $BMI <= 24.9)
-                @php
-                $status_gizi = "<span style='color: green;'>NORMAL</span>";
-                @endphp
-            @elseif ($BMI >= 25 && $BMI <= 29.9)
-                @php
-                $status_gizi = "<span style='color: red;'>KELEBIHAN BERAT BADAN</span>";
-                @endphp
-            @endif
-            <table style="width: 100%;">
+            <table style="width: 100%; font-size: 12px;">
                 <tr>
-                    <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
-                        <div style="font-weight: bold;">BMI</div>
-                        <div style="font-size: 15px;">{{ number_format(ceil($BMI * 100) / 100, 2) }} IMT</div>
+                    @for ($col = 0; $col < $columns; $col++)
+                        <td valign="top">
+                            <table style="width: 100%;">
+                                @for ($row = 0; $row < $rows; $row++)
+                                @php
+                                    $index = $row + ($col * $rows);
+                                @endphp
+                                @if ($index < $total)
+                                    @php
+                                        $item = $items[$index];
+                                        $value = $item->nilai_tanda_vital ?? '';
+                                        $satuan = $item->satuan_tanda_vital ?? '';
+                                        $label = $item->nama_atribut_saat_ini;
+                                    @endphp
+                                    <tr>
+                                        <td style="padding-left:5px;padding-top:2px;padding-bottom:2px;border: 1px solid black;">
+                                            {!! $label !!} : {!! $value !!} {!! $satuan !!}
+                                            @if (isset($item->keterangan))
+                                                {!! $item->keterangan !!}
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endfor
+                        </table>
                     </td>
-                    <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
-                        <div style="font-weight: bold;">STATUS GIZI</div>
-                        <div style="font-size: 15px;">{!! $status_gizi !!}</div>
-                    </td>
+                @endfor
                 </tr>
             </table>
             <h4 class="judul_kondisi_fisik">PENGLIHATAN</h4>
@@ -934,31 +1019,63 @@ watermark {
                 }
             @endphp
 
-            @foreach ($groupedData as $kategori => $items)
-                <table class="lapang_pandang_table" style="width: 100%;font-size: 13px;border: 1px solid black;">
-                    <thead>
-                        <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 13px;">
-                            <th colspan="4" class="fw-bold text-center">{{ strtoupper(str_replace('_', ' ', $kategori)) }}</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 250px;">JENIS PEMERIKSAAN</th>
-                            <th style="width: 90px;text-align: center;">ABNORMAL</th>
-                            <th style="width: 90px;text-align: center;">NORMAL</th>
-                            <th>KETERANGAN</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($items as $item)
-                        <tr>
-                            <td style="padding-left: 5px;">{{ $item->jenis_atribut }}</td>
-                            <td style="font-family: DejaVu Sans;text-align: center;">{{ $item->status_atribut === 'abnormal' ? '✔' : '✘' }}</td>
-                            <td style="font-family: DejaVu Sans;text-align: center;">{{ $item->status_atribut === 'normal' ? '✔' : '✘' }}</td>
-                            <td style="padding-right: 5px;">{{ $item->keterangan_atribut ?? 'Tidak Ada Keterangan' }}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+            <table style="width: 100%; font-size: 13px;border-collapse: collapse; border-spacing: 3px;">
+                <thead>
+                    <tr style="text-align: center; background-color: green; font-weight: bold; color: #fff;">
+                        <th style="width: 200px; border: 1px solid black;">PEMERIKSAAN</th>
+                        <th style="width: 250px; border: 1px solid black;">JENIS PEMERIKSAAN</th>
+                        <th style="width: 50px; border: 1px solid black;">AB</th>
+                        <th style="width: 50px; border: 1px solid black;">N</th>
+                        <th style="border: 1px solid black;">KETERANGAN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($groupedData as $kategori => $items)
+                        @foreach ($items as $index => $item)
+                <tr style="padding: 50px;">
+                    {{-- Kolom PEMERIKSAAN --}}
+                    @if ($index === 0)
+                        <td style="text-align: center;vertical-align: center; padding-left: 5px; border-top: 1px solid black; border-left: 1px solid black; border-right: 1px solid black;
+                            {{ count($items) === 1 ? 'border-bottom:1px solid black;' : '' }}">
+                            {{ strtoupper(str_replace('_', ' ', $kategori)) }}
+                        </td>
+                    @elseif ($index === count($items) - 1)
+                        <td style="border-bottom: 1px solid black; border-left: 1px solid black; border-right: 1px solid black;">&nbsp;</td>
+                    @else
+                        <td style="border-left: 1px solid black; border-right: 1px solid black;">&nbsp;</td>
+                    @endif
+
+                    {{-- JENIS PEMERIKSAAN --}}
+                    @php
+                        $styleJenis = 'padding-left: 5px; border-left: 1px solid black; border-right: 1px solid black;';
+                        if ($index === 0) {
+                            $styleJenis .= 'border-top: 1px solid black;';
+                        } elseif ($index === count($items) - 1) {
+                            $styleJenis .= 'border-bottom: 1px solid black;';
+                        }
+                    @endphp
+                    <td style="{{ $styleJenis }}">&#8226; {{ $item->jenis_atribut }}</td>
+
+                    {{-- AB --}}
+                    <td style="text-align: center; font-family: DejaVu Sans; border: 1px solid black;">
+                        {{ $item->status_atribut === 'abnormal' ? '✔' : '' }}
+                    </td>
+
+                    {{-- N --}}
+                    <td style="text-align: center; font-family: DejaVu Sans; border: 1px solid black;">
+                        {{ $item->status_atribut === 'normal' ? '✔' : '' }}
+                    </td>
+
+                    {{-- KETERANGAN --}}
+                    <td style="padding-right: 5px; border: 1px solid black;">
+                        {{ $item->keterangan_atribut ?? 'Normal' }}
+                    </td>
+                </tr>
             @endforeach
+            @endforeach
+            </tbody>
+            </table>
+            
             <div style="position: absolute;width: 100%;">
             <table style="width: 100%;">
                 <tr>

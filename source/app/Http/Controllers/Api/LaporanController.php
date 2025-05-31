@@ -354,6 +354,7 @@ class LaporanController extends Controller
                 'kesimpulan_keseluruhan' => $req->hasil_kesimpulan_pemeriksaan_kesimpulan_tindakan,
                 'kesimpulan_hasil_medical_checkup' => $req->kesimpulan_hasil_medical_checkup,
                 'saran_keseluruhan' => $req->hasil_kesimpulan_pemeriksaan_tindakan_saran,
+                'kesimpulan_warna' => $req->kesimpulan_warna,
             ];
             if ($is_mcu_exist) {
                 Kesimpulan::where('id_mcu', $req->id_mcu_let)->update($data);
