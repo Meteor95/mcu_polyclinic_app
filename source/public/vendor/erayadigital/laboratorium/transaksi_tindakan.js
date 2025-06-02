@@ -1048,6 +1048,10 @@ function simpan_konfirmasi(){
                 formData.append('is_paket_mcu', is_paket_mcu);
                 formData.append('nama_paket_mcu', nama_paket_mcu);
                 /* paramter transaksi detail */
+                const fileInput_Laboratorium = $('#pdf_file_laboratorium')[0];
+                if (fileInput_Laboratorium.files[0]) {
+                    formData.append('nama_file_laboratorium', fileInput_Laboratorium.files[0]);
+                }
                 formData.append('keranjang_tindakan', JSON.stringify(keranjangTindakan));
                 return formData;
             })(),
@@ -1074,6 +1078,7 @@ function simpan_konfirmasi(){
                 }
             },
             error: function(xhr, status, error){
+                $("#btnSimpanPendaftaran").prop('disabled', false).html('<i class="fa fa-save"></i> Simpan Data');
                 createToast('Kesalahan Cek Data', 'top-right', xhr.responseJSON.message, 'error', 3000);
             }
         });

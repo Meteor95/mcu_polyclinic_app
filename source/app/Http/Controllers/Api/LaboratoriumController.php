@@ -512,6 +512,7 @@ class LaboratoriumController extends Controller
             }
             $data = $req->all();
             $file = $req->file('nama_file_surat_pengantar');
+            $file_laboratorium = $req->file('nama_file_laboratorium');
             if (!filter_var($req->is_edit_transaksi, FILTER_VALIDATE_BOOLEAN)){
             $pasien_sudah_ada = Transaksi::where('no_mcu', $req->no_mcu)
             ->where('status_pembayaran', '!=', 'done')->first();
@@ -522,7 +523,7 @@ class LaboratoriumController extends Controller
                     return ResponseHelper::data_conflict("Informasi pasien MCU dengan <b>Nomor Transaksi '".$no_nota."' [MCU : ".$no_mcu."]</b> sudah ada. Silahkan lakukan transaksi dengan nomor transaksi yang berbeda.");
                 }
             }
-            $iserrir = $laboratoriumService->handleTransactionLaboratorium($data,$req->attributes->get('user_id'),$file);
+            $iserrir = $laboratoriumService->handleTransactionLaboratorium($data,$req->attributes->get('user_id'),$file,$file_laboratorium);
             return ResponseHelper::success('Informasi transaksi tindakan dengan No. Nota ' . $req->no_nota . ' [MCU : ' . $req->no_mcu . '] berhasil disimpan. Silahkan lakukan validasi transaksi dengan hak akses kasir atau yang sesuai.');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

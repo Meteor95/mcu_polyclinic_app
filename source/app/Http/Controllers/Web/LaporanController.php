@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use PDF;
 use Illuminate\Support\Facades\Log;
-use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, RiwayatKecelakaanKerja, RiwayatKebiasaanHidup, RiwayatPenyakitTerdahulu, RiwayatPenyakitKeluarga, RiwayatImunisasi};
+use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, RiwayatKecelakaanKerja, RiwayatKebiasaanHidup, RiwayatPenyakitTerdahulu, RiwayatPenyakitKeluarga, RiwayatImunisasi,UnggahanCitraLab};
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\{Kesimpulan as KesimpulanLabStatus, Transaksi as TransaksiLab, Kategori, TransaksiDetail};
@@ -189,14 +189,12 @@ class LaporanController extends Controller
             ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
             ->where('mcu_transaksi_peserta.id', $id_mcu)->first();
         $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
-        $kesimpulan_tindakan = Kesimpulan::join('lab_kesimpulan', 'lab_kesimpulan.id', '=', 'transaksi_kesimpulan.kesimpulan_keseluruhan')
-            ->where('transaksi_kesimpulan.id_mcu', $id_mcu)->first();
         $logoPath = public_path('mofi/assets/images/logo/Logo_AMC_Full.png');
         $qrcode = base64_encode(QrCode::format('svg')
                     ->size(75)
                     ->margin(1)
                     ->merge($logoPath, 0.3, true)
-                    ->generate('techsolutionstuff.com'));
+                    ->generate($informasi_data_diri->nomor_identitas));
         $riwayat_penyakit_terdahulu = RiwayatPenyakitTerdahulu::where('transaksi_id', $id_mcu)->get();
         $riwayat_penyakit_keluarga = RiwayatPenyakitKeluarga::where('transaksi_id', $id_mcu)->get();
         $riwayat_kecelakaan_kerja = RiwayatKecelakaanKerja::where('transaksi_id', $id_mcu)->first();
@@ -206,8 +204,11 @@ class LaporanController extends Controller
         $tingkat_kesadaran = TingkatKesadaran::where('transaksi_id', $id_mcu)->first();
         $tanda_vital = TandaVital::where('transaksi_id', $id_mcu)->get();
         $penglihatan = Penglihatan::where('transaksi_id', $id_mcu)->get();
+        $transaksi_laboratorium = TransaksiLab::where('no_mcu', $id_mcu)->first();
+        $kesimpulan_tindakan = Kesimpulan::join('lab_kesimpulan', 'lab_kesimpulan.id', '=', 'transaksi_kesimpulan.kesimpulan_keseluruhan')->where('transaksi_kesimpulan.id_mcu', $id_mcu)->first();
         $kategori_pemeriksaan = ['kepala','telinga','mata','tenggorokan','mulut','gigi','leher','thorax','abdomen_urogenital','anorectal_genital','ekstremitas','neurologis'];
         $query_kondisi_fisik = "";
+        $ada_lampiran_laboratorium_pdf = $transaksi_laboratorium->lampirkan_berkas_pdf;
         foreach ($kategori_pemeriksaan as $kategori) {
             $subquery = DB::table($this->determineTableNamePemeriksaanFisik($kategori))
                 ->select([
@@ -230,15 +231,22 @@ class LaporanController extends Controller
         $model = new Poliklinik();
         $jenis_polis = ['spirometri', 'ekg', 'threadmill', 'rontgen_thorax', 'rontgen_lumbosacral', 'audiometri', 'usg_ubdomain', 'farmingham_score'];
         $all_citra_data = collect();
+        $all_citra_laboratorium = collect();
         foreach ($jenis_polis as $jenis_poli) {
             $citra_data = $this->fetchInformasiPoliklinik($jenis_poli, $id_mcu, $model);
             $all_citra_data = $all_citra_data->merge($citra_data);
         }
+        $lampiran_berkas_pdf = UnggahanCitraLab::where('id_trx_lab', $transaksi_laboratorium->id)->get();
+        $lampiran_berkas_pdf = $lampiran_berkas_pdf->map(function ($item) {
+            $item->data_foto = url(env('APP_VERSI_API') . "/file/unduh_lampiran_pdf?file_name=" . $item->nama_file);
+            return $item;
+        });
         $data = [
             'title' => 'Berkas Tindakan MCU',
             'id_mcu' => $id_mcu,
             'nomor_mcu' => $nomor_mcu,
             'nik_peserta' => $nik_peserta,
+            'ada_lampiran_laboratorium_pdf' => $ada_lampiran_laboratorium_pdf,
             'tanggal_cetak' => $tanggal_cetak,
             'qrcode' => $qrcode,
             'riwayat_informasi_foto' => $riwayat_informasi_foto,
@@ -273,6 +281,7 @@ class LaporanController extends Controller
             'kondisi_fisik' => $data_kondisi_fisik,
             'laboratorium' => $laboratorium,
             'all_citra_data' => $all_citra_data,
+            'lampiran_berkas_pdf' => $lampiran_berkas_pdf,
         ];
         $folderPath = 'public/mcu/berkas/mcu/';
         $filename = "MCU_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';

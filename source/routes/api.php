@@ -23,6 +23,7 @@ Route::prefix('v1')->group(function () {
         Route::get('unduh_citra_poliklinik', [FileController::class, "downlad_citra_poliklinik"]);
         Route::get('unduh_surat_pengantar', [FileController::class, "download_surat_pengantar"]);
         Route::get('unduh_berkas_apotek', [FileController::class, "download_berkas_apotek"]);
+        Route::get('unduh_lampiran_pdf', [FileController::class, "download_lampiran_pdf_laboratorium"]);
     });
     Route::middleware(['jwt.auth', 'jwt.cookie'])->group(function () {  
         Route::prefix('pengguna')->group(function () {

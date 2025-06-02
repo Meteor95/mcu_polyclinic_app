@@ -1096,46 +1096,60 @@ watermark {
         </div>
     </main>
     </div>
-
     <div class="break-before section">
     <main>
-        <div style="page-break-after: always;">
-        @php header_mcu($data); @endphp
-        <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">HASIL LABORATORIUM</h3>
-        <table style="width: 100%;font-size: 13px;border: 1px solid black;">
-            <thead>
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 15px;">
-                    <th>PARAMETER</th>
-                    <th>HASIL</th>
-                    <th>NILAI RUJUKAN</th>
-                    <th>SATUAN</th>
-                    <th>STATUS</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($data['laboratorium'] as $kategori): ?>
-                    <?php echo renderKategori($kategori, 1, $data['informasi_data_diri']); ?>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <div style="position: absolute;width: 100%;">
-            <table style="width: 100%;">
-                <tr>
-                <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
-                    Pindai untuk periksa keaslian dokumen<br>
-                    Dokumen ini tervalidasi dan dicetak secara otomatis<br>
-                    <img src="data:image/png;base64,{{ $data['qrcode'] }}">
-                    </td>
-                    <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
-                    Mengetahui<br>Sendawar, {{ $data['tanggal_cetak'] }}<br>
-                        <img src="data:image/png;base64,{{ $data['qrcode'] }}"><br>
-                        <span style="font-weight: bold;"><u>dr. Muhammad Taufiq Amrullah, S.Ked</u></span><br>
-                        <span style="font-weight: bold;">440.007.2/127/SIP-DINKES/XI/2023</span>
-                    </td>
-                </tr>
+        @if ($data['ada_lampiran_laboratorium_pdf'] == 0)
+            <div style="page-break-after: always;">
+            @php header_mcu($data); @endphp
+            <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">HASIL LABORATORIUM</h3>
+            <table style="width: 100%;font-size: 13px;border: 1px solid black;">
+                <thead>
+                    <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 15px;">
+                        <th>PARAMETER</th>
+                        <th>HASIL</th>
+                        <th>NILAI RUJUKAN</th>
+                        <th>SATUAN</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($data['laboratorium'] as $kategori): ?>
+                        <?php echo renderKategori($kategori, 1, $data['informasi_data_diri']); ?>
+                    <?php endforeach; ?>
+                </tbody>
             </table>
-        </div>
-        </div>
+            <div style="position: absolute;width: 100%;">
+                <table style="width: 100%;">
+                    <tr>
+                    <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
+                        Pindai untuk periksa keaslian dokumen<br>
+                        Dokumen ini tervalidasi dan dicetak secara otomatis<br>
+                        <img src="data:image/png;base64,{{ $data['qrcode'] }}">
+                        </td>
+                        <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
+                        Mengetahui<br>Sendawar, {{ $data['tanggal_cetak'] }}<br>
+                            <img src="data:image/png;base64,{{ $data['qrcode'] }}"><br>
+                            <span style="font-weight: bold;"><u>dr. Muhammad Taufiq Amrullah, S.Ked</u></span><br>
+                            <span style="font-weight: bold;">440.007.2/127/SIP-DINKES/XI/2023</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            </div>
+        @else
+            <div style="page-break-after: always;"></div>
+            @foreach ($data['lampiran_berkas_pdf'] as $item)
+                @if ($item->height > $item->width)
+                    <div style="text-align: center;">
+                        <img src="{{ $item->data_foto }}" style="width: auto;height:100%;">
+                    </div>
+                @else
+                    <div style="text-align: center;">
+                        <img src="{{ $item->data_foto }}" style="width: 100%;">
+                    </div>
+                @endif
+            @endforeach
+        @endif
     </main>
     </div>
 

@@ -122,32 +122,48 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-sm-12 mb-2">
-                    <input type="text" id="table_tindakan_mcu_filter" name="table_tindakan_mcu_filter" class="form-control" placeholder="Pencarian Data Keranjang Tindakan. Ketikan Kode atau Nama Tindakan">
+            <ul class="nav nav-tabs" id="icon-tab" role="tablist">
+                <li class="nav-item"><a class="nav-link active txt-secondary" id="icon-home-tab" data-bs-toggle="tab" href="#icon-home" role="tab" aria-controls="icon-home" aria-selected="true"> <i class="fas fa-cart-plus"></i>Keranjang</a></li>
+                <li class="nav-item"><a class="nav-link txt-secondary" id="profile-icon-tabs" data-bs-toggle="tab" href="#profile-icon" role="tab" aria-controls="profile-icon" aria-selected="false"><i class="fas fa-upload"></i>Unggah Dokumen</a></li>
+            </ul>
+            <div class="tab-content" id="icon-tabContent">
+                <div class="tab-pane fade show active" id="icon-home" role="tabpanel" aria-labelledby="icon-home-tab">
+                    <div class="row mt-2">
+                        <div class="col-sm-12 mb-2">
+                            <input type="text" id="table_tindakan_mcu_filter" name="table_tindakan_mcu_filter" class="form-control" placeholder="Pencarian Data Keranjang Tindakan. Ketikan Kode atau Nama Tindakan">
+                        </div>
+                    </div>
+                    <table id="table_tindakan_mcu" class="table table-striped table-bordered table-hover table-padding-sm">
+                        <thead>
+                            <tr style="text-align: center;vertical-align: middle;">
+                                <th>No</th>
+                                <th>Kode Tindakan</th>
+                                <th>Nama Tindakan</th>
+                                <th>Nilai</th>
+                                <th>Harga</th>
+                                <th>Diskon</th>
+                                <th>Harga Setelah Diskon</th>
+                                <th>Jumlah</th>
+                                <th>Sub Total Harga</th>
+                                <th style="width: 200px;">Aksi</th>
+                                <th>meta_data_kuantitatif</th>
+                                <th>meta_data_kualitatif</th>
+                                <th>meta_data_jasa</th>
+                                <th>meta_data_jasa_fee</th>
+                                <th>id_item</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="profile-icon" role="tabpanel" aria-labelledby="profile-icon-tabs">
+                    <label for="pdf_file_laboratorium" class="custom-dropzone mt-2">
+                        <i class="icon-cloud-up" style="font-size: 40px;"></i>
+                        <h5 class="f-w-600" style="color: red;" id="file-name">Silahkan unggah berkas transaksi laboratorium dalam bentuk PDF. Semakin banya halaman yang diunggah semakin lama juga proses yang diperlukan.</h5>
+                        <span class="note needsclick">(Berkas yang diizinkan diunggah dalam satu waktu adalah <strong>1 File</strong>)</span>
+                        <input type="file" id="pdf_file_laboratorium" name="pdf_file_laboratorium" accept="application/pdf">
+                    </label>
                 </div>
             </div>
-            <table id="table_tindakan_mcu" class="table table-striped table-bordered table-hover table-padding-sm">
-                <thead>
-                    <tr style="text-align: center;vertical-align: middle;">
-                        <th>No</th>
-                        <th>Kode Tindakan</th>
-                        <th>Nama Tindakan</th>
-                        <th>Nilai</th>
-                        <th>Harga</th>
-                        <th>Diskon</th>
-                        <th>Harga Setelah Diskon</th>
-                        <th>Jumlah</th>
-                        <th>Sub Total Harga</th>
-                        <th style="width: 200px;">Aksi</th>
-                        <th>meta_data_kuantitatif</th>
-                        <th>meta_data_kualitatif</th>
-                        <th>meta_data_jasa</th>
-                        <th>meta_data_jasa_fee</th>
-                        <th>id_item</th>
-                    </tr>
-                </thead>
-            </table>
         </div>
       </div>
     </div>
@@ -405,6 +421,24 @@
 .tooltip-arrow::before {
   border-top-color: #ff5722 !important; 
 }
+.custom-dropzone {
+    width: 100%;
+    border: 2px dashed #6c757d;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+    color: #6c757d;
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+.custom-dropzone:hover {
+    background-color: #f8f9fa;
+}
+.custom-dropzone input[type="file"] {
+    display: none;
+}
 </style>
 @endsection
 @section('js_load')
@@ -416,5 +450,10 @@
 <script src="{{ asset('mofi/assets/js/select2/tagify.polyfills.min.js') }}"></script>
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="{{ asset('vendor/erayadigital/laboratorium/transaksi_tindakan.js') }}"></script>
-<script> var hasAtribut = {{ $hasVisiblePrice ? 'true' : 'false' }}; </script>
+<script> var hasAtribut = {{ $hasVisiblePrice ? 'true' : 'false' }}; 
+document.getElementById("pdf_file_laboratorium").addEventListener("change", function(){
+    const fileName = this.files[0] ? this.files[0].name : "";
+    document.getElementById("file-name").textContent = fileName;
+});
+</script>
 @endsection

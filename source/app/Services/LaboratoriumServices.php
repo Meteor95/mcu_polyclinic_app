@@ -6,18 +6,20 @@ use Illuminate\Support\Facades\{DB, Hash, Storage};
 use Carbon\Carbon;
 use App\Models\Laboratorium\{Transaksi , TransaksiDetail, TransaksiFee, TransaksiApotek};
 use App\Models\Transaksi\Transaksi as TransaksiMCU;
+use App\Models\Transaksi\UnggahanCitraLab;
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Str;
 use App\Models\ErrorLog;
+use Spatie\PdfToImage\Pdf as KonversiPDFtoImage;
 use Illuminate\Support\Facades\Log;
 
 use Exception;
 
 class LaboratoriumServices
 {
-    public function handleTransactionLaboratorium($data, $user_id, $file)
+    public function handleTransactionLaboratorium($data, $user_id, $file,$file_laboratorium)
     {
-        return DB::transaction(function () use ($data, $user_id, $file) {
+        return DB::transaction(function () use ($data, $user_id, $file,$file_laboratorium) {
             $filename = "";
             $id_transaksi_lama = "";
             $is_edit = $data['is_edit_transaksi'];
@@ -65,12 +67,15 @@ class LaboratoriumServices
                 'is_paket_mcu' => $data['is_paket_mcu'],
                 'nama_paket_mcu' => $data['nama_paket_mcu'],
                 'nominal_apotek' => $informasi_file->nominal_apotek ?? 0,
+                'lampirkan_berkas_pdf' => !empty($file_laboratorium) ? 1 : 0,
             ];
             $hasil_query_tranaksi = Transaksi::create($data);
             if (filter_var($is_edit, FILTER_VALIDATE_BOOLEAN)){
-                TransaksiApotek::where('id_transaksi', $id_transaksi_lama->id_transaksi)->update([
-                    'id_transaksi' => $hasil_query_tranaksi->id
-                ]);
+                if ($id_transaksi_lama) {
+                    TransaksiApotek::where('id_transaksi', $id_transaksi_lama->id_transaksi)->update([
+                        'id_transaksi' => $hasil_query_tranaksi->id
+                    ]);
+                }
             }
             foreach ($keranjangTindakan as $item) {
                 $data_tindakan[] = [
@@ -130,6 +135,43 @@ class LaboratoriumServices
                 }
             }
             TransaksiDetail::insert($data_tindakan);
+            /*file laboratorium*/
+            if (!empty($file_laboratorium)) {
+                $directory = storage_path('app/public/mcu/berkas/file_laboratorium/');
+                if (!is_dir($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+                $konversipdf = new KonversiPDFtoImage($file_laboratorium);
+                $numberOfPages = $konversipdf->pageCount();
+                $originalName = pathinfo($file_laboratorium->getClientOriginalName(), PATHINFO_FILENAME);
+                $sanitizedName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', strtolower($originalName));
+                $timestamp = round(microtime(true) * 1000);
+            
+                for ($i = 1; $i <= $numberOfPages; $i++) {
+                    $uuid = (string) Str::uuid();
+                    $filename = "{$i}_{$uuid}_{$sanitizedName}_{$timestamp}.jpg";
+                    $konversipdf->selectPages($i)->save("{$directory}/{$filename}");
+                    $filePath = "{$directory}/{$filename}";
+                    $dataToInsert_fileLab[] = [
+                        'id_trx_lab' => $hasil_query_tranaksi->id,
+                        'nama_file_asli' => "{$i}_{$file_laboratorium->getClientOriginalName()}",
+                        'nama_file' => $filename,
+                        'meta_citra' => json_encode([
+                            'hash_file' => md5_file($filePath),
+                            'size' => filesize($filePath),
+                            'mime' => mime_content_type($filePath),
+                            'owner' => env('APP_NAME'),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]),
+                        'width' => getimagesize($filePath)[0],
+                        'height' => getimagesize($filePath)[1],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+                UnggahanCitraLab::insert($dataToInsert_fileLab);
+            }
         });
     }
     public function handleDeleteTransactionLaboratorium($data,$user_id){
