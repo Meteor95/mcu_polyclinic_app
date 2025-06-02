@@ -38,6 +38,7 @@ sudo mkdir -p source/storage/app/public/kuitansi/perusahaan
 sudo mkdir -p source/storage/app/public/kuitansi/tagihan
 sudo mkdir -p source/storage/app/public/kuitansi/tindakan
 sudo mkdir -p source/storage/app/public/upload/apotek
+sudo mkdir -p source/storage/app/public/mcu/berkas/file_laboratorium
 
 # Ensure necessary permissions
 ######################################
