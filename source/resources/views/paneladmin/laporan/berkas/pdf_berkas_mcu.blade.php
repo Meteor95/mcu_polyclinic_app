@@ -1098,8 +1098,8 @@ watermark {
     </div>
     <div class="break-before section">
     <main>
+        <div style="page-break-after: always;">
         @if ($data['ada_lampiran_laboratorium_pdf'] == 0)
-            <div style="page-break-after: always;">
             @php header_mcu($data); @endphp
             <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">HASIL LABORATORIUM</h3>
             <table style="width: 100%;font-size: 13px;border: 1px solid black;">
@@ -1137,7 +1137,6 @@ watermark {
             </div>
             </div>
         @else
-            <div style="page-break-after: always;"></div>
             @foreach ($data['lampiran_berkas_pdf'] as $item)
                 @if ($item->height > $item->width)
                     <div style="text-align: center;">
