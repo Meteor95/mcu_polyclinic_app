@@ -286,30 +286,49 @@ class LaporanController extends Controller
         $folderPath = 'public/mcu/berkas/mcu/';
         $filename = "MCU_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
         $fullPath = storage_path("app/$folderPath$filename");
-        if (!Storage::exists($folderPath)) {
-            Storage::makeDirectory($folderPath, 0755, true);
-        }
-        if (!file_exists($fullPath)) {
-            $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
-                ->setPaper('legal', 'portrait')
-                ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
-            $pdf->render();
-            $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
-                if ($pageNumber > 1 && $pageNumber < $pageCount) {
-                    $width = $canvas->get_width();
-                    $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
-                    $x = ($width / 2) + 175;              
-                    $y = $canvas->get_height() - 40;
-                    $canvas->text($x, $y, $text, null, 12);
-                }
-                if ($pageCount == $pageNumber) {
-                    $width = $canvas->get_width();
-                    $height = $canvas->get_height();
-                    $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
-                }
-            });
-            $pdf->save($fullPath);
-        } 
+        // if (!Storage::exists($folderPath)) {
+        //     Storage::makeDirectory($folderPath, 0755, true);
+        // }
+        // if (!file_exists($fullPath)) {
+        //     $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
+        //         ->setPaper('legal', 'portrait')
+        //         ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+        //     $pdf->render();
+        //     $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
+        //         if ($pageNumber > 1 && $pageNumber < $pageCount) {
+        //             $width = $canvas->get_width();
+        //             $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
+        //             $x = ($width / 2) + 175;              
+        //             $y = $canvas->get_height() - 40;
+        //             $canvas->text($x, $y, $text, null, 12);
+        //         }
+        //         if ($pageCount == $pageNumber) {
+        //             $width = $canvas->get_width();
+        //             $height = $canvas->get_height();
+        //             $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
+        //         }
+        //     });
+        //     $pdf->save($fullPath);
+        // } 
+        $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
+            ->setPaper('legal', 'portrait')
+            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+        $pdf->render();
+        $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
+            if ($pageNumber > 1 && $pageNumber < $pageCount) {
+                $width = $canvas->get_width();
+                $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
+                $x = ($width / 2) + 175;              
+                $y = $canvas->get_height() - 40;
+                $canvas->text($x, $y, $text, null, 12);
+            }
+            if ($pageCount == $pageNumber) {
+                $width = $canvas->get_width();
+                $height = $canvas->get_height();
+                $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
+            }
+        });
+        $pdf->save($fullPath);
         return response()->file($fullPath);
     }
     public function berkas_laboratorium(Request $req){

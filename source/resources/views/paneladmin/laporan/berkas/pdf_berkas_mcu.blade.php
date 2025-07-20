@@ -22,18 +22,20 @@ main {
 .section {margin-bottom: 0px; }
 .judul_riwayat {
     text-align: left; 
-    background-color: red; 
+    background-color: #f1491f; 
     color: #fff;
-    padding: 10px;
+    padding: 5px;
     border-bottom-right-radius: 10px; 
     border-top-right-radius: 10px; 
+    border-bottom-left-radius: 10px; 
+    border-top-left-radius: 10px; 
     display: inline-block;
     margin-bottom: 5px;
 }
 .judul_kondisi_fisik {
     margin-top: 0px;
     text-align: left; 
-    background-color: red; 
+    background-color: #4ab1c7; 
     color: #fff; 
     padding: 10px; 
     border-radius: 10px; 
@@ -57,6 +59,14 @@ watermark {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 102;
+    pointer-events: none;
+}
+background_bottom {
+    position: fixed;
+    bottom: -90px;
+    left: -50px;
+    z-index: -1;
+    opacity: 0.6;
     pointer-events: none;
 }
 #medical-checkup-table {
@@ -200,6 +210,9 @@ watermark {
     <watermark>
         <img src="{{ asset('mofi/assets/images/logo/confidential_wlogo.png') }}" alt="Watermark" style="width: 100%; opacity: 0.1;">
     </watermark>
+    <background_bottom>
+        <img src="{{ asset('mofi/assets/images/logo/border_hasil_mcu_bawah.png') }}" alt="Background Bottom" style="width: 100%;">
+    </background_bottom>
     <div class="break-before section">
     <main>
         <div style="page-break-after: always;">
@@ -272,7 +285,7 @@ watermark {
     <main>
         <div style="page-break-after: always;">
             @php header_mcu($data); @endphp
-            <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">LAPORAN HASIL MEDICAL CHECKUP</h3> 
+            <h3 style="text-align: left; background-image: url({{ asset('mofi/assets/images/logo/gradient_bg_title.png') }}); background-size: cover; background-repeat: no-repeat; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">LAPORAN HASIL MEDICAL CHECKUP</h3> 
             <h4 style="padding:0px;margin:0px;">HASIL PEMERIKSAAN</h4>
             <table style="width: 100%; font-size: 13px;">
                 @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_riwayat_medis'])) != '')
@@ -419,10 +432,10 @@ watermark {
     <main>
         <div style="page-break-after: always;">
             @php header_mcu($data); @endphp
-            <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">STATUS KESEHATAN</h3> 
+            <h3 style="text-align: left; background-image: url({{ asset('mofi/assets/images/logo/gradient_bg_title.png') }}); background-size: cover; background-repeat: no-repeat; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">STATUS KESEHATAN</h3> 
                 <table id="medical-checkup-table" style="width: 100%; border-collapse: separate; border-spacing: 3px;">
                 <thead>
-                    <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 14px;">
+                    <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 14px;">
                         <th style="width: 30%;">STATUS</th>
                         <th style="width: 20%;">KATEGORI</th>
                         <th style="width: 50%;">CATATAN</th>
@@ -546,9 +559,9 @@ watermark {
     <main>
         <div style="page-break-after: always;">
             @php header_mcu($data); @endphp
-            <h3 class="judul_riwayat">RIWAYAT PENYAKIT TERDAHULU</h3>
+            <h4 class="judul_riwayat">RIWAYAT PENYAKIT TERDAHULU</h4>
             <table class="tabel_riwayat" style="width: 100%;font-size: 13px;border: 1px solid black;">
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 14px;">
+                <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 14px;">
                     <th style="width: 30%;padding-top: 5px;padding-bottom: 5px;">PERTANYAAN</th>
                     <th style="width: 30%;padding-top: 5px;padding-bottom: 5px;">JAWABAN</th>
                     <th style="width: 40%;padding-top: 5px;padding-bottom: 5px;">KETERANGAN</th>
@@ -561,9 +574,9 @@ watermark {
                 </tr>
                 @endforeach
             </table>
-            <h3 class="judul_riwayat">RIWAYAT PENYAKIT KELUARGA</h3> 
+            <h4 class="judul_riwayat">RIWAYAT PENYAKIT KELUARGA</h4> 
              <table class="tabel_riwayat" style="width: 100%;font-size: 13px;border: 1px solid black;">
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 14px;">
+                <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 14px;">
                     <th style="width: 30%;padding-top: 5px;padding-bottom: 5px;">PERTANYAAN</th>
                     <th style="width: 30%;padding-top: 5px;padding-bottom: 5px;">JAWABAN</th>
                     <th style="width: 40%;padding-top: 5px;padding-bottom: 5px;">KETERANGAN</th>
@@ -576,12 +589,12 @@ watermark {
                 </tr>
                 @endforeach
             </table>
-            <h3 class="judul_riwayat">RIWAYAT KECELAKAAN KERJA</h3>
+            <h4 class="judul_riwayat">RIWAYAT KECELAKAAN KERJA</h4>
             <div style="font-size: 13px;">{!! $data['riwayat_kecelakaan_kerja'] !!}</div>
-            <h3 class="judul_riwayat">RIWAYAT KEBIASAAN</h3>
+            <h4 class="judul_riwayat">RIWAYAT KEBIASAAN</h4>
             <table class="tabel_riwayat" style="width: 100%;font-size: 13px;border: 1px solid black;">
                 <thead>
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 14px;">
+                <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 14px;">
                     <th style="padding-top: 5px;padding-bottom: 5px;">PERTANYAAN</th>
                     <th style="padding-top: 5px;padding-bottom: 5px;">JAWABAN</th>
                     <th style="padding-top: 5px;padding-bottom: 5px;">NILAI</th>
@@ -607,7 +620,7 @@ watermark {
                 <h3 style="text-align: left; background-color: red; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;margin-bottom: 5px;">KHUSUS WANITA</h3> 
                 <table class="tabel_riwayat" style="width: 100%;font-size: 13px;border: 1px solid black;">
                     <thead>
-                        <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 14px;">
+                        <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 14px;">
                             <th style="padding-top: 5px;padding-bottom: 5px;">PERTANYAAN</th>
                             <th style="padding-top: 5px;padding-bottom: 5px;">JAWABAN</th>
                             <th style="padding-top: 5px;padding-bottom: 5px;">WAKTU</th>
@@ -630,9 +643,9 @@ watermark {
                     </tbody>
                 </table>
             @endif
-            <h3 class="judul_riwayat">RIWAYAT IMUNISASI</h3> 
+            <h4 class="judul_riwayat">RIWAYAT IMUNISASI</h4> 
              <table class="tabel_riwayat" style="width: 100%;font-size: 13px;border: 1px solid black;">
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 14px;">
+                <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 14px;">
                     <th style="width: 30%;padding-top: 5px;padding-bottom: 5px;">PERTANYAAN</th>
                     <th style="width: 30%;padding-top: 5px;padding-bottom: 5px;">JAWABAN</th>
                     <th style="width: 40%;padding-top: 5px;padding-bottom: 5px;">KETERANGAN</th>
@@ -645,10 +658,10 @@ watermark {
                 </tr>
                 @endforeach
             </table>
-            <h3 class="judul_riwayat">RIWAYAT PAPARAN KERJA</h3> 
+            <h4 class="judul_riwayat">RIWAYAT PAPARAN KERJA</h4> 
             <table class="tabel_riwayat" style="width: 100%;font-size: 13px;border: 1px solid black;">
                 <thead>
-                    <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 14px;">
+                    <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 14px;">
                         <th style="padding-top: 5px;padding-bottom: 5px;">PERTANYAAN</th>
                         <th style="padding-top: 5px;padding-bottom: 5px;">STATUS</th>
                         <th style="padding-top: 5px;padding-bottom: 5px;">JAM / HARI</th>
@@ -846,7 +859,7 @@ watermark {
     <main>
         <div style="page-break-after: always;">
             @php header_mcu($data); @endphp
-            <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">PEMERIKSAAN KONDISI FISIK</h3><br>
+            <h3 style="text-align: left; background-image: url({{ asset('mofi/assets/images/logo/gradient_bg_title.png') }}); background-size: cover; background-repeat: no-repeat; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">PEMERIKSAAN KONDISI FISIK</h3><br>
             <h4 class="judul_kondisi_fisik">TINGKAT KESADARAN</h4>
             <table style="width: 100%;font-size: 14px;">
                 <tr>
@@ -946,16 +959,16 @@ watermark {
             </table>
             <h4 class="judul_kondisi_fisik">PENGLIHATAN</h4>
             <table class="lapang_pandang_table" style="width: 100%;font-size: 13px;border: 1px solid black;">
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 13px;">
+                <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 13px;">
                     <th colspan="5">VISUS</th>
                     <th rowspan="3" style="vertical-align: middle;text-align: center;">Tes Buta Warna</th>
                 </tr>
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 13px;">
+                <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 13px;">
                     <th rowspan="2" style="text-align: center;vertical-align: middle;">Status</th>
                     <th colspan="2">Tanpa Kacamata</th>
                     <th colspan="2">Dengan Kacamata</th>
                 </tr>
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 13px;">
+                <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 13px;">
                     <th>OS</th>
                     <th>OD</th>
                     <th>OS</th>
@@ -980,11 +993,11 @@ watermark {
                 </tr>
             </table>
             <table class="lapang_pandang_table" style="width: 100%;font-size: 13px;border: 1px solid black;">
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 13px;">
+                <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 13px;">
                     <th rowspan="2" style="text-align: center;vertical-align: middle;">Posisi Mata</th>
                     <th colspan="7" class="sub-header" style="text-align: center;">LAPANG PANDANG</th>
                 </tr>
-                <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 13px;">
+                <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 13px;">
                     <th style="max-width: 100px;width: 100px;">Superior</th>
                     <th style="max-width: 100px;width: 100px;">Inferior</th>
                     <th style="max-width: 100px;width: 100px;">Temporal</th>
@@ -1021,7 +1034,7 @@ watermark {
 
             <table style="width: 100%; font-size: 13px;border-collapse: collapse; border-spacing: 3px;">
                 <thead>
-                    <tr style="text-align: center; background-color: green; font-weight: bold; color: #fff;">
+                    <tr style="text-align: center; background-color: #2c942a; font-weight: bold; color: #fff;">
                         <th style="width: 200px; border: 1px solid black;">PEMERIKSAAN</th>
                         <th style="width: 250px; border: 1px solid black;">JENIS PEMERIKSAAN</th>
                         <th style="width: 50px; border: 1px solid black;">AB</th>
@@ -1104,7 +1117,7 @@ watermark {
             <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">HASIL LABORATORIUM</h3>
             <table style="width: 100%;font-size: 13px;border: 1px solid black;">
                 <thead>
-                    <tr style="text-align: center; background-color: green;font-weight: bold;color: #fff;font-size: 15px;">
+                    <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 15px;">
                         <th>PARAMETER</th>
                         <th>HASIL</th>
                         <th>NILAI RUJUKAN</th>
@@ -1157,7 +1170,7 @@ watermark {
         <div style="page-break-after: always;">
         @foreach ($data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli)
         @php header_mcu($data); @endphp
-        <h5 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;margin-bottom: 5px;margin-top: 5px;">HASIL {{ strtoupper(str_replace('_', ' ', $jenis_poli)) }}</h5>
+        <h5 style="text-align: left; background-image: url({{ asset('mofi/assets/images/logo/gradient_bg_title.png') }}); background-size: cover; background-repeat: no-repeat; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">HASIL {{ strtoupper(str_replace('_', ' ', $jenis_poli)) }}</h5>
             @foreach ($dataPoli as $item)
                 @if ($item->height > $item->width)
                     <div style="text-align: center;">
