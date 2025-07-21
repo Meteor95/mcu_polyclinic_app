@@ -1032,62 +1032,106 @@ background_bottom {
                 }
             @endphp
 
-            <table style="width: 100%; font-size: 13px;border-collapse: collapse; border-spacing: 3px;">
-                <thead>
-                    <tr style="text-align: center; background-color: #2c942a; font-weight: bold; color: #fff;">
-                        <th style="width: 200px; border: 1px solid black;">PEMERIKSAAN</th>
-                        <th style="width: 250px; border: 1px solid black;">JENIS PEMERIKSAAN</th>
-                        <th style="width: 50px; border: 1px solid black;">AB</th>
-                        <th style="width: 50px; border: 1px solid black;">N</th>
-                        <th style="border: 1px solid black;">KETERANGAN</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($groupedData as $kategori => $items)
-                        @foreach ($items as $index => $item)
-                <tr style="padding: 50px;">
-                    {{-- Kolom PEMERIKSAAN --}}
-                    @if ($index === 0)
-                        <td style="text-align: center;vertical-align: center; padding-left: 5px; border-top: 1px solid black; border-left: 1px solid black; border-right: 1px solid black;
-                            {{ count($items) === 1 ? 'border-bottom:1px solid black;' : '' }}">
-                            {{ strtoupper(str_replace('_', ' ', $kategori)) }}
-                        </td>
-                    @elseif ($index === count($items) - 1)
-                        <td style="border-bottom: 1px solid black; border-left: 1px solid black; border-right: 1px solid black;">&nbsp;</td>
+            <table style="width: 100%; font-size: 13px; border-spacing: 0;">
+    <thead>
+        <tr style="text-align: center; font-weight: bold; color: #fff;">
+            <th style="background-color: green; width: 200px; border: 1px solid black; padding-top: 10px;">PEMERIKSAAN</th>
+            <th style="width: 2px;"></th>
+            <th style="background-color: green; width: 250px; border: 1px solid black; padding-left: 5px; padding-top: 10px;">JENIS PEMERIKSAAN</th>
+            <th style="width: 2px;"></th>
+            <th style="background-color: green; width: 50px; border: 1px solid black; padding-top: 10px;">AB</th>
+            <th style="width: 2px;"></th>
+            <th style="background-color: green; width: 50px; border: 1px solid black; padding-top: 10px;">N</th>
+            <th style="width: 2px;"></th>
+            <th style="background-color: green; border: 1px solid black; padding-top: 10px;">KETERANGAN</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($groupedData as $kategori => $items)
+
+            {{-- Spacer antar kategori (atas saja, bukan kanan kiri) --}}
+            <tr><td colspan="5" style="height: 3px;"></td></tr>
+
+            @foreach ($items as $index => $item)
+            <tr>
+                {{-- Kolom PEMERIKSAAN --}}
+                @if ($loop->first)
+                    <td style="text-align: center; font-weight: bold;
+                        border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; border-bottom: none;
+                        padding: 5px;">
+                        {{ strtoupper(str_replace('_', ' ', $kategori)) }}
+                    </td>
+                @elseif ($loop->last)
+                    <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: none;">
+                        &nbsp;
+                    </td>
+                @else
+                    <td style="border-left: 1px solid black; border-right: 1px solid black; border-top: none; border-bottom: none;">
+                        &nbsp;
+                    </td>
+                @endif
+                <th style="width: 2px;"></th>
+                {{-- JENIS PEMERIKSAAN --}}
+                <td style="
+                    padding: 5px 10px;
+                    border-left: 1px solid black;
+                    border-right: 1px solid black;
+                    @if ($loop->first)
+                        border-top: 1px solid black;
+                        border-bottom: none;
+                    @elseif ($loop->last)
+                        border-top: none;
+                        border-bottom: 1px solid black;
                     @else
-                        <td style="border-left: 1px solid black; border-right: 1px solid black;">&nbsp;</td>
+                        border-top: none;
+                        border-bottom: none;
                     @endif
-
-                    {{-- JENIS PEMERIKSAAN --}}
-                    @php
-                        $styleJenis = 'padding-left: 5px; border-left: 1px solid black; border-right: 1px solid black;';
-                        if ($index === 0) {
-                            $styleJenis .= 'border-top: 1px solid black;';
-                        } elseif ($index === count($items) - 1) {
-                            $styleJenis .= 'border-bottom: 1px solid black;';
-                        }
-                    @endphp
-                    <td style="{{ $styleJenis }}">&#8226; {{ $item->jenis_atribut }}</td>
-
-                    {{-- AB --}}
-                    <td style="text-align: center; font-family: DejaVu Sans; border: 1px solid black;">
-                        {{ $item->status_atribut === 'abnormal' ? '✔' : '' }}
-                    </td>
-
-                    {{-- N --}}
-                    <td style="text-align: center; font-family: DejaVu Sans; border: 1px solid black;">
-                        {{ $item->status_atribut === 'normal' ? '✔' : '' }}
-                    </td>
-
-                    {{-- KETERANGAN --}}
-                    <td style="padding-right: 5px; border: 1px solid black;">
-                        {{ $item->keterangan_atribut ?? 'Normal' }}
-                    </td>
-                </tr>
+                ">
+                    &#8226; {{ $item->jenis_atribut }}
+                </td>
+                <th style="width: 2px;"></th>
+                {{-- Kolom AB --}}
+                <td style="text-align: center; padding: 4px;">
+                    <input type="checkbox"
+                        {{ $item->status_atribut === 'abnormal' ? 'checked' : '' }}
+                        disabled
+                        style="transform: scale(1.3); transform-origin: center; background-color: transparent;">
+                </td>
+                <th style="width: 2px;"></th>
+                {{-- Kolom N --}}
+                <td style="text-align: center; padding: 4px;">
+                    <input type="checkbox"
+                        {{ $item->status_atribut === 'normal' ? 'checked' : '' }}
+                        disabled
+                        style="transform: scale(1.3); transform-origin: center; background-color: transparent;">
+                </td>
+                <th style="width: 2px;"></th>
+                {{-- Keterangan --}}
+                <td style="
+                    text-align: center;
+                    padding: 5px 10px;
+                    border-left: 1px solid black;
+                    border-right: 1px solid black;
+                    @if ($loop->first)
+                        border-top: 1px solid black;
+                        border-bottom: none;
+                    @elseif ($loop->last)
+                        border-top: none;
+                        border-bottom: 1px solid black;
+                    @else
+                        border-top: none;
+                        border-bottom: none;
+                    @endif
+                ">
+                    {{ $item->keterangan_atribut ?? 'Normal' }}
+                </td>
+            </tr>
             @endforeach
-            @endforeach
-            </tbody>
-            </table>
+
+        @endforeach
+    </tbody>
+</table>
+
             
             <div style="position: absolute;width: 100%;">
             <table style="width: 100%;">
