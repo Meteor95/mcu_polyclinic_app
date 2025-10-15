@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use PDF;
+use MPDF;
 use Illuminate\Support\Facades\Log;
 use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, RiwayatKecelakaanKerja, RiwayatKebiasaanHidup, RiwayatPenyakitTerdahulu, RiwayatPenyakitKeluarga, RiwayatImunisasi,UnggahanCitraLab};
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
@@ -185,7 +186,7 @@ class LaporanController extends Controller
         $informasi_data_diri = Transaksi::join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
             ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
-            ->select('users_member.nama_peserta', 'users_member.nomor_identitas', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'users_member.jenis_kelamin', 'users_member.alamat', 'company.company_name', 'departemen_peserta.nama_departemen', 'mcu_transaksi_peserta.tanggal_transaksi as tanggal_mcu', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran')
+            ->select('users_member.nama_peserta', 'users_member.nomor_identitas', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'users_member.jenis_kelamin', 'users_member.alamat', 'company.company_name', 'departemen_peserta.nama_departemen', 'mcu_transaksi_peserta.tanggal_transaksi as tanggal_mcu', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran','mcu_transaksi_peserta.tipe_mcu_peserta')
             ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
             ->where('mcu_transaksi_peserta.id', $id_mcu)->first();
         $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
@@ -310,24 +311,17 @@ class LaporanController extends Controller
         //     });
         //     $pdf->save($fullPath);
         // } 
-        $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
-            ->setPaper('legal', 'portrait')
-            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
-        $pdf->render();
-        $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
-            if ($pageNumber > 1 && $pageNumber < $pageCount) {
-                $width = $canvas->get_width();
-                $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
-                $x = ($width / 2) + 175;              
-                $y = $canvas->get_height() - 40;
-                $canvas->text($x, $y, $text, null, 12);
-            }
-            if ($pageCount == $pageNumber) {
-                $width = $canvas->get_width();
-                $height = $canvas->get_height();
-                $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
-            }
-        });
+        // 🔹 Generate PDF pakai mPDF
+        $pdf = MPDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data], [
+                'format'        => 'A4',
+                'orientation'   => 'P',
+                'margin_left'   => 0,
+                'margin_right'  => 0,
+                'margin_top'    => 0,
+                'margin_bottom' => 0,
+                'margin_header' => 0,
+                'margin_footer' => 0,
+        ]);
         $pdf->save($fullPath);
         return response()->file($fullPath);
     }
