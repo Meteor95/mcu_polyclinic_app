@@ -160,7 +160,7 @@ background_bottom {
                 </tr>
                 <tr style="text-align: left;">
                     <td style="width: 15%;">Tipe MCU</td>
-                    <td style="width: 30%;">: ' . $data['informasi_data_diri']['jenis_transaksi_pendaftaran'] . '</td>
+                    <td style="width: 30%;">: ' . $data['informasi_data_diri']['tipe_mcu_peserta'] . '</td>
                     <td style="width: 15%;">Dokter</td>
                     <td style="width: 30%;">: dr. Muhammad Taufiq Amrullah, S.Ked</td>
                 </tr>
@@ -264,7 +264,7 @@ background_bottom {
                 <tr>
                     <td style="white-space: nowrap;">TANGGAL MCU / TIPE MCU</td>
                     <td>:</td>
-                    <td>{{ date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_mcu'])) }} / {{ $data['informasi_data_diri']['jenis_transaksi_pendaftaran'] }}</td>
+                    <td>{{ date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_mcu'])) }} / {{ $data['informasi_data_diri']['tipe_mcu_peserta'] }}</td>
                 </tr>
             </table>
             <table style="width: 100%; text-align: left; border-collapse: collapse; position: absolute; bottom: 80px;">
@@ -360,8 +360,15 @@ background_bottom {
                     <td style="width: 29%;">AUDIOMETRI</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">
-                        <span style="font-weight: bold;">Kiri</span>: {!! trim(strip_tags($data['quill_pemeriksaan_audio_kiri'])) !!}&nbsp;&nbsp;
-                        <span style="font-weight: bold;">Kanan</span>: {!! trim(strip_tags($data['quill_pemeriksaan_audio_kanan'])) !!}
+                        @if (
+                            strtolower(trim(strip_tags($data['quill_pemeriksaan_audio_kiri']))) == "normal" && 
+                            strtolower(trim(strip_tags($data['quill_pemeriksaan_audio_kanan']))) == "normal"
+                        )
+                            <span>Normal</span>
+                        @else
+                            <span style="font-weight: bold;">Kiri</span>: {{ trim(strip_tags($data['quill_pemeriksaan_audio_kiri'])) }}&nbsp;&nbsp;
+                            <span style="font-weight: bold;">Kanan</span>: {{ trim(strip_tags($data['quill_pemeriksaan_audio_kanan'])) }}
+                        @endif
                     </td>
                 </tr>
                 @endif
@@ -375,8 +382,15 @@ background_bottom {
                     <td style="width: 29%;">SPIROMETRI</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">
-                        <span style="font-weight: bold;">Restriksi</span>: {!! trim(strip_tags($data['quill_pemeriksaan_spiro_restriksi'])) !!}&nbsp;&nbsp;
-                        <span style="font-weight: bold;">Obstruksi</span>: {!! trim(strip_tags($data['quill_pemeriksaan_spiro_obstruksi'])) !!}
+                        @if (
+                            strtolower(trim(strip_tags($data['quill_pemeriksaan_spiro_restriksi']))) == "normal" && 
+                            strtolower(trim(strip_tags($data['quill_pemeriksaan_spiro_obstruksi']))) == "normal"
+                        )
+                            <span>Normal</span>
+                        @else
+                            <span style="font-weight: bold;">Restriksi</span>: {!! trim(strip_tags($data['quill_pemeriksaan_spiro_restriksi'])) !!}&nbsp;&nbsp;
+                            <span style="font-weight: bold;">Obstruksi</span>: {!! trim(strip_tags($data['quill_pemeriksaan_spiro_obstruksi'])) !!}
+                        @endif
                     </td>
                 </tr>
                 @endif
@@ -386,7 +400,7 @@ background_bottom {
                     <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">FARMINGHAM SCORE</td>
                     <td style="width: 5%;">:</td>
-                    <td style="width: 70%;">{{ $data['quill_pemeriksaan_farmingham_score'] }}</td>
+                    <td style="width: 70%;">{!! trim(strip_tags($data['quill_pemeriksaan_farmingham_score'])) !!}</td>
                 </tr>
                 @endif
 
@@ -395,7 +409,7 @@ background_bottom {
                     <td style="width: 1%; text-align: center;">&#8226;</td>
                     <td style="width: 29%;">THREADMILL</td>
                     <td style="width: 5%;">:</td>
-                    <td style="width: 70%;">{{ $data['quill_pemeriksaan_threadmill'] }}</td>
+                    <td style="width: 70%;">{!! trim(strip_tags($data['quill_pemeriksaan_threadmill'])) !!}</td>
                 </tr>
                 @endif
             </table>
@@ -406,7 +420,7 @@ background_bottom {
             </div>  
             <h4 style="padding-top: 10px;padding-bottom: 0px;margin:0px;">SARAN HASIL MEDICAL CHECKUP</h4>
             <div style="font-size: 13px;">{!! $data['quill_tindakan_saran'] !!}</div>
-            <div style="position: absolute;width: 100%;">
+            <div style="position: absolute;width: 100%;bottom:0%">
                 <table style="width: 100%;">
                     <tr>
                        <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
@@ -1037,7 +1051,7 @@ background_bottom {
         <tr style="text-align: center; font-weight: bold; color: #fff;">
             <th style="background-color: green; width: 200px; border: 1px solid black; padding-top: 10px;">PEMERIKSAAN</th>
             <th style="width: 2px;"></th>
-            <th style="background-color: green; width: 250px; border: 1px solid black; padding-left: 5px; padding-top: 10px;">JENIS PEMERIKSAAN</th>
+            <th style="background-color: green; width: 180px; border: 1px solid black; padding-left: 5px; padding-top: 10px;">JENIS PEMERIKSAAN</th>
             <th style="width: 2px;"></th>
             <th style="background-color: green; width: 50px; border: 1px solid black; padding-top: 10px;">AB</th>
             <th style="width: 2px;"></th>
@@ -1046,13 +1060,21 @@ background_bottom {
             <th style="background-color: green; border: 1px solid black; padding-top: 10px;">KETERANGAN</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach ($groupedData as $kategori => $items)
+<tbody>
+    @php
+        $rowCount = 0;
+    @endphp
 
-            {{-- Spacer antar kategori (atas saja, bukan kanan kiri) --}}
-            <tr><td colspan="5" style="height: 3px;"></td></tr>
+    @foreach ($groupedData as $kategori => $items)
 
-            @foreach ($items as $index => $item)
+        {{-- Spacer antar kategori --}}
+        <tr><td colspan="9" style="height: 1px;"></td></tr>
+
+        @foreach ($items as $index => $item)
+            @php
+                $rowCount++;
+            @endphp
+
             <tr>
                 {{-- Kolom PEMERIKSAAN --}}
                 @if ($loop->first)
@@ -1123,16 +1145,42 @@ background_bottom {
                         border-bottom: none;
                     @endif
                 ">
-                    {{ $item->keterangan_atribut ?? 'Normal' }}
+                    @if ($item->nama_atribut == 'Neurologis')
+                        {{ $item->keterangan_atribut ?? 'Negatif' }}
+                    @else
+                        {{ $item->keterangan_atribut ?? 'Normal' }}
+                    @endif
                 </td>
             </tr>
-            @endforeach
+            @if (in_array($rowCount, [13,48]))
+                <tr style="text-align: center; font-weight: bold; color: #fff;">
+                    <th style="background-color: green; border: 1px solid black;">PEMERIKSAAN</th>
+                    <th style="width: 2px;"></th>
+                    <th style="background-color: green; border: 1px solid black;">JENIS PEMERIKSAAN</th>
+                    <th style="width: 2px;"></th>
+                    <th style="background-color: green; border: 1px solid black;">AB</th>
+                    <th style="width: 2px;"></th>
+                    <th style="background-color: green; border: 1px solid black;">N</th>
+                    <th style="width: 2px;"></th>
+                    <th style="background-color: green; border: 1px solid black;">KETERANGAN</th>
+                </tr>
+            @endif
 
         @endforeach
-    </tbody>
+    @endforeach
+</tbody>
+<tr style="text-align: center; font-weight: bold; color: #fff;">
+    <th style="background-color: green; border: 1px solid black;">PEMERIKSAAN</th>
+    <th style="width: 2px;"></th>
+    <th style="background-color: green; border: 1px solid black;">JENIS PEMERIKSAAN</th>
+    <th style="width: 2px;"></th>
+    <th style="background-color: green; border: 1px solid black;">AB</th>
+    <th style="width: 2px;"></th>
+    <th style="background-color: green; border: 1px solid black;">N</th>
+    <th style="width: 2px;"></th>
+    <th style="background-color: green; border: 1px solid black;">KETERANGAN</th>
+</tr>
 </table>
-
-            
             <div style="position: absolute;width: 100%;">
             <table style="width: 100%;">
                 <tr>
@@ -1285,4 +1333,5 @@ background_bottom {
         <div style="page-break-after: auto;"></div>
     </main>
     </div>
-</body></html>
+</body>
+</html>

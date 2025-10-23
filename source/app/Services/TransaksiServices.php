@@ -72,6 +72,7 @@ class TransaksiServices
                 'id_paket_mcu' => $parts[0],
                 'petugas_id' => $user_id_petugas,
                 'jenis_transaksi_pendaftaran' => $data['jenis_transaksi_pendaftaran'],
+                'tipe_mcu_peserta' => $data['tipe_mcu_peserta'],
                 'status_peserta' => 'proses',
             ];
 

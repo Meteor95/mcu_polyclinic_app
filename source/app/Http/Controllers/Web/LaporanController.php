@@ -185,7 +185,7 @@ class LaporanController extends Controller
         $informasi_data_diri = Transaksi::join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
             ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
-            ->select('users_member.nama_peserta', 'users_member.nomor_identitas', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'users_member.jenis_kelamin', 'users_member.alamat', 'company.company_name', 'departemen_peserta.nama_departemen', 'mcu_transaksi_peserta.tanggal_transaksi as tanggal_mcu', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran')
+            ->select('users_member.nama_peserta', 'users_member.nomor_identitas', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'users_member.jenis_kelamin', 'users_member.alamat', 'company.company_name', 'departemen_peserta.nama_departemen', 'mcu_transaksi_peserta.tanggal_transaksi as tanggal_mcu', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran','mcu_transaksi_peserta.tipe_mcu_peserta')
             ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
             ->where('mcu_transaksi_peserta.id', $id_mcu)->first();
         $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
@@ -216,6 +216,7 @@ class LaporanController extends Controller
                     'jenis_atribut',
                     'status_atribut',
                     'keterangan_atribut',
+                    'nama_atribut',
                     'transaksi_id'
                 ])
                 ->where('transaksi_id', $id_mcu);
@@ -281,7 +282,7 @@ class LaporanController extends Controller
             'kondisi_fisik' => $data_kondisi_fisik,
             'laboratorium' => $laboratorium,
             'all_citra_data' => $all_citra_data,
-            'lampiran_berkas_pdf' => $lampiran_berkas_pdf,
+            'lampiran_berkas_pdf' => $lampiran_berkas_pdf
         ];
         $folderPath = 'public/mcu/berkas/mcu/';
         $filename = "MCU_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
@@ -645,4 +646,3 @@ class LaporanController extends Controller
         return response()->file($fullPath);
     }
 }
-

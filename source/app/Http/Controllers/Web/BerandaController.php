@@ -18,14 +18,14 @@ class BerandaController extends Controller
     }
     public function index(Request $request)
     {
-        $data = $this->getData($request, 'Beranda MCU Arta Medica', [
+        $data = $this->getData($request, 'Beranda MCU Arta Medica Centre', [
             'Dashboard' => route('admin.beranda'),
         ]);
         return view('paneladmin.beranda.main_konten', ['data' => $data]);
     }
     public function kasir(Request $request)
     {
-        $data = $this->getData($request, 'Kasir MCU Arta Medica', [
+        $data = $this->getData($request, 'Kasir MCU Arta Medica Centre', [
             'Kasir' => route('admin.kasir'),
         ]);
         $data['bank'] = DaftarBank::all();
