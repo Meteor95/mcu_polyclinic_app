@@ -268,17 +268,19 @@ $(document).on('click', '.btn-lihat', function () {
     $('#imageModal').modal('show');
 });
 $("#simpan_foto_perserta").on('click', function() {
-
+    console.log(jenis_poli)
     if ($("#dokter_citra_unggah_poli").val() == null){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan dokter yang bertugas terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
     if ($("#pencarian_member_mcu").val() == null){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
-    if ($("#pdf_file")[0].files[0] == null){
-        if (croppedImages.length == 0 && (title_poliklinik.toLowerCase().replace(/ /g, "") !== "poliklinikfarminghamscore")){
-            return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan foto dari '+title_poliklinik+' minimal 1 Foto terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
-        }
+    if (jenis_poli.toLowerCase().replace(/ /g, "") !== "farmingham_score"){
+        if ($("#pdf_file")[0].files[0] == null){
+            if (croppedImages.length == 0 && (jenis_poli.toLowerCase().replace(/ /g, "") !== "farmingham_score")){
+                return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan foto dari '+title_poliklinik+' minimal 1 Foto terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
+            }
+        }   
     }
     if ($("#judul_citra_unggah_poli").val() == ""){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan kesimpulan dan judul dari '+title_poliklinik+' terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
@@ -310,19 +312,21 @@ $("#simpan_foto_perserta").on('click', function() {
             formData.append('kesimpulan', $('#kesimpulan_citra_unggah_poli option:selected').text());
             formData.append('detail_kesimpulan', detail_kesimpulan);
             formData.append('catatan_kaki', $("#catatan_kaki_citra_unggah_poli").val());
-            formData.append('citra_unggahan_poliklinik_pdf', $("#pdf_file")[0].files[0]);
-            croppedImages.forEach((base64Image, index) => {
-                const isURL = (str) => {
-                    const urlPattern = /^(http|https):\/\/[^\s$.?#].[^\s]*$/;
-                    return urlPattern.test(str);
-                };
-                if (!isURL(base64Image)) {
-                    const blob = dataURLToBlob(base64Image);
-                    const fileName = originalFileNames[index];
-                    const file = new File([blob], fileName, { type: 'image/png' });
-                    formData.append('citra_unggahan_poliklinik[]', file);
-                }   
-            });
+            if (jenis_poli.toLowerCase().replace(/ /g, "") !== "farmingham_score"){
+                formData.append('citra_unggahan_poliklinik_pdf', $("#pdf_file")[0].files[0]);   
+                croppedImages.forEach((base64Image, index) => {
+                    const isURL = (str) => {
+                        const urlPattern = /^(http|https):\/\/[^\s$.?#].[^\s]*$/;
+                        return urlPattern.test(str);
+                    };
+                    if (!isURL(base64Image)) {
+                        const blob = dataURLToBlob(base64Image);
+                        const fileName = originalFileNames[index];
+                        const file = new File([blob], fileName, { type: 'image/png' });
+                        formData.append('citra_unggahan_poliklinik[]', file);
+                    }   
+                });
+            }
             $.ajax({
                 url: baseurlapi + '/poliklinik/simpan/'+jenis_poli,
                 type: 'POST',
