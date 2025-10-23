@@ -197,6 +197,18 @@
                             <input class="form-control" id="tanggal_pendaftaran" type="text" placeholder="dd-mm-yyyy">
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="tipe_mcu_peserta" class="form-label mt-2">Tipe MCU Peserta</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select" id="tipe_mcu_peserta" name="tipe_mcu_peserta" required>
+                                <option value="Periodik">Periodik</option>
+                                <option value="Annual">Annual</option>
+                                <option value="Pensiunan">Pensiunan</option>
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
@@ -317,7 +329,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
-<script src="{{ asset('vendor/erayadigital/pendaftaran/formulirtambahpeserta.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/pendaftaran/formulirtambahpeserta.js') }}?v={{ time() }}"></script>
 <script>
     let isedit = false, id_detail_transaksi_mcu = null;
     $('#tanggal_pendaftaran').val(moment().format("DD-MM-YYYY"));

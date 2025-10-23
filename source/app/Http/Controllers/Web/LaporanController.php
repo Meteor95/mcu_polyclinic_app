@@ -217,6 +217,7 @@ class LaporanController extends Controller
                     'jenis_atribut',
                     'status_atribut',
                     'keterangan_atribut',
+                    'nama_atribut',
                     'transaksi_id'
                 ])
                 ->where('transaksi_id', $id_mcu);
@@ -282,7 +283,7 @@ class LaporanController extends Controller
             'kondisi_fisik' => $data_kondisi_fisik,
             'laboratorium' => $laboratorium,
             'all_citra_data' => $all_citra_data,
-            'lampiran_berkas_pdf' => $lampiran_berkas_pdf,
+            'lampiran_berkas_pdf' => $lampiran_berkas_pdf
         ];
         $folderPath = 'public/mcu/berkas/mcu/';
         $filename = "MCU_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
@@ -639,4 +640,3 @@ class LaporanController extends Controller
         return response()->file($fullPath);
     }
 }
-

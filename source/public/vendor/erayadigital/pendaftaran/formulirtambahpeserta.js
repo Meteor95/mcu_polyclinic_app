@@ -80,6 +80,7 @@ $("#btnKonfirmasiPendaftaran").on("click", function(event) {
                         formData.append('departemen_id', $('#select2_departemen').val());
                         formData.append('id_paket_mcu', id_paket_mcu);
                         formData.append('proses_kerja', JSON.stringify(selectedProsesKerja));
+                        formData.append('tipe_mcu_peserta', $('#tipe_mcu_peserta').val());
                         return formData;
                     })(),
                     success: function(response_data){

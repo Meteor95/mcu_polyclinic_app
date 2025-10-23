@@ -1201,13 +1201,21 @@ background_bottom {
             <th style="background-color: green; border: 1px solid black; padding-top: 10px;">KETERANGAN</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach ($groupedData as $kategori => $items)
+<tbody>
+    @php
+        $rowCount = 0;
+    @endphp
 
-            {{-- Spacer antar kategori (atas saja, bukan kanan kiri) --}}
-            <tr><td colspan="5" style="height: 3px;"></td></tr>
+    @foreach ($groupedData as $kategori => $items)
 
-            @foreach ($items as $index => $item)
+        {{-- Spacer antar kategori --}}
+        <tr><td colspan="9" style="height: 1px;"></td></tr>
+
+        @foreach ($items as $index => $item)
+            @php
+                $rowCount++;
+            @endphp
+
             <tr>
                 {{-- Kolom PEMERIKSAAN --}}
                 @if ($loop->first)
@@ -1278,13 +1286,41 @@ background_bottom {
                         border-bottom: none;
                     @endif
                 ">
-                    {{ $item->keterangan_atribut ?? 'Normal' }}
+                    @if ($item->nama_atribut == 'Neurologis')
+                        {{ $item->keterangan_atribut ?? 'Negatif' }}
+                    @else
+                        {{ $item->keterangan_atribut ?? 'Normal' }}
+                    @endif
                 </td>
             </tr>
-            @endforeach
+            @if (in_array($rowCount, [13,48]))
+                <tr style="text-align: center; font-weight: bold; color: #fff;">
+                    <th style="background-color: green; border: 1px solid black;">PEMERIKSAAN</th>
+                    <th style="width: 2px;"></th>
+                    <th style="background-color: green; border: 1px solid black;">JENIS PEMERIKSAAN</th>
+                    <th style="width: 2px;"></th>
+                    <th style="background-color: green; border: 1px solid black;">AB</th>
+                    <th style="width: 2px;"></th>
+                    <th style="background-color: green; border: 1px solid black;">N</th>
+                    <th style="width: 2px;"></th>
+                    <th style="background-color: green; border: 1px solid black;">KETERANGAN</th>
+                </tr>
+            @endif
 
         @endforeach
-    </tbody>
+    @endforeach
+</tbody>
+<tr style="text-align: center; font-weight: bold; color: #fff;">
+    <th style="background-color: green; border: 1px solid black;">PEMERIKSAAN</th>
+    <th style="width: 2px;"></th>
+    <th style="background-color: green; border: 1px solid black;">JENIS PEMERIKSAAN</th>
+    <th style="width: 2px;"></th>
+    <th style="background-color: green; border: 1px solid black;">AB</th>
+    <th style="width: 2px;"></th>
+    <th style="background-color: green; border: 1px solid black;">N</th>
+    <th style="width: 2px;"></th>
+    <th style="background-color: green; border: 1px solid black;">KETERANGAN</th>
+</tr>
 </table>
             <div style="position: absolute;width: 100%;">
             <table style="width: 100%;">
@@ -1438,52 +1474,5 @@ background_bottom {
         <div style="page-break-after: auto;"></div>
     </main>
     </div>
-</body></html>
-
-
-<htmlpageheader name="myHeader">
-    <div class="header">
-        <img src="' . asset('mofi/assets/images/logo/border_hasil_mcu_atas.png') . '" 
-             alt="Border Hasil MCU" 
-             style="position: absolute; top: 0; width: 100%; z-index: -1; opacity: 0.6;">
-        <table style="width: 100%; padding-right: 25px;">
-            <tr>
-                <td style="width:30%; vertical-align: middle;">
-                    <img src="' . asset('mofi/assets/images/logo/Logo_AMC_Full.png') . '" 
-                         alt="Logo AMC" style="width: 100%; padding-top: 20px;">
-                </td>
-                <td style="width:70%; text-align: right;">
-                    <p>
-                        <span style="font-size: 25px; font-weight: bold;">Klinik AMC</span><br>
-                        <span style="font-size: 15px;">Alamat: Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765</span><br>
-                        <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: arthamedicalcentre.com</span><br>
-                        <span style="font-size: 15px;">Contact Person: 0812-3456-7890 | 0812-3456-7890</span>
-                    </p>
-                </td>
-            </tr>
-        </table>
-    </div>
-</htmlpageheader>
-<!-- Set Cover Page -->
-
-
-$pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
-            ->setPaper('legal', 'portrait')
-            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
-        $pdf->render();
-        $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
-            if ($pageNumber > 1 && $pageNumber < $pageCount) {
-                $width = $canvas->get_width();
-                $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
-                $x = ($width / 2) + 175;              
-                $y = $canvas->get_height() - 40;
-                $canvas->text($x, $y, $text, null, 12);
-            }
-            if ($pageCount == $pageNumber) {
-                $width = $canvas->get_width();
-                $height = $canvas->get_height();
-                $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
-            }
-        });
-        $pdf->save($fullPath);
-        return response()->file($fullPath);
+</body>
+</html>

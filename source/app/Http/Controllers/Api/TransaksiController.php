@@ -26,6 +26,7 @@ class TransaksiController extends Controller
                 'id_paket_mcu' => 'required',
                 'proses_kerja' => 'required',
                 'jenis_transaksi_pendaftaran' => 'required',
+                'tipe_mcu_peserta' => 'required',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -34,7 +35,6 @@ class TransaksiController extends Controller
             $data = $request->all();
             $file = $request->file('nama_file_surat_pengantar');
             $return = $transaksiService->handleTransactionPeserta($data, $request->attributes->get('user_id'), $file);
-            Log::info($return);
             if (!$return) {
                 return ResponseHelper::data_conflict('Pasien dengan Nama ' . $data['nama_peserta'] . ' sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya');
             }
