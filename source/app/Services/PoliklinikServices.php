@@ -180,7 +180,7 @@ class PoliklinikServices
                 $model->setTableName('mcu_poli_usg_ubdomain');
                 $namafolder = 'usg_ubdomain';
             }
-            if ($data['jenis_poli'] !== "farmingham_score") {
+            if ($data['jenis_poli'] != "farmingham_score") {
                 $model->where('id', $data['id_trx_poli'])->delete();
                 $unggahan_citra = UnggahanCitra::where('id_trx_poli', $data['id_trx_poli'])->get();
                 foreach ($unggahan_citra as $item) {

@@ -389,6 +389,10 @@ function unduhFoto(lokasi_gambar){
     window.open(lokasi_gambar, '_blank');
 }
 function hapusunduhanFoto(id_trx_poli,nama_peserta,transaksi_id, nomor_mcu){
+    console.log(id_trx_poli)
+    console.log(nama_peserta)
+    console.log(transaksi_id)
+    console.log(nomor_mcu)
     Swal.fire({
         html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53a48ece-27d3-4b85-9150-8005e7c27aa4/usrEqiqrei.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penghapusan Citra Unggahan MCU</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus informasi ungahan citra MCU <strong>'+nama_peserta+'</strong> dengan Nomor MCU <strong>'+nomor_mcu+'</strong> ? Silahkan unggah citra kembali jika ingin menampilkan citra tersebut jika tidak foto akan ditampilkan dengan citra dasar dari sistem MCU',
         showCancelButton: true,
