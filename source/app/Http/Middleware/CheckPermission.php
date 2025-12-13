@@ -70,6 +70,7 @@ class CheckPermission
             /* Pemeriksaan */
             'hasAccessTindakanLaboratorium' => 'akses_tindakan_laboratorium',
             /* Laporan */
+            'hasAccessValidasiKesimpulan' => 'akses_validasi_kesimpulan',
             'hasAccessValidasiMcu' => 'akses_validasi_mcu',
             'hasAccessArciveMCU' => 'akses_berkas_tindakan_mcu',
             'hasAccessArciveLaboratorium' => 'akses_berkas_tindakan_laboratorium',

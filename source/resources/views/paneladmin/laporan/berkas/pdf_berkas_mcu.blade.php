@@ -1,144 +1,3 @@
-<html>
-<head>
-<style>
-    @page { margin: 0;}
-    body, html { margin: 0; padding: 0; }
-    .header img { width: 100%; }
-    .header table { width: 100%; }
-    .cover { width: 100%; height: 297mm; background-size: cover; }
-    .content_main { padding-top: 100px; }
-</style>
-</head>
-<body>
-
-<!-- HEADER UNTUK HALAMAN KONTEN -->
-<htmlpageheader name="myHeader">
-    <div class="header">
-        <img src="{{ asset('mofi/assets/images/logo/border_hasil_mcu_atas.png') }}" alt="Border Hasil MCU" style="position: absolute;top: 0;right: 0;width: 100%;z-index: -1;opacity: 0.6;">
-        <table style="width: 100%;padding-right: 25px;top:0;padding-top:-180px;">
-            <tr>
-                <td style="width:25%; vertical-align: center;">
-                    <img src="{{ asset('mofi/assets/images/logo/Logo_AMC_Full.png') }}" alt="Logo AMC" style="width: 30%;">
-                </td>
-                <td style="width:75%; text-align: right;">
-                    <p>
-                        <span style="font-size: 25px; font-weight: bold;">Klinik {{ config('app.name') }}</span><br>
-                        <span style="font-size: 15px;">Alamat: Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765</span><br>
-                        <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: arthamedicalcentre.com</span><br>
-                        <span style="font-size: 15px;">Contact Person: 0812-3456-7890 | 0812-3456-7890</span>
-                    </p>
-                </td>
-            </tr>
-        </table>
-    </div>
-</htmlpageheader>
-<htmlpagefooter name="myFooter">
-    <div style="width:100%; position: relative; font-size:12px; line-height:1.2;">
-        <div style="position: absolute; bottom: 0; left: 0; width: 100%; opacity: 0.6; z-index: 0;">
-            <img src="{{ asset('mofi/assets/images/logo/border_hasil_mcu_bawah.png') }}" style="width:100%;">
-        </div>
-        <table style="width:100%; border-collapse: collapse; position: relative; z-index: 1;">
-            <tr>
-                <td style="width:50%; text-align:left; padding-left:20px; vertical-align: middle;">
-                    <img src="{{ asset('mofi/assets/images/logo/IASCB.png') }}" alt="IASCB" style="height:50px; margin-right:10px;">
-                    <img src="{{ asset('mofi/assets/images/logo/KEMENTAKER.png') }}" alt="Kementerian Ketenagakerjaan" style="height:50px; margin-right:10px;">
-                    <img src="{{ asset('mofi/assets/images/logo/VRC.png') }}" alt="VRC" style="height:50px;">
-                </td>
-                <td style="width:50%; text-align:right; padding-right:25px; vertical-align: middle;">
-                    Halaman {PAGENO} dari {nb}
-                </td>
-            </tr>
-        </table>
-    </div>
-</htmlpagefooter>
-
-<!-- HALAMAN COVER -->
-<div class="cover" style="background-image:url('{{ asset('mofi/assets/images/logo/compress_cover.jpg') }}'); background-size: cover; width:100%; height:297mm;"></div>
-
-<div style="page-break-before: always;">
-    <sethtmlpageheader name="myHeader" value="on" show-this-page="2" />
-    <div class="content_main">
-        <div style="text-align: center;">
-            <h3>PEMERIKSAAN KESEHATAN<br>(MEDICAL CHECKUP)</h3>
-            <img src="{{ $data['riwayat_informasi_foto']['data_foto'] }}" style="height: 250px;border-radius: 10px;">
-        </div>
-        <table style="width: 80%; margin: 10px auto;font-weight: bold;">
-            <tr>
-                <td style="white-space: nowrap;">NOMOR MEDICAL CHECKUP</td>
-                <td>:</td>
-                <td>{{ $data['nomor_mcu'] }}</td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">NAMA PESERTA</td>
-                <td>:</td>
-                <td>{{ $data['informasi_data_diri']['nama_peserta'] }}</td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">NIK / NRR</td>
-                <td>:</td>
-                <td>{{ $data['informasi_data_diri']['nomor_identitas'] }}</td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">TEMPAT TANGGAL LAHIR / UMUR</td>
-                <td>:</td>
-                <td>{{ $data['informasi_data_diri']['tempat_lahir'] }}, {{ date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_lahir'])) }} / {{ $data['informasi_data_diri']['umur'] }} Tahun</td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">JENIS KELAMIN</td>
-                <td>:</td>
-                <td>{{ $data['informasi_data_diri']['jenis_kelamin'] }}</td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">PERUSAHAAN</td>
-                <td>:</td>
-                <td>{{ $data['informasi_data_diri']['company_name'] }}</td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">DEPARTEMEN JABATAN</td>
-                <td>:</td>
-                <td>{{ $data['informasi_data_diri']['nama_departemen'] }}</td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">ALAMAT</td>
-                <td>:</td>
-                <td>{{ $data['informasi_data_diri']['alamat'] }}</td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">TANGGAL MCU / TIPE MCU</td>
-                <td>:</td>
-                <td>{{ date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_mcu'])) }} / {{ $data['informasi_data_diri']['tipe_mcu_peserta'] }}</td>
-            </tr>
-        </table>
-        <table style="width: 100%; text-align: left; border-collapse: collapse; position: absolute;">
-            <tr>
-                <td style="width: 50%; padding: 10px;">
-                    <strong>ISO 9001:2015 Certified</strong><br>
-                    2410010019699K001<br>
-                    <strong>ISO 14001:2015 Certified</strong><br>
-                    24100100196914K001
-                </td>
-            </tr>
-        </table>
-    </div>
-    <sethtmlpagefooter name="myFooter" value="on" show-this-page="2"/>
-</div>
-<div style="page-break-before: always;">
-    <sethtmlpageheader name="myHeader" value="on" show-this-page="3" />
-        <h1>Halaman 3</h1>
-        <p>Isi halaman 3, header tetap muncul di atas.</p>
-    <sethtmlpagefooter name="myFooter" value="on" show-this-page="3"/>
-</div>
-
-</body>
-</html>
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -146,7 +5,7 @@
 <title>Berkas MCU {{ $data['nomor_mcu'] }}</title>
 <style>
 @page { 
-    margin:0.1;
+    margin:110px 0px 80px 40px;
 }
 @page:first {
     margin: 0; 
@@ -1294,23 +1153,13 @@ background_bottom {
                 </td>
             </tr>
             @if (in_array($rowCount, [13,48]))
-                <tr style="text-align: center; font-weight: bold; color: #fff;">
-                    <th style="background-color: green; border: 1px solid black;">PEMERIKSAAN</th>
-                    <th style="width: 2px;"></th>
-                    <th style="background-color: green; border: 1px solid black;">JENIS PEMERIKSAAN</th>
-                    <th style="width: 2px;"></th>
-                    <th style="background-color: green; border: 1px solid black;">AB</th>
-                    <th style="width: 2px;"></th>
-                    <th style="background-color: green; border: 1px solid black;">N</th>
-                    <th style="width: 2px;"></th>
-                    <th style="background-color: green; border: 1px solid black;">KETERANGAN</th>
-                </tr>
+                <tr><th colspan="9" style="height: 0;border-bottom: 2px solid black;padding: 0;"></th></tr>
             @endif
 
         @endforeach
     @endforeach
 </tbody>
-<tr style="text-align: center; font-weight: bold; color: #fff;">
+<!--<tr style="text-align: center; font-weight: bold; color: #fff;">
     <th style="background-color: green; border: 1px solid black;">PEMERIKSAAN</th>
     <th style="width: 2px;"></th>
     <th style="background-color: green; border: 1px solid black;">JENIS PEMERIKSAAN</th>
@@ -1320,7 +1169,8 @@ background_bottom {
     <th style="background-color: green; border: 1px solid black;">N</th>
     <th style="width: 2px;"></th>
     <th style="background-color: green; border: 1px solid black;">KETERANGAN</th>
-</tr>
+</tr>-->
+<tr><th colspan="9" style="height: 0;border-bottom: 2px solid black;padding: 0;"></th></tr>
 </table>
             <div style="position: absolute;width: 100%;">
             <table style="width: 100%;">

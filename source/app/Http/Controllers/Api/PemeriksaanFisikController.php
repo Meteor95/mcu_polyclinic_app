@@ -22,7 +22,7 @@ class PemeriksaanFisikController extends Controller
                 'nama_atribut_tingkat_kesadaran' => 'required',
                 'id_atribut_status_tingkat_kesadaran' => 'required',
                 'nama_atribut_status_tingkat_kesadaran' => 'required',
-                'keluhan' => 'required',
+                //'keluhan' => 'required',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];

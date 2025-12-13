@@ -651,5 +651,6 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/laporan/validasi_mcu_nota.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/laporan/validasi_mcu_nota.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laporan/validasi_mcu_nota.js')) }}"></script>
+
 @endsection

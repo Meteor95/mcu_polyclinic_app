@@ -33,5 +33,5 @@
 @section('css_load')
 @endsection
 @section('js_load')
-<script src="{{ asset('vendor/erayadigital/beranda/beranda.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/beranda/beranda.js') }}?v={{ filemtime(public_path('vendor/erayadigital/beranda/beranda.js')) }}"></script>
 @endsection

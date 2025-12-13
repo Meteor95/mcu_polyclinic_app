@@ -139,7 +139,7 @@ table.dataTable tbody td.focus {
 <script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('mofi/assets/js/select2/tagify.js') }}"></script>
-<script src="{{ asset('vendor/erayadigital/tingkatkesadaran/tandavital.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/tingkatkesadaran/tandavital.js') }}?v={{ filemtime(public_path('vendor/erayadigital/tingkatkesadaran/tandavital.js')) }}"></script>
 <script>
   let param_nomor_identitas = '{{$data['nomor_identitas']}}'
   let param_nama_peserta = '{{$data['nama_peserta']}}'

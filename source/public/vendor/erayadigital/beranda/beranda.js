@@ -75,6 +75,15 @@ function onload_tabel_antrian(){
                     }
                 },
                 {
+                    title: "Dari Perusahaan",
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `${row.nama_perusahaan}`;
+                        }
+                        return data;
+                    }
+                },
+                {
                     title: "Tanda Vital",
                     className: "text-center",
                     render: function(data, type, row, meta) {

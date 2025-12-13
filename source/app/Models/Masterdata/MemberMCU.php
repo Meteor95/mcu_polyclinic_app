@@ -23,6 +23,7 @@ class MemberMCU extends Model
     public static function listMemberMcu($req, $perHalaman, $offset)
     {
         $parameterpencarian = $req->parameter_pencarian;
+        $id_peserta = $req->id_peserta;
         $tablePrefix = config('database.connections.mysql.prefix');
         if ($req->tipe == 1) {
             $query = MemberMCU::query();
@@ -37,7 +38,8 @@ class MemberMCU extends Model
         
         if (!empty($parameterpencarian)) {
             $query->where('nomor_identitas', 'LIKE', '%' . $parameterpencarian . '%')
-                  ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');
+                  ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%')
+                  ->orWhere('id', '=', $parameterpencarian);
         }        
         $jumlahdata = $query->count();
         $result = $query->take($perHalaman)

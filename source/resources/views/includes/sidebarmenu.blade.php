@@ -169,7 +169,7 @@
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
               <i class="fa-solid fa-hospital-user" style="padding-right: 5px;font-size: 18px;color: #fff;"></i>
-              <span>Poliklinik</span>
+              <span>MCU Data</span>
             </a>
             <ul class="sidebar-submenu">
               @foreach([
@@ -229,7 +229,7 @@
               <h6>LAPORAN</h6>
             </div>
           </li>
-          @if ($hasAccessHasilKesimpulan)
+          @if ($hasAccessValidasiKesimpulan)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="{{ route('admin.laporan.validasi_rekap_kesimpulan') }}">

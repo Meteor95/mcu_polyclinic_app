@@ -184,3 +184,7 @@ function izinkan_akses_tindakan(hak_akses,pathParts){
         $(".formulir_group_button").hide();
     }
 }
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}

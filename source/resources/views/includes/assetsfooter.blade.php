@@ -1,32 +1,31 @@
 <!-- Essential Libraries -->
-<script src="{{ asset('mofi/assets/js/jquery.min.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/jquery.min.js') }}?v={{ filemtime(public_path('mofi/assets/js/jquery.min.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/bootstrap/bootstrap.bundle.min.js') }}?v={{ filemtime(public_path('mofi/assets/js/bootstrap/bootstrap.bundle.min.js')) }}"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
-
 <!-- Icon Libraries -->
-<script src="{{ asset('mofi/assets/js/icons/feather-icon/feather.min.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/icons/feather-icon/feather-icon.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/icons/feather-icon/feather.min.js') }}?v={{ filemtime(public_path('mofi/assets/js/icons/feather-icon/feather.min.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/icons/feather-icon/feather-icon.js') }}?v={{ filemtime(public_path('mofi/assets/js/icons/feather-icon/feather-icon.js')) }}"></script>
 
 <!-- UI Enhancement Scripts -->
-<script src="{{ asset('mofi/assets/js/scrollbar/simplebar.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/scrollbar/custom.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/config.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/sidebar-menu.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/sidebar-pin.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/scrollbar/simplebar.js') }}?v={{ filemtime(public_path('mofi/assets/js/scrollbar/simplebar.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/scrollbar/custom.js') }}?v={{ filemtime(public_path('mofi/assets/js/scrollbar/custom.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/config.js') }}?v={{ filemtime(public_path('mofi/assets/js/config.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/sidebar-menu.js') }}?v={{ filemtime(public_path('mofi/assets/js/sidebar-menu.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/sidebar-pin.js') }}?v={{ filemtime(public_path('mofi/assets/js/sidebar-pin.js')) }}"></script>
 
 <!-- Slick Carousel -->
-<script src="{{ asset('mofi/assets/js/slick/slick.min.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/slick/slick.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/header-slick.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/slick/slick.min.js') }}?v={{ filemtime(public_path('mofi/assets/js/slick/slick.min.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/slick/slick.js') }}?v={{ filemtime(public_path('mofi/assets/js/slick/slick.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/header-slick.js') }}?v={{ filemtime(public_path('mofi/assets/js/header-slick.js')) }}"></script>
 
 <!-- Form Validation -->
-<script src="{{ asset('mofi/assets/js/form-validation-custom.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/form-validation-custom.js') }}?v={{ filemtime(public_path('mofi/assets/js/form-validation-custom.js')) }}"></script>
 
 <!-- Miscellaneous -->
-<script src="{{ asset('mofi/assets/js/tooltip-init.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/script.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/theme-customizer/customizer.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/tooltip-init.js') }}?v={{ filemtime(public_path('mofi/assets/js/tooltip-init.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/script.js') }}?v={{ filemtime(public_path('mofi/assets/js/script.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/theme-customizer/customizer.js') }}?v={{ filemtime(public_path('mofi/assets/js/theme-customizer/customizer.js')) }}"></script>
 
 <!-- External CDN Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -35,9 +34,9 @@
 <script src="https://momentjs.com/downloads/moment.js"></script>
 
 <!-- Custom Scripts -->
-<script src="{{ asset('mofi/assets/js/eds/globalfn.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/eds/eds_toast.js') }}"></script>
-<script src="{{ asset('vendor/erayadigital/eds_custom.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/eds/globalfn.js') }}?v={{ filemtime(public_path('mofi/assets/js/eds/globalfn.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/eds/eds_toast.js') }}?v={{ filemtime(public_path('mofi/assets/js/eds/eds_toast.js')) }}"></script>
+<script src="{{ asset('vendor/erayadigital/eds_custom.js') }}?v={{ filemtime(public_path('vendor/erayadigital/eds_custom.js')) }}"></script>
 
 <!-- Global Variables -->
 <script>

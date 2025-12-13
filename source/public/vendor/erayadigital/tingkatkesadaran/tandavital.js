@@ -1,4 +1,5 @@
 let table;
+let kode_member = getQueryParam('id_peserta');
 $(document).ready(function(){
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onload_datatables();

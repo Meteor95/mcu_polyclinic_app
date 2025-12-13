@@ -66,6 +66,12 @@ $(document).ready(function(){
         },
         theme: 'snow'
     });
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const param_nomor_identitas = urlParams.get('nomor_identitas'); // "6407062323230001"
+    const param_nama_peserta = urlParams.get('nama_peserta'); // "Awang Ramadhani Saputra"
+    onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
+
 });
 $('#detail_penjelasan_citra_unggah_poli').on('change', function () {
     const selectedText = $(this).find('option:selected').text();

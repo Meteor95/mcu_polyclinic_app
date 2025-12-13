@@ -24,9 +24,11 @@ class Antrian extends Model
         $query = DB::table('mcu_transaksi_peserta')
             ->leftJoin('mcu_transaksi_antrian', 'mcu_transaksi_antrian.id_pendaftaran', '=', 'mcu_transaksi_peserta.id')
             ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+            ->join('company', 'mcu_transaksi_peserta.departemen_id', '=', 'company.id')
             ->select(
                 'mcu_transaksi_peserta.id as id_antrian_peserta',
                 'users_member.nama_peserta as nama_peserta_antrian',
+                'company.company_name as nama_perusahaan',
                 DB::raw("MAX(CASE WHEN jenis_kategori = 'tanda_vital' THEN status END) AS tanda_vital_status"),
                 DB::raw("MAX(CASE WHEN jenis_kategori = 'spirometri' THEN status END) AS spirometri_status"),
                 DB::raw("MAX(CASE WHEN jenis_kategori = 'audiometri' THEN status END) AS audiometri_status"),

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use PDF;
-use MPDF;
 use Illuminate\Support\Facades\Log;
 use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, RiwayatKecelakaanKerja, RiwayatKebiasaanHidup, RiwayatPenyakitTerdahulu, RiwayatPenyakitKeluarga, RiwayatImunisasi,UnggahanCitraLab};
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
@@ -312,17 +311,24 @@ class LaporanController extends Controller
         //     });
         //     $pdf->save($fullPath);
         // } 
-        // 🔹 Generate PDF pakai mPDF
-        $pdf = MPDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data], [
-                'format'        => 'A4',
-                'orientation'   => 'P',
-                'margin_left'   => 0,
-                'margin_right'  => 0,
-                'margin_top'    => 0,
-                'margin_bottom' => 0,
-                'margin_header' => 0,
-                'margin_footer' => 0,
-        ]);
+        $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
+            ->setPaper('legal', 'portrait')
+            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+        $pdf->render();
+        $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
+            if ($pageNumber > 1 && $pageNumber < $pageCount) {
+                $width = $canvas->get_width();
+                $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
+                $x = ($width / 2) + 175;              
+                $y = $canvas->get_height() - 40;
+                $canvas->text($x, $y, $text, null, 12);
+            }
+            if ($pageCount == $pageNumber) {
+                $width = $canvas->get_width();
+                $height = $canvas->get_height();
+                $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
+            }
+        });
         $pdf->save($fullPath);
         return response()->file($fullPath);
     }
@@ -453,14 +459,14 @@ class LaporanController extends Controller
         $qrcode_dokter = base64_encode(QrCode::format('svg')
             ->size(75)
             ->margin(1)
-            ->generate($atas_nama_nota->nik));
+            ->generate(00000));
         $data = [
             'title' => 'Berkas Tindakan MCU',
             'nomor_mcu' => $no_nota,
             'qrcode_no_nota' => $qrcode_no_nota,
             'qrcode_dokter' => $qrcode_dokter,
-            'atas_nama_nota' => $atas_nama_nota->nama_pegawai,
-            'nip' => $atas_nama_nota->nik,
+            'atas_nama_nota' => "Aries",
+            'nip' => "000",
             'keterangan' => $keterangan == "" ? "Kuitansi Jenis Tindakan ".ucwords(str_replace("_", " ", $data_informasi->jenis_layanan)) : $keterangan,
             'tanggal_cetak' => $tanggal_cetak,
             'nama_peserta' => $data_informasi->nama_peserta,
@@ -526,15 +532,15 @@ class LaporanController extends Controller
         $qrcode_dokter = base64_encode(QrCode::format('svg')
             ->size(75)
             ->margin(1)
-            ->generate($atas_nama_nota->nik));
+            ->generate("00"));
         $data = [
             'title' => 'Cetak Kuitansi Perusahaan',
             'nama_perusahaan' => $data_informasi->nama_peserta,
             'jumlah_peserta' => $data_informasi->jumlah_peserta,
             'qrcode_no_nota' => $qrcode_no_nota,
             'qrcode_dokter' => $qrcode_dokter,
-            'atas_nama_nota' => $atas_nama_nota->nama_pegawai,
-            'nip' => $atas_nama_nota->nik,
+            'atas_nama_nota' => "000",
+            'nip' => "000",
             'keterangan' => $keterangan == "" ? "Kuitansi Untuk Perusahaan Periode ".Carbon::parse($data_informasi->tanggal_awal)->format('d M Y')." s/d ".Carbon::parse($data_informasi->tanggal_akhir)->format('d M Y') : $keterangan,
             'tanggal_cetak' => $tanggal_cetak,
             'total_pembayaran' => "Rp ".number_format($data_informasi->total_pembayaran + $data_informasi->nominal_apotek,2,",","."),
@@ -611,7 +617,7 @@ class LaporanController extends Controller
         $qrcode_dokter = base64_encode(QrCode::format('svg')
             ->size(75)
             ->margin(1)
-            ->generate($atas_nama_nota->nik));
+            ->generate("0000"));
         $data = [
             'title' => 'Cetak Kuitansi Perusahaan',
             'detail_tagihan' => $data_informasi,
@@ -619,8 +625,8 @@ class LaporanController extends Controller
             'no_transaksi_combine' => $new_nota,
             'qrcode_no_nota' => $qrcode_no_nota,
             'qrcode_dokter' => $qrcode_dokter,
-            'atas_nama_nota' => $atas_nama_nota->nama_pegawai,
-            'nip' => $atas_nama_nota->nik,
+            'atas_nama_nota' => "000",
+            'nip' => "0000",
             'keterangan' => $keterangan == "" ? "Kuitansi Untuk Perusahaan Periode ".Carbon::parse($first_row->tanggal_awal)->format('d M Y')." s/d ".Carbon::parse($first_row->tanggal_akhir)->format('d M Y') : $keterangan,
             'tanggal_cetak' => $tanggal_cetak,
         ];
