@@ -64,22 +64,28 @@ class LaporanController extends Controller
                 ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
                 ->select('users_member.*', 'mcu_transaksi_peserta.id as transaksi_id')
                 ->first();
-            $informasi_user = TransaksiLab::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
+            $informasi_user = DB::table('mcu_transaksi_peserta')
+                ->leftJoin('transaksi', 'transaksi.no_mcu', '=', 'mcu_transaksi_peserta.id')
                 ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
                 ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
                 ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
-                ->select('users_member.*','transaksi.total_transaksi','departemen_peserta.nama_departemen','company.company_name', 'transaksi.waktu_trx', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'transaksi.*', 'mcu_transaksi_peserta.id as transaksi_id','mcu_transaksi_peserta.status_peserta')
+                ->select(
+                    'users_member.*',
+                    'departemen_peserta.nama_departemen',
+                    'company.company_name',
+                    'mcu_transaksi_peserta.id as transaksi_id',
+                    'mcu_transaksi_peserta.status_peserta'
+                )
                 ->selectRaw('
-                    COUNT(' . $tablePrefix . 'transaksi.no_mcu) as kedatangan, 
-                    MAX(' . $tablePrefix . 'transaksi.created_at) as terakhir_datang, 
-                    SUM(' . $tablePrefix . 'transaksi.total_transaksi) as valuasi, 
-                    TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) as umur
+                    COALESCE(COUNT('.$tablePrefix.'transaksi.no_mcu), 0) as kedatangan,
+                    COALESCE(MAX('.$tablePrefix.'transaksi.created_at), "Belum Pernah Transaksi") as terakhir_datang,
+                    COALESCE(SUM('.$tablePrefix.'transaksi.total_transaksi), 0) as valuasi,
+                    TIMESTAMPDIFF(YEAR, '.$tablePrefix.'users_member.tanggal_lahir, CURDATE()) as umur
                 ')
-                ->where('transaksi.no_mcu', $transaksi_id->transaksi_id)
-                ->groupBy('transaksi.no_mcu')
-                ->limit(1)
-                ->orderBy('terakhir_datang', 'desc')
+                ->where('mcu_transaksi_peserta.id', $transaksi_id->transaksi_id)
+                ->groupBy('mcu_transaksi_peserta.id')
                 ->first();
+
             /* Riwayat Informasi */
             $data_unggahan = UnggahCitra::where('transaksi_id', $transaksi_id->transaksi_id)->first();
             $jumlah_data_foto_data_diri = $data_unggahan ? $data_unggahan->count() : 0;
@@ -291,7 +297,7 @@ class LaporanController extends Controller
         }
     }
     public function validasi_mcu_nota_akhir(Request $req){
-       try {
+        try {
             $validator = Validator::make($req->all(), [
                 'mcu_transaksi_id' => 'required',
                 'status' => 'required',
@@ -307,6 +313,9 @@ class LaporanController extends Controller
             $infromasi_nama_file = Transaksi::join('users_member','users_member.id','=','mcu_transaksi_peserta.user_id')
                 ->select('users_member.nomor_identitas','mcu_transaksi_peserta.id as transaksi_id')
                 ->where('no_transaksi', $no_nota)->first();
+            $paket_mcu = Transaksi::join('paket_mcu','paket_mcu.id','=','mcu_transaksi_peserta.id_paket_mcu')
+                ->select('paket_mcu.id','paket_mcu.nama_paket','paket_mcu.harga_paket','mcu_transaksi_peserta.jenis_transaksi_pendaftaran','mcu_transaksi_peserta.id as id_mcu_peserta')
+                ->where('no_transaksi', $no_nota)->first();
             $dynamicAttributes = [];
             $folderPathMCU = 'mcu/berkas/mcu/';
             $file_mcu_lama = "MCU_" . str_replace('/', '_', $no_nota) . '_' . $infromasi_nama_file->transaksi_id . '_' . $infromasi_nama_file->nomor_identitas . '.pdf';
@@ -317,7 +326,54 @@ class LaporanController extends Controller
             Storage::disk('public')->delete($relativePathMCU);
             Storage::disk('public')->delete($relativePathLAB);
             /* Insert Sama Seperti Laboratorium, Cuma Kalau Ini By Pass Tanpa Laboratorium */
-            
+            if ($req->status != 'selesai') {
+                TransaksiLab::where('no_nota', $no_nota)->forceDelete();
+            }else{
+                $userDetails = $req->get('user_details');
+                $data_transaksi = [
+                    'no_mcu' => $paket_mcu->id_mcu_peserta,
+                    'no_nota' => $no_nota,
+                    'waktu_trx' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'waktu_trx_sample' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'id_dokter' => $userDetails->id,
+                    'nama_dokter' => $userDetails->nama_pegawai,
+                    'id_pj' => $userDetails->id,
+                    'nama_pj' => $userDetails->nama_pegawai,
+                    'total_bayar' => $paket_mcu->harga_paket,
+                    'total_transaksi' => $paket_mcu->harga_paket,
+                    'total_tindakan' => 0,
+                    'jenis_transaksi' => 0,
+                    'metode_pembayaran' => '',
+                    'id_kasir' => $userDetails->id,
+                    'status_pembayaran' => 'process',
+                    'jenis_layanan' => 'MCU',
+                    'nama_file_surat_pengantar' => "",
+                    'is_paket_mcu' => $paket_mcu->id,
+                    'nama_paket_mcu' => $paket_mcu->nama_paket,
+                    'nominal_apotek' => 0,
+                    'lampirkan_berkas_pdf' => 0,
+                ];
+                $hasil_query_tranaksi = TransaksiLab::create($data_transaksi);
+                $data_tindakan[] = [
+                    'id_transaksi' => $hasil_query_tranaksi->id,
+                    'id_item' => 1,
+                    'kode_item' => '1000001000001',
+                    'nama_item' => 'Paket MCU',
+                    'nilai_tindakan' => 1,
+                    'harga' => $paket_mcu->harga_paket,
+                    'diskon' => 0,
+                    'harga_setelah_diskon' => 0,
+                    'jumlah' => 1,
+                    'keterangan' => "PAKET MCU",
+                    'meta_data_kuantitatif' => "{}",
+                    'meta_data_kualitatif' => "{}",
+                    'meta_data_jasa' => "{}",
+                    'meta_data_jasa_fee' => "{}",
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                ];
+                TransaksiDetail::insert($data_tindakan);
+            }
             return ResponseHelper::success('Validasi atas nomor dokumen '.$no_nota.' berhasil diubah menjadi '.$req->status_text.'. Berkas lama akan dihapus dan digantikan dengan yang baru', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

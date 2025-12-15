@@ -98,7 +98,6 @@ class TransaksiServices
                 ]);
             }
         });
-        Log::info("TRUUEEEE");
         return true;
     }
 
