@@ -35,7 +35,7 @@ class MemberMCU extends Model
                     DATE_FORMAT(' . $tablePrefix . 'users_member.created_at, "%d-%m-%Y %H:%i:%s") AS created_at
                 ');
         }
-        
+        $query->where('status_peserta', '!=', 'selesai');
         if (!empty($parameterpencarian)) {
             $query->where('nomor_identitas', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%')
