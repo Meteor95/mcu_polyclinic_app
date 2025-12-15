@@ -58,6 +58,7 @@ class Antrian extends Model
             ");
         }
         $query->orderBy('mcu_transaksi_peserta.id', 'ASC');
+        $query->where('status_peserta', '!=', 'selesai');
         if ($parameterpencarian != "") {
             if (ctype_digit($parameterpencarian)){
                 $query->where('id_pendaftaran', $parameterpencarian);
@@ -83,6 +84,7 @@ class Antrian extends Model
         ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'mcu_transaksi_antrian.id_pendaftaran')
         ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
         ->select('mcu_transaksi_antrian.id_pendaftaran as id_antrian_peserta','mcu_transaksi_antrian.*','users_member.*','mcu_transaksi_peserta.*');
+        $query->where('status_peserta', '!=', 'selesai');
         if ($kategori_antrian != "") {
             $query->where('jenis_kategori', $kategori_antrian);
         }

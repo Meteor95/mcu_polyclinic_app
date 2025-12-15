@@ -11,7 +11,7 @@ return [
     | in dompdf_config.inc.php. You can also override the entire config file.
     |
     */
-    'show_warnings' => false,   // Throw an Exception on warnings from dompdf
+    'show_warnings' => true,   // Throw an Exception on warnings from dompdf
 
     'public_path' => null,  // Override the public path if needed
 
@@ -298,8 +298,8 @@ return [
         'enable_html5_parser' => true,
         'http_context' => stream_context_create([
         'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false,
+            'verify_peer' => true,
+            'verify_peer_name' => true,
             ],
         'http' => [
             'header' => "User-Agent: Mozilla/5.0\r\n",

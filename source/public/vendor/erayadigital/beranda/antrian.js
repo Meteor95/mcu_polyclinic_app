@@ -281,13 +281,26 @@ function onload_tabel_antrian(){
                     }
                 },
                 {
-                    title: "Rontgen Abdomen",
+                    title: "Rontgen Lumbosacral",
                     className: "text-center",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `${row.rontgen_abdomen_status == null ? '<span class="badge bg-danger">-</span>' : 
-                                (row.rontgen_abdomen_status == 0 ? '<span class="badge bg-primary">Mengantri</span>' : 
-                                (row.rontgen_abdomen_status == 1 ? '<span class="badge bg-success">Selesai</span>' : 
+                            return `${row.rontgen_lumbosacral_status == null ? '<span class="badge bg-danger">-</span>' : 
+                                (row.rontgen_lumbosacral_status == 0 ? '<span class="badge bg-primary">Mengantri</span>' : 
+                                (row.rontgen_lumbosacral_status == 1 ? '<span class="badge bg-success">Selesai</span>' : 
+                                '<span class="badge bg-warning">Proses</span>'))}`;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    title: "Rontgen Abdomen (USG)",
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `${row.usg_ubdomain_status == null ? '<span class="badge bg-danger">-</span>' : 
+                                (row.usg_ubdomain_status == 0 ? '<span class="badge bg-primary">Mengantri</span>' : 
+                                (row.usg_ubdomain_status == 1 ? '<span class="badge bg-success">Selesai</span>' : 
                                 '<span class="badge bg-warning">Proses</span>'))}`;
                         }
                         return data;

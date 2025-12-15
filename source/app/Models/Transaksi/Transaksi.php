@@ -18,12 +18,14 @@ class Transaksi extends Model
         'id_paket_mcu',
         'petugas_id',
         'jenis_transaksi_pendaftaran',
-        'status_peserta'
+        'status_peserta',
+        'tipe_mcu_peserta'
     ];
     public static function listPasienTabel($request, $perHalaman, $offset)
     {
         $parameterpencarian = $request->parameter_pencarian;
         $status_peserta = $request->status_peserta;
+        $parameterpencarianstatuspasien = $request->status_pasien;
         $from_query = $request->from_query;
         $tablePrefix = config('database.connections.mysql.prefix');
         $query = DB::table((new self())->getTable())
@@ -49,8 +51,12 @@ class Transaksi extends Model
             $query->where('no_transaksi', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');
         }
-        if (!empty($status_peserta)) {
-            $query->where('mcu_transaksi_peserta.status_peserta', '=', $status_peserta);
+        if ($status_peserta != "" || $parameterpencarianstatuspasien != ""){
+            if (!empty($status_peserta) || !empty($parameterpencarianstatuspasien)) {
+                $query->where('status_peserta', '=', ($status_peserta == "" ? $parameterpencarianstatuspasien : $status_peserta));
+            } else {
+                $query->where('status_peserta', '!=', 'selesai');
+            }   
         }
         $jumlahdata = $query->groupBy('mcu_transaksi_peserta.id')
             ->get()
@@ -84,7 +90,6 @@ class Transaksi extends Model
             'mcu_transaksi_peserta.*',
             'users_member.*',
             DB::raw( $tablePrefix . 'mcu_transaksi_peserta.*, ' . $tablePrefix . 'users_member.*, TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
-        )
-        ->first();
+        )->where('status_peserta' , '!=', 'selesai')->first();
     }
 }

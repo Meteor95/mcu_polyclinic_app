@@ -316,6 +316,8 @@ class LaporanController extends Controller
             $relativePathLAB = $folderPathLab . $file_lab_lama;
             Storage::disk('public')->delete($relativePathMCU);
             Storage::disk('public')->delete($relativePathLAB);
+            /* Insert Sama Seperti Laboratorium, Cuma Kalau Ini By Pass Tanpa Laboratorium */
+            
             return ResponseHelper::success('Validasi atas nomor dokumen '.$no_nota.' berhasil diubah menjadi '.$req->status_text.'. Berkas lama akan dihapus dan digantikan dengan yang baru', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

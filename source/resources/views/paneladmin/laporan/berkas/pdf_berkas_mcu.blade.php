@@ -59,7 +59,6 @@ watermark {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 102;
-    pointer-events: none;
 }
 background_bottom {
     position: fixed;
@@ -67,7 +66,6 @@ background_bottom {
     left: -50px;
     z-index: -1;
     opacity: 0.6;
-    pointer-events: none;
 }
 #medical-checkup-table {
   width: 100%;
@@ -171,7 +169,7 @@ background_bottom {
     }
     @endphp
     <div class="cover">
-        <img src="{{ asset('mofi/assets/images/logo/compress_cover.jpg') }}" alt="Cover AMC" style="width: 100%;height: 100%;">
+       <img src="{{ asset('mofi/assets/images/logo/compress_cover.jpg') }}" alt="Cover AMC" style="width: 100%;height: 100%;">
     </div>
     <div class="header">
         <img src="{{ asset('mofi/assets/images/logo/border_hasil_mcu_atas.png') }}" alt="Border Hasil MCU" style="position: absolute;top: 0;right: 0;width: 100%;z-index: -1;opacity: 0.6;">
@@ -1194,6 +1192,7 @@ background_bottom {
     </div>
     <div class="break-before section">
     <main>
+    @if ($data['ada_lampiran_laboratorium_pdf'] != 'NOLAB')
         <div style="page-break-after: always;">
         @if ($data['ada_lampiran_laboratorium_pdf'] == 0)
             @php header_mcu($data); @endphp
@@ -1209,9 +1208,9 @@ background_bottom {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($data['laboratorium'] as $kategori): ?>
-                        <?php echo renderKategori($kategori, 1, $data['informasi_data_diri']); ?>
-                    <?php endforeach; ?>
+                    @foreach ($data['laboratorium'] as $kategori)
+                        {!! renderKategori($kategori, 1, $data['informasi_data_diri']) !!}
+                    @endforeach
                 </tbody>
             </table>
             <div style="position: absolute;width: 100%;">
@@ -1245,78 +1244,87 @@ background_bottom {
                 @endif
             @endforeach
         @endif
+    @endif
     </main>
     </div>
 
     <div class="break-before section">
     <main>
-        <div style="page-break-after: always;">
-        @foreach ($data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli)
-        @php header_mcu($data); @endphp
-        <h5 style="text-align: left; background-image: url({{ asset('mofi/assets/images/logo/gradient_bg_title.png') }}); background-size: cover; background-repeat: no-repeat; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">HASIL {{ strtoupper(str_replace('_', ' ', $jenis_poli)) }}</h5>
-            @foreach ($dataPoli as $item)
-                @if ($item->height > $item->width)
-                    <div style="text-align: center;">
-                        <img src="{{ $item->data_foto }}" style="width: auto;height:100%;">
-                    </div>
-                @else
-                    <div style="text-align: center;">
-                        <img src="{{ $item->data_foto }}" style="width: 100%;">
-                    </div>
-                @endif
-            @endforeach
-            @php
-                $firstItem = $dataPoli->first();
-            @endphp
-            <div style="page-break-before: always; text-align: center; font-weight: bold; font-size: 20px;">
+        @forelse ($data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli)
+            <div style="page-break-after: always;">
                 @php header_mcu($data); @endphp
-                INTERPRETASI HASIL {{ strtoupper(str_replace('_', ' ', $jenis_poli)) }}
+                <h5 style="text-align: left;
+                    background-image: url({{ asset('mofi/assets/images/logo/gradient_bg_title.png') }});
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    color: #fff;
+                    padding: 10px;
+                    border-bottom-right-radius: 10px;
+                    border-top-right-radius: 10px;
+                    display: inline-block;">
+                    HASIL {{ strtoupper(str_replace('_', ' ', $jenis_poli)) }}
+                </h5>
+                @foreach ($dataPoli as $item)
+                    <div style="text-align: center;">
+                        <img src="{{ $item->data_foto }}"
+                             style="{{ $item->height > $item->width ? 'width:auto;height:100%;' : 'width:100%;' }}">
+                    </div>
+                @endforeach
+                @php $firstItem = $dataPoli->first(); @endphp
+                <div style="page-break-before: always; text-align: center; font-weight: bold; font-size: 20px;">
+                    @php header_mcu($data); @endphp
+                    INTERPRETASI HASIL {{ strtoupper(str_replace('_', ' ', $jenis_poli)) }}
+                </div>
+                <table style="width: 100%;">
+                    <tr>
+                        <td colspan="2" style="padding-left:20px;font-size:14px;">
+                            {!! $firstItem->kesimpulan_citra_spirometri !!}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:35%;padding-left:20px;font-size:14px;">Dokter Yang Bertugas</td>
+                        <td style="width:65%;font-size:14px;">{{ $firstItem->nama_pegawai ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:20px;font-size:14px;">Petugas Poliklinik Spirometri</td>
+                        <td style="font-size:14px;">{{ $firstItem->nama_petugas ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:20px;font-size:14px;">Judul Interpretasi</td>
+                        <td style="font-size:14px;">{{ $firstItem->judul_laporan ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:20px;font-size:14px;">Catatan Kaki</td>
+                        <td style="font-size:14px;">{{ $firstItem->catatan_kaki ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:20px;font-size:14px;">Kesimpulan</td>
+                        <td style="font-size:14px;">{{ $firstItem->kesimpulan ?? '-' }}</td>
+                    </tr>
+                </table>
+                <div style="position:absolute;width:100%;">
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width:50%;text-align:center;font-size:13px;">
+                                Petugas {{ ucwords(str_replace('_', ' ', $jenis_poli)) }}<br>
+                                Sendawar, {{ $data['tanggal_cetak'] }}<br>
+                                <img src="data:image/png;base64,{{ $data['qrcode'] }}"><br>
+                                <b><u>{{ $firstItem->nama_petugas }}</u></b><br>
+                                <b>{{ $firstItem->departemen_petugas }}</b>
+                            </td>
+                            <td style="width:50%;text-align:center;font-size:13px;">
+                                Mengetahui<br>
+                                Sendawar, {{ $data['tanggal_cetak'] }}<br>
+                                <img src="data:image/png;base64,{{ $data['qrcode'] }}"><br>
+                                <b><u>{{ $firstItem->nama_pegawai }}</u></b><br>
+                                <b>{{ $firstItem->departemen }}</b>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <table style="width: 100%;">
-                <tr>
-                    <td colspan="2" style="width: 100%; text-align: left; padding-left: 20px;font-size: 14px;">{!! $firstItem->kesimpulan_citra_spirometri !!}</td>
-                </tr>
-                <tr>
-                    <td style="width: 35%; text-align: left; padding-left: 20px;font-size: 14px;">Dokter Yang Bertugas</td>
-                    <td style="width: 65%; text-align: left; padding-right: 20px; font-size: 14px;">{{ $firstItem->nama_pegawai ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td style="width: 35%; text-align: left; padding-left: 20px;font-size: 14px;">Petugas Poliklinik Spirometri</td>
-                    <td style="width: 65%; text-align: left; padding-right: 20px; font-size: 14px;">{{ $firstItem->nama_petugas ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td style="width: 35%; text-align: left; padding-left: 20px;font-size: 14px;">Judul Interpretasi</td>
-                    <td style="width: 65%; text-align: left; padding-right: 20px; font-size: 14px;">{{ $firstItem->judul_laporan ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td style="width: 35%; text-align: left; padding-left: 20px;font-size: 14px;">Catatan Kaki</td>
-                    <td style="width: 65%; text-align: left; padding-right: 20px; font-size: 14px;">{{ $firstItem->catatan_kaki ?? '-' }}</td>
-                </tr>
-                <tr>
-                    <td style="width: 35%; text-align: left; padding-left: 20px;font-size: 14px;">Kesimpulan</td>
-                    <td style="width: 65%; text-align: left; padding-right: 20px; font-size: 14px;">{{ $firstItem->kesimpulan ?? '-' }}</td>
-                </tr>
-            </table>
-            <div style="position: absolute;width: 100%;">
-            <table style="width: 100%;">
-                <tr>
-                    <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
-                    Petugas {{ ucwords(str_replace('_', ' ', $jenis_poli)) }} <br>Sendawar, {{ $data['tanggal_cetak'] }}<br>
-                        <img src="data:image/png;base64,{{ $data['qrcode'] }}"><br>
-                        <span style="font-weight: bold;"><u>{{ $firstItem->nama_petugas }}</u></span><br>
-                        <span style="font-weight: bold;">{{ $firstItem->departemen_petugas }}</span>
-                    </td>
-                    <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
-                    Mengetahui<br>Sendawar, {{ $data['tanggal_cetak'] }}<br>
-                        <img src="data:image/png;base64,{{ $data['qrcode'] }}"><br>
-                        <span style="font-weight: bold;"><u>{{ $firstItem->nama_pegawai }}</u></span><br>
-                        <span style="font-weight: bold;">{{ $firstItem->departemen }}</span>
-                    </td>
-                </tr>
-            </table>
-            </div>
-            <div style="page-break-after: {{ $loop->last ? 'auto' : 'always' }};"></div>
-        @endforeach
+        @empty
+        @endforelse
     </main>
     </div>
     <div class="break-before section" style="margin:0;padding:0;">

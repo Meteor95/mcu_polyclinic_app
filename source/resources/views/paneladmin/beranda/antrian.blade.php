@@ -46,7 +46,7 @@
                     <option value="threadmill">Poli Threadmill</option>
                     <option value="rontgen_thorax">Poli Ronsen Thorax</option>
                     <option value="rontgen_lumbosacral">Poli Ronsen Lumbosacral</option>
-                    <option value="usg_ubdomain">Poli USG</option>
+                    <option value="usg_ubdomain">Poli Rontgen Abdomen (USG)</option>
                     <option value="farmingham_score">Farmingham Score</option>
                   </optgroup>
                   <optgroup label="Non Poliklinik">

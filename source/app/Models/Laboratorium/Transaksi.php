@@ -38,7 +38,7 @@ class Transaksi extends Model
         $status_pembayaran = $req->status_pembayaran;
         $jenis_layanan = $req->jenis_layanan;
         $tablePrefix = config('database.connections.mysql.prefix');
-        $query = Transaksi::join('mcu_transaksi_peserta', 'transaksi.no_mcu', '=', 'mcu_transaksi_peserta.id')
+        $query = Transaksi::rightJoin('mcu_transaksi_peserta', 'transaksi.no_mcu', '=', 'mcu_transaksi_peserta.id')
         ->join('users_member', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
         ->join('users','transaksi.id_kasir','=','users.id')
         ->select('transaksi.id as id_transaksi','transaksi.*','mcu_transaksi_peserta.*','users_member.*','users.*');

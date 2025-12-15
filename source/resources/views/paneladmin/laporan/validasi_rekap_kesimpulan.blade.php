@@ -431,7 +431,7 @@
 @section('js_load')
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/laporan/validasi_rekap_kesimpulan.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/laporan/validasi_rekap_kesimpulan.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laporan/validasi_rekap_kesimpulan.js')) }}"></script>
 <script>
     const dropdown = document.getElementById("colorDropdown");
     const toggle = dropdown.querySelector(".dropdown-toggle");

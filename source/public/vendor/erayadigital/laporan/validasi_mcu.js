@@ -30,6 +30,7 @@ function loadDataPasien() {
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
+                    d.status_pasien =  $("#kategori_antrian").val();
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -126,6 +127,9 @@ function loadDataPasien() {
 $("#kotak_pencarian_daftarpasien").on('keyup', debounce(function() {
     $("#datatables_daftarpasien").DataTable().ajax.reload();
 }, 300));
+function kategoriChanged(value) {
+     $("#datatables_daftarpasien").DataTable().ajax.reload();
+}
 function hapusdaftarpeserta(no_transaksi,id_transaksi, nama_pasien) {
     Swal.fire({
         html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53a48ece-27d3-4b85-9150-8005e7c27aa4/usrEqiqrei.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Hapus Data Pasien<br> '+nama_pasien+'</h4><p class="text-muted mx-4 mb-0">Apakah anda ingin menghapus informasi member MCU <strong>'+nama_pasien+'</strong> dengan No Trx:  <strong>'+no_transaksi+'</strong> ? Peserta yang dihapus harus mendaftar ulang pada website jikalau ingin melanjutkan pendaftaran menjadi pasien MCU serta data terkait dengan transaksi ini akan dihapus</p></div>',
