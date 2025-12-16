@@ -58,7 +58,7 @@
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="{{ route('admin.kasir') }}">
               <i class="fa-solid fa-cash-register" style="padding-right: 10px;font-size: 18px;color: #fff;"></i>
-              <span>Kasir</span>
+              <span>Konfirmasi Bayar</span>
             </a>
           </li>
           @endif
