@@ -24,7 +24,7 @@
                   <label for="status_pembayaran">Status Pembayaran</label>
                     <select id="status_pembayaran" class="form-select">
                       <option value="">Semua</option>
-                      <option value="process">Proses</option>
+                      <option selected value="process">Proses</option>
                       <option value="pending">Ditahan</option>
                       <option value="done">Selesai</option>
                     </select>
