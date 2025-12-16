@@ -34,8 +34,8 @@ class MemberMCU extends Model
                     TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur,
                     DATE_FORMAT(' . $tablePrefix . 'users_member.created_at, "%d-%m-%Y %H:%i:%s") AS created_at
                 ');
+            $query->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai');
         }
-        $query->where('status_peserta', '!=', 'selesai');
         if (!empty($parameterpencarian)) {
             $query->where('nomor_identitas', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%')

@@ -326,54 +326,55 @@ class LaporanController extends Controller
             Storage::disk('public')->delete($relativePathMCU);
             Storage::disk('public')->delete($relativePathLAB);
             /* Insert Sama Seperti Laboratorium, Cuma Kalau Ini By Pass Tanpa Laboratorium */
-            if ($req->status != 'selesai') {
-                TransaksiLab::where('no_nota', $no_nota)->forceDelete();
-            }else{
-                $userDetails = $req->get('user_details');
-                $data_transaksi = [
-                    'no_mcu' => $paket_mcu->id_mcu_peserta,
-                    'no_nota' => $no_nota,
-                    'waktu_trx' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'waktu_trx_sample' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'id_dokter' => $userDetails->id,
-                    'nama_dokter' => $userDetails->nama_pegawai,
-                    'id_pj' => $userDetails->id,
-                    'nama_pj' => $userDetails->nama_pegawai,
-                    'total_bayar' => $paket_mcu->harga_paket,
-                    'total_transaksi' => $paket_mcu->harga_paket,
-                    'total_tindakan' => 0,
-                    'jenis_transaksi' => 0,
-                    'metode_pembayaran' => '',
-                    'id_kasir' => $userDetails->id,
-                    'status_pembayaran' => 'process',
-                    'jenis_layanan' => 'MCU',
-                    'nama_file_surat_pengantar' => "",
-                    'is_paket_mcu' => $paket_mcu->id,
-                    'nama_paket_mcu' => $paket_mcu->nama_paket,
-                    'nominal_apotek' => 0,
-                    'lampirkan_berkas_pdf' => 0,
-                ];
-                $hasil_query_tranaksi = TransaksiLab::create($data_transaksi);
-                $data_tindakan[] = [
-                    'id_transaksi' => $hasil_query_tranaksi->id,
-                    'id_item' => 1,
-                    'kode_item' => '1000001000001',
-                    'nama_item' => 'Paket MCU',
-                    'nilai_tindakan' => 1,
-                    'harga' => $paket_mcu->harga_paket,
-                    'diskon' => 0,
-                    'harga_setelah_diskon' => 0,
-                    'jumlah' => 1,
-                    'keterangan' => "PAKET MCU",
-                    'meta_data_kuantitatif' => "{}",
-                    'meta_data_kualitatif' => "{}",
-                    'meta_data_jasa' => "{}",
-                    'meta_data_jasa_fee' => "{}",
-                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                ];
-                TransaksiDetail::insert($data_tindakan);
-            }
+            // if ($req->status != 'selesai') {
+            //     TransaksiLab::where('no_nota', $no_nota)->forceDelete();
+            // }else{
+                
+            // }
+            $userDetails = $req->get('user_details');
+            $data_transaksi = [
+                'no_mcu' => $paket_mcu->id_mcu_peserta,
+                'no_nota' => $no_nota,
+                'waktu_trx' => Carbon::now()->format('Y-m-d H:i:s'),
+                'waktu_trx_sample' => Carbon::now()->format('Y-m-d H:i:s'),
+                'id_dokter' => $userDetails->id,
+                'nama_dokter' => $userDetails->nama_pegawai,
+                'id_pj' => $userDetails->id,
+                'nama_pj' => $userDetails->nama_pegawai,
+                'total_bayar' => $paket_mcu->harga_paket,
+                'total_transaksi' => $paket_mcu->harga_paket,
+                'total_tindakan' => 0,
+                'jenis_transaksi' => 0,
+                'metode_pembayaran' => '',
+                'id_kasir' => $userDetails->id,
+                'status_pembayaran' => 'process',
+                'jenis_layanan' => 'MCU',
+                'nama_file_surat_pengantar' => "",
+                'is_paket_mcu' => $paket_mcu->id,
+                'nama_paket_mcu' => $paket_mcu->nama_paket,
+                'nominal_apotek' => 0,
+                'lampirkan_berkas_pdf' => 0,
+            ];
+            $hasil_query_tranaksi = TransaksiLab::create($data_transaksi);
+            $data_tindakan[] = [
+                'id_transaksi' => $hasil_query_tranaksi->id,
+                'id_item' => 1,
+                'kode_item' => '1000001000001',
+                'nama_item' => 'Paket MCU',
+                'nilai_tindakan' => 1,
+                'harga' => $paket_mcu->harga_paket,
+                'diskon' => 0,
+                'harga_setelah_diskon' => 0,
+                'jumlah' => 1,
+                'keterangan' => "PAKET MCU",
+                'meta_data_kuantitatif' => "{}",
+                'meta_data_kualitatif' => "{}",
+                'meta_data_jasa' => "{}",
+                'meta_data_jasa_fee' => "{}",
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            ];
+            TransaksiDetail::insert($data_tindakan);
             return ResponseHelper::success('Validasi atas nomor dokumen '.$no_nota.' berhasil diubah menjadi '.$req->status_text.'. Berkas lama akan dihapus dan digantikan dengan yang baru', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

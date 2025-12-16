@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\{DB, Hash, Storage};
 use Carbon\Carbon;
 use App\Models\Masterdata\{MemberMCU,DepartemenPerusahaan};
+use App\Models\Laboratorium\{Transaksi as TransaksiLab, TransaksiDetail};
 use App\Models\Transaksi\Transaksi;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\{PaketMCU,Perusahaan};
@@ -26,8 +27,9 @@ class TransaksiServices
         return $map[$number - 1];
     }
 
-    public function handleTransactionPeserta(array $data, $user_id_petugas, $file)
+    public function handleTransactionPeserta(array $data, $user_id_petugas, $file, $req)
     {
+        $nomor_transaksi_mcu_db = "";$id_transaksi_mcu_db = "";
         $member = MemberMCU::firstOrCreate(
             ['nomor_identitas' => $data['nomor_identitas']],
             [
@@ -52,7 +54,7 @@ class TransaksiServices
                 return false;
             }
         }
-        DB::transaction(function () use ($data, $member, $user_id_petugas) {
+        DB::transaction(function () use ($data, $member, $user_id_petugas, $req) {
             $kodeperusahaan = Perusahaan::find($data['perusahaan_id'])->company_code;
             $kodepdepartemen = DepartemenPerusahaan::find($data['departemen_id'])->kode_departemen;
 
@@ -79,10 +81,60 @@ class TransaksiServices
             if (filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
                 $transaksi = Transaksi::find($data['id_detail_transaksi_mcu']);
                 $transaksi->update($dataToInsert);
+                $id_transaksi_mcu_db = $transaksi->id;
+                $nomor_transaksi_mcu_db = $transaksi->no_transaksi;
+                TransaksiLab::where('no_nota', $nomor_transaksi_mcu_db)->forceDelete();
             } else {
                 $transaksi = Transaksi::create($dataToInsert);
+                $id_transaksi_mcu_db = $transaksi->id;
+                $nomor_transaksi_mcu_db = $transaksi->no_transaksi;
             }
-
+            //by pass transaksi saat pendaftara dan langsung muncul konfirmasi bayar
+            $paket_mcu = PaketMCU::find($parts[0]);
+            $userDetails = $req->get('user_details');
+            $data_transaksi = [
+                'no_mcu' => $id_transaksi_mcu_db,
+                'no_nota' => $nomor_transaksi_mcu_db,
+                'waktu_trx' => Carbon::now()->format('Y-m-d H:i:s'),
+                'waktu_trx_sample' => Carbon::now()->format('Y-m-d H:i:s'),
+                'id_dokter' => $userDetails->id,
+                'nama_dokter' => $userDetails->nama_pegawai,
+                'id_pj' => $userDetails->id,
+                'nama_pj' => $userDetails->nama_pegawai,
+                'total_bayar' => $paket_mcu->harga_paket,
+                'total_transaksi' => $paket_mcu->harga_paket,
+                'total_tindakan' => 0,
+                'jenis_transaksi' => 0,
+                'metode_pembayaran' => '',
+                'id_kasir' => $userDetails->id,
+                'status_pembayaran' => 'process',
+                'jenis_layanan' => 'MCU',
+                'nama_file_surat_pengantar' => "",
+                'is_paket_mcu' => $paket_mcu->id,
+                'nama_paket_mcu' => $paket_mcu->nama_paket,
+                'nominal_apotek' => 0,
+                'lampirkan_berkas_pdf' => 0,
+            ];
+            $hasil_query_tranaksi = TransaksiLab::create($data_transaksi);
+            $data_tindakan[] = [
+                'id_transaksi' => $hasil_query_tranaksi->id,
+                'id_item' => 1,
+                'kode_item' => '1000001000001',
+                'nama_item' => 'Paket MCU ['.$parts[1].'] '.$parts[2],
+                'nilai_tindakan' => 1,
+                'harga' => $paket_mcu->harga_paket,
+                'diskon' => 0,
+                'harga_setelah_diskon' => 0,
+                'jumlah' => 1,
+                'keterangan' => "PAKET MCU",
+                'meta_data_kuantitatif' => "{}",
+                'meta_data_kualitatif' => "{}",
+                'meta_data_jasa' => "{}",
+                'meta_data_jasa_fee' => "{}",
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            ];
+            TransaksiDetail::insert($data_tindakan);
             // Jika data berasal dari pendaftaran mandiri, insert lingkungan kerja
             $dari_pendaftaran_mandiri = Peserta::where('nomor_identifikasi', $data['nomor_identitas'])->first();
             if ($dari_pendaftaran_mandiri) {

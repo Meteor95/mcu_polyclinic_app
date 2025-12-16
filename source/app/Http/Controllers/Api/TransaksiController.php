@@ -34,7 +34,7 @@ class TransaksiController extends Controller
             }
             $data = $request->all();
             $file = $request->file('nama_file_surat_pengantar');
-            $return = $transaksiService->handleTransactionPeserta($data, $request->attributes->get('user_id'), $file);
+            $return = $transaksiService->handleTransactionPeserta($data, $request->attributes->get('user_id'), $file, $request);
             if (!$return) {
                 return ResponseHelper::data_conflict('Pasien dengan Nama ' . $data['nama_peserta'] . ' sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya');
             }
