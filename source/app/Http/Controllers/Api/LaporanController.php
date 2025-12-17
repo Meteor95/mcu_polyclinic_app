@@ -617,8 +617,8 @@ class LaporanController extends Controller
                     $query_kondisi_fisik = $subquery;
                 }
             }
-            $lampiran_berkas_pdf = $req->id_mcu
-                ? UnggahanCitraLab::where('id_trx_lab', $req->id_mcu)->get()
+            $lampiran_berkas_pdf = $transaksi_header->id
+                ? UnggahanCitraLab::where('id_trx_lab', $transaksi_header->id)->get()
                 : collect();
             $lampiran_berkas_pdf = $lampiran_berkas_pdf->map(function ($item) {
                 $item->data_foto = url(env('APP_VERSI_API') . "/file/unduh_lampiran_pdf?file_name=" . $item->nama_file);
