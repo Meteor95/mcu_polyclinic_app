@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\{DB, Hash, Storage};
 use Carbon\Carbon;
 use App\Models\Poliklinik\{Poliklinik, UnggahanCitra};
+use App\Models\EdsJasaPelayanan;
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -150,6 +151,36 @@ class PoliklinikServices
             if (!empty($dataToInsert)) {
                 UnggahanCitra::insert($dataToInsert);
             }
+            $roles = [
+                'dokter' => $data['pegawai_id'],
+                'pembaca' => $data['pegawai_id_pembaca'],
+                'perawat' => $data['pegawai_id_perawat'],
+            ];
+            Log::info($jenis_poli);
+            foreach ($roles as $role => $pegawaiId) {
+                if (!$pegawaiId) continue;
+                $row = EdsJasaPelayanan::where('id_mcu_peserta', $data['transaksi_id'])
+                    ->where('jenis_poli', $jenis_poli)
+                    ->where('role', $role)
+                    ->first();
+
+                if ($row) {
+                    if ($row->nominal <= 0) {
+                        $row->pegawai_id = $pegawaiId;
+                        $row->nominal = 1000;
+                        $row->save();
+                    }
+                } else {
+                    EdsJasaPelayanan::create([
+                        'id_mcu_peserta' => $data['transaksi_id'],
+                        'jenis_poli' => $jenis_poli,
+                        'role' => $role,
+                        'pegawai_id' => $pegawaiId,
+                        'nominal' => 1000,
+                    ]);
+                }
+            }
+
         });
     }
 
