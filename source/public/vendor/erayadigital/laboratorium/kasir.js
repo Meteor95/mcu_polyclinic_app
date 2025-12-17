@@ -188,6 +188,9 @@ function load_datatables_tindakan(){
                                 <button onclick="detail_tindakan('${row.id_transaksi}')" class="btn btn-success w-100">
                                     <i class="fa fa-eye"></i> Detail
                                 </button>
+                                <button onclick="pembagian_jasa_pelayan('${row.id_transaksi}')" class="btn btn-danger w-100">
+                                    <i class="fa fa-eye"></i> Akhiri Transaksi
+                                </button>
                                 <button onclick="konfirmasi_pembayaran('${row.id_transaksi}')" class="btn btn-primary w-100">
                                     <i class="fa fa-check"></i> Konfirmasi
                                 </button>
@@ -368,10 +371,10 @@ $("#btnKonfirmasiPembayaran").click(function(){
             },
             success: function(response) {
                 if (!response.success) {
-                    return createToast('Kesalahan Konfirmasi Transaksi', 'top-right', response.message, 'error', 3000);
+                    return createToast('Kesalahan Konfirmasi Pembayaran', 'top-right', response.message, 'error', 3000);
                 }
                 $("#daftar_table_tindakan").DataTable().ajax.reload();
-                return createToast('Kesalahan Penyimpanan', 'top-right', response.message, 'success', 3000);
+                return createToast('Konfirmasi Pembayaran', 'top-right', response.message, 'success', 3000);
             },
             complete: function() {
                 $('#modalKonfimasiPendaftaran').modal('hide');
@@ -388,3 +391,158 @@ $('#nominal_bayar').on('input', function(){
 function hitungNominalBayar(){
     nominalKembalian.set((nominalBayarKonfirmasi.getNumber() - nominalBayar.getNumber()) * -1);
 }
+function initAutoNumericNominal(container) {
+    container.querySelectorAll('.input-nominal').forEach(input => {
+        if (!input.autoNumericInstance) {
+            input.autoNumericInstance = new AutoNumeric(input, {
+                digitGroupSeparator: '.',
+                decimalCharacter: ',',
+                decimalPlaces: 0,
+                allowDecimalPadding: false,
+                minimumValue: '0',
+                modifyValueOnUpDownArrow: false,
+                modifyValueOnWheel: false
+            });
+        }
+    });
+}
+function renderPembagianJP(response) {
+    const container = document.getElementById('containerPembagianJP');
+    container.innerHTML = '';
+    const grouped = response.data.reduce((acc, item) => {
+        if (!acc[item.jenis_poli]) acc[item.jenis_poli] = [];
+        acc[item.jenis_poli].push(item);
+        return acc;
+    }, {});
+
+    Object.keys(grouped).forEach(jenisPoli => {
+        const rows = grouped[jenisPoli];
+        const tableId = `table_jp_${jenisPoli}`;
+
+        let html = `
+            <h6 class="mt-3 mb-2 fw-bold text-primary text-center">${jenisPoli.toUpperCase().replace('_', ' ')}</h6>
+            <table class="table table-bordered table-striped table-hover table-padding-sm" id="${tableId}">
+                <thead>
+                    <tr>
+                        <th style="text-align: center;width: 30%;">Role Petugas</th>
+                        <th>ID</th>
+                        <th style="text-align: center;width: 50%;">Nama Petugas</th>
+                        <th style="text-align: center;width: 20%;">Nominal</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        rows.forEach(item => {
+            html += `
+                <tr>
+                    <td>${capitalizeFirstLetter(item.role)}</td>
+                    <td>${item.id}</td>
+                    <td>${item.nama_petugas || '-'}</td>
+                    <td><input type="text" class="form-control text-end input-nominal" data-id="${item.id}" value="${Number(item.nominal || 0)}"></td>
+                </tr>
+            `;
+        });
+
+        html += `
+                </tbody>
+            </table>
+        `;
+
+        container.insertAdjacentHTML('beforeend', html);
+        initAutoNumericNominal(container)
+        $(`#${tableId}`).DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            ordering: false,
+            responsive: false, 
+            autoWidth: false,
+            columnDefs: [
+                { visible: false, targets: 1 }
+            ]
+        });
+        container.addEventListener('keydown', function (e) {
+            if (e.target.classList.contains('input-nominal') && e.key === 'Enter') {
+                e.preventDefault();
+
+                const inputs = Array.from(container.querySelectorAll('.input-nominal'));
+                const index = inputs.indexOf(e.target);
+
+                if (inputs[index + 1]) {
+                    inputs[index + 1].focus();
+                    inputs[index + 1].select();
+                }
+            }
+        });
+        container.addEventListener('focusin', function (e) {
+            if (e.target.matches('input[type="text"]')) {
+                e.target.select();
+            }
+        });
+    });
+}
+
+function pembagian_jasa_pelayan(id_transaksi){
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/transaksi/pembagian_jasa_pelayanan',
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+            data: {
+                _token:response.csrf_token,
+                id_transaksi:id_transaksi,
+            },
+            success: function(response) {
+                if (!response.success) {
+                    return createToast('Kesalahan Mengambil Data Jasa Pelayanan', 'top-right', response.message, 'error', 3000);
+                }
+                renderPembagianJP(response);
+                return createToast('Pembagian Jasa Pelayanan', 'top-right', response.message, 'success', 3000);
+            },
+            complete: function() {
+                $('#modalPembagianJP').modal('show');
+            },
+            error: function(xhr, status, error) {
+                return createToast('Kesalahan', 'top-right', 'Terjadi kesalahan saat memproses pengambilan data jasa pelayanan: ' + error, 'error', 3000);
+            },
+        });
+    });
+}
+$("#konfirmasi_jasa_pelayanan").on('click', function() {
+    const payload = [];
+    document.querySelectorAll('.input-nominal').forEach(input => {
+        const an = AutoNumeric.getAutoNumericElement(input);
+        if (!an) return;
+        payload.push({
+            id: input.dataset.id,
+            nominal: an.getNumber()
+        });
+    });
+    if (payload.length === 0) {
+        alert('Tidak ada data untuk disimpan');
+        return;
+    }
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/transaksi/update_jasa_pelayanan',
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+            data: {
+                _token:response.csrf_token,
+                data: payload
+            },
+            success: function(response) {
+                if (!response.success) {
+                    return createToast('Kesalahan Dalam Mengubah Data Jasa Pelayanan', 'top-right', response.message, 'error', 3000);
+                }
+                return createToast('Berhasil Mengubah Data Jasa Pelayanan', 'top-right', response.message, 'success', 3000);
+            },
+            complete: function() {
+                
+            },
+            error: function(xhr, status, error) {
+                return createToast('Kesalahan', 'top-right', 'Terjadi kesalahan saat memproses ubah nominal data jasa pelayanan: ' + error, 'error', 3000);
+            },
+        });
+    });
+});

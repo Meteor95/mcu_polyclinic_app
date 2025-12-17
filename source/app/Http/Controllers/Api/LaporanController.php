@@ -9,6 +9,8 @@ use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\{Transaksi as TransaksiLab, Kategori, TransaksiDetail, Kesimpulan as KesimpulanLabStatus};
 use App\Models\Laporan\Kesimpulan;
+use App\Models\EdsJasaPelayanan;
+use App\Models\Masterdata\Jasalayanan;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\{Log, DB, Storage};
@@ -375,6 +377,34 @@ class LaporanController extends Controller
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ];
             TransaksiDetail::insert($data_tindakan);
+            //Tambah fee untuk dokter validasi trigger
+            if ($req->status != 'selesai') {
+                EdsJasaPelayanan::where('id_mcu_peserta', $paket_mcu->id_mcu_peserta)
+                    ->where('role','dokter_validasi')
+                    ->delete();
+            }else{
+                $row = EdsJasaPelayanan::where('id_mcu_peserta', $paket_mcu->id_mcu_peserta)
+                    ->where('jenis_poli', 'dokter')
+                    ->where('role', 'dokter_validasi')
+                    ->first();
+                $userDetails = $req->get('user_details');
+                $layanan = Jasalayanan::where('kode_jasa_pelayanan', 'JS_DOKTER_VALIDASI')->first();
+                $nominal = $layanan ? $layanan->nominal_layanan : 0;
+                if ($row) {
+                    if ($row->nominal <= 0) {
+                        $row->nominal = $nominal;
+                        $row->save();
+                    }
+                } else {
+                    EdsJasaPelayanan::create([
+                        'id_mcu_peserta' => $paket_mcu->id_mcu_peserta,
+                        'jenis_poli' => 'dokter',
+                        'role' => 'dokter_validasi',
+                        'pegawai_id' => $userDetails->id,
+                        'nominal' => $nominal,
+                    ]);
+                }   
+            }
             return ResponseHelper::success('Validasi atas nomor dokumen '.$no_nota.' berhasil diubah menjadi '.$req->status_text.'. Berkas lama akan dihapus dan digantikan dengan yang baru', $dynamicAttributes);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
@@ -419,6 +449,27 @@ class LaporanController extends Controller
                 Kesimpulan::where('id_mcu', $req->id_mcu_let)->update($data);
             } else {
                 Kesimpulan::create($data);
+            }
+            $row = EdsJasaPelayanan::where('id_mcu_peserta', $req->id_mcu_let)
+                ->where('jenis_poli', 'admin_mcu')
+                ->where('role', 'admin_mcu')
+                ->first();
+            $userDetails = $req->get('user_details');
+            $layanan = Jasalayanan::where('kode_jasa_pelayanan', 'JS_ADMIN_MCU')->first();
+            $nominal = $layanan ? $layanan->nominal_layanan : 0;
+            if ($row) {
+                if ($row->nominal <= 0) {
+                    $row->nominal = $nominal;
+                    $row->save();
+                }
+            } else {
+                EdsJasaPelayanan::create([
+                    'id_mcu_peserta' => $req->id_mcu_let,
+                    'jenis_poli' => 'admin_mcu',
+                    'role' => 'admin_mcu',
+                    'pegawai_id' => $userDetails->id,
+                    'nominal' => $nominal,
+                ]);
             }
             $dynamicAttributes = [];
             return ResponseHelper::success('Informasi kesimpulan dari nomor dokumen '.$req->nomor_mcu_let.' berhasil disimpan atas nama '.$informasi_mcu->nama_peserta, $dynamicAttributes);

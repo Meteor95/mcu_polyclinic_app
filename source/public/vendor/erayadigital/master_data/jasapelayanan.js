@@ -70,17 +70,13 @@ function listJasaPelayanan(){
                     }
                 },
                 {
-                    title: "Kode Jasa Pelayanan",
-                    data: 'kode_jasa_pelayanan'
-                },
-                {
                     title: "Nama Jasa Pelayanan",
                     data: 'nama_jasa_pelayanan'
                 },
                 {
                     title: "Kategori Jasa Pelayanan",
                     render: function(data, type, row, meta) {
-                        return capitalizeFirstLetter(row.kategori_layanan);
+                        return row.kategori_layanan?.toUpperCase() || '-';
                     }
                 },
                 {
@@ -99,7 +95,7 @@ function listJasaPelayanan(){
                     title: "Aksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"editjasa('" + row.id + "','" + row.kode_jasa_pelayanan + "','" + row.nama_jasa_pelayanan + "','" + row.nominal_layanan + "','" + row.kategori_layanan + "')\"><i class=\"fa fa-edit\"></i> Edit Jasa Pelayanan</button><button class=\"btn btn-danger w-100\" onclick=\"hapusjasa('" + row.id + "','" + row.kode_jasa_pelayanan + "','" + row.nama_jasa_pelayanan + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Jasa Pelayanan</button></div>";
+                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"editjasa('" + row.id + "','" + row.kode_jasa_pelayanan + "','" + row.nama_jasa_pelayanan + "','" + row.nominal_layanan + "','" + row.kategori_layanan + "')\"><i class=\"fa fa-edit\"></i> Ubah Jasa</button><button class=\"btn btn-danger w-100\" onclick=\"hapusjasa('" + row.id + "','" + row.kode_jasa_pelayanan + "','" + row.nama_jasa_pelayanan + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Jasa</button></div>";
                         }
                         return data;
                     }

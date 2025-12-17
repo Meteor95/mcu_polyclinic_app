@@ -10,9 +10,11 @@ use App\Helpers\ResponseHelper;
 use App\Models\Transaksi\{Transaksi, UnggahCitra};
 use App\Models\Laboratorium\Transaksi as TransaksiLab;
 use App\Models\Masterdata\MemberMCU;
+use App\Models\EdsJasaPelayanan;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
@@ -207,6 +209,40 @@ class TransaksiController extends Controller
             ];
             TransaksiLab::where('id', $id_transaksi)->update($dataInformasi);
             return ResponseHelper::success('Informasi transaksi dengan No Nota: ' . $no_nota . ' dan No MCU: ' . $no_mcu . ' berhasil dikonfirmasi menjadi Status Pembayaran: ');
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function pembagian_jasa_pelayanan(Request $request){
+        try{
+            $id_transaksi = $request->id_transaksi;
+            $informasi_transaksi = TransaksiLab::where('id', $id_transaksi)->first();
+            $data_penerima_jp = EdsJasaPelayanan::join('users_pegawai', 'users_pegawai.id', '=', 'jasa_pelayanan.pegawai_id')
+            ->where('id_mcu_peserta', $informasi_transaksi->no_mcu)
+            ->select('jasa_pelayanan.*', 'users_pegawai.nama_pegawai as nama_petugas')
+            ->orderBy('jasa_pelayanan.jenis_poli','ASC')
+            ->get();
+            $dynamicAttributes = ['data' => $data_penerima_jp];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Daftar Penerima Jasa Pelayanan']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function update_jasa_pelayanan(Request $request){
+        try{
+           $request->validate([
+                'data' => 'required|array',
+                'data.*.id' => 'required|integer',
+                'data.*.nominal' => 'required|numeric|min:0',
+            ]);
+            DB::transaction(function () use ($request) {
+                foreach ($request->data as $item) {
+                    EdsJasaPelayanan::where('id', $item['id'])
+                        ->update([
+                            'nominal' => $item['nominal']
+                        ]);
+                }
+            });
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

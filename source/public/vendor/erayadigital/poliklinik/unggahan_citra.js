@@ -289,7 +289,6 @@ $(document).on('click', '.btn-lihat', function () {
     $('#imageModal').modal('show');
 });
 $("#simpan_foto_perserta").on('click', function() {
-    console.log(jenis_poli)
     if ($("#dokter_citra_unggah_poli").val() == null){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan dokter yang bertugas terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
@@ -408,15 +407,13 @@ function clear_form(){
     $("#citra_pasien").val(null);
     $("#preview_citra_pasien_img").hide();
     dokter_citra_unggah_poli.setChoiceByValue(dokter_citra_unggah_poliElement.options[0].value);
+    dokter_citra_unggah_poli_pembaca.setChoiceByValue(dokter_citra_unggah_poli_pembacaElement.options[0].value);
+    dokter_citra_unggah_poli_perawat.setChoiceByValue(dokter_citra_unggah_poli_perawatElement.options[0].value);
 }
 function unduhFoto(lokasi_gambar){
     window.open(lokasi_gambar, '_blank');
 }
 function hapusunduhanFoto(id_trx_poli,nama_peserta,transaksi_id, nomor_mcu){
-    console.log(id_trx_poli)
-    console.log(nama_peserta)
-    console.log(transaksi_id)
-    console.log(nomor_mcu)
     Swal.fire({
         html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53a48ece-27d3-4b85-9150-8005e7c27aa4/usrEqiqrei.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penghapusan Citra Unggahan MCU</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus informasi ungahan citra MCU <strong>'+nama_peserta+'</strong> dengan Nomor MCU <strong>'+nomor_mcu+'</strong> ? Silahkan unggah citra kembali jika ingin menampilkan citra tersebut jika tidak foto akan ditampilkan dengan citra dasar dari sistem MCU',
         showCancelButton: true,
@@ -552,7 +549,11 @@ function ubah_informasi(id_trx_poli,nomor_identitas,nama_peserta){
                 kesimpulan_citra_unggah_poli.setChoiceByValue(response.data[0].id_kesimpulan.toString());
                 $("#kesimpulan_citra_unggah_poli").val(response.data[0].id_kesimpulan.toString());
                 dokter_citra_unggah_poli.setChoiceByValue(response.data[0].pegawai_id.toString());
+                dokter_citra_unggah_poli_pembaca.setChoiceByValue(response.data[0].pegawai_id_pembaca.toString());
+                dokter_citra_unggah_poli_perawat.setChoiceByValue(response.data[0].pegawai_id_perawat.toString());
                 $("#dokter_citra_unggah_poli").val(response.data[0].pegawai_id.toString());
+                $("#dokter_citra_unggah_poli_pembaca").val(response.data[0].pegawai_id_pembaca.toString());
+                $("#dokter_citra_unggah_poli_perawat").val(response.data[0].pegawai_id_perawat.toString());
                 quill.setContents(JSON.parse(response.data[0].detail_kesimpulan));
                 $("#catatan_kaki_citra_unggah_poli").val(response.data[0].catatan_kaki);
                 /* load gallery images */

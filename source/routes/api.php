@@ -212,6 +212,8 @@ Route::prefix('v1')->group(function () {
             Route::post('simpanpeserta', [TransaksiController::class,"savepeserta"]);
             Route::get('hapuspeserta', [TransaksiController::class,"deletepeserta"]);
             Route::post('konfirmasi_pembayaran', [TransaksiController::class,"konfirmasi_pembayaran"]);
+            Route::post('pembagian_jasa_pelayanan', [TransaksiController::class,"pembagian_jasa_pelayanan"]);
+            Route::post('update_jasa_pelayanan', [TransaksiController::class,"update_jasa_pelayanan"]);
         });
         Route::prefix('laporan')->group(function () {
             Route::get('validasi_mcu_nota', [LaporanController::class,"validasi_mcu_nota"]);

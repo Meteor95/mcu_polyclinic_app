@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik,Gigi};
+use App\Models\EdsJasaPelayanan;
+use App\Models\Masterdata\Jasalayanan;
 use App\Services\RegistrationMCUServices;
 
 class PemeriksaanFisikController extends Controller
@@ -27,6 +29,28 @@ class PemeriksaanFisikController extends Controller
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            //Tambah fee untuk dokter umum trigger
+            $row = EdsJasaPelayanan::where('id_mcu_peserta', $request->transaksi_id)
+                ->where('jenis_poli', 'dokter')
+                ->where('role', 'dokter_umum')
+                ->first();
+            $userDetails = $request->get('user_details');
+            $layanan = Jasalayanan::where('kode_jasa_pelayanan', 'JS_DOKTER_UMUM')->first();
+            $nominal = $layanan ? $layanan->nominal_layanan : 0;
+            if ($row) {
+                if ($row->nominal <= 0) {
+                    $row->nominal = $nominal;
+                    $row->save();
+                }
+            } else {
+                EdsJasaPelayanan::create([
+                    'id_mcu_peserta' => $request->transaksi_id,
+                    'jenis_poli' => 'dokter',
+                    'role' => 'dokter_umum',
+                    'pegawai_id' => $userDetails->id,
+                    'nominal' => $nominal,
+                ]);
             }
             if (filter_var($request->isedit, FILTER_VALIDATE_BOOLEAN)) {
                 TingkatKesadaran::where('user_id', $request->user_id)
@@ -100,6 +124,10 @@ class PemeriksaanFisikController extends Controller
             TingkatKesadaran::where('user_id', $request->user_id)
                 ->where('transaksi_id', $request->transaksi_id)
                 ->delete();
+            EdsJasaPelayanan::where('id_mcu_peserta', $request->transaksi_id)
+                ->where('role', 'dokter_umum')
+                ->delete();
+            
             return ResponseHelper::success('Informasi Tingkat Kesadaran atas Nama Pasien '.$request->nama_peserta.' berhasil dihapus. Silahkan tambah kembali jika dibutuhkan');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

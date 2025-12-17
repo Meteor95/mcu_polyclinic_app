@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\{DB, Hash, Storage};
 use Carbon\Carbon;
 use App\Models\Poliklinik\{Poliklinik, UnggahanCitra};
+use App\Models\Masterdata\Jasalayanan;
 use App\Models\EdsJasaPelayanan;
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Str;
@@ -156,18 +157,30 @@ class PoliklinikServices
                 'pembaca' => $data['pegawai_id_pembaca'],
                 'perawat' => $data['pegawai_id_perawat'],
             ];
-            Log::info($jenis_poli);
             foreach ($roles as $role => $pegawaiId) {
                 if (!$pegawaiId) continue;
+                $kodeLayanan = '';
+                switch ($role) {
+                    case 'dokter':
+                        $kodeLayanan = 'JS_DOKTER_SPESIALIS_' . strtoupper($jenis_poli);
+                        break;
+                    case 'perawat':
+                        $kodeLayanan = 'JS_PERAWAT_' . strtoupper($jenis_poli);
+                        break;
+                    case 'pembaca':
+                        $kodeLayanan = 'JS_DOKTER_BACA_' . strtoupper($jenis_poli);
+                        break;
+                }
                 $row = EdsJasaPelayanan::where('id_mcu_peserta', $data['transaksi_id'])
                     ->where('jenis_poli', $jenis_poli)
                     ->where('role', $role)
                     ->first();
-
+                $layanan = Jasalayanan::where('kode_jasa_pelayanan', $kodeLayanan)->first();
+                $nominal = $layanan ? $layanan->nominal_layanan : 0;
                 if ($row) {
                     if ($row->nominal <= 0) {
                         $row->pegawai_id = $pegawaiId;
-                        $row->nominal = 1000;
+                        $row->nominal = $nominal;
                         $row->save();
                     }
                 } else {
@@ -176,7 +189,7 @@ class PoliklinikServices
                         'jenis_poli' => $jenis_poli,
                         'role' => $role,
                         'pegawai_id' => $pegawaiId,
-                        'nominal' => 1000,
+                        'nominal' => $nominal,
                     ]);
                 }
             }
@@ -223,6 +236,9 @@ class PoliklinikServices
             }else{
                 $model->where('transaksi_id', $data['id_trx_poli'])->delete();
             }
+            EdsJasaPelayanan::where('id_mcu_peserta', $data['transaksi_id'])
+                ->where('jenis_poli', $data['jenis_poli'])
+                ->delete();
         });
     }
 }
