@@ -19,6 +19,8 @@ class Poliklinik extends Model
         'detail_kesimpulan',
         'catatan_kaki',
         'petugas_id',
+        'pegawai_id_pembaca',
+        'pegawai_id_perawat',
     ];
     public function setTableName($table)
     {

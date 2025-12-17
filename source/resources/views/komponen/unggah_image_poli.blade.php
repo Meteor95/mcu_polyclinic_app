@@ -20,6 +20,22 @@
         @endforeach
       </select>
     </div>
+    <div class="col-md-12 mb-2">
+      <h3>Tentukan Dokter Pembaca</h3>
+      <select class="form-select" data-choices name="dokter_citra_unggah_poli_pembaca" id="dokter_citra_unggah_poli_pembaca">
+        @foreach ($data['daftar_dokter'] as $item)
+          <option value="{{$item['id']}}">{{$item['nama_pegawai']}}</option>
+        @endforeach
+      </select>
+      </div>
+    <div class="col-md-12 mb-2">
+      <h3>Tentukan Perawat Bertugas</h3>
+      <select class="form-select" data-choices name="dokter_citra_unggah_poli_perawat" id="dokter_citra_unggah_poli_perawat">
+        @foreach ($data['daftar_perawat'] as $item)
+          <option value="{{$item['id']}}">{{$item['nama_pegawai']}}</option>
+        @endforeach
+      </select>
+    </div>
     @if ($unggahan_citra_aktif)
     <div class="col-md-12">
       <h3>Unggah PDF ke Gambar</h3>

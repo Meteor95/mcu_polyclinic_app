@@ -34,6 +34,7 @@ class PoliklinikController extends Controller
         ], $catatan_kaki, $jenis_poli, "poli_" . $jenis_poli);
         $data['unggahan_citra_aktif'] = $unggahan_citra_aktif;
         $data['daftar_dokter'] = User::role('dokter')->join('users_pegawai', 'users.id', '=', 'users_pegawai.id')->get()->toArray();
+        $data['daftar_perawat'] = User::role('perawat')->join('users_pegawai', 'users.id', '=', 'users_pegawai.id')->get()->toArray();
         return view('paneladmin.pemeriksaan_fisik.poliklinik.'.$jenis_poli, ['data' => $data]);
     }
 }

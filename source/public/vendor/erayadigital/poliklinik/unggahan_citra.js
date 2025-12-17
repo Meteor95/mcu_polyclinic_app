@@ -29,8 +29,11 @@ const toolbarOptions = [
 let quill,quill_informasi;
 let croppedImages = []; 
 let originalFileNames = [];
-let kesimpulan_citra_unggah_poli,detail_penjelasan_citra_unggah_poli,dokter_citra_unggah_poli;
+let kesimpulan_citra_unggah_poli,detail_penjelasan_citra_unggah_poli,dokter_citra_unggah_poli,dokter_citra_unggah_poli_pembaca,dokter_citra_unggah_poli_perawat;
 let dokter_citra_unggah_poliElement = document.getElementById('dokter_citra_unggah_poli');
+let dokter_citra_unggah_poli_pembacaElement = document.getElementById('dokter_citra_unggah_poli_pembaca');
+let dokter_citra_unggah_poli_perawatElement = document.getElementById('dokter_citra_unggah_poli_perawat');
+
 $(document).ready(function(){
     isedit = false;
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
@@ -45,6 +48,18 @@ $(document).ready(function(){
         shouldSort: false,
         placeholder: true,
         placeholderValue: 'Pilih dokter yang bertugas',
+    });
+    dokter_citra_unggah_poli_pembaca = new Choices(dokter_citra_unggah_poli_pembacaElement,{
+        searchEnabled: true,
+        shouldSort: false,
+        placeholder: true,
+        placeholderValue: 'Pilih dokter yang membaca',
+    });
+    dokter_citra_unggah_poli_perawat = new Choices(dokter_citra_unggah_poli_perawatElement,{
+        searchEnabled: true,
+        shouldSort: false,
+        placeholder: true,
+        placeholderValue: 'Pilih perawat yang bertugas',
     });
     detail_penjelasan_citra_unggah_poli = new Choices('#detail_penjelasan_citra_unggah_poli',{
         placeholder: true,
@@ -318,6 +333,9 @@ $("#simpan_foto_perserta").on('click', function() {
             formData.append('kesimpulan', $('#kesimpulan_citra_unggah_poli option:selected').text());
             formData.append('detail_kesimpulan', detail_kesimpulan);
             formData.append('catatan_kaki', $("#catatan_kaki_citra_unggah_poli").val());
+            formData.append('pegawai_id_pembaca', $("#dokter_citra_unggah_poli_pembaca").val());
+            formData.append('pegawai_id_perawat', $("#dokter_citra_unggah_poli_perawat").val());
+            
             if (jenis_poli.toLowerCase().replace(/ /g, "") !== "farmingham_score"){
                 formData.append('citra_unggahan_poliklinik_pdf', $("#pdf_file")[0].files[0]);   
                 croppedImages.forEach((base64Image, index) => {

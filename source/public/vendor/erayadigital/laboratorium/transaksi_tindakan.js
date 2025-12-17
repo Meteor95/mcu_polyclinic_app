@@ -411,6 +411,7 @@ function load_data_dokter_bertugas(role){
                         placeholder: true,
                         placeholderValue: 'Tentukan Dokter Bertugas',
                     });
+                    
                 }
                 if (role != 'dokter') {
                     hierarchicalData.forEach(dokter_bertugas => {

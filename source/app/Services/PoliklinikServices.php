@@ -57,6 +57,8 @@ class PoliklinikServices
                 'detail_kesimpulan' => $data['detail_kesimpulan'],
                 'catatan_kaki' => $data['catatan_kaki'],
                 'petugas_id' => $userIdLogin,
+                'pegawai_id_pembaca' => $data['pegawai_id_pembaca'],
+                'pegawai_id_perawat' => $data['pegawai_id_perawat'],
             ];
             if ($isedit){
                 $unggahan_poliklinik = $model->where('user_id', $data['user_id'])->where('transaksi_id', $data['transaksi_id'])->first();
