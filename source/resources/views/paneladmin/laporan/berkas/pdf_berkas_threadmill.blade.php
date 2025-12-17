@@ -121,8 +121,16 @@ background_bottom {
     height: 100%;
     z-index: 999;
 }
-@page :nth(2) { 
-    size: A4 portrait; 
+
+.full-image-page {
+    page-break-before: always;
+    text-align: center;
+}
+
+.full-image-page img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 </style>
 </head>
@@ -324,10 +332,8 @@ if (!function_exists('header_mcu')) {
                         <b>{{ $firstItem->departemen }}</b>
                     </div>
                 </div>
-            <!-- </div>           
-            <div style="page-break-after: always; text-align:center;"> -->
                 @foreach ($dataPoli as $item)
-                    <img src="{{ $item->data_foto }}" style="width:100%; object-fit:contain;">
+                    <div class="full-image-page"><img src="{{ $item->data_foto }}"></div>
                 @endforeach
             </div>
             @empty

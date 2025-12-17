@@ -711,7 +711,7 @@ class LaporanController extends Controller
             if ($pageNumber > 1 && $pageNumber < $pageCount) {
                 $width = $canvas->get_width();
                 $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
-                $x = ($width / 2) + 175;              
+                $x = ($width / 2) + 275;              
                 $y = $canvas->get_height() - 40;
                 $canvas->text($x, $y, $text, null, 12);
             }
