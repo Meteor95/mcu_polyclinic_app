@@ -4,7 +4,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4>Berkas Tindakan MCU</h4><span>Pada halaman ini anda dapat melihat semua berkas peserta yang melakukan tindakan MCU mulai dari data awal hingga data akhir. Informasi berkas MCU akan tampil pada halaman ini jikalau berkas tersebut telah validasi oleh dokter atau admin aplikasi.</span>
+          <h4>Berkas Tindakan Threadmill</h4><span>Pada halaman ini anda dapat melihat semua berkas peserta yang melakukan tindakan MCU mulai dari data awal hingga data akhir. Informasi berkas MCU akan tampil pada halaman ini jikalau berkas tersebut telah validasi oleh dokter atau admin aplikasi.</span>
         </div>
         <div class="card-body">
           <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data berdasarkan nama peserta">
@@ -501,5 +501,5 @@
 @section('js_load')
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/laporan/berkas_mcu.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laporan/berkas_mcu.js')) }}"></script>
+<script src="{{ asset('vendor/erayadigital/laporan/berkas_mcu_threadmill.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laporan/berkas_mcu_threadmill.js')) }}"></script>
 @endsection

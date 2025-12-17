@@ -73,6 +73,7 @@ class CheckPermission
             'hasAccessValidasiKesimpulan' => 'akses_validasi_kesimpulan',
             'hasAccessValidasiMcu' => 'akses_validasi_mcu',
             'hasAccessArciveMCU' => 'akses_berkas_tindakan_mcu',
+            'hasAccessArciveMCUThreadmill' => 'akses_berkas_tindakan_threadmill',
             'hasAccessArciveLaboratorium' => 'akses_berkas_tindakan_laboratorium',
             'hasAccessLaporanPenjualan' => 'akses_laporan_penjualan',
             'hasAccessLaporanKuitansi' => 'akses_berkas_tindakan_kwitansi',

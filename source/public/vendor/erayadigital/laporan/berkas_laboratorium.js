@@ -49,6 +49,7 @@ function loadDataPasien() {
                     d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
                     d.from_query = "berkas_laboratorium";
                     d.status_peserta = "selesai";
+                    d.jenis_laporan = "laboratorium";
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

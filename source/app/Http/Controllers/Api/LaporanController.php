@@ -329,7 +329,6 @@ class LaporanController extends Controller
             Storage::disk('public')->delete($relativePathLAB);
             /* Insert Sama Seperti Laboratorium, Cuma Kalau Ini By Pass Tanpa Laboratorium */
             TransaksiLab::where('no_nota', $no_nota)->forceDelete();
-
             $userDetails = $req->get('user_details');
             $data_transaksi = [
                 'no_mcu' => $paket_mcu->id_mcu_peserta,
@@ -342,7 +341,7 @@ class LaporanController extends Controller
                 'nama_pj' => $userDetails->nama_pegawai,
                 'total_bayar' => $paket_mcu->harga_paket,
                 'total_transaksi' => $paket_mcu->harga_paket,
-                'total_tindakan' => 1,
+                'total_tindakan' => 0,
                 'jenis_transaksi' => 0,
                 'metode_pembayaran' => '',
                 'id_kasir' => $userDetails->id,

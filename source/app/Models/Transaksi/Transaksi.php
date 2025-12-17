@@ -3,7 +3,7 @@
 namespace App\Models\Transaksi;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{DB,Log};
 
 class Transaksi extends Model
 {
@@ -23,9 +23,11 @@ class Transaksi extends Model
     ];
     public static function listPasienTabel($request, $perHalaman, $offset)
     {
+        Log::info($request->jenis_laporan);
         $parameterpencarian = $request->parameter_pencarian;
         $status_peserta = $request->status_peserta;
         $parameterpencarianstatuspasien = $request->status_pasien;
+        $jenis_laporan = $request->jenis_laporan;
         $from_query = $request->from_query;
         $tablePrefix = config('database.connections.mysql.prefix');
         $query = DB::table((new self())->getTable())
@@ -34,6 +36,12 @@ class Transaksi extends Model
             ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
             ->join('users_pegawai', 'users_pegawai.id', '=', 'mcu_transaksi_peserta.petugas_id')
             ->join('paket_mcu', 'paket_mcu.id', '=', 'mcu_transaksi_peserta.id_paket_mcu')
+            ->when($jenis_laporan === 'laboratorium', function ($q) {
+                $q->join('transaksi', 'transaksi.no_mcu', '=', 'mcu_transaksi_peserta.id');
+            })
+            ->when($jenis_laporan === 'threadmill', function ($q) {
+                $q->join('mcu_poli_threadmill', 'mcu_poli_threadmill.transaksi_id', '=', 'mcu_transaksi_peserta.id');
+            })
             ->select(
                 'mcu_transaksi_peserta.id',
                 'mcu_transaksi_peserta.no_transaksi',
@@ -57,6 +65,9 @@ class Transaksi extends Model
             } else {
                 $query->where('status_peserta', '!=', 'selesai');
             }   
+        }
+        if ($jenis_laporan === 'laboratorium'){
+            $query->where('transaksi.total_tindakan', '>', 0);
         }
         $jumlahdata = $query->groupBy('mcu_transaksi_peserta.id')
             ->get()

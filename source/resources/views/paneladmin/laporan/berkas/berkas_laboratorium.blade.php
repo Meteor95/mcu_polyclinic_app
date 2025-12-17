@@ -127,5 +127,5 @@
 @section('js_load')
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/laporan/berkas_laboratorium.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/laporan/berkas_laboratorium.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laporan/berkas_laboratorium.js')) }}"></script>
 @endsection

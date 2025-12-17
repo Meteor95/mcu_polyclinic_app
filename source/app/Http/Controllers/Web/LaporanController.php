@@ -58,6 +58,13 @@ class LaporanController extends Controller
         ]);
         return view('paneladmin.laporan.berkas.berkas_mcu', ['data' => $data]);
     }
+    public function berkas_mcu_threadmill(Request $req){
+        $data = $this->getData($req, 'Berkas Threadmill', [
+            'Beranda' => route('admin.beranda'),
+            'Berkas' => route('admin.laporan.berkas_mcu_threadmill'),
+        ]);
+        return view('paneladmin.laporan.berkas.berkas_mcu_threadmill', ['data' => $data]);
+    }
     private function determineTableNamePemeriksaanFisik($lokasiFisik)
     {
         $tables = [
