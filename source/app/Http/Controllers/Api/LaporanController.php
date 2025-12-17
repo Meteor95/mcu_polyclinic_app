@@ -328,9 +328,8 @@ class LaporanController extends Controller
             Storage::disk('public')->delete($relativePathMCU);
             Storage::disk('public')->delete($relativePathLAB);
             /* Insert Sama Seperti Laboratorium, Cuma Kalau Ini By Pass Tanpa Laboratorium */
-            if ($req->status != 'selesai') {
-                TransaksiLab::where('no_nota', $no_nota)->forceDelete();
-            }
+            TransaksiLab::where('no_nota', $no_nota)->forceDelete();
+
             $userDetails = $req->get('user_details');
             $data_transaksi = [
                 'no_mcu' => $paket_mcu->id_mcu_peserta,
@@ -343,7 +342,7 @@ class LaporanController extends Controller
                 'nama_pj' => $userDetails->nama_pegawai,
                 'total_bayar' => $paket_mcu->harga_paket,
                 'total_transaksi' => $paket_mcu->harga_paket,
-                'total_tindakan' => 0,
+                'total_tindakan' => 1,
                 'jenis_transaksi' => 0,
                 'metode_pembayaran' => '',
                 'id_kasir' => $userDetails->id,
@@ -360,13 +359,13 @@ class LaporanController extends Controller
                 'id_transaksi' => $hasil_query_tranaksi->id,
                 'id_item' => 1,
                 'kode_item' => '1000001000001',
-                'nama_item' => 'Paket MCU',
-                'nilai_tindakan' => 1,
+                'nama_item' => "Paket MCU ".$paket_mcu->nama_paket,
+                'nilai_tindakan' => 0,
                 'harga' => $paket_mcu->harga_paket,
                 'diskon' => 0,
-                'harga_setelah_diskon' => 0,
+                'harga_setelah_diskon' => $paket_mcu->harga_paket,
                 'jumlah' => 1,
-                'keterangan' => "PAKET MCU",
+                'keterangan' => "PAKET MCU ".$paket_mcu->nama_paket,
                 'meta_data_kuantitatif' => "{}",
                 'meta_data_kualitatif' => "{}",
                 'meta_data_jasa' => "{}",
