@@ -328,11 +328,9 @@ class LaporanController extends Controller
             Storage::disk('public')->delete($relativePathMCU);
             Storage::disk('public')->delete($relativePathLAB);
             /* Insert Sama Seperti Laboratorium, Cuma Kalau Ini By Pass Tanpa Laboratorium */
-            // if ($req->status != 'selesai') {
-            //     TransaksiLab::where('no_nota', $no_nota)->forceDelete();
-            // }else{
-                
-            // }
+            if ($req->status != 'selesai') {
+                TransaksiLab::where('no_nota', $no_nota)->forceDelete();
+            }
             $userDetails = $req->get('user_details');
             $data_transaksi = [
                 'no_mcu' => $paket_mcu->id_mcu_peserta,
