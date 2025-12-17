@@ -363,7 +363,16 @@ class LaporanController extends Controller
             ->where('mcu_transaksi_peserta.id', $id_mcu)->first();
         $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
         $laboratorium = $this->getHasilLaboratorium($id_mcu);
+        $transaksi_laboratorium = TransaksiLab::where('no_mcu', $id_mcu)->first();
         $ada_lampiran_laboratorium_pdf = $transaksi_laboratorium?->lampirkan_berkas_pdf ?? 'NOLAB';
+        $idTrxLab = $transaksi_laboratorium?->id;
+        $lampiran_berkas_pdf = $idTrxLab
+            ? UnggahanCitraLab::where('id_trx_lab', $idTrxLab)->get()
+            : collect();
+        $lampiran_berkas_pdf = $lampiran_berkas_pdf->map(function ($item) {
+            $item->data_foto = url(env('APP_VERSI_API') . "/file/unduh_lampiran_pdf?file_name=" . $item->nama_file);
+            return $item;
+        });
         $data = [
             'title' => 'Berkas Tindakan MCU',
             'id_mcu' => $id_mcu,
@@ -375,35 +384,31 @@ class LaporanController extends Controller
             'informasi_data_diri' => $informasi_data_diri,
             'laboratorium' => $laboratorium,
             'ada_lampiran_laboratorium_pdf' => $ada_lampiran_laboratorium_pdf,
+            'lampiran_berkas_pdf' => $lampiran_berkas_pdf,
         ];
         $folderPath = 'public/mcu/berkas/laboratorium/';
         $filename = "LAB_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
         $fullPath = storage_path("app/$folderPath$filename");
-        if (!Storage::exists($folderPath)) {
-            Storage::makeDirectory($folderPath, 0755, true);
-        }
-        if (!file_exists($fullPath)) {
-            $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_laboratorium', ['data' => $data])
-                ->setPaper('legal', 'portrait')
-                ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
-            $pdf->render();
-            $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
-                if ($pageNumber > 1 && $pageNumber < $pageCount) {
-                    $width = $canvas->get_width();
-                    $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
-                    $x = ($width / 2) + 175;              
-                    $y = $canvas->get_height() - 40;
-                    $canvas->text($x, $y, $text, null, 12);
-                }
-            
-                if ($pageCount == $pageNumber) {
-                    $width = $canvas->get_width();
-                    $height = $canvas->get_height();
-                    $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
-                }
-            });
-            $pdf->save($fullPath);
-        }
+        $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_laboratorium', ['data' => $data])
+            ->setPaper('legal', 'portrait')
+            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+        $pdf->render();
+        $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
+            if ($pageNumber > 1 && $pageNumber < $pageCount) {
+                $width = $canvas->get_width();
+                $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
+                $x = ($width / 2) + 175;              
+                $y = $canvas->get_height() - 40;
+                $canvas->text($x, $y, $text, null, 12);
+            }
+        
+            if ($pageCount == $pageNumber) {
+                $width = $canvas->get_width();
+                $height = $canvas->get_height();
+                $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
+            }
+        });
+        $pdf->save($fullPath);
         return response()->file($fullPath);
     }
     public function berkas_kuitansi(Request $req){
