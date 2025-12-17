@@ -363,6 +363,7 @@ class LaporanController extends Controller
             ->where('mcu_transaksi_peserta.id', $id_mcu)->first();
         $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
         $laboratorium = $this->getHasilLaboratorium($id_mcu);
+        $ada_lampiran_laboratorium_pdf = $transaksi_laboratorium?->lampirkan_berkas_pdf ?? 'NOLAB';
         $data = [
             'title' => 'Berkas Tindakan MCU',
             'id_mcu' => $id_mcu,
@@ -373,6 +374,7 @@ class LaporanController extends Controller
             'riwayat_informasi_foto' => $riwayat_informasi_foto,
             'informasi_data_diri' => $informasi_data_diri,
             'laboratorium' => $laboratorium,
+            'ada_lampiran_laboratorium_pdf' => $ada_lampiran_laboratorium_pdf,
         ];
         $folderPath = 'public/mcu/berkas/laboratorium/';
         $filename = "LAB_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
