@@ -295,7 +295,9 @@ function lihat_laboratorium(no_transaksi, nama_peserta, id_mcu, button) {
                     });
                 }else{
                     $("#datatables_hasil_laboratorium_modal").hide();
+                    console.log(response)
                     const lampiranBerkasPdf = response.lampiran_berkas_pdf;
+                    console.log(lampiranBerkasPdf)
                     const container = document.getElementById('lampiran-container');
                     container.innerHTML = lampiranBerkasPdf.map(item => `
                         <div style="text-align:center;">
