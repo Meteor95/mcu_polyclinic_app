@@ -8,6 +8,7 @@ use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, Riwaya
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\{Transaksi as TransaksiLab, Kategori, TransaksiDetail, Kesimpulan as KesimpulanLabStatus};
+use App\Models\Transaksi\UnggahanCitraLab;
 use App\Models\Laporan\Kesimpulan;
 use App\Models\EdsJasaPelayanan;
 use App\Models\Masterdata\Jasalayanan;
@@ -596,6 +597,7 @@ class LaporanController extends Controller
             $tingkat_kesadaran = TingkatKesadaran::where('transaksi_id', $req->id_mcu)->first();
             $tanda_vital = TandaVital::where('transaksi_id', $req->id_mcu)->get();
             $penglihatan = Penglihatan::where('transaksi_id', $req->id_mcu)->first();
+            $transaksi_header = TransaksiLab::where('no_mcu', $req->id_mcu)->first();
             $kategori_pemeriksaan = ['kepala','telinga','mata','tenggorokan','mulut','gigi','leher','thorax','abdomen_urogenital','anorectal_genital','ekstremitas','neurologis'];
             $query_kondisi_fisik = "";
             foreach ($kategori_pemeriksaan as $kategori) {
@@ -615,6 +617,13 @@ class LaporanController extends Controller
                     $query_kondisi_fisik = $subquery;
                 }
             }
+            $lampiran_berkas_pdf = $req->id_mcu
+                ? UnggahanCitraLab::where('id_trx_lab', $req->id_mcu)->get()
+                : collect();
+            $lampiran_berkas_pdf = $lampiran_berkas_pdf->map(function ($item) {
+                $item->data_foto = url(env('APP_VERSI_API') . "/file/unduh_lampiran_pdf?file_name=" . $item->nama_file);
+                return $item;
+            });
             $data_kondisi_fisik = $query_kondisi_fisik ? $query_kondisi_fisik->get() : collect([]);
             $laboratorium = $this->getHasilLaboratorium($req->id_mcu);
             $dynamicAttributes = [
@@ -631,7 +640,9 @@ class LaporanController extends Controller
                 'penglihatan' => $penglihatan,
                 'tanda_vital' => $tanda_vital,
                 'kondisi_fisik' => $data_kondisi_fisik,
-                'laboratorium' => $laboratorium
+                'laboratorium' => $laboratorium,
+                'transaksi_header' => $transaksi_header,
+                'lampiran_berkas_pdf' => $lampiran_berkas_pdf,
             ];
             return ResponseHelper::data('Informasi MCU', $dynamicAttributes);
         } catch (\Throwable $th) {

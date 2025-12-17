@@ -101,6 +101,7 @@
                         </thead>
                         <tbody></tbody>
                         </table>
+                        <div id="lampiran-container"></div>
                     </div>
                 </div>
             </div>
