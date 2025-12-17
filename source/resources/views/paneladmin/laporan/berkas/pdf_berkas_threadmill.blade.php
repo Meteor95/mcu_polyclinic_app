@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Berkas MCU {{ $data['nomor_mcu'] }}</title>
+<title>Berkas Threadmill {{ $data['nomor_mcu'] }}</title>
 <style>
 @page { 
     margin:110px 0px 80px 40px;
@@ -57,6 +57,13 @@ watermark {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 102;
+}
+background_bottom {
+    position: fixed;
+    bottom: -90px;
+    left: -50px;
+    z-index: -1;
+    opacity: 0.6;
 }
 #medical-checkup-table {
   width: 100%;
@@ -114,6 +121,9 @@ watermark {
     height: 100%;
     z-index: 999;
 }
+@page :nth(2) { 
+    size: A4 portrait; 
+}
 </style>
 </head>
 <body>
@@ -159,7 +169,7 @@ if (!function_exists('header_mcu')) {
 }
     @endphp
     <div class="cover">
-        <img src="{{ asset('mofi/assets/images/logo/compress_cover.jpg') }}" alt="Cover AMC" style="width: 100%;height: 100%;">
+        <img src="{{ asset('mofi/assets/images/logo/cover_threadmill.jpg') }}" alt="Cover AMC" style="width: 100%;height: 100%;">
     </div>
     <div class="header">
         <img src="{{ asset('mofi/assets/images/logo/border_hasil_mcu_atas.png') }}" alt="Border Hasil MCU" style="position: absolute;top: 0;right: 0;width: 100%;z-index: -1;opacity: 0.6;">
@@ -199,11 +209,14 @@ if (!function_exists('header_mcu')) {
     <watermark>
         <img src="{{ asset('mofi/assets/images/logo/confidential_wlogo.png') }}" alt="Watermark" style="width: 100%; opacity: 0.1;">
     </watermark>
+    <background_bottom>
+        <img src="{{ asset('mofi/assets/images/logo/border_hasil_mcu_bawah.png') }}" alt="Background Bottom" style="width: 100%;">
+    </background_bottom>
     <div class="break-before section">
     <main>
-        <div style="page-break-after: always;">
+        <div style="page-break-after: always;" class="portrait-page">
             <div style="text-align: center;">
-                <h3>PEMERIKSAAN KESEHATAN<br>(MEDICAL CHECKUP)</h3>
+                <h3>UJI LATIH JANTUNG<br>(TREADMILL STRESS TEST)</h3>
                 <img src="{{ $data['riwayat_informasi_foto']['data_foto'] }}" style="height: 250px;border-radius: 10px;">
             </div>
             <table style="width: 80%; margin: 10px auto;font-weight: bold;">
@@ -248,211 +261,86 @@ if (!function_exists('header_mcu')) {
                     <td>{{ $data['informasi_data_diri']['alamat'] }}</td>
                 </tr>
                 <tr>
-                    <td style="white-space: nowrap;">TANGGAL MCU / TIPE MCU</td>
+                    <td style="white-space: nowrap;">TANGGAL THREADMILL</td>
                     <td>:</td>
-                    <td>{{ date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_mcu'])) }} / {{ $data['informasi_data_diri']['jenis_transaksi_pendaftaran'] }}</td>
+                    <td>{{ date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_mcu'])) }} </td>
                 </tr>
             </table>
         </div>
     </main>
     </div>
-    @php
-    if (!function_exists('hasValidItems')) {
-        function hasValidItems(array $kategori): bool {
-            if (count($kategori['items']) > 0) return true;
-            foreach ($kategori['subkategori'] as $subkategori) {
-                if (count($subkategori['items']) > 0 || hasValidItems($subkategori)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-    if (!function_exists('renderKategori')) {
-        function renderKategori(array $kategori, int $depth, $datadiri = null) {
-            $html = '';
-
-            if (hasValidItems($kategori)) {
-                $paddingLeft = $depth * 4;
-                $bgColor = '';
-                $textColor = '';
-                if ($depth == 1) {
-                    $paddingLeft = 0;
-                    $bgColor = 'green';
-                    $textColor = 'white';
-                }
-                $prefix = ($depth > 1 && (count($kategori['items']) > 0 && count($kategori['subkategori']) > 0)) ? '➤' : '';
-                $html .= "
-                    <tr style='margin-left: 100px; margin-right: 100px;'>
-                        <td colspan='6' style='padding-left: {$paddingLeft}px; background-color: {$bgColor}; color: {$textColor};'>{$kategori['nama_kategori']}</td>
-                    </tr>
-                ";
-
-                if (isset($kategori['items']) && count($kategori['items']) > 0) {
-                    foreach ($kategori['items'] as $item) {
-                        $html .= renderRow($item, $depth, $datadiri);
-                    }
-                }
-
-                if (isset($kategori['subkategori']) && count($kategori['subkategori']) > 0) {
-                    foreach ($kategori['subkategori'] as $subkategori) {
-                        $html .= renderKategori($subkategori, $depth + 1, $datadiri);
-                    }
-                }
-            }
-            return $html;
-        }
-    }
-    if (!function_exists('renderRow')) {
-        function renderRow(array $item, int $level = 0, $datadiri = null) {
-            $paddingLeft = $level * 2;
-            $nilai_rujukan = '';
-            $nilai_rujukan_object = [];
-            $is_kuantitatif = false;
-            $status = 'Nilai Tidak Terdefinisi';
-            $semuajeniskelaminFound = false;
-
-            if ($item['meta_data_kuantitatif'] === '[]' && $item['meta_data_kualitatif'] === '[]') {
-                $nilai_rujukan_object = "Meta Data Tidak Dikonfigurasi";
-                $nilai_rujukan = $nilai_rujukan_object;
-            } else {
-                if ($item['meta_data_kuantitatif'] !== '[]') {
-                    $nilai_rujukan_object = json_decode($item['meta_data_kuantitatif'], true); // Decode JSON as associative array
-                    $is_kuantitatif = true;
-                } else {
-                    $nilai_rujukan_object = json_decode($item['meta_data_kualitatif'], true); // Decode JSON as associative array
-                }
-            }
-
-            if (is_array($nilai_rujukan_object) && count($nilai_rujukan_object) > 0) {
-                foreach ($nilai_rujukan_object as $item_nilai_rujukan) {
-                    $gender = strtolower(str_replace(' ', '', explode(" - ", $item_nilai_rujukan['nama_nilai_kenormalan'])[0]));
-                    $genderFromData = strtolower(str_replace(' ', '', $datadiri['jenis_kelamin']));
-
-                    if ($item_nilai_rujukan['batas_umur'] == -1) {
-                        if ($gender === "semuajeniskelamin") {
-                            $semuajeniskelaminFound = true;
-                        }
-
-                        if ($is_kuantitatif) {
-                            if (($gender === $genderFromData && !$semuajeniskelaminFound) || $gender === "semuajeniskelamin") {
-                                $nilaiTindakan = floatval($item['nilai_tindakan']);
-                                $batasBawah = floatval($item_nilai_rujukan['batas_bawah']);
-                                $batasAtas = floatval($item_nilai_rujukan['batas_atas']);
-
-                                if ($nilaiTindakan >= $batasBawah && $nilaiTindakan <= $batasAtas) {
-                                    $status = "<span style='color: green;'>N</span>";
-                                } else {
-                                    $status = "<span style='color: red;'>AB</span>";
-                                }
-                            }
-                            $nilai_rujukan .= "{$item_nilai_rujukan['nama_nilai_kenormalan']} : {$item_nilai_rujukan['batas_bawah']} {$item_nilai_rujukan['antara']} {$item_nilai_rujukan['batas_atas']}<br>";
-                        } else {
-                            if (($gender === $genderFromData && !$semuajeniskelaminFound) || $gender === "semuajeniskelamin") {
-                                $nilaiTindakan = strtolower(str_replace(' ', '', $item['nilai_tindakan']));
-                                $keteranganPositif = strtolower(str_replace(' ', '', $item_nilai_rujukan['keterangan_positif']));
-                                $keteranganNegatif = strtolower(str_replace(' ', '', $item_nilai_rujukan['keterangan_negatif']));
-
-                                if ($nilaiTindakan === $keteranganPositif) {
-                                    $status = "<span style='color: green;'>N</span>";
-                                } else if ($nilaiTindakan === $keteranganNegatif) {
-                                    $status = "<span style='color: red;'>AB</span>";
-                                } else {
-                                    $status = "<span style='color: orange;'>TT</span>";
-                                }
-                            }
-                            $nilai_rujukan .= "{$item_nilai_rujukan['nama_nilai_kenormalan']} : (+) <strong>{$item_nilai_rujukan['keterangan_positif']}</strong>, (-) <strong>{$item_nilai_rujukan['keterangan_negatif']}</strong><br>";
-                        }
-                    }
-                }
-            }
-
-            $row = "
-                <tr>
-                    <td style='padding-left: {$paddingLeft}px;'><span style='font-family: DejaVu Sans;'>➤</span>{$item['nama_item']}</td>
-                    <td style='text-align: center;'>" . (isset($item['nilai_tindakan']) ? $item['nilai_tindakan'] : 'Nilai Tidak Terdefinisi') . "</td>
-                    <td>{$nilai_rujukan}</td>
-                    <td style='text-align: center;'>" . (isset($item['satuan']) ? $item['satuan'] : '') . "</td>
-                    <td style='text-align: left;'>" . (isset($item['metode_tindakan']) ? $item['metode_tindakan'] : '') . "</td>
-                    <td style='text-align: center;'>{$status}</td>
-                </tr>
-            ";
-
-            // Rekursif panggil renderRow untuk subkategori dan sub-item
-            if (isset($item['subkategori']) && is_array($item['subkategori']) && count($item['subkategori']) > 0) {
-                foreach ($item['subkategori'] as $subItem) {
-                    $row .= renderRow($subItem, $level + 1, $datadiri);
-                }
-            }
-
-            if (isset($item['sub']) && is_array($item['sub']) && count($item['sub']) > 0) {
-                foreach ($item['sub'] as $subItem) {
-                    $row .= renderRow($subItem, $level + 1, $datadiri);
-                }
-            }
-
-            return $row;
-        }
-    }
-    @endphp
     <div class="break-before section">
     <main>
-        @if ($data['ada_lampiran_laboratorium_pdf'] != 'NOLAB')
-        <div style="page-break-after: always;">
-        @if ($data['ada_lampiran_laboratorium_pdf'] == 0)
-            @php header_mcu($data); @endphp
-            <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">HASIL LABORATORIUM</h3>
-            <table style="width: 100%;font-size: 13px;border: 1px solid black;">
-                <thead>
-                    <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 15px;">
-                        <th>PARAMETER</th>
-                        <th>HASIL</th>
-                        <th>NILAI RUJUKAN</th>
-                        <th>SATUAN</th>
-                        <th>STATUS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data['laboratorium'] as $kategori)
-                        {!! renderKategori($kategori, 1, $data['informasi_data_diri']) !!}
-                    @endforeach
-                </tbody>
-            </table>
-            <div style="position: absolute;width: 100%;">
-                <table style="width: 100%;">
-                    <tr>
-                    <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
-                        Pindai untuk periksa keaslian dokumen<br>
-                        Dokumen ini tervalidasi dan dicetak secara otomatis<br>
-                        <img src="data:image/png;base64,{{ $data['qrcode'] }}">
-                        </td>
-                        <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
-                        Mengetahui<br>Sendawar, {{ $data['tanggal_cetak'] }}<br>
-                            <img src="data:image/png;base64,{{ $data['qrcode'] }}"><br>
-                            <span style="font-weight: bold;"><u>dr. Muhammad Taufiq Amrullah, S.Ked</u></span><br>
-                            <span style="font-weight: bold;">440.007.2/127/SIP-DINKES/XI/2023</span>
-                        </td>
-                    </tr>
-                </table>
+    @forelse ($data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli)
+    @php $firstItem = $dataPoli->first(); @endphp
+
+    <!-- HALAMAN INTERPRETASI -->
+    <div style="page-break-after: always;">
+        @php header_mcu($data); @endphp
+        <div style="text-align: center; font-weight: bold; font-size: 20px;">
+            INTERPRETASI HASIL {{ strtoupper(str_replace('_', ' ', $jenis_poli)) }}
+        </div>
+
+        <table style="width: 100%;">
+            <tr>
+                <td style="width:35%;padding-left:20px;font-size:14px;">Resume</td>
+                <td style="width:65%;font-size:14px;">{!! $firstItem->kesimpulan_citra_spirometri !!}</td>
+            </tr>
+            <tr>
+                <td style="padding-left:20px;font-size:14px;">Kesimpulan</td>
+                <td style="font-size:14px;">{{ $firstItem->kesimpulan ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td style="padding-left:20px;font-size:14px;">Saran / Catatan Kaki</td>
+                <td style="font-size:14px;">{{ $firstItem->catatan_kaki ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td style="width:35%;padding-left:20px;font-size:14px;">Dokter Yang Bertugas</td>
+                <td style="width:65%;font-size:14px;">{{ $firstItem->nama_pegawai ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td style="padding-left:20px;font-size:14px;">Petugas Poliklinik Spirometri</td>
+                <td style="font-size:14px;">{{ $firstItem->nama_petugas ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td style="padding-left:20px;font-size:14px;">Judul Interpretasi</td>
+                <td style="font-size:14px;">{{ $firstItem->judul_laporan ?? '-' }}</td>
+            </tr>
+        </table>
+
+        <!-- Footer/TTD bisa ditaruh di interpretasi halaman ini -->
+        <div style="margin-top: 50px; width:100%; text-align:center; font-size:13px;">
+            <div style="display:inline-block; width:45%;">
+                Petugas {{ ucwords(str_replace('_', ' ', $jenis_poli)) }}<br>
+                Sendawar, {{ $data['tanggal_cetak'] }}<br>
+                <img src="data:image/png;base64,{{ $data['qrcode'] }}"><br>
+                <b><u>{{ $firstItem->nama_petugas }}</u></b><br>
+                <b>{{ $firstItem->departemen_petugas }}</b>
             </div>
+            <div style="display:inline-block; width:45%;">
+                Mengetahui<br>
+                Sendawar, {{ $data['tanggal_cetak'] }}<br>
+                <img src="data:image/png;base64,{{ $data['qrcode'] }}"><br>
+                <b><u>{{ $firstItem->nama_pegawai }}</u></b><br>
+                <b>{{ $firstItem->departemen }}</b>
             </div>
-        @else
-            @foreach ($data['lampiran_berkas_pdf'] as $item)
-                @if ($item->height > $item->width)
-                    <div style="text-align: center;">
-                        <img src="{{ $item->data_foto }}" style="width: auto;height:100%;">
-                    </div>
-                @else
-                    <div style="text-align: center;">
-                        <img src="{{ $item->data_foto }}" style="width: 100%;">
-                    </div>
-                @endif
-            @endforeach
-        @endif
-    @endif
-    </main>
+        </div>
     </div>
 
+    <!-- HALAMAN GAMBAR -->
+    <div style="page-break-after: always; text-align:center;">
+        @foreach ($dataPoli as $item)
+            <div style="margin-bottom: 20px;">
+                <img src="{{ $item->data_foto }}"
+                     style="{{ $item->height > $item->width ? 'width:auto;height:100%;' : 'width:100%;' }}">
+            </div>
+        @endforeach
+    </div>
+@empty
+@endforelse
+
+    </main>
+    </div>
     <div class="break-before section" style="margin:0;padding:0;">
     <main>
         <div style="page-break-after: auto;"></div>

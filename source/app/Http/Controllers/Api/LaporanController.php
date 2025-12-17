@@ -598,6 +598,7 @@ class LaporanController extends Controller
             $tanda_vital = TandaVital::where('transaksi_id', $req->id_mcu)->get();
             $penglihatan = Penglihatan::where('transaksi_id', $req->id_mcu)->first();
             $transaksi_header = TransaksiLab::where('no_mcu', $req->id_mcu)->first();
+            $threadmill = DB::table($this->determineTableNamePoliklinik('threadmill'))->where('transaksi_id', $req->id_mcu)->get();
             $kategori_pemeriksaan = ['kepala','telinga','mata','tenggorokan','mulut','gigi','leher','thorax','abdomen_urogenital','anorectal_genital','ekstremitas','neurologis'];
             $query_kondisi_fisik = "";
             foreach ($kategori_pemeriksaan as $kategori) {
@@ -643,6 +644,7 @@ class LaporanController extends Controller
                 'laboratorium' => $laboratorium,
                 'transaksi_header' => $transaksi_header,
                 'lampiran_berkas_pdf' => $lampiran_berkas_pdf,
+                'threadmill' => $threadmill,
             ];
             return ResponseHelper::data('Informasi MCU', $dynamicAttributes);
         } catch (\Throwable $th) {

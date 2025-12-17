@@ -578,8 +578,7 @@ class LaporanController extends Controller
             $pdf->save($fullPath);
         }
         return response()->file($fullPath);
-    }
-    
+    }  
     public function cetak_kuitansi_tagihan_perusahaan(Request $req){
         $dataparameter = json_decode(base64_decode($req->query('data')), true);
         $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
@@ -661,6 +660,69 @@ class LaporanController extends Controller
             $pdf->render();
             $pdf->save($fullPath);
         }
+        return response()->file($fullPath);
+    }
+    public function cetak_berkas_mcu_threadmill(Request $req){
+        $dataparameter = json_decode(base64_decode($req->query('data')), true);
+        $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
+        $id_mcu = $dataparameter['id_mcu'];
+        $nomor_mcu = $dataparameter['nomor_mcu'];
+        $nik_peserta = $dataparameter['nik_peserta'];
+        $tablePrefix = config('database.connections.mysql.prefix');
+        $qrcode = base64_encode(QrCode::format('svg')
+                    ->size(75)
+                    ->margin(1)
+                    ->generate('techsolutionstuff.com'));
+        $riwayat_informasi_foto = UnggahCitra::where('transaksi_id', $id_mcu)->first();
+        $informasi_data_diri = Transaksi::join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+            ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+            ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
+            ->select('users_member.nama_peserta', 'users_member.nomor_identitas', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'users_member.jenis_kelamin', 'users_member.alamat', 'company.company_name', 'departemen_peserta.nama_departemen', 'mcu_transaksi_peserta.tanggal_transaksi as tanggal_mcu', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran')
+            ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
+            ->where('mcu_transaksi_peserta.id', $id_mcu)->first();
+        $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
+        $model = new Poliklinik();
+        $jenis_polis = ['threadmill'];
+        $all_citra_data = collect();
+        $all_citra_laboratorium = collect();
+        foreach ($jenis_polis as $jenis_poli) {
+            $citra_data = $this->fetchInformasiPoliklinik($jenis_poli, $id_mcu, $model);
+            $all_citra_data = $all_citra_data->merge($citra_data);
+        }
+        $data = [
+            'title' => 'Berkas Tindakan MCU',
+            'id_mcu' => $id_mcu,
+            'nomor_mcu' => $nomor_mcu,
+            'nik_peserta' => $nik_peserta,
+            'tanggal_cetak' => $tanggal_cetak,
+            'qrcode' => $qrcode,
+            'riwayat_informasi_foto' => $riwayat_informasi_foto,
+            'informasi_data_diri' => $informasi_data_diri,
+            'all_citra_data' => $all_citra_data,
+        ];
+        $folderPath = 'public/mcu/berkas/laboratorium/';
+        $filename = "LAB_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
+        $fullPath = storage_path("app/$folderPath$filename");
+        $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_threadmill', ['data' => $data])
+            ->setPaper('a4', 'landscape')
+            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+        $pdf->render();
+        $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
+            if ($pageNumber > 1 && $pageNumber < $pageCount) {
+                $width = $canvas->get_width();
+                $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
+                $x = ($width / 2) + 175;              
+                $y = $canvas->get_height() - 40;
+                $canvas->text($x, $y, $text, null, 12);
+            }
+        
+            if ($pageCount == $pageNumber) {
+                $width = $canvas->get_width();
+                $height = $canvas->get_height();
+                $canvas->image(public_path('mofi/assets/images/logo/backcover_threadmill.jpg'), 0, 0, $width, $height);
+            }
+        });
+        $pdf->save($fullPath);
         return response()->file($fullPath);
     }
 }

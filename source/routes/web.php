@@ -79,7 +79,9 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
             Route::get('laboratorium',[LaporanController::class,"berkas_laboratorium"])->middleware('permission_cache:akses_berkas_tindakan_laboratorium')->name('admin.laporan.berkas_laboratorium');
             Route::get('kuitansi',[LaporanController::class,"berkas_kuitansi"])->middleware('permission_cache:akses_berkas_tindakan_kuitansi')->name('admin.laporan.berkas_kuitansi');
             Route::get('mcu/cetak',[LaporanController::class,"cetak_berkas_mcu"])->middleware('permission_cache:akses_berkas_tindakan_mcu')->name('admin.laporan.cetak_berkas_mcu');
+            Route::get('mcu_threadmill/cetak',[LaporanController::class,"cetak_berkas_mcu_threadmill"])->middleware('permission_cache:akses_berkas_tindakan_mcu')->name('admin.laporan.cetak_berkas_mcu_threadmill');
             Route::get('mcu/cetak_laboratorium',[LaporanController::class,"cetak_berkas_laboratorium"])->middleware('permission_cache:akses_berkas_tindakan_laboratorium')->name('admin.laporan.cetak_berkas_laboratorium');
+            
         });
         Route::prefix('kuitansi')->group(function () {
             Route::get('personal/cetak',[LaporanController::class,"cetak_kuitansi_personal"])->middleware('permission_cache:akses_berkas_tindakan_personal')->name('admin.laporan.berkas_personal');

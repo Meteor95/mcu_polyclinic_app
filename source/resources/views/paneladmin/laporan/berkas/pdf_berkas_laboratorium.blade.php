@@ -114,6 +114,13 @@ watermark {
     height: 100%;
     z-index: 999;
 }
+background_bottom {
+    position: fixed;
+    bottom: -90px;
+    left: -50px;
+    z-index: -1;
+    opacity: 0.6;
+}
 </style>
 </head>
 <body>
@@ -199,6 +206,9 @@ if (!function_exists('header_mcu')) {
     <watermark>
         <img src="{{ asset('mofi/assets/images/logo/confidential_wlogo.png') }}" alt="Watermark" style="width: 100%; opacity: 0.1;">
     </watermark>
+    <background_bottom>
+        <img src="{{ asset('mofi/assets/images/logo/border_hasil_mcu_bawah.png') }}" alt="Background Bottom" style="width: 100%;">
+    </background_bottom>
     <div class="break-before section">
     <main>
         <div style="page-break-after: always;">

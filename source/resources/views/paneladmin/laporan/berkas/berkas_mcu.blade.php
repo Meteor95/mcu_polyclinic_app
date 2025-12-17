@@ -103,17 +103,17 @@
                                     <td><div id="berkas_mcu_pemeriksaan_laboratorium_quill"></div></td>
                                 </tr>
                                 <tr>
-                                    <td>RO THORAX</td>
+                                    <td>RONTGEN THORAX</td>
                                     <td>:</td>
                                     <td><div id="berkas_mcu_pemeriksaan_rontgen_thorax_quill"></div></td>
                                 </tr>
                                 <tr>
-                                    <td>RO LUMBOSACRAL</td>
+                                    <td>RONTGEN LUMBOSACRAL</td>
                                     <td>:</td>
                                     <td><div id="berkas_mcu_pemeriksaan_rontgen_lumbosacral_quill"></div></td>
                                 </tr>
                                 <tr>
-                                    <td>USG UB DOMAIN</td>
+                                    <td>RONTGEN ABDOMEN (USG)</td>
                                     <td>:</td>
                                     <td><div id="berkas_mcu_pemeriksaan_usg_ubdomain_quill"></div></td>
                                 </tr>
@@ -451,7 +451,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12">
+                <!-- <div class="col-sm-12">
                     <div class="text-center">
                         <h3>HASIL LABORATORIUM</h3>
                     </div>
@@ -476,7 +476,7 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
           </div>
           <div class="modal-footer">

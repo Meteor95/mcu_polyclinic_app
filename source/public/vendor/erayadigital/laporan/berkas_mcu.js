@@ -510,43 +510,43 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu, button) {
                     });
                     $("#datatables_kondisi_fisik_log_modal tbody").append(html);
                 });
-                /* hasil laboratorium*/
-                $("#datatables_hasil_laboratorium_modal tbody").empty();
-                let tbody = $('#datatables_hasil_laboratorium_modal tbody');
-                tbody.empty();
-                function renderKategori(kategori, depth, datadiri) {
-                    function hasValidItems(kategori) {
-                        if (kategori.items.length > 0) return true;
-                        for (let subkategori of kategori.subkategori) {
-                            if (subkategori.items.length > 0 || hasValidItems(subkategori)) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    if (hasValidItems(kategori)) {
-                        let paddingLeft = depth * 4;
-                        let bgColor = '', textColor = '';
-                        if (depth == 1) {paddingLeft = 0; bgColor = 'green'; textColor = 'white';}
-                        let prefix = (depth > 1 && (kategori.items.length > 0 && kategori.subkategori.length > 0)) ? '➤' : '';
-                        tbody.append(`
-                            <tr class="kategori-${kategori.id}" style="margin-left: 100px; margin-right: 100px;">
-                                <td colspan="5" style="padding-left: ${paddingLeft}px; background-color: ${bgColor}; color: ${textColor};">${kategori.nama_kategori}</td>
-                            </tr>
-                        `);
-                        if (kategori.items && kategori.items.length > 0) {
-                            kategori.items.forEach(item => renderRow(item, depth, tbody, datadiri));
-                        }
-                        if (kategori.subkategori && kategori.subkategori.length > 0) {
-                            kategori.subkategori.forEach(subkategori => {
-                                renderKategori(subkategori, depth + 1, datadiri);
-                            });
-                        }
-                    }
-                }
-                response.laboratorium.forEach(kategori => {
-                    renderKategori(kategori, 1, response.informasi_data_diri);
-                });
+                // /* hasil laboratorium*/
+                // $("#datatables_hasil_laboratorium_modal tbody").empty();
+                // let tbody = $('#datatables_hasil_laboratorium_modal tbody');
+                // tbody.empty();
+                // function renderKategori(kategori, depth, datadiri) {
+                //     function hasValidItems(kategori) {
+                //         if (kategori.items.length > 0) return true;
+                //         for (let subkategori of kategori.subkategori) {
+                //             if (subkategori.items.length > 0 || hasValidItems(subkategori)) {
+                //                 return true;
+                //             }
+                //         }
+                //         return false;
+                //     }
+                //     if (hasValidItems(kategori)) {
+                //         let paddingLeft = depth * 4;
+                //         let bgColor = '', textColor = '';
+                //         if (depth == 1) {paddingLeft = 0; bgColor = 'green'; textColor = 'white';}
+                //         let prefix = (depth > 1 && (kategori.items.length > 0 && kategori.subkategori.length > 0)) ? '➤' : '';
+                //         tbody.append(`
+                //             <tr class="kategori-${kategori.id}" style="margin-left: 100px; margin-right: 100px;">
+                //                 <td colspan="5" style="padding-left: ${paddingLeft}px; background-color: ${bgColor}; color: ${textColor};">${kategori.nama_kategori}</td>
+                //             </tr>
+                //         `);
+                //         if (kategori.items && kategori.items.length > 0) {
+                //             kategori.items.forEach(item => renderRow(item, depth, tbody, datadiri));
+                //         }
+                //         if (kategori.subkategori && kategori.subkategori.length > 0) {
+                //             kategori.subkategori.forEach(subkategori => {
+                //                 renderKategori(subkategori, depth + 1, datadiri);
+                //             });
+                //         }
+                //     }
+                // }
+                // response.laboratorium.forEach(kategori => {
+                //     renderKategori(kategori, 1, response.informasi_data_diri);
+                // });
                 button_element.prop('disabled', false);
                 button_element.html('<i class="fa fa-print"></i> Lihat Berkas');
                 $("#modal_lihat_berkas_mcu").modal('show');
