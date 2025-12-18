@@ -116,11 +116,12 @@ class TransaksiServices
                 'lampirkan_berkas_pdf' => 0,
             ];
             $hasil_query_tranaksi = TransaksiLab::create($data_transaksi);
+            $displayTextPaket = ($parts[2] ?? null) ?  $parts[2] : $data['jenis_transaksi_pendaftaran'];
             $data_tindakan[] = [
                 'id_transaksi' => $hasil_query_tranaksi->id,
                 'id_item' => 1,
                 'kode_item' => '1000001000001',
-                'nama_item' => "Paket MCU ".$parts[2],
+                'nama_item' => "Paket MCU ".$displayTextPaket,
                 'nilai_tindakan' => 1,
                 'harga' => $paket_mcu->harga_paket,
                 'diskon' => 0,

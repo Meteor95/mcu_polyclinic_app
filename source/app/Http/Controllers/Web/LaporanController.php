@@ -19,6 +19,7 @@ use App\Models\Poliklinik\{Poliklinik, UnggahanCitra};
 use Illuminate\Support\Facades\Storage;
 use App\Models\Pegawai;
 use Carbon\Carbon;
+use App\Models\User;
 
 
 class LaporanController extends Controller
@@ -437,6 +438,7 @@ class LaporanController extends Controller
             'Beranda' => route('admin.beranda'),
             'Kuitansi' => route('admin.laporan.laporan_kuitansi'),
         ]);
+        $data['keuangan'] = User::role('keuangan')->join('users_pegawai', 'users.id', '=', 'users_pegawai.id')->get();
         return view('paneladmin.laporan.transaksi.laporan_kuitansi', ['data' => $data]);
     }
     public function laporan_insentif(Request $req){
@@ -464,7 +466,8 @@ class LaporanController extends Controller
                 '.$tablePrefix.'users_member.nama_peserta AS nama_peserta,
                 '.$tablePrefix.'transaksi.total_transaksi AS total_pembayaran,
                 '.$tablePrefix.'transaksi.nominal_apotek AS nominal_apotek,
-                '.$tablePrefix.'transaksi.jenis_layanan AS jenis_layanan
+                '.$tablePrefix.'transaksi.jenis_layanan AS jenis_layanan,
+                '.$tablePrefix.'transaksi.nama_paket_mcu AS nama_paket_mcu
             ')->first();
         $parts_nota = explode("/", $data_informasi->no_nota);
         $no_nota = implode("/", array_slice($parts_nota, 0, 3));
@@ -485,7 +488,7 @@ class LaporanController extends Controller
             'qrcode_dokter' => $qrcode_dokter,
             'atas_nama_nota' => "Aries",
             'nip' => "000",
-            'keterangan' => $keterangan == "" ? "Kuitansi Jenis Tindakan ".ucwords(str_replace("_", " ", $data_informasi->jenis_layanan)) : $keterangan,
+            'keterangan' => "Kuitansi Jenis Tindakan ".ucwords(str_replace("_", " ", $data_informasi->jenis_layanan)." ".$data_informasi->nama_paket_mcu),
             'tanggal_cetak' => $tanggal_cetak,
             'nama_peserta' => $data_informasi->nama_peserta,
             'total_pembayaran' => "Rp ".number_format($data_informasi->total_pembayaran + $data_informasi->nominal_apotek,2,",","."),
@@ -494,98 +497,31 @@ class LaporanController extends Controller
         $folderPath = 'public/kuitansi/personal/';
         $filename = "KUITANSI_".date('YmdHis').".pdf";
         $fullPath = storage_path("app/$folderPath$filename");
-        if (!Storage::exists($folderPath)) {
-            Storage::makeDirectory($folderPath, 0755, true);
-        }
-        if (!file_exists($fullPath)) {
-            $pdf = PDF::loadView('paneladmin.laporan.kuitansi.pdf_kuitansi_personal', ['data' => $data])
-                ->setPaper('legal', 'portrait')
-                ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
-            $pdf->render();
-            $pdf->save($fullPath);
-        }
+        // if (!Storage::exists($folderPath)) {
+        //     Storage::makeDirectory($folderPath, 0755, true);
+        // }
+        // if (!file_exists($fullPath)) {
+        // }
+        $width_mm = 215; 
+        $height_mm = 130;
+        $width_pt = $width_mm * 2.83465;
+        $height_pt = $height_mm * 2.83465;
+        $pdf = PDF::loadView('paneladmin.laporan.kuitansi.pdf_kuitansi_personal', ['data' => $data])
+            ->setPaper([0, 0, $width_pt, $height_pt], 'portrait')
+            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+        $pdf->render();
+        $pdf->save($fullPath);
         return response()->file($fullPath);
     }
     public function cetak_kuitansi_perusahaan(Request $req){
-        $dataparameter = json_decode(base64_decode($req->query('data')), true);
+         $dataparameter = json_decode(base64_decode($req->query('data')), true);
         $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
         $id_perusahaan = $dataparameter['id_perusahaan'];
         $kode_perusahaan = $dataparameter['kode_perusahaan'];
         $nama_perusahaan = $dataparameter['nama_perusahaan'];
-        $keterangan = $dataparameter['keterangan'];
-        $jenis_kuitansi = $dataparameter['jenis_kuitansi'];
-        $jenis_transaksi = $dataparameter['jenis_transaksi'];
-        $jenis_layanan = $dataparameter['jenis_layanan'];
-        $status_pembayaran = $dataparameter['status_pembayaran'];
-        $tablePrefix = config('database.connections.mysql.prefix');
-        $data_informasi = TransaksiLab::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
-            ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
-            ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
-            ->selectRaw('
-                '.$tablePrefix.'transaksi.no_nota AS no_nota,
-                '.$tablePrefix.'company.id AS id_perusahaan,
-                '.$tablePrefix.'company.company_name AS nama_peserta,
-                SUM('.$tablePrefix.'transaksi.total_transaksi) AS total_pembayaran,
-                SUM('.$tablePrefix.'transaksi.nominal_apotek) AS nominal_apotek,
-                '.$tablePrefix.'transaksi.jenis_layanan AS jenis_layanan,
-                COUNT('.$tablePrefix.'transaksi.no_nota) AS jumlah_peserta,
-                MIN('.$tablePrefix.'transaksi.waktu_trx) AS tanggal_awal,
-                MAX('.$tablePrefix.'transaksi.waktu_trx) AS tanggal_akhir
-            ');
-        if ($jenis_transaksi != ""){
-            $data_informasi->where('transaksi.jenis_transaksi', $jenis_transaksi);
-        }
-        if ($jenis_layanan != ""){
-            $data_informasi->where('transaksi.jenis_layanan', $jenis_layanan);
-        }
-        if ($status_pembayaran != ""){
-            $data_informasi->where('transaksi.status_pembayaran', $status_pembayaran);
-        } 
-        $data_informasi = $data_informasi->first();
-        $qrcode_no_nota = base64_encode(QrCode::format('svg')
-            ->size(75)
-            ->margin(1)
-            ->generate(base64_encode($data_informasi->id_perusahaan)));
-        $atas_nama_nota = Pegawai::where('atas_nama_kuitansi', 1)->first();
-        $qrcode_dokter = base64_encode(QrCode::format('svg')
-            ->size(75)
-            ->margin(1)
-            ->generate("00"));
-        $data = [
-            'title' => 'Cetak Kuitansi Perusahaan',
-            'nama_perusahaan' => $data_informasi->nama_peserta,
-            'jumlah_peserta' => $data_informasi->jumlah_peserta,
-            'qrcode_no_nota' => $qrcode_no_nota,
-            'qrcode_dokter' => $qrcode_dokter,
-            'atas_nama_nota' => "000",
-            'nip' => "000",
-            'keterangan' => $keterangan == "" ? "Kuitansi Untuk Perusahaan Periode ".Carbon::parse($data_informasi->tanggal_awal)->format('d M Y')." s/d ".Carbon::parse($data_informasi->tanggal_akhir)->format('d M Y') : $keterangan,
-            'tanggal_cetak' => $tanggal_cetak,
-            'total_pembayaran' => "Rp ".number_format($data_informasi->total_pembayaran + $data_informasi->nominal_apotek,2,",","."),
-            'terbilang' => ucwords(GlobalHelper::terbilang($data_informasi->total_pembayaran + $data_informasi->nominal_apotek))." Rupiah"
-        ];
-        $folderPath = 'public/kuitansi/perusahaan/';
-        $filename = "KUITANSI_".date('YmdHis').".pdf";
-        $fullPath = storage_path("app/$folderPath$filename");
-        if (!Storage::exists($folderPath)) {
-            Storage::makeDirectory($folderPath, 0755, true);
-        }
-        if (!file_exists($fullPath)) {
-            $pdf = PDF::loadView('paneladmin.laporan.kuitansi.pdf_kuitansi_perusahaan', ['data' => $data])
-                ->setPaper('legal', 'portrait')
-                ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
-            $pdf->render();
-            $pdf->save($fullPath);
-        }
-        return response()->file($fullPath);
-    }  
-    public function cetak_kuitansi_tagihan_perusahaan(Request $req){
-        $dataparameter = json_decode(base64_decode($req->query('data')), true);
-        $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
-        $id_perusahaan = $dataparameter['id_perusahaan'];
-        $kode_perusahaan = $dataparameter['kode_perusahaan'];
-        $nama_perusahaan = $dataparameter['nama_perusahaan'];
-        $keterangan = $dataparameter['keterangan'];
+        $id_direktur_keuangan = $dataparameter['id_direktur_keuangan'];
+        $nama_direktur_keuangan = $dataparameter['nama_direktur_keuangan'];
+        $nomor_surat = $dataparameter['nomor_surat'];
         $jenis_kuitansi = $dataparameter['jenis_kuitansi'];
         $jenis_transaksi = $dataparameter['jenis_transaksi'];
         $jenis_layanan = $dataparameter['jenis_layanan'];
@@ -635,6 +571,11 @@ class LaporanController extends Controller
             ->size(75)
             ->margin(1)
             ->generate("0000"));
+        $inv_resume_mcu_peserta = TransaksiLab::join('mcu_transaksi_peserta','transaksi.no_mcu','=','mcu_transaksi_peserta.id')
+            ->join('users_member','users_member.id','=','mcu_transaksi_peserta.user_id')
+            ->join('departemen_peserta','departemen_peserta.id','=','mcu_transaksi_peserta.departemen_id')
+            ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
+            ->get();
         $data = [
             'title' => 'Cetak Kuitansi Perusahaan',
             'detail_tagihan' => $data_informasi,
@@ -644,18 +585,74 @@ class LaporanController extends Controller
             'qrcode_dokter' => $qrcode_dokter,
             'atas_nama_nota' => "000",
             'nip' => "0000",
-            'keterangan' => $keterangan == "" ? "Kuitansi Untuk Perusahaan Periode ".Carbon::parse($first_row->tanggal_awal)->format('d M Y')." s/d ".Carbon::parse($first_row->tanggal_akhir)->format('d M Y') : $keterangan,
+            'keterangan' => "",
             'tanggal_cetak' => $tanggal_cetak,
+            'id_direktur_keuangan' => $id_direktur_keuangan,
+            'nama_direktur_keuangan' => $nama_direktur_keuangan,
+            'nomor_surat' => $nomor_surat,
+            'grandTotal' => 0,
+            'inv_resume_mcu_peserta' => $inv_resume_mcu_peserta,
         ];
         $folderPath = 'public/kuitansi/tagihan/';
         $filename = "TAGIHAN_".date('YmdHis').".pdf";
+        $fullPath = storage_path("app/$folderPath$filename");
+        $pdf = PDF::loadView('paneladmin.laporan.kuitansi.pdf_kuitansi_tagihan_perusahaan', ['data' => $data])
+            ->setPaper('legal', 'portrait')
+            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+        $pdf->render();
+        $pdf->save($fullPath);
+        return response()->file($fullPath);
+    }  
+    public function cetak_kuitansi_tagihan_perusahaan(Request $req){
+        $dataparameter = json_decode(base64_decode($req->query('data')), true);
+        $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
+        $id_perusahaan = $dataparameter['id_perusahaan'];
+        $kode_perusahaan = $dataparameter['kode_perusahaan'];
+        $nama_perusahaan = $dataparameter['nama_perusahaan'];
+        $id_direktur_keuangan = $dataparameter['id_direktur_keuangan'];
+        $nama_direktur_keuangan = $dataparameter['nama_direktur_keuangan'];
+        $nomor_surat = $dataparameter['nomor_surat'];
+        $jenis_kuitansi = $dataparameter['jenis_kuitansi'];
+        $jenis_transaksi = $dataparameter['jenis_transaksi'];
+        $jenis_layanan = $dataparameter['jenis_layanan'];
+        $status_pembayaran = $dataparameter['status_pembayaran'];
+        $tablePrefix = config('database.connections.mysql.prefix');
+        $inv_resume_mcu_peserta = TransaksiLab::join('mcu_transaksi_peserta','transaksi.no_mcu','=','mcu_transaksi_peserta.id')
+            ->join('users_member','users_member.id','=','mcu_transaksi_peserta.user_id')
+            ->join('departemen_peserta','departemen_peserta.id','=','mcu_transaksi_peserta.departemen_id')
+            ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
+            ->get();
+        $qrcode_no_nota = base64_encode(QrCode::format('svg')
+            ->size(75)
+            ->margin(1)
+            ->generate(base64_encode($id_perusahaan)));
+        $atas_nama_nota = Pegawai::where('atas_nama_kuitansi', 1)->first();
+        $qrcode_dokter = base64_encode(QrCode::format('svg')
+            ->size(75)
+            ->margin(1)
+            ->generate($id_direktur_keuangan));
+        $data = [
+            'title' => 'Cetak Kuitansi Perusahaan',
+            'inv_resume_mcu_peserta' => $inv_resume_mcu_peserta,
+            'nama_perusahaan' => $nama_perusahaan,
+            'qrcode_no_nota' => $qrcode_no_nota,
+            'qrcode_dokter' => $qrcode_dokter,
+            'atas_nama_nota' => $nama_direktur_keuangan,
+            'nip' => "Direktur Keuangan",
+            'nomor_surat' => $nomor_surat,
+            'tanggal_cetak' => $tanggal_cetak,
+            'total_pembayaran' => "Rp ".number_format(0,2,",","."),
+            'terbilang' => ucwords(GlobalHelper::terbilang(0))." Rupiah"
+        ];
+        $folderPath = 'public/kuitansi/perusahaan/';
+        $filename = "KUITANSI_".date('YmdHis').".pdf";
         $fullPath = storage_path("app/$folderPath$filename");
         if (!Storage::exists($folderPath)) {
             Storage::makeDirectory($folderPath, 0755, true);
         }
         if (!file_exists($fullPath)) {
-            $pdf = PDF::loadView('paneladmin.laporan.kuitansi.pdf_kuitansi_tagihan_perusahaan', ['data' => $data])
-                ->setPaper('legal', 'portrait')
+            $pdf = PDF::loadView('paneladmin.laporan.kuitansi.pdf_kuitansi_perusahaan', ['data' => $data])
+                ->setPaper('a4', 'portrait')
                 ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
             $pdf->render();
             $pdf->save($fullPath);

@@ -27,7 +27,7 @@
                 </td>
             </tr>
         </table>
-        <hr style="border: 2px solid #000;">
+        <hr style="border: none; border-top: 4px double #000; height: 0; margin: 0px 0;">
     </div>
     <main>
         <h3 style="text-align: center;">KUITANSI / BUKTI PEMBAYARAN</h3>
@@ -74,6 +74,5 @@
                 </td>
             </tr>
         </table>
-        <hr style="border: 2px solid #000;">
     </main>
 </body></html>

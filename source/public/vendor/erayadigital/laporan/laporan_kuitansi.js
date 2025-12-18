@@ -271,7 +271,9 @@ $('#select_page_length_transaksi_tindakan').on('change', function() {
 });
 function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = null) {
     Swal.fire({
-        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/bd547524-05f2-4284-8014-58bc610eff0a/s2OEsEAHMn.lottie" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Cetak Kuitansi</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin meninjau kuitansi <strong>'+param2+'</strong>? Silahkan isi keterangan dan pilih penanggung jawab kuitansi ini</p><br><input type="text" class="form-control" id="keterangan_cetak_kuitansi" placeholder="Keterangan Cetak Kuitansi"></div></div>',
+        html: `<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/bd547524-05f2-4284-8014-58bc610eff0a/s2OEsEAHMn.lottie" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Cetak Kuitansi</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin meninjau kuitansi <strong>'+param2+'</strong>? Silahkan isi keterangan dan pilih penanggung jawab kuitansi ini</p><br><input type="text" class="form-control mb-2" id="nomor_surat" placeholder="Masukan Nomor Surat. Contoh : 450/ACC-AMC/X/2025">
+        <select class="form-control" id="direktur_keuangan">${options}</select>
+        </div></div>`,
         target: document.getElementById('report_show_modal'),
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -282,7 +284,7 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
         if (result.isConfirmed) {
             let dataparameter = "";
             if (jenis_kuitansi == "kuitansi_personal") {
-                dataparameter = btoa(JSON.stringify({id_mcu: param1, nomor_mcu: param2, nik_peserta: param3, jenis_kuitansi: jenis_kuitansi, keterangan: $('#keterangan_cetak_kuitansi').val()}));
+                dataparameter = btoa(JSON.stringify({id_mcu: param1, nomor_mcu: param2, nik_peserta: param3, jenis_kuitansi: jenis_kuitansi, keterangan: $('#nomor_surat').val()}));
                 window.open(baseurl + '/laporan/kuitansi/personal/cetak?data='+dataparameter,'_blank');
             }else if (jenis_kuitansi == "kuitansi_perusahaan" || jenis_kuitansi == "tagihan_perusahaan") {
                 dataparameter = btoa(JSON.stringify({
@@ -293,7 +295,9 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
                     jenis_transaksi: $("#jenis_transaksi").val(),
                     jenis_layanan: $("#jenis_layanan").val(),
                     status_pembayaran: $("#status_pembayaran").val(),
-                    keterangan: $('#keterangan_cetak_kuitansi').val()
+                    nomor_surat: $('#nomor_surat').val(),
+                    id_direktur_keuangan: $('#direktur_keuangan').val(),
+                    nama_direktur_keuangan: $('#direktur_keuangan').find('option:selected').text()
                 }));
                 if (jenis_kuitansi == "kuitansi_perusahaan") {
                     window.open(baseurl + '/laporan/kuitansi/perusahaan/cetak?data='+dataparameter,'_blank');  
