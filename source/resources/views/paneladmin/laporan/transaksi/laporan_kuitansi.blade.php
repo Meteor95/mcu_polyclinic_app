@@ -233,7 +233,7 @@
 @section('js_load')
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="https://cdn.datatables.net/rowgroup/1.5.1/js/dataTables.rowGroup.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/laporan/laporan_kuitansi.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/laporan/laporan_kuitansi.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laporan/laporan_kuitansi.js')) }}"></script>
 <script>
     const keuanganList = <?php echo json_encode($data['keuangan']); ?>;
     let options = '<option value="">Pilih Direktur Keuangan</option>';
