@@ -524,7 +524,7 @@ class LaporanController extends Controller
         return response()->file($fullPath);
     }
     public function cetak_kuitansi_perusahaan(Request $req){
-         $dataparameter = json_decode(base64_decode($req->query('data')), true);
+        $dataparameter = json_decode(base64_decode($req->query('data')), true);
         $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
         $id_perusahaan = $dataparameter['id_perusahaan'];
         $kode_perusahaan = $dataparameter['kode_perusahaan'];
@@ -566,7 +566,7 @@ class LaporanController extends Controller
         if ($status_pembayaran != ""){
             $data_informasi->where('transaksi.status_pembayaran', $status_pembayaran);
         } 
-        $data_informasi = $data_informasi->groupby('mcu_transaksi_peserta.jenis_transaksi_pendaftaran','transaksi_detail.id_item')->get();
+        $data_informasi = $data_informasi->groupby('mcu_transaksi_peserta.jenis_transaksi_pendaftaran','transaksi_detail.harga_setelah_diskon')->get();
         $first_row = $data_informasi->first();
         $pattern = '/\/MCU\/(?:[^\/]+)\/(.+)/';
         preg_match($pattern, $first_row->no_nota, $matches);
