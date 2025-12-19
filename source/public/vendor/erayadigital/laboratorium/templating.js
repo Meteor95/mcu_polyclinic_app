@@ -81,7 +81,7 @@ function load_template_laboratorium() {
                     title: "Paket MCU",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return row.used_paket_mcu == 0 ? "Tidak Terhubung Paket MCU" : "Nama Paket MCU : "+row.nama_paket+"<br>Harga MCU : "+row.harga_paket.toLocaleString('id-ID');
+                            return row.used_paket_mcu == 0 ? "Tidak Terhubung Paket MCU" : "Nama Paket MCU : "+row.nama_paket+"<br>Harga MCU : "+"0".toLocaleString('id-ID');
                         }
                         return data;
                     }

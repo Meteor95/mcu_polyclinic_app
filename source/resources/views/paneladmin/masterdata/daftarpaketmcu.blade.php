@@ -50,13 +50,26 @@
                 <div class="invalid-feedback">Masukan keterangan yang valid</div>
                 <div class="valid-feedback">Terlihat bagus! Keterangan sudah terisi</div>
             </div>
+            <div class="mb-3">
+                <label for="keteranganpaketmcu" class="form-label">Kategori Paket MCU</label>
+                <select class="form-select" id="jenis_transaksi_pendaftaran" name="jenis_transaksi_pendaftaran" required>
+                    <option value="MCU">MCU</option>
+                    <option value="Follow_Up">Follow Up</option>
+                    <option value="Berobat">Berobat</option>
+                    <option value="MCU_Tambahan">MCU Tambahan</option>
+                    <option value="MCU_Threadmill">MCU Threadmill</option>
+                    <option value="Threadmill">Threadmill</option>
+                </select>
+                <div class="invalid-feedback">Masukan keterangan yang valid</div>
+                <div class="valid-feedback">Terlihat bagus! Keterangan sudah terisi</div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <table id="tabel_pemeriksaan" class="table table-bordered table-padding-sm-no-datatable">
                         <tr>
                             <th>Kategori</th>
                             <th>Nama Tindakan</th>
-                            <th style="text-align: center;">Aksi</th>
+                            <th style="text-align: center;cursor: pointer;">Aksi</th>
                         </tr>
                         <tr>
                             <td rowspan="7">Riwayat Data Diri</td>
@@ -212,5 +225,5 @@
 <script src="{{asset('mofi/assets/js/select2/tagify.js')}}"></script>
 <script src="{{asset('mofi/assets/js/select2/tagify.polyfills.min.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
-<script src="{{asset('vendor/erayadigital/master_data/paketmcu.js')}}"></script>
+<script src="{{ asset('vendor/erayadigital/master_data/paketmcu.js') }}?v={{ filemtime(public_path('vendor/erayadigital/master_data/paketmcu.js')) }}"></script>
 @endsection

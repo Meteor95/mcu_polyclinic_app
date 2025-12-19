@@ -250,7 +250,7 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="no_telepon" class="form-label mt-3">Tentukan Paket Layanan</label>
+                            <label for="select2_paket_mcu" class="form-label mt-3">Tentukan Paket Layanan</label>
                         </div>
                         <div class="col-md-6">
                             <div id="pilih_paket_mcu">
@@ -329,7 +329,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
-<script src="{{ asset('vendor/erayadigital/pendaftaran/formulirtambahpeserta.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('vendor/erayadigital/pendaftaran/formulirtambahpeserta.js') }}?v={{ filemtime(public_path('vendor/erayadigital/pendaftaran/formulirtambahpeserta.js')) }}"></script>
 <script>
     let isedit = false, id_detail_transaksi_mcu = null;
     $('#tanggal_pendaftaran').val(moment().format("DD-MM-YYYY"));

@@ -160,6 +160,7 @@ function callselect2mcu(){
                         parameter_pencarian: params.term || "",
                         start: 0,
                         length: 1000,
+                        kategori_paket: $('#jenis_transaksi_pendaftaran').val(),
                     };
                 },
                 processResults: function (data) {
@@ -286,7 +287,8 @@ function callselect2mcu(){
     });
 }
 $("#jenis_transaksi_pendaftaran").on('change', function(){
-    if ($('#jenis_transaksi_pendaftaran').val() != 'MCU') {
+    let val_jenis_transaksi_pendaftaran = $('#jenis_transaksi_pendaftaran').val();
+    if (!/MCU/i.test(val_jenis_transaksi_pendaftaran)) {
         $('#select2_paket_mcu').prop('disabled', true);
         $('#select2_paket_mcu').val(null).trigger('change');
     }else{
