@@ -221,9 +221,6 @@
                     <tr style="background-color: #C0C0C0;">
                         <td colspan="4" style="text-align: left; font-weight: bold; border: 2px solid #000; padding-left: 5px;">
                             {{ strtoupper(str_replace('_', ' ', $item['jenis_layanan'])) }} 
-                            @if($item['apakah_paket'] > 0) 
-                                (PAKET : {{ $item['nama_paket_mcu'] }})
-                            @endif
                         </td>
                     </tr>
                 @else
