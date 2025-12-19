@@ -532,6 +532,7 @@ $("#konfirmasi_jasa_pelayanan").on('click', function() {
                 data: payload
             },
             success: function(response) {
+                console.log(response)
                 if (!response.success) {
                     return createToast('Kesalahan Dalam Mengubah Data Jasa Pelayanan', 'top-right', response.message, 'error', 3000);
                 }

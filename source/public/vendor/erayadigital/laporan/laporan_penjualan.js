@@ -7,7 +7,7 @@ $(document).ready(function(){
             tanggalAkhir.set('minDate', dateStr);
         }
     });
-    $("#tanggal_awal").val(moment().format('DD-MM-YYYY'));
+    $("#tanggal_awal").val(moment().startOf('month').format('DD-MM-YYYY'));
     const tanggalAkhir = flatpickr("#tanggal_akhir", {
         dateFormat: "d-m-Y",
         maxDate: 'today',

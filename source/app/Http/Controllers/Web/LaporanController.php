@@ -454,8 +454,11 @@ class LaporanController extends Controller
         $id_mcu = $dataparameter['id_mcu'];
         $nomor_mcu = $dataparameter['nomor_mcu'];
         $nik_peserta = $dataparameter['nik_peserta'];
-        $keterangan = $dataparameter['keterangan'];
+        $keterangan = $dataparameter['keterangan'] ?? '-';
         $jenis_kuitansi = $dataparameter['jenis_kuitansi'];
+        $id_direktur_keuangan = $dataparameter['id_direktur_keuangan'];
+        $nama_direktur_keuangan = $dataparameter['nama_direktur_keuangan'];
+        $nomor_surat = $dataparameter['nomor_surat'] ?? '-';
         $tablePrefix = config('database.connections.mysql.prefix');
         $data_informasi = TransaksiLab::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
             ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
@@ -492,7 +495,10 @@ class LaporanController extends Controller
             'tanggal_cetak' => $tanggal_cetak,
             'nama_peserta' => $data_informasi->nama_peserta,
             'total_pembayaran' => "Rp ".number_format($data_informasi->total_pembayaran + $data_informasi->nominal_apotek,2,",","."),
-            'terbilang' => ucwords(GlobalHelper::terbilang($data_informasi->total_pembayaran + $data_informasi->nominal_apotek))." Rupiah"
+            'terbilang' => ucwords(GlobalHelper::terbilang($data_informasi->total_pembayaran + $data_informasi->nominal_apotek))." Rupiah",
+            'nama_direktur_keuangan' => $nama_direktur_keuangan,
+            'id_direktur_keuangan' => $id_direktur_keuangan,
+            'nomor_surat' => $nomor_surat
         ];
         $folderPath = 'public/kuitansi/personal/';
         $filename = "KUITANSI_".date('YmdHis').".pdf";

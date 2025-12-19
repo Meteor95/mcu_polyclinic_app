@@ -69,8 +69,8 @@
                 <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
                 Mengetahui<br>Sendawar, {{ $data['tanggal_cetak'] }}<br>
                     <img src="data:image/png;base64,{{ $data['qrcode_dokter'] }}"><br>
-                    <span style="font-weight: bold;"><u>{{ $data['atas_nama_nota'] }}</u></span><br>
-                    <span style="font-weight: bold;">{{ $data['nip'] }}</span>
+                    <span style="font-weight: bold;"><u>{{ $data['nama_direktur_keuangan'] }}</u></span><br>
+                    <span style="font-weight: bold;">Direktur Keuangan</span>
                 </td>
             </tr>
         </table>
