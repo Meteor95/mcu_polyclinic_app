@@ -407,9 +407,8 @@ if (!function_exists('header_mcu')) {
     @endphp
     <div class="break-before section">
     <main>
-        @if ($data['ada_lampiran_laboratorium_pdf'] != 'NOLAB')
-        <div style="page-break-after: always;">
-        @if ($data['ada_lampiran_laboratorium_pdf'] == 0)
+       <div style="page-break-after: always;">
+        @if ($data['ada_lampiran_laboratorium_pdf'] == 0 && $data['total_tindakan'] > 0)
             @php header_mcu($data); @endphp
             <h3 style="text-align: left; background-color: orange; color: #fff; padding: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; display: inline-block;">HASIL LABORATORIUM</h3>
             <table style="width: 100%;font-size: 13px;border: 1px solid black;">
@@ -459,7 +458,6 @@ if (!function_exists('header_mcu')) {
                 @endif
             @endforeach
         @endif
-    @endif
     </main>
     </div>
 

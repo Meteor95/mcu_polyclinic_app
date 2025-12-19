@@ -216,7 +216,8 @@ class LaporanController extends Controller
         $kesimpulan_tindakan = Kesimpulan::join('lab_kesimpulan', 'lab_kesimpulan.id', '=', 'transaksi_kesimpulan.kesimpulan_keseluruhan')->where('transaksi_kesimpulan.id_mcu', $id_mcu)->first();
         $kategori_pemeriksaan = ['kepala','telinga','mata','tenggorokan','mulut','gigi','leher','thorax','abdomen_urogenital','anorectal_genital','ekstremitas','neurologis'];
         $query_kondisi_fisik = "";
-        $ada_lampiran_laboratorium_pdf = $transaksi_laboratorium?->lampirkan_berkas_pdf ?? 'NOLAB';
+        $ada_lampiran_laboratorium_pdf = $transaksi_laboratorium?->lampirkan_berkas_pdf ?? '0';
+        $total_tindakan = $transaksi_laboratorium?->total_tindakan ?? '0';
         foreach ($kategori_pemeriksaan as $kategori) {
             $subquery = DB::table($this->determineTableNamePemeriksaanFisik($kategori))
                 ->select([
@@ -260,6 +261,7 @@ class LaporanController extends Controller
             'nomor_mcu' => $nomor_mcu,
             'nik_peserta' => $nik_peserta,
             'ada_lampiran_laboratorium_pdf' => $ada_lampiran_laboratorium_pdf,
+            'total_tindakan' => $total_tindakan ,
             'tanggal_cetak' => $tanggal_cetak,
             'qrcode' => $qrcode,
             'riwayat_informasi_foto' => $riwayat_informasi_foto,
@@ -372,7 +374,8 @@ class LaporanController extends Controller
         $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
         $laboratorium = $this->getHasilLaboratorium($id_mcu);
         $transaksi_laboratorium = TransaksiLab::where('no_mcu', $id_mcu)->first();
-        $ada_lampiran_laboratorium_pdf = $transaksi_laboratorium?->lampirkan_berkas_pdf ?? 'NOLAB';
+        $ada_lampiran_laboratorium_pdf = $transaksi_laboratorium?->lampirkan_berkas_pdf ?? '0';
+        $total_tindakan = $transaksi_laboratorium?->total_tindakan ?? '0';
         $idTrxLab = $transaksi_laboratorium?->id;
         $lampiran_berkas_pdf = $idTrxLab
             ? UnggahanCitraLab::where('id_trx_lab', $idTrxLab)->get()
@@ -392,6 +395,7 @@ class LaporanController extends Controller
             'informasi_data_diri' => $informasi_data_diri,
             'laboratorium' => $laboratorium,
             'ada_lampiran_laboratorium_pdf' => $ada_lampiran_laboratorium_pdf,
+            'total_tindakan' => $total_tindakan,
             'lampiran_berkas_pdf' => $lampiran_berkas_pdf,
         ];
         $folderPath = 'public/mcu/berkas/laboratorium/';
