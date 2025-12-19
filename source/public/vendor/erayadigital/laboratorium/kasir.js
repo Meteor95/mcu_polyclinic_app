@@ -141,7 +141,11 @@ function load_datatables_tindakan(){
                                     jenis_transaksi = 'Unknown';
                                     break;
                             }
-                            return "No Nota : " + no_trx + "<br>No MCU : " + no_mcu + "<br>Jenis Transaksi : <b>" + jenis_transaksi + "</b>";
+                            if (row.total_tindakan > 0){
+                                return "No Nota : " + no_trx + "<br>No MCU : " + no_mcu + "<br>Jenis Transaksi : <b>" + jenis_transaksi + "</b>";
+                            }else{
+                                return "No MCU : " + row.no_nota + "<br>Jenis Transaksi : <b>" + jenis_transaksi + "</b>";
+                            }
                         }
                         return data;
                     }
