@@ -314,5 +314,5 @@
 @endsection
 @section('js_load')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/laboratorium/kasir.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/laboratorium/kasir.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laboratorium/kasir.js')) }}"></script>
 @endsection

@@ -54,7 +54,7 @@ class Transaksi extends Model
             $query->where('transaksi.status_pembayaran', $status_pembayaran);
         }
         if (!empty($jenis_layanan)) {
-            $query->where('transaksi.jenis_layanan', $jenis_layanan);
+            $query->where('mcu_transaksi_peserta.jenis_transaksi_pendaftaran', $jenis_layanan);
         }
         $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
