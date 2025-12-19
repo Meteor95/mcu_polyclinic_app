@@ -333,7 +333,7 @@ background_bottom {
             </tr>
         </table>
     </footer>
-    <watermark style="position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);z-index: 102;">
+    <watermark style="position: fixed;top: 65%;left: 50%;transform: translate(-50%, -50%);z-index: 102;">
         <img src="{{ asset('mofi/assets/images/logo/confidential_wlogo.png') }}" alt="Watermark" style="width: 100%; opacity: 0.1;">
     </watermark>
     <background_bottom>
