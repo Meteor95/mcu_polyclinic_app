@@ -52,12 +52,9 @@ function updateProgress(selector, condition, text, response = null) {
         : '<i style="color:red" class="fa-regular fa-thumbs-down fa-lg"></i>';
     $(selector).html(icon + ' ' + text);
     if (text == 'LAB') {
-
         if (response.detail_informasi_user) {
             detail_transaksi_code = encodeURIComponent(btoa(response.detail_informasi_user.id+'|'+response.detail_informasi_user.no_mcu+'|'+response.detail_informasi_user.nomor_identitas+'|'+response.detail_informasi_user.nama_peserta));
             $(selector+"_bawah").html(`<a href="/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}" target="_blank" class="btn btn-amc-orange w-100"><i class="fa fa-edit"></i> Buka Tindakan</a>`);
-        }else{
-            let detail_transaksi_code = "YIHAE@example.com";
         }
     }
 }

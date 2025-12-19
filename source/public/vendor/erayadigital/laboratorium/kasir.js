@@ -188,17 +188,29 @@ function load_datatables_tindakan(){
                     width: "230px",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
+                            console.log(row);
                             return `<div class="d-flex justify-content-between gap-2">
-                                <button onclick="detail_tindakan('${row.id_transaksi}')" class="btn btn-success w-100">
-                                    <i class="fa fa-eye"></i> Detail
-                                </button>
-                                <button onclick="pembagian_jasa_pelayan('${row.id_transaksi}')" class="btn btn-danger w-100">
-                                    <i class="fa fa-eye"></i> Akhiri Transaksi
-                                </button>
-                                <button onclick="konfirmasi_pembayaran('${row.id_transaksi}')" class="btn btn-primary w-100">
-                                    <i class="fa fa-check"></i> Konfirmasi
-                                </button>
-                            </div>`;
+                                <!-- Kolom kiri -->
+                                <div class="d-flex flex-column gap-2 w-50">
+                                    <button onclick="pembagian_jasa_pelayan('${row.id_transaksi}')" class="btn btn-danger w-100">
+                                        <i class="fa fa-eye"></i> JP MCU
+                                    </button>
+                                    <button onclick="detail_tindakan('${row.id_transaksi}')" class="btn btn-success w-100">
+                                        <i class="fa fa-eye"></i> Detail
+                                    </button>
+                                </div>
+
+                                <!-- Kolom kanan -->
+                                <div class="d-flex flex-column gap-2 w-50">
+                                    <button onclick="pembagian_jasa_pelayan_lab('${row.id_transaksi}','${row.no_mcu}','${row.nomor_identitas}','${row.nama_peserta}')" class="btn btn-danger w-100">
+                                        <i class="fa fa-eye"></i> JP LAB
+                                    </button>
+                                    <button onclick="konfirmasi_pembayaran('${row.id_transaksi}')" class="btn btn-primary w-100">
+                                        <i class="fa fa-check"></i> Konfirmasi
+                                    </button>
+                                </div>
+                            </div>
+                            `;
                         }       
                         return data;
                     }
@@ -511,6 +523,10 @@ function pembagian_jasa_pelayan(id_transaksi){
             },
         });
     });
+}
+function pembagian_jasa_pelayan_lab(user_id, no_mcu, nomor_identitas, nama_peserta){
+    detail_transaksi_code = encodeURIComponent(btoa(user_id+'|'+no_mcu+'|'+nomor_identitas+'|'+nama_peserta));
+    window.open(`/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}`,'_blank');
 }
 $("#konfirmasi_jasa_pelayanan").on('click', function() {
     const payload = [];
