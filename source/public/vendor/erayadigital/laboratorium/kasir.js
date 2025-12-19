@@ -168,7 +168,7 @@ function load_datatables_tindakan(){
                 {
                     title: "Jenis Layanan",
                     render: function(data, type, row, meta) {
-                        return `${row.jenis_layanan.replace('_',' ')}<br>Tindakan : ${row.total_tindakan.toLocaleString('id-ID')}<br><span class="badge ${row.status_pembayaran == 'done' ? 'badge-success' : row.status_pembayaran == 'pending' ? 'badge-warning' : 'badge-danger'}">${capitalizeFirstLetter(row.status_pembayaran)}</span>`;
+                        return `${row.jenis_transaksi_pendaftaran.replace('_',' ')}<br>Tindakan : ${row.total_tindakan.toLocaleString('id-ID')}<br><span class="badge ${row.status_pembayaran == 'done' ? 'badge-success' : row.status_pembayaran == 'pending' ? 'badge-warning' : 'badge-danger'}">${capitalizeFirstLetter(row.status_pembayaran)}</span>`;
                     }
                 },
                 {
