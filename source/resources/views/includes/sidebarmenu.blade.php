@@ -306,7 +306,8 @@
                 ['condition' => $hasAccessPaketHarga, 'url' => 'masterdata/daftar_paket_mcu', 'label' => 'Paket Harga'],
                 ['condition' => $hasAccessJasaPelayanan, 'url' => 'masterdata/daftar_jasa_pelayanan', 'label' => 'Jasa Pelayanan'],
                 ['condition' => $hasAccessDepartemenPeserta, 'url' => 'masterdata/daftar_departemen_peserta', 'label' => 'Departemen Peserta'],
-                ['condition' => $hasAccessMemberMcu, 'url' => 'masterdata/daftar_member_mcu', 'label' => 'Member MCU'],
+                ['condition' => $hasAccessMemberMcu, 'url' => 'masterdata/daftar_member_mcu', 'label' => 'Member AMC'],
+                ['condition' => $hasAccessMemberMcu, 'url' => 'masterdata/daftar_partner_mcu', 'label' => 'Partner AMC'],
                 ['condition' => $hasAccessDaftarBank, 'url' => 'masterdata/daftar_bank', 'label' => 'Daftar Bank']
               ] as $menuItem)
                 @if ($menuItem['condition'])

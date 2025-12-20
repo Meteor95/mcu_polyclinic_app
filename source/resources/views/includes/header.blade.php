@@ -55,10 +55,10 @@
               </div>
             </div>
             <ul class="profile-dropdown onhover-show-div">
-              <li><a href="{{ route('admin.akun.profile') }}"><i data-feather="user"></i><span>Profile</span></a></li>
+              <!-- <li><a href="{{ route('admin.akun.profile') }}"><i data-feather="user"></i><span>Profile</span></a></li>
               <li><a href="letter-box.html"><i data-feather="mail"></i><span>Inbox</span></a></li>
               <li><a href="task.html"><i data-feather="file-text"></i><span>Taskboard</span></a></li>
-              <li><a href="edit-profile.html"><i data-feather="settings"></i><span>Settings</span></a></li>
+              <li><a href="edit-profile.html"><i data-feather="settings"></i><span>Settings</span></a></li> -->
               <li><a href="{{ url('pintukeluar') }}"><i data-feather="log-out"> </i><span>Keluar</span></a></li>
             </ul>
           </li>

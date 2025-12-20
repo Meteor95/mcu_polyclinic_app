@@ -34,6 +34,18 @@
                 <div class="valid-feedback">Terlihat bagus! Kode perusahaan sudah terisi</div>
               </div>
               <div class="mb-3">
+                <label for="kodeperusahaan" class="form-label">Kode Perusahaan</label>
+                <input placeholder="Ex: EDS" type="text" class="form-control" id="kodeperusahaan" name="kodeperusahaan" required>
+                <div class="invalid-feedback">Masukan kode perusahaan yang valid</div>
+                <div class="valid-feedback">Terlihat bagus! Kode perusahaan sudah terisi</div>
+              </div>
+              <div class="mb-3">
+                <label for="kodeperusahaan" class="form-label">Kode Perusahaan</label>
+                <input placeholder="Ex: EDS" type="text" class="form-control" id="kodeperusahaan" name="kodeperusahaan" required>
+                <div class="invalid-feedback">Masukan kode perusahaan yang valid</div>
+                <div class="valid-feedback">Terlihat bagus! Kode perusahaan sudah terisi</div>
+              </div>
+              <div class="mb-3">
                 <label for="namaperusahaan" class="form-label">Nama Perusahaan</label>
                 <input placeholder="Ex: PT. Eraya Digital Solusindo" type="text" class="form-control" id="namaperusahaan" name="namaperusahaan" required>
                 <div class="invalid-feedback">Masukan nama perusahaan yang valid</div>
@@ -64,5 +76,5 @@
 @endsection
 @section('js_load')
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-<script src="{{asset('vendor/erayadigital/master_data/perusahaan.js')}}"></script>
+<script src="{{ asset('vendor/erayadigital/master_data/perusahaan.js') }}?v={{ filemtime(public_path('vendor/erayadigital/master_data/perusahaan.js')) }}"></script>
 @endsection

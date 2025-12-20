@@ -661,20 +661,22 @@ function getTableDataAsJson(kondisi) {
         });
     } else if (kondisi == 'jasa') {
         const data = table_tarif_laboratorium.data().toArray();
-        if (data.length == 0) {
-            return [];
-        }
+        if (data.length === 0) {return [];}
         const harga_baru = document.querySelectorAll('.nominal_pembayaran');
         const data_harga = Array.from(harga_baru).map(input => input.value);
-        return data.map((row, index) => {
-            return {
-                id_jasa: row.id_jasa,
-                kode_jasa: row.kode_jasa_pelayanan,
-                tujuan_jasa: row.nama_jasa_pelayanan,
-                harga_jasa: numbro.unformat(data_harga[index]),
-                kategori_layanan: row.kategori_layanan,
-            };
-        });
+
+        return data
+            .map((row, index) => {
+                const harga_jasa = numbro.unformat(data_harga[index]);
+                if (!harga_jasa || harga_jasa === 0 || isNaN(harga_jasa)) { return null;}
+                return {
+                    id_jasa: row.id_jasa,
+                    kode_jasa: row.kode_jasa_pelayanan,
+                    tujuan_jasa: row.nama_jasa_pelayanan,
+                    harga_jasa: harga_jasa,
+                    kategori_layanan: row.kategori_layanan,
+                };
+            }).filter(item => item !== null);
     }
 }
 $("#antara").change(function(){
@@ -850,7 +852,6 @@ function detail_informasi_tarif(kode_item, nama_item) {
                         $("#table_jasa_laboratorium_tarif_kualitatif").show();
                     }
                 }
-                
                 const dataTarif = JSON.parse(response.data.meta_data_jasa);
                 table_jasa_laboratorium_tarif_modal.clear().draw();
                 let nomor_jasa = 1;

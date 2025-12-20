@@ -4,7 +4,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4>Member MCU Artha Medica Clinic</h4><span>Informasi daftar member MCU Artha Medica Clinic yang sudah terdaftar pada sistem dan sudah tervalidasi. Member kami sarankan tidak dihapus dari sistem dikarenakan member yang sudah terdaftar akan digunakan untuk pengambilan data hasil MCU dan saling ketergantungan.</span>
+          <h4>Member Artha Medica Clinic</h4><span>Informasi daftar member Artha Medica Clinic yang sudah terdaftar pada sistem dan sudah tervalidasi. Member kami sarankan tidak dihapus dari sistem dikarenakan member yang sudah terdaftar akan digunakan untuk pengambilan data hasil MCU dan saling ketergantungan.</span>
           <button class="mt-2 btn btn-outline-success w-100" id="tambah_member_mcu_baru" type="button"><i class="fa fa-plus"></i> Formulir Tambah Member MCU Baru</button>
         </div>
         <div class="card-body">
@@ -20,7 +20,7 @@
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h4 class="modal-title">Formulir Tambah Member MCU Baru</h4>
+            <h4 class="modal-title">Formulir Tambah Member Baru</h4>
             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body custom-scrollbar">

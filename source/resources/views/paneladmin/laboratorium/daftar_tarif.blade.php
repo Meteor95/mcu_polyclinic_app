@@ -352,5 +352,5 @@
 <script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/laboratorium/daftar_tarif.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/laboratorium/daftar_tarif.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laboratorium/daftar_tarif.js')) }}"></script>
 @endsection
