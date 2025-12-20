@@ -36,10 +36,17 @@ class TransaksiController extends Controller
             }
             $data = $request->all();
             $file = $request->file('nama_file_surat_pengantar');
-            $return = $transaksiService->handleTransactionPeserta($data, $request->attributes->get('user_id'), $file, $request);
-            if (!$return) {
-                return ResponseHelper::data_conflict('Pasien dengan Nama ' . $data['nama_peserta'] . ' sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya');
+            // Jika bukan edit, pastikan tidak ada transaksi PROSES
+            if (!filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
+                $member = MemberMCU::where('nomor_identitas', $data['nomor_identitas'])->first();
+                $existing = Transaksi::where('user_id', $member->id)
+                    ->where('status_peserta', 'proses')
+                    ->first();
+                if ($existing) {
+                    return ResponseHelper::data_conflict('Pasien dengan Nama ' . $data['nama_peserta'] . ' sudah melakukan pendaftaran dengan status PROSES dan belum selesai. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya');
+                }
             }
+            $transaksiService->handleTransactionPeserta($data, $request->attributes->get('user_id'), $file, $request);
             return ResponseHelper::success('Pengguna ' . $request->input('nama_pegawai') . ' berhasil didaftarkan kedalam sistem MCU '.config('app.name').'. Silahkan tambah informasi detail MCU berdasarkan Nomor Indetitas yang sudah didaftarkan [' . $request->input('nomor_identitas') . ']');
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

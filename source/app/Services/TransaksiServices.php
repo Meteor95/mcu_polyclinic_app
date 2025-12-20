@@ -44,16 +44,6 @@ class TransaksiServices
                 'email' => $data['email'],
             ]
         );
-        // Jika bukan edit, pastikan tidak ada transaksi PROSES
-        if (!filter_var($data['isedit'], FILTER_VALIDATE_BOOLEAN)) {
-            $existing = Transaksi::where('user_id', $member->id)
-                ->where('status_peserta', 'proses')
-                ->first();
-            Log::info($existing);
-            if ($existing) {
-                return false;
-            }
-        }
         DB::transaction(function () use ($data, $member, $user_id_petugas, $req) {
             $kodeperusahaan = Perusahaan::find($data['perusahaan_id'])->company_code;
             $kodepdepartemen = DepartemenPerusahaan::find($data['departemen_id'])->kode_departemen;
