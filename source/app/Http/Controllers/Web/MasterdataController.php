@@ -52,7 +52,7 @@ class MasterdataController extends Controller
     }
     function daftar_partner_amc(Request $req){
         $data = $this->getData($req, 'Daftar Partner AMC', [
-            'Partner AMC' => route('admin.masterdata.daftar_partner_mcu'),
+            'Partner AMC' => route('admin.masterdata.daftar_partner_amc'),
         ]);
         return view('paneladmin.masterdata.daftarpartneramc', ['data' => $data]);
     }
