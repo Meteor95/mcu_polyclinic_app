@@ -196,7 +196,8 @@
                     <input type="text" name="harga_dasar_tarif_laboratorium" id="harga_dasar_tarif_laboratorium" class="form-control" placeholder="Tentukan harga dasar sebelum dikenakan jasa laboratorium">
                 </div>  
                 <div class="col-sm-12">
-                    <label for="table_tarif_laboratorium">Jasa Laboratorium Per Transaksi</label>
+                    <label for="table_tarif_laboratorium">Jasa Laboratorium Per Transaksi</label><br>
+                    <button id="btn_tampilkan_fee" class="btn btn-primary w-100">Tampilkan Fee Tersedia</button>
                     <table id="table_tarif_laboratorium" class="table table-striped table-bordered table-hover table-padding-sm"></table>
                 </div>
                 <div class="col-sm-12">

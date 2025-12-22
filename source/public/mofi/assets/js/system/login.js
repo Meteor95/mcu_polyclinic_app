@@ -27,7 +27,7 @@ $("#btn_login" ).on( "click", function() {
                 access_form: "web_login",
             },
             complete: function() {
-                $('#btn_login').prop("disabled", false);$('#btn_login').html('Masuk Ke Panel Beranda DocuMess');
+                $('#btn_login').prop("disabled", false);$('#btn_login').html('Kirim Data');
             },
             success: function(response) {
                 if (response.success == false) {
@@ -37,7 +37,7 @@ $("#btn_login" ).on( "click", function() {
                 window.location.href = baseurl + '/admin/beranda';
             },
             error: function(xhr, status, error) {
-                $('#btn_login').prop("disabled", false);$('#btn_login').html('Masuk Ke Panel Beranda DocuMess');
+                $('#btn_login').prop("disabled", false);$('#btn_login').html('Kirim Data');
                 return createToast('Kesalahan Proses Login','top-right', xhr.responseJSON.message, 'error', 3000);
             }
         });
