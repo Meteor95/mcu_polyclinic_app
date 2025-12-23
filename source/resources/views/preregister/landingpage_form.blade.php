@@ -226,7 +226,7 @@
                   <h5>Formulir Penyakit Terdahulu</h5>
                   <div class="row">
                   @foreach ($data['penyakit_terdahulu'] as $index => $pt)
-                  <span data-index="{{$index}}" class="id-atribut-penyakit-terdahulu">{{$pt->id}}</span>
+                  <span data-index="{{$index}}" class="id-atribut-penyakit-terdahulu" style="display: none;">{{$pt->id}}</span>
                   <div class="mb-4 col-md-4 text-start nama-atribut-penyakit-terdahulu" data-index="{{$index}}">
                     {{$pt->nama_atribut_pt}}
                   </div>
@@ -251,7 +251,7 @@
                   <h5>Formuilr Penyakit Keluarga</h5>
                   <div class="row">
                   @foreach ($data['penyakit_keluarga'] as $index => $pk)
-                  <span data-index="{{$index}}" class="id-atribut-penyakit-keluarga">{{$pk->id}}</span>
+                  <span data-index="{{$index}}" class="id-atribut-penyakit-keluarga" style="display: none;">{{$pk->id}}</span>
                   <div class="mb-4 col-md-4 text-start nama-atribut-penyakit-keluarga" data-index="{{$index}}">
                     {{$pk->nama_atribut_pk}}
                   </div>
@@ -276,7 +276,7 @@
                   <h5>Formuilr Imunisasi</h5>
                   <div class="row">
                   @foreach ($data['imunisasi'] as $index => $im)
-                  <span data-index="{{$index}}" class="id-atribut-lingkungan-kerja">{{$im->id}}</span>
+                  <span data-index="{{$index}}" class="id-atribut-lingkungan-kerja" style="display: none;">{{$im->id}}</span>
                   <div class="mb-4 col-md-4 text-start nama-atribut-imunisasi" data-index="{{$index}}">
                     {{$im->nama_atribut_im}}
                   </div>
