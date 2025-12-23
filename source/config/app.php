@@ -127,6 +127,6 @@ return [
     ],
     'domains' => [
         'pendaftaran_mandiri' => env('URL_MANDIRI_DOMAIN','https://mcu.arthamedical.com'),
-        'pendaftaran_artha' => env('URL_ARTHA_DOMAIN','https://partner.arthamedical.com'),
+        'pendaftaran_artha' => env('URL_PERUSAHAAN_DOMAIN','https://partner.arthamedical.com'),
     ],
 ];
