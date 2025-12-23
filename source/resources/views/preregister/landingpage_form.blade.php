@@ -198,7 +198,7 @@
                     }
                   @endphp
                   <div class="row status_{{$kh->status}}">
-                  <span data-index="{{$index}}" class="id-atribut-kebiasaan-hidup">{{$kh->id}}</span>
+                  <span data-index="{{$index}}" class="id-atribut-kebiasaan-hidup" style="display: none;">{{$kh->id}}</span>
                   <div class="mb-3 col-lg-4 col-sm-12 text-start nama-atribut-kebiasaan-hidup kebiasaan-hidup-wrapper" data-index="{{$index}}">
                     {{$kh->nama_atribut_kb}}
                   </div>
