@@ -303,7 +303,7 @@
         </div>
       </div>
       </section>
-      <section class="faq-section section-space overflow-hidden" id="faq">
+      <!-- <section class="faq-section section-space overflow-hidden" id="faq">
         <div class="container-fluid">
           <div class="title">
             <h5 class="sub-title">Popular & Sleek Design Assortment</h5>
@@ -343,7 +343,7 @@
             </div>
           </div>
         </div>
-      </section>
+      </section> -->
     </div>
   </div>
   <div class="modal fade" id="modalPratinjau" tabindex="-1" role="dialog" aria-labelledby="modalPratinjauLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
