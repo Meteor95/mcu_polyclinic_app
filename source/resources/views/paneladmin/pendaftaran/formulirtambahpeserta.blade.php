@@ -17,7 +17,6 @@
                                     <div class="img-overlay">
                                         <h1>Good day, {{ $data['peserta']->nama_peserta }}</h1>
                                         <p>Jadikan Peserta ini sebagai keluarga MCU Arta Medica Clinic! Silahkan isi formulir pendaftaran peserta MCU dengan data yang valid.</p>
-                                        <button class="btn" id="btnIsiFormulirPakaiDataIni">Isi Formulir Pakai Data Ini</button>
                                     </div>
                                 </div>
                             </div>
@@ -89,6 +88,11 @@
                         </div>
                     </div>
                 @endif
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn w-100 btn-primary" id="btnIsiFormulirPakaiDataIni">Isi Formulir Pakai Data Ini</button>
+                    </div>
+                </div>
                 <form id="formulir_pendaftaran_peserta">
                     <div class="row">
                         <div class="col-md-6">

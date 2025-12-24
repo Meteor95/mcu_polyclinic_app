@@ -110,6 +110,7 @@ class MasterdataController extends Controller
             Perusahaan::where('id', $request->id)->update([
                 'company_code' => $request->company_code,
                 'company_name' => $request->company_name,
+                'company_alias_name' => $request->company_alias_name,
                 'alamat' => $request->alamat,
                 'keterangan' => $request->keterangan,
             ]);

@@ -78,7 +78,9 @@ function dafatarperusahaan(){
                 },
                 {
                     title: "Nama Perusahaan",
-                    data: "company_name"
+                    render: function(data, type, row, meta) {
+                        return row.company_name + " " + (row.company_alias_name ? "(" + row.company_alias_name + ")" : "");
+                    }
                 },
                 {
                     title: "Alamat Perusahaan",
@@ -92,7 +94,7 @@ function dafatarperusahaan(){
                     title: "Aksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"detailperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "', '"+row.alamat+"', '"+encodeURIComponent(row.keterangan)+"')\"><i class=\"fa fa-edit\"></i> Edit Perusahaan</button><button class=\"btn btn-danger w-100\" onclick=\"hapusperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Perusahaan</button></div>";
+                            return "<div class=\"d-flex justify-content-between gap-2\"><button class=\"btn btn-primary w-100\" onclick=\"detailperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "', '"+row.alamat+"', '"+encodeURIComponent(row.keterangan)+"', '"+row.company_alias_name+"')\"><i class=\"fa fa-edit\"></i> Edit Perusahaan</button><button class=\"btn btn-danger w-100\" onclick=\"hapusperusahaan('" + row.id + "','" + row.company_code + "', '" + row.company_name + "')\"><i class=\"fa fa-trash-o\"></i> Hapus Perusahaan</button></div>";
                         }
                         return data;
                     }
@@ -135,6 +137,7 @@ $('#simpan_perusahaan').click(function(event){
                         id: isedit ? id_perusahaan : "",
                         company_code: $('#kodeperusahaan').val(),
                         company_name: $('#namaperusahaan').val(),
+                        company_alias_name: $('#aliasperusahaan').val(),
                         alamat: $('#alamatperusahaan').val(),
                         keterangan: quill.root.innerHTML.trim(),
                     },
@@ -152,12 +155,13 @@ $('#simpan_perusahaan').click(function(event){
         }
     });
 });
-function detailperusahaan(id, kode, nama, alamat, keterangan){
+function detailperusahaan(id, kode, nama, alamat, keterangan, company_alias_name){
     id_perusahaan = id;
     isedit = true;
     $('#kodeperusahaan').val(kode);
     $('#namaperusahaan').val(nama);
     $('#alamatperusahaan').val(alamat);
+    $('#aliasperusahaan').val(company_alias_name);
     quill.container.firstChild.innerHTML = decodeURIComponent(keterangan);
     $('#formulir_tambah_perusahaan').modal('show');
 }
@@ -167,6 +171,7 @@ function clearformperusahaan(){
     $('#kodeperusahaan').val("");
     $('#namaperusahaan').val("");
     $('#alamatperusahaan').val("");
+     $('#aliasperusahaan').val("");
     quill.setContents([{
         insert: ''
     }]);

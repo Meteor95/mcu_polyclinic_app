@@ -1,4 +1,4 @@
-let formValidasi = $("#formulir_tambah_member_mcu_baru");let isedit = false;let idmembermcu = "";
+let formValidasi = $("#formulir_tambah_partner_amc_baru");let isedit = false;let idmembermcu = "";
 $(document).ready(function(){
     daftarmembermcu();
     flatpickr("#tanggal_lahir", {
@@ -8,7 +8,7 @@ $(document).ready(function(){
 });
 function daftarmembermcu() {
     $.get('/generate-csrf-token', function(response) {
-        $("#datatables_daftarmembermcu").DataTable({
+        $("#datatables_daftarpartneramc").DataTable({
             dom: 'lfrtip',
             searching: false,
             lengthChange: false,
@@ -148,7 +148,7 @@ $("#kotak_pencarian_daftarmembermcu").on("keyup", debounce(function() {
 $("#tambah_member_mcu_baru").on("click", function() {
     isedit = false;
     clearformulirtambahmembermcu();
-    $("#formulir_tambah_member_mcu_baru").modal("show");
+    $("#formulir_tambah_partner_amc_baru").modal("show");
 });
 $("#simpan_member_mcu_baru").on("click", function(event) {
     event.preventDefault();
@@ -188,9 +188,9 @@ $("#simpan_member_mcu_baru").on("click", function(event) {
                     },
                     success: function(response) {
                         clearformulirtambahmembermcu();
-                        $("#datatables_daftarmembermcu").DataTable().ajax.reload();
+                        $("#datatables_daftarpartneramc").DataTable().ajax.reload();
                         createToast('Informasi Member MCU', 'top-right', response.message, 'success', 3000);
-                        $("#formulir_tambah_member_mcu_baru").modal("hide");
+                        $("#formulir_tambah_partner_amc_baru").modal("hide");
                     },
                     error: function(xhr, status, error) {
                         createToast('Kesalahan Penyimpanan Data', 'top-right', error, 'error', 3000);
@@ -234,7 +234,7 @@ function hapusdaftarmembermcu(idmembermcu,nama_peserta,nomor_identitas) {
                     },
                     success: function(response) {
                         clearformulirtambahmembermcu()
-                        $("#datatables_daftarmembermcu").DataTable().ajax.reload();
+                        $("#datatables_daftarpartneramc").DataTable().ajax.reload();
                         createToast('Informasi Member MCU', 'top-right', response.message, 'success', 3000);
                     },
                     error: function(xhr, status, error) {
@@ -264,5 +264,5 @@ function editdaftarmembermcu(id,nomor_identitas,nama_peserta,tempat_lahir,tangga
     Object.entries(fields).forEach(([id, value]) => {
         $(`#${id}`).val(value);
     });
-    $("#formulir_tambah_member_mcu_baru").modal("show");
+    $("#formulir_tambah_partner_amc_baru").modal("show");
 }

@@ -16,7 +16,7 @@
               <h4>Masukan Informasi Yang Diberikan TIM AMC</h4>
               <p>Ketikan Surel / Nama Pengguna dan Katasandi Terdaftar</p>
               <div class="form-group">
-                <label class="col-form-label">Alamat Surel / Nama Pengguna</label>
+                <label class="col-form-label">ID Perusahaan</label>
                 <input autocomplete="off" value="erayadigitalstudio" class="form-control" type="text" id="namapengguna" required="" placeholder="hallo@arthamedicalcenter.com">
               </div>
               <div class="form-group">
@@ -44,5 +44,5 @@
 @section('js_load')
 <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4.5.1/dist/fp.min.js"></script>
 <script src="{{asset('mofi/assets/js/script.js')}}"></script>
-<script src="{{asset('mofi/assets/js/system/login.js')}}"></script>
+<script src="{{ asset('mofi/assets/js/system/login.js') }}?v={{ filemtime(public_path('mofi/assets/js/system/login.js')) }}"></script>
 @endsection

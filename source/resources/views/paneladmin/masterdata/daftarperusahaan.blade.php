@@ -34,22 +34,16 @@
                 <div class="valid-feedback">Terlihat bagus! Kode perusahaan sudah terisi</div>
               </div>
               <div class="mb-3">
-                <label for="kodeperusahaan" class="form-label">Kode Perusahaan</label>
-                <input placeholder="Ex: EDS" type="text" class="form-control" id="kodeperusahaan" name="kodeperusahaan" required>
-                <div class="invalid-feedback">Masukan kode perusahaan yang valid</div>
-                <div class="valid-feedback">Terlihat bagus! Kode perusahaan sudah terisi</div>
-              </div>
-              <div class="mb-3">
-                <label for="kodeperusahaan" class="form-label">Kode Perusahaan</label>
-                <input placeholder="Ex: EDS" type="text" class="form-control" id="kodeperusahaan" name="kodeperusahaan" required>
-                <div class="invalid-feedback">Masukan kode perusahaan yang valid</div>
-                <div class="valid-feedback">Terlihat bagus! Kode perusahaan sudah terisi</div>
-              </div>
-              <div class="mb-3">
                 <label for="namaperusahaan" class="form-label">Nama Perusahaan</label>
-                <input placeholder="Ex: PT. Eraya Digital Solusindo" type="text" class="form-control" id="namaperusahaan" name="namaperusahaan" required>
+                <input placeholder="Ex: EDS" type="text" class="form-control" id="namaperusahaan" name="namaperusahaan" required>
                 <div class="invalid-feedback">Masukan nama perusahaan yang valid</div>
                 <div class="valid-feedback">Terlihat bagus! Nama perusahaan sudah terisi</div>
+              </div>
+               <div class="mb-3">
+                <label for="aliasperusahaan" class="form-label">Alias Perusahaan</label>
+                <input placeholder="Ex: PT. Eraya Digital Solusindo" type="text" class="form-control" id="aliasperusahaan" name="aliasperusahaan" required>
+                <div class="invalid-feedback">Masukan alias perusahaan yang valid</div>
+                <div class="valid-feedback">Terlihat bagus! Alias perusahaan sudah terisi</div>
               </div>
               <div class="mb-3">
                 <label for="alamatperusahaan" class="form-label">Alamat Perusahaan</label>
