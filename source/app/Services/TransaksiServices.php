@@ -10,6 +10,7 @@ use App\Models\Transaksi\Transaksi;
 use App\Models\Pendaftaran\Peserta;
 use App\Models\{PaketMCU,Perusahaan};
 use App\Helpers\ResponseHelper;
+use App\Models\EndUser\Formulir;
 use App\Models\Transaksi\{LingkunganKerjaPeserta, RiwayatKecelakaanKerja, RiwayatKebiasaanHidup, RiwayatPenyakitKeluarga, RiwayatImunisasi, RiwayatPenyakitTerdahulu};
 use Illuminate\Support\Facades\Log;
 
@@ -127,22 +128,76 @@ class TransaksiServices
             ];
             TransaksiDetail::insert($data_tindakan);
             // Jika data berasal dari pendaftaran mandiri, insert lingkungan kerja
-            $dari_pendaftaran_mandiri = Peserta::where('nomor_identifikasi', $data['nomor_identitas'])->first();
-            if ($dari_pendaftaran_mandiri) {
-                LingkunganKerjaPeserta::create([
+            $dari_pendaftaran_mandiri_lingkungan_kerja = Peserta::where('nomor_identifikasi', $data['nomor_identitas'])->first();
+            if ($dari_pendaftaran_mandiri_lingkungan_kerja) {
+                $lingkunganKerja = json_decode($dari_pendaftaran_mandiri_lingkungan_kerja->json_lingkungan_kerja, true);
+                $kecelakaanKerja = json_decode($dari_pendaftaran_mandiri_lingkungan_kerja->json_kecelakaan_kerja, true);
+                $kebiasaanHidup  = json_decode($dari_pendaftaran_mandiri_lingkungan_kerja->json_kebiasaan_hidup, true);
+                $penyakitTerdahulu = json_decode($dari_pendaftaran_mandiri_lingkungan_kerja->json_penyakit_terdahulu, true);
+                $penyakitKeluarga  = json_decode($dari_pendaftaran_mandiri_lingkungan_kerja->json_penyakit_keluarga, true);
+                $imunisasi = json_decode($dari_pendaftaran_mandiri_lingkungan_kerja->json_imunisasi, true);
+                foreach ($lingkunganKerja['lingkungan_kerja'] as $lk) {
+                    LingkunganKerjaPeserta::create([
+                        'user_id' => $member->id,
+                        'transaksi_id' => $id_transaksi_mcu_db,
+                        'id_atribut_lk' => $lk['id_atribut_lk'],
+                        'nama_atribut_saat_ini' => $lk['nama_atribut_lk'],
+                        'status' => $lk['status'],
+                        'nilai_jam_per_hari' => $lk['jam_per_hari'],
+                        'nilai_selama_x_tahun' => $lk['selama_x_tahun'],
+                        'keterangan' => $lk['keterangan'] ?? null,
+                    ]);
+                }
+                RiwayatKecelakaanKerja::create([
                     'user_id' => $member->id,
-                    'transaksi_id' => $transaksi->id,
-                    'id_atribut_lk' => $data['id_atribut_lk'],
-                    'nama_atribut_saat_ini' => $data['nama_atribut_saat_ini'],
-                    'status' => $data['status'],
-                    'nilai_jam_per_hari' => $data['nilai_jam_per_hari'],
-                    'nilai_selama_x_tahun' => $data['nilai_selama_x_tahun'],
-                    'keterangan' => $data['keterangan'],
+                    'transaksi_id' => $id_transaksi_mcu_db,
+                    'riwayat_kecelakaan_kerja' => $kecelakaanKerja['informasi_kecelakaan_kerja'] ?? null,
                 ]);
+                foreach ($kebiasaanHidup['kebiasaan_hidup'] as $kb) {
+                    RiwayatKebiasaanHidup::create([
+                        'user_id' => $member->id,
+                        'transaksi_id' => $id_transaksi_mcu_db,
+                        'id_atribut_kb' => $kb['id_atribu_kb'],
+                        'nama_kebiasaan' => trim($kb['nama_atribut_kb']),
+                        'status_kebiasaan' => $kb['status'],
+                        'nilai_kebiasaan' => $kb['nilai'],
+                        'satuan_kebiasaan' => trim($kb['info']),
+                    ]);
+                }
+               foreach ($penyakitTerdahulu['penyakit_terdahulu'] as $pt) {
+                    RiwayatPenyakitTerdahulu::create([
+                        'user_id' => $member->id,
+                        'transaksi_id' => $id_transaksi_mcu_db,
+                        'id_atribut_pt' => $pt['id_atribut_penyakit_terdahulu'],
+                        'nama_atribut_saat_ini' => trim($pt['nama_atribut_penyakit_terdahulu']),
+                        'status' => $pt['status'],
+                        'keterangan' => $pt['keterangan'],
+                    ]);
+                }
+                foreach ($penyakitKeluarga['penyakit_keluarga'] as $pk) {
+                    RiwayatPenyakitKeluarga::create([
+                        'user_id' => $member->id,
+                        'transaksi_id' => $id_transaksi_mcu_db,
+                        'id_atribut_pk' => $pk['id_atribut_penyakit_keluarga'] ?? null,
+                        'nama_atribut_saat_ini' => trim($pk['nama_atribut_penyakit_keluarga']),
+                        'status' => $pk['status'],
+                        'keterangan' => $pk['keterangan'] ?? null,
+                    ]);
+                }
+                foreach ($imunisasi['imunisasi'] as $im) {
+                    RiwayatImunisasi::create([
+                        'user_id' => $member->id,
+                        'transaksi_id' => $id_transaksi_mcu_db,
+                        'id_atribut_im' => $im['id_atribut_imunisasi'] ?? null,
+                        'nama_atribut_saat_ini' => trim($im['nama_atribut_imunisasi']),
+                        'status' => $im['status'],
+                        'keterangan' => $im['keterangan'] ?? null,
+                    ]);
+                }
             }
+            $formulir_peserta = Formulir::where('nomor_identifikasi', $data['nomor_identitas'])->first();
+            if ($formulir_peserta) { $formulir_peserta->delete();}
         });
         return true;
     }
-
 }
-

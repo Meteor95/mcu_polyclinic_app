@@ -121,20 +121,20 @@ class PendaftaranController extends Controller
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             $data = MemberMCU::where('nomor_identitas', $request->nomor_identitas)->first();
+            $data_peserta = Peserta::where('nomor_identifikasi', $request->nomor_identitas)->first();
             $dynamicAttributes = [  
-                'data' => $data,
+                'data_identitas' => $data,
+                'data' => $data_peserta,
                 'message_info' => "Peserta dengan Nama : <h4><strong>".(isset($data->nama_peserta) ? $data->nama_peserta : '-')."</strong></h4> telah terdaftar pada sistem MCU. Apakah anda ingin menggunakan data ini untuk melakukan transaksi dan pendaftaran peserta MCU ?",
             ];
             if ($data) {
                 return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta']), $dynamicAttributes);
             } else {
-                $data = Peserta::where('nomor_identifikasi', $request->nomor_identitas)->first();
-                Log::info($data->json_lingkungan_kerja);
                 $dynamicAttributes = [  
-                    'data' => $data,
-                    'message_info' => '<h4>Informasi Peserta dengan Nama : <strong>'.$data->nama_peserta.'</strong></h4><span style="color:red">BELUM TERDAFTAR PADA SISTEM MCU</span>. Informasi member ini akan ditambahkan menjadi member di '.config('app.name').' secara otomatis jika selesai melakukan transaksi MCU',
+                    'data' => $data_peserta,
+                    'message_info' => '<h4>Informasi Peserta dengan Nama : <strong>'.$data_peserta->nama_peserta.'</strong></h4><span style="color:red">BELUM TERDAFTAR PADA SISTEM MCU</span>. Informasi member ini akan ditambahkan menjadi member di '.config('app.name').' secara otomatis jika selesai melakukan transaksi MCU',
                 ];
-                if ($data) {
+                if ($data_peserta) {
                     return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Informasi Peserta Temporari']), $dynamicAttributes);
                 } else {
                     return ResponseHelper::data_not_found(__('common.data_not_found', ['namadata' => 'Informasi Peserta']));

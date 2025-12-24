@@ -227,14 +227,13 @@ $("#btn_kirim_formulir").click(function() {
         alamat_tempat_tinggal_temp: document.getElementById('alamat_tempat_tinggal_temp').value
     };
     const lingkunganKerjaData = [];
-    document.querySelectorAll('.nama-atribut-lingkungan-kerja').forEach((el) => {
-        const index = el.getAttribute('data-index');
+    document.querySelectorAll('.lingkungan-kerja-item').forEach(item => {
         lingkunganKerjaData.push({
-            id_atribut_lk: $(`.id-atribut-lingkungan-kerja[data-index="${index}"]`).text(),
-            nama_atribut_lk: el.textContent,
-            status: $(`.status-atribut-lingkungan-kerja[data-index="${index}"]`).val(),
-            jam_per_hari: $(`.jamperhari-atribut[data-index="${index}"]`).val(),
-            selama_x_tahun: $(`.selamaxtahun-atribut[data-index="${index}"]`).val()
+            id_atribut_lk: item.querySelector('.id-atribut-lingkungan-kerja').dataset.id,
+            nama_atribut_lk: item.querySelector('.nama-atribut-lingkungan-kerja').textContent.trim(),
+            status: item.querySelector('.status-atribut-lingkungan-kerja').value,
+            jam_per_hari: item.querySelector('.jamperhari-atribut').value,
+            selama_x_tahun: item.querySelector('.selamaxtahun-atribut').value,
         });
     });
     const informasiKecelakaanKerja = document.getElementById('informasi_kecelakaan_kerja_temp').value;
@@ -245,7 +244,7 @@ $("#btn_kirim_formulir").click(function() {
             status: $(this).val(),
             nilai: $(`.nilai-atribut-kebiasaan-hidup[data-index="${$(this).data('index')}"]`).val(),
             id_atribu_kb: $(`.id-atribut-kebiasaan-hidup[data-index="${$(this).data('index')}"]`).text(),
-            nama_atribut_kb: $(`.nama-atribut-kebiasaan-hidup[data-index="${$(this).data('index')}"]`).text(),
+            nama_atribut_kb: $(`.nama-atribut-kebiasaan-hidup[data-index="${$(this).data('index')}"]`).text().replace(/\s+/g, ' ').trim(),
             info: $(`.info-atribut-kebiasaan-hidup[data-index="${$(this).data('index')}"]`).text()
         });
     });
@@ -256,10 +255,9 @@ $("#btn_kirim_formulir").click(function() {
             status: $(this).val(),
             keterangan: $(`.keterangan-atribut-penyakit-terdahulu[data-index="${$(this).data('index')}"]`).val(),
             id_atribut_penyakit_terdahulu: $(`.id-atribut-penyakit-terdahulu[data-index="${$(this).data('index')}"]`).text(),
-            nama_atribut_penyakit_terdahulu: $(`.nama-atribut-penyakit-terdahulu[data-index="${$(this).data('index')}"]`).text()
+            nama_atribut_penyakit_terdahulu: $(`.nama-atribut-penyakit-terdahulu[data-index="${$(this).data('index')}"]`).text().replace(/\s+/g, ' ').trim(),
         });
     });
-
     let penyakitKeluargaData = [];
     $('.status-atribut-penyakit-keluarga').each(function() {
         penyakitKeluargaData.push({
@@ -267,10 +265,9 @@ $("#btn_kirim_formulir").click(function() {
             status: $(this).val(),
             keterangan: $(`.keterangan-atribut-penyakit-keluarga[data-index="${$(this).data('index')}"]`).val(),
             id_atribut_penyakit_keluarga: $(`.d-atribut-penyakit-keluarga[data-index="${$(this).data('index')}"]`).text(),
-            nama_atribut_penyakit_keluarga: $(`.nama-atribut-penyakit-keluarga[data-index="${$(this).data('index')}"]`).text()
+            nama_atribut_penyakit_keluarga: $(`.nama-atribut-penyakit-keluarga[data-index="${$(this).data('index')}"]`).text().replace(/\s+/g, ' ').trim(),
         });
     });
-
     let imunisasiData = [];
     $('.status-atribut-imunisasi').each(function() {
         imunisasiData.push({
@@ -278,7 +275,7 @@ $("#btn_kirim_formulir").click(function() {
             status: $(this).val(),
             keterangan: $(`.keterangan-atribut-imunisasi[data-index="${$(this).data('index')}"]`).val(),
             id_atribut_imunisasi: $(`.id-atribut-imunisasi[data-index="${$(this).data('index')}"]`).text(),
-            nama_atribut_imunisasi: $(`.nama-atribut-imunisasi[data-index="${$(this).data('index')}"]`).text(),
+            nama_atribut_imunisasi: $(`.nama-atribut-imunisasi[data-index="${$(this).data('index')}"]`).text().replace(/\s+/g, ' ').trim(),
         });
     });
     Swal.fire({

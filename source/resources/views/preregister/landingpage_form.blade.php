@@ -150,31 +150,45 @@
 
                 <!-- Step 2 -->
                 <div class="step" data-step="2">
-                  <h5>Formulir Lingkungan Kerja</h5>
-                  <div class="row">
-                      @foreach ($data['lingkungan_kerja'] as $index => $lk)
-                      <div class="mb-3 col-lg-4 text-start">
-                          <span data-index="{{$index}}" class="id-atribut-lingkungan-kerja">{{$lk->id}}</span>
-                          <span class="nama-atribut-lingkungan-kerja" data-index="{{$index}}">{{$lk->nama_atribut_lk}}</span>
-                      </div>
-                      <div class="mb-3 col-lg-4">
-                          <select class="form-select status-atribut-lingkungan-kerja" data-index="{{$index}}" aria-label="Status">
-                              <option value="" selected>Status {{$lk->nama_atribut_lk}}</option>
-                              <option value="1">Ya</option>
-                              <option value="0">Tidak</option>
-                          </select>
-                      </div>
-                      <div class="mb-3 col-lg-2">
-                          <input type="text" class="form-control jamperhari-atribut" data-index="{{$index}}" placeholder="Berapa Jam / Hari">
-                      </div>
-                      <div class="mb-3 col-lg-2">
-                          <input type="text" class="form-control selamaxtahun-atribut" data-index="{{$index}}" placeholder="Selama Berapa Tahun">
-                      </div>
-                      @endforeach
-                  </div>
-                  <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
-                  <button class="btn btn-primary next-btn">Selanjutnya <i class="fa fa-arrow-right"></i> </button>
+                <h5>Formulir Lingkungan Kerja</h5>
+
+                @foreach ($data['lingkungan_kerja'] as $lk)
+                <div class="row lingkungan-kerja-item mb-2">
+                    <div class="mb-3 col-lg-4 text-start">
+                        <span class="id-atribut-lingkungan-kerja" data-id="{{ $lk->id }}">
+                            {{ $lk->id }}
+                        </span>
+                        <span class="nama-atribut-lingkungan-kerja">
+                            {{ $lk->nama_atribut_lk }}
+                        </span>
+                    </div>
+
+                    <div class="mb-3 col-lg-4">
+                        <select class="form-select status-atribut-lingkungan-kerja">
+                            <option value="">Status {{ $lk->nama_atribut_lk }}</option>
+                            <option value="1">Ya</option>
+                            <option value="0">Tidak</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-lg-2">
+                        <input type="text" class="form-control jamperhari-atribut" placeholder="Berapa Jam / Hari">
+                    </div>
+
+                    <div class="mb-3 col-lg-2">
+                        <input type="text" class="form-control selamaxtahun-atribut" placeholder="Selama Berapa Tahun">
+                    </div>
                 </div>
+                @endforeach
+
+                <button class="btn btn-secondary prev-btn">
+                    <i class="fa fa-arrow-left"></i> Sebelumnya
+                </button>
+                <button class="btn btn-primary next-btn">
+                    Selanjutnya <i class="fa fa-arrow-right"></i>
+                </button>
+            </div>
+
 
                 <!-- Step 3 -->
                 <div class="step" data-step="3">
