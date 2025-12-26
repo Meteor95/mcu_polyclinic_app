@@ -152,6 +152,11 @@ Route::prefix('v1')->group(function () {
             Route::post('simpanmembermcu', [MasterdataController::class,"savemembermcu"]);
             Route::get('hapusmembermcu', [MasterdataController::class,"deletemembermcu"]);
             Route::post('ubahmembermcu', [MasterdataController::class,"editmembermcu"]);
+            /* Master Data Partner AMC */
+            Route::get('daftarpartneramc', [MasterdataController::class,"getpartneramc"]);
+            Route::post('simpanpartneramc', [MasterdataController::class,"savepartneramc"]);
+            Route::get('hapuspartneramc', [MasterdataController::class,"deletepartneramc"]);
+            Route::post('ubahpartneramc', [MasterdataController::class,"editpartneramc"]);
             /* Master Data Bank Penerima */
             Route::get('daftarbank', [MasterdataController::class,"getbank"]);
             Route::post('simpanbank', [MasterdataController::class,"savebank"]);

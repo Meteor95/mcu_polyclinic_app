@@ -5,11 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{Perusahaan, PaketMCU};
+use App\Models\{User};
 use App\Models\Komponen\{Poli,Antrian};
-use App\Models\Masterdata\{Jasalayanan, DepartemenPerusahaan, MemberMCU, DaftarBank};
+use App\Models\Masterdata\{Jasalayanan, DepartemenPerusahaan, MemberMCU, DaftarBank, PartnerMCU};
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
+
 class MasterdataController extends Controller
 {
     /* Komponen */
@@ -385,6 +392,119 @@ class MasterdataController extends Controller
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
+    }
+    /* Master Data Partner MCU */
+    public function savepartneramc(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id_perusahaan' => 'required|string',
+                'katasandi' => 'required|string',
+                'email' => 'required|string',
+                'json_perusahaan' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $uuid = (string) Str::uuid();
+            $id_perusahaan_ada = User::where('username', $request->id_perusahaan)->orWhere('email', $request->email)->first();
+            if ($id_perusahaan_ada) {
+                return ResponseHelper::success("Informasi partner AMC dengan ID perusahaan " . $request->id_perusahaan . " atau email " . $request->email . " sudah ada, silahkan ubah informasi yang berbeda.");
+            }
+            $users = [
+                'uuid' => $uuid,
+                'username' => $request->id_perusahaan,
+                'email' => $request->email,
+                'email_verified_at' => now(),
+                'password' => Hash::make($request->katasandi),
+            ];
+            $orm_user = User::create($users);
+            $user = User::find($orm_user->id);
+            $role = Role::where('name', 'perusahaan')->first();
+            if ($role) {
+                $user->assignRole($role);
+            } else {
+                dd('Role "perusahaan" tidak ditemukan');
+            }
+            PartnerMCU::create([
+                'id' => $orm_user->id,
+                'json_perusahaan' => $request->json_perusahaan,
+            ]);
+            return ResponseHelper::success("Informasi partner AMC berhasil disimpan. Silahkan informasikan ke perusahaan Partner AMC yang terkait.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }   
+    }
+    public function getpartneramc(Request $req)
+    {
+        try {
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 1;
+            $nomorHalaman = (int) $req->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman;
+            $data = PartnerMCU::listPartnerMCU($req, $perHalaman, $offset);
+            $jumlahdata = $data['total'];
+            $dynamicAttributes = [
+                'data' => $data['data'],
+                'recordsFiltered' => $jumlahdata,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Daftar Partner AMC']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function deletepartneramc(Request $request)
+    {
+         try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
+                'username' => 'required|string',
+                'email' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $user = User::where('id', '=', $request->id)->first();
+            User::where('id', '=', $request->id)->delete();
+            PartnerMCU::where('id', $request->id)->delete();
+            $user->removeRole($user->roles->first()->name);
+            return ResponseHelper::success_delete("Informasi partner AMC dengan Username " . $request->username . " atau email " . $request->email . " berhasil dihapus beserta seluruh data yang terkait dengan partner AMC ini secara visual di sistem.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }   
+    }
+    public function editpartneramc(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id_perusahaan' => 'required|string',
+                'email' => 'required|string',
+                'json_perusahaan' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $user = User::where('username', $request->id_perusahaan)->first();
+            if (!$user) {
+                return ResponseHelper::error_validation("User tidak ditemukan");
+            }
+            $dataUpdate = [
+                'username' => $request->id_perusahaan,
+                'email'    => $request->email,
+            ];
+            if ($request->filled('katasandi')) {
+                $dataUpdate['password'] = Hash::make($request->katasandi);
+            }
+            $user->update($dataUpdate);
+            PartnerMCU::where('id', $user->id)->update([
+                'json_perusahaan' => $request->json_perusahaan,
+            ]);
+            return ResponseHelper::success("Informasi partner AMC dengan ID perusahaan " . $request->id_perusahaan . " berhasil diubah.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }   
     }
     /* Master Data Member MCU */
     public function getmembermcu(Request $req)

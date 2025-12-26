@@ -25,25 +25,46 @@
             </div>
             <div class="modal-body custom-scrollbar">
                 <div class="mb-3">
-                    <label for="nomor_identitas" class="form-label">ID Perusahaan</label>
-                    <input placeholder="Ex: 3602041211870001" type="text" class="form-control" id="nomor_identitas" name="nomor_identitas" required>
-                    <div class="invalid-feedback">Masukan ID perusahaan yang valid</div>
-                    <div class="valid-feedback">Terlihat bagus! ID perusahaan sudah terisi</div>
+                    <label for="email_member_mcu" class="form-label">ID Perusahaan</label>
+                    <div class="input-group">
+                        <input class="form-control" minlength="8" id="id_perusahaan" type="text" placeholder="Ex: 3602041211870001" value="" required>
+                        <button class="btn btn-outline-success" type="button" id="generate_id_perusahaan" style="margin-left: 5px;"><i class="fa fa-refresh"></i> Buat ID Perusahaan</button>
+                        <div class="invalid-feedback">ID perusahaan wajib diisi, minimal 8 karakter</div>
+                        <div class="valid-feedback">Terlihat bagus!ID perusahaan sudah terisi</div>
+                    </div>
                 </div>
                 <div class="mb-3">
-                    <label for="nama_peserta" class="form-label">Katasandi</label>
-                    <input placeholder="Ex: John Doe" type="text" class="form-control" id="nama_peserta" name="nama_peserta" required>
-                    <div class="invalid-feedback">Masukan katasandi yang valid</div>
-                    <div class="valid-feedback">Terlihat bagus! Katasandi sudah terisi</div>
+                    <label for="email_member_mcu" class="form-label">Katasandi</label>
+                    <div class="input-group">
+                        <input class="form-control" minlength="8" id="katasandi" type="password" placeholder="Buatlah katasandi yang sulit ditebak dan mudah diingat" value="" required>
+                        <button class="btn btn-outline-primary" type="button" id="toogleshowpassword"><i class="fa fa-eye"></i></button>
+                        <button class="btn btn-outline-success" type="button" id="generate_password" style="margin-left: 5px;"><i class="fa fa-refresh"></i> Buat Katasandi</button>
+                        <div class="valid-feedback">Terlihat bagus!Katasandi sudah terisi</div>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="email_member_mcu" class="form-label">Alamat Surel</label>
                     <input placeholder="Ex: aries@arthemedica.com" type="text" class="form-control" id="email_member_mcu" name="email_member_mcu">
                 </div>
+                <div class="table-container mb-3">
+                    <h4 class="modal-title">Informasi Sub Perusahaan Yang Akan Ditampilkan</h4>
+                    <input type="text" class="form-control mb-3" id="kotak_pencarian_perusahaan_tergabung" placeholder="Cari data berdasarkan kode atau nama perusahaan">
+                    <table class="table table-bordered table-padding-sm-no-datatable" id="datatables_listcompany">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kode Perusahaan</th>
+                                <th>Nama Perusahaan</th>
+                                <th class="text-center">Pilih</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" type="button" data-bs-dismiss="modal">Batal</button>
-                <button class="btn btn-primary" type="button" id="simpan_member_mcu_baru">Simpan Data</button>
+                <button class="btn btn-primary" type="button" id="simpan_partner_baru">Simpan Data</button>
             </div>
         </div>
     </div>
@@ -61,6 +82,22 @@
 body.dark-only .dtfc-fixed-right_header {
     background-color: #2a3650 !important;
 }
+#datatables_listcompany tbody tr {
+    cursor: pointer;
+}
+.row-checkbox {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+tr.selected-row {
+    background-color: #f8d7da !important;
+    transition: background-color 0.2s ease;
+}
+#datatables_listcompany td {
+    vertical-align: middle;
+}
+</style>
 </style>
 @endsection
 @section('js_load')

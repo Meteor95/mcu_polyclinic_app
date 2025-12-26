@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 Route::get('generate-csrf-token', function () { $token = csrf_token(); return response()->json(['csrf_token' => $token]); });
 Route::get('403', function () { return view('error.403_error'); });
 Route::domain(config('app.domains.pendaftaran_mandiri'))->group(function () {
-    Route::get('/', [PendaftaranController::class, "formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
-    Route::get('no_antrian/{kode_antrian}', [PendaftaranController::class, "formulir_no_antrian"])->name('landing.formulir_no_antrian'); 
+    
 });
+Route::get('/pendaftaran', [PendaftaranController::class, "formulir_pendaftaran"])->name('landing.formulir_pendaftaran');
+Route::get('/pendaftaran/no_antrian/{kode_antrian}', [PendaftaranController::class, "formulir_no_antrian"])->name('landing.formulir_no_antrian');     
 Route::get('/', function (Request $req) {
     $domain = $req->getHost();
     if ($domain === config('app.domains.pendaftaran_artha')) {

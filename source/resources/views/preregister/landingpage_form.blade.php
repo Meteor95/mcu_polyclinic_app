@@ -127,7 +127,7 @@
                                       <label class="form-check-label" for="berdiri">Berdiri</label>
                                   </div>
                                   <div class="form-check form-check-inline checkbox checkbox-dark mb-0">
-                                      <input checked class="form-check-input" name="proses_kerja_temp" id="kombinasi" value="Kombinasi" type="checkbox">
+                                      <input class="form-check-input" name="proses_kerja_temp" id="kombinasi" value="Kombinasi" type="checkbox">
                                       <label class="form-check-label" for="kombinasi">Kombinasi</label>
                                   </div>
                               </div>
