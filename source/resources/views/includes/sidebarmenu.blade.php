@@ -72,11 +72,13 @@
           </li>
           @endif
           <!-- Medical Check Up Section -->
+          @if ($hasAccessPendaftaran)
           <li class="sidebar-main-title">
             <div>
               <h6>Medical Check Up</h6>
             </div>
           </li>
+          @endif
           @if ($hasAccessPendaftaran)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
@@ -117,7 +119,7 @@
             </ul>
           </li>
           @endif
-          @if ($hasAccessTingkatKesadaran || $hasAccessPenglihatan || $hasAccessKondisiFisikKepala || $hasAccessKondisiFisikTelinga || $hasAccessKondisiFisikMata || $hasAccessKondisiFisikTenggorokan || $hasAccessKondisiFisikMulut || $hasAccessKondisiFisikGigi || $hasAccessKondisiFisikLeher || $hasAccessKondisiFisikThorax || $hasAccessKondisiFisikAbdomenUrogenital || $hasAccessKondisiFisikAnorectalGenital || $hasAccessKondisiFisikEkstremitas || $hasAccessKondisiFisikNeurologis)
+          @if ($hasAccessTingkatKesadaran || $hasAccessPenglihatan || $hasAccessKondisiFisikKepala || $hasAccessKondisiFisikTelinga || $hasAccessKondisiFisikMata || $hasAccessKondisiFisikTenggorokan || $hasAccessKondisiFisikMulut || $hasAccessKondisiFisikGigi || $hasAccessKondisiFisikLeher || $hasAccessKondisiFisikThorax || $hasAccessKondisiFisikAbdomenUrogenital || $hasAccessKondisiFisikAnorectalGenital || $hasAccessKondisiFisikEkstremitas || $hasAccessKondisiFisikNeurologis || $hasAccessTarifLaboratorium || $hasAccessKategoriLaboratorium || $hasAccessSatuanLaboratorium || $hasAccessRentangKenormalanLaboratorium || $hasAccessRentangTemplating)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -224,11 +226,13 @@
             </a>
           </li>
           @endif
+          @if ($hasAccessValidasiKesimpulan || $hasAccessValidasiMcu || $hasAccessArciveMCU || $hasAccessArciveLaboratorium || $hasAccessLaporanPenjualan || $hasAccessLaporanKuitansi || $hasAccessLaporanInsentif)
           <li class="sidebar-main-title">
             <div>
-              <h6>LAPORAN</h6>
+              <h6>LAPORAN AMC</h6>
             </div>
           </li>
+          @endif
           @if ($hasAccessValidasiKesimpulan)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
@@ -288,11 +292,13 @@
           </li>
           @endif
           <!-- Pengaturan Section -->
+          @if ($hasAccessMasterData | $hasAccessPetugas)
           <li class="sidebar-main-title">
             <div>
               <h6>PENGATURAN</h6>
             </div>
           </li>
+          @endif
           @if ($hasAccessMasterData)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>

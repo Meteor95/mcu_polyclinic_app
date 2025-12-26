@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -60,13 +61,30 @@ class User extends Authenticatable implements JWTSubject
     }
     public function detailUserInformation($user_id)
     {
-        return User::join('users_pegawai', 'users.id', '=', 'users_pegawai.id')
+        $user_details = User::join('users_pegawai', 'users.id', '=', 'users_pegawai.id')
             ->select(
                 'users.*',
                 'users_pegawai.*'
             )
             ->where('users.id', '=', $user_id)
             ->first();
+        if (!$user_details) {
+            $user_details = User::join('users_perusahaan', 'users.id', '=', 'users_perusahaan.id')
+                ->select(
+                    'users.username as nama_pegawai',
+                    'users.email as jabatan',
+                    'users_perusahaan.*'
+                )
+                ->where('users.id', '=', $user_id)
+                ->first();
+            $get_informasi_perusahaan = json_decode($user_details->json_perusahaan, true);
+            $company_ids = array_column($get_informasi_perusahaan, 'id');
+            // $data_perusahaan = Perusahaan::whereIn('id', $company_ids)->get();
+            // $user_details->informasi_perusahaan = $data_perusahaan;
+            $user_details->company_ids = $company_ids;
+            Log::info('User details from perusahaan table: ' . $user_details);
+        }
+        return $user_details;
     }
     public static function userInformation($request, $perHalaman, $offset){
         $parameterpencarian = $request->parameter_pencarian;
