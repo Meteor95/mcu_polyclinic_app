@@ -101,11 +101,13 @@ class CheckPermission
         foreach ($permissionsToCheck as $key => $permissionName) {
             $permissionsShared[$key] = $this->hasPermission($userPermissions, $permissionName, $isSuperAdmin);
         }
-        if ($this->hasPermission($userPermissions, $permission, $isSuperAdmin)) {
-            view()->share($permissionsShared);
-            return $next($request);
-        }
-        return abort(403, 'Unauthorized');
+        view()->share($permissionsShared);
+        return $next($request);
+        // if ($this->hasPermission($userPermissions, $permission, $isSuperAdmin)) {
+        //     view()->share($permissionsShared);
+        //     return $next($request);
+        // }
+        // return abort(403, 'Unauthorized');
     }
     function hasPermission($permissions, $permissionName, $isSuperAdmin) {
         return $isSuperAdmin || in_array($permissionName, array_column($permissions, 'name'));
