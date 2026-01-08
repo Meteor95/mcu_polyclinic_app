@@ -302,7 +302,7 @@ class LaporanController extends Controller
         $filename = "MCU_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
         $fullPath = storage_path("app/$folderPath$filename");
         $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
-            ->setPaper('legal', 'portrait')
+            ->setPaper('a4', 'portrait')
             ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
         $pdf->render();
         $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
