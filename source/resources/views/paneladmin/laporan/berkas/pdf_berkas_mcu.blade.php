@@ -126,33 +126,33 @@ background_bottom {
                 echo '
                 <table style="border-collapse: collapse; width: 100%;font-weight: bold;font-size: 13px;">
                     <tr style="text-align: left;">
-                        <td style="width: 15%;">Nama</td>
-                        <td style="width: 30%;">: ' . $data['informasi_data_diri']['nama_peserta'] . '</td>
-                        <td style="width: 15%;">No MCU</td>
-                        <td style="width: 30%;">: ' . $data['nomor_mcu'] . '</td>
+                        <td style="width: 10%;">Nama</td>
+                        <td style="width: 35%;">: ' . $data['informasi_data_diri']['nama_peserta'] . '</td>
+                        <td style="width: 8%;">No MCU</td>
+                        <td style="width: 35%;">: ' . $data['nomor_mcu'] . '</td>
                     </tr>
                     <tr style="text-align: left;">
-                        <td style="width: 15%;">TTL / Umur</td>
+                        <td style="width: 10%;">TTL / Umur</td>
                         <td style="width: 30%;">: ' . $data['informasi_data_diri']['tempat_lahir'] . ', ' . date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_lahir'])) . ' / ' . $data['informasi_data_diri']['umur'] . ' Tahun</td>
-                        <td style="width: 15%;">Tanggal Pemeriksaan</td>
+                        <td style="width: 8%;">Tanggal</td>
                         <td style="width: 30%;">: ' . date('d-m-Y', strtotime($data['informasi_data_diri']['tanggal_mcu'])) . '</td>
                     </tr>
                     <tr style="text-align: left;">
-                        <td style="width: 15%;">NIK / NRR</td>
+                        <td style="width: 10%;">NIK / NRR</td>
                         <td style="width: 30%;">: ' . $data['informasi_data_diri']['nomor_identitas'] . '</td>
-                        <td style="width: 15%;">Perusahaan</td>
+                        <td style="width: 8%;">Perusahaan</td>
                         <td style="width: 30%;">: ' . $data['informasi_data_diri']['company_name'] . '</td>
                     </tr>
                     <tr style="text-align: left;">
-                        <td style="width: 15%;">Jenis Kelamin</td>
+                        <td style="width: 10%;">Jenis Kelamin</td>
                         <td style="width: 30%;">: ' . $data['informasi_data_diri']['jenis_kelamin'] . '</td>
-                        <td style="width: 15%;">Departemen</td>
+                        <td style="width: 8%;">Departemen</td>
                         <td style="width: 30%;">: ' . $data['informasi_data_diri']['nama_departemen'] . '</td>
                     </tr>
                     <tr style="text-align: left;">
-                        <td style="width: 15%;">Tipe MCU</td>
+                        <td style="width: 10%;">Tipe MCU</td>
                         <td style="width: 30%;">: ' . $data['informasi_data_diri']['tipe_mcu_peserta'] . '</td>
-                        <td style="width: 15%;">Dokter</td>
+                        <td style="width: 8%;">Dokter</td>
                         <td style="width: 30%;">: dr. Muhammad Taufiq Amrullah, S.Ked</td>
                     </tr>
                 </table>
@@ -961,7 +961,7 @@ background_bottom {
                 @endfor
                 </tr>
             </table>
-            <h4 class="judul_kondisi_fisik">PENGLIHATAN</h4>
+            <h4 class="judul_kondisi_fisik" style="margin-top: 15px;">PENGLIHATAN</h4>
             <table class="lapang_pandang_table" style="width: 100%;font-size: 13px;border: 1px solid black;">
                 <tr style="text-align: center; background-color: #2c942a;font-weight: bold;color: #fff;font-size: 13px;">
                     <th colspan="5">VISUS</th>
@@ -1025,7 +1025,7 @@ background_bottom {
                     <td colspan="3" class="normal">{{ $data['penglihatan'][0]->lapang_pandang_keterangan_od }}</td>
                 </tr>
             </table>
-            <h4 class="judul_kondisi_fisik" style="margin-top: 10px;">KONDISI FISIK</h4>
+            <h4 class="judul_kondisi_fisik" style="margin-top: 15px;">KONDISI FISIK</h4>
             @php
                 $groupedData = [];
                 foreach ($data['kondisi_fisik'] as $item) {
@@ -1142,7 +1142,7 @@ background_bottom {
                                 @endif
                             </td>
                         </tr>
-                        @if (in_array($rowCount, [13,48]))
+                        @if (in_array($rowCount, [33]))
                             <tr><th colspan="9" style="height: 0;border-bottom: 2px solid black;padding: 0;"></th></tr>
                         @endif
 
