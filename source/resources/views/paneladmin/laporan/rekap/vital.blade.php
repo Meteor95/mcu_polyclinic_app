@@ -35,13 +35,29 @@
                     <button id="btn_baca_data_rekap" class="btn btn-block w-100 btn-success"><i class="fa fa-search"></i> Baca Data Rekap </button>
                 </div>
             </div>
-<hr>
+            <hr>
             <div class="table-responsive theme-scrollbar">
                 <table class="display" id="datatables_vital_perusahaan"></table>
             </div>
           </div>
         </div>
       </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_vital_detail" tabindex="-1" role="dialog" aria-labelledby="modal_vital_detailLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal_vital_detail_text">Detail Peserta</h5>
+              <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
+          </div>
+          <div class="modal-body">
+               <table  class="table table-bordered table-striped table-hover table-padding-sm" id="datatables_vital_perusahaan_detail" ></table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="konfirmasi_validasi_rekap_kesimpulan"><i class="fa fa-check"></i> Konfirmasi Kesimpulan</button>
+          </div>
+        </div>
     </div>
 </div>
 @endsection

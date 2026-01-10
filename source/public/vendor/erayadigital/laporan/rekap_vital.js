@@ -103,7 +103,7 @@ function loadDataPasien() {
                     title: "Aksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `<div class="d-flex justify-content-between gap-2"><button onclick="" class="btn btn-success w-100"><i class="fa fa-print"></i> Lihat Berkas Threadmill</button></div>`;
+                            return `<div class="d-flex justify-content-between gap-2"><button onclick="filter_vital_per_perusahaan('${row.id_perusahaan}','${row.company_name}')" class="btn btn-success w-100"><i class="fa fa-search"></i> Lihat Peserta</button></div>`;
                         }       
                         return data;
                     }
@@ -111,4 +111,120 @@ function loadDataPasien() {
             ]
         });
     });
+}
+function filter_vital_per_perusahaan(id_perusahaan,nama_perusahaan){
+    $.get('/generate-csrf-token', function(response) {
+        if ($.fn.DataTable.isDataTable('#datatables_vital_perusahaan_detail')) {
+            $("#datatables_vital_perusahaan_detail").DataTable().destroy();
+            $("#datatables_vital_perusahaan_detail").empty();
+        }
+        $("#datatables_vital_perusahaan_detail").DataTable({
+            searching: false,
+            lengthChange: false,
+            ordering: false,
+            bFilter: false,
+            bProcessing: true,
+            serverSide: true,
+            scrollX: $(window).width() < 768 ? true : false,
+            pagingType: "full_numbers",
+            language: {
+                "paginate": {
+                    "first": '<i class="fa fa-angle-double-left"></i>',
+                    "last": '<i class="fa fa-angle-double-right"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>',
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                },
+            },
+            ajax: {
+                "url": baseurlapi + '/laporan/rekap/vital_detail',
+                "type": "GET",
+                "beforeSend": function(xhr) {
+                    xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
+                },
+                "data": function(d) {
+                    d._token = response.csrf_token;
+                    d.id_perusahaan = id_perusahaan,
+                    d.tanggal_awal = $("#tanggal_awal").val().split('-').reverse().join('-'),
+                    d.tanggal_akhir = $("#tanggal_akhir").val().split('-').reverse().join('-')
+                },
+                "dataSrc": function(json) {
+                    let detailData = json.data;
+                    let mergedData = detailData.map(item => {
+                        return {
+                            ...item,
+                            recordsFiltered: json.recordsFiltered,
+                        };
+                    });
+                    return mergedData;
+                },
+            },
+            infoCallback: function(settings) {
+                if (typeof settings.json !== "undefined") {
+                    const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
+                    const recordsFiltered = settings.json.recordsFiltered;
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Dari Total : ' + recordsFiltered + ' Data';
+                    return infoString;
+                }
+            },
+            columnDefs: [{
+                defaultContent: "-",
+                targets: "_all"
+            }],
+            rowGroup: {
+                dataSrc:function(row) {
+                    return row.id;
+                },
+                startRender: function (rows, group) {
+                    let tr1 = $('<tr')
+                        .append("<td colspan='4' style='text-align:center;font-weight:bold;'>Nama Peserta : "+ rows.data()[0].nama_peserta +"</td>");
+                    let tr2 = $('<tr>')
+                        .append("<td>No</td>")
+                        .append("<td>Tanda Vital</td>")
+                        .append("<td>Nilai</td>")
+                        .append("<td>Keterangan</td>");
+                    return [tr1, tr2];
+                }
+            },
+            columns: [
+                {
+                    title: "",
+                    data: null,
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    title: "",
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `${row.nama_atribut_saat_ini}`;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    title: "",
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `${row.nilai_tanda_vital} ${row.satuan_tanda_vital}`;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    title: "",
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `${row.keterangan_tanda_vital == null ? "" : row.keterangan_tanda_vital}`;
+                        }
+                        return data;
+                    }
+                }
+            ]
+        });
+    });
+    setTimeout(function() {
+        $("#modal_vital_detail_text").html("Detail Peserta Tanda Vital " + nama_perusahaan);
+        $("#modal_vital_detail").modal("show");
+    }, 300);
 }

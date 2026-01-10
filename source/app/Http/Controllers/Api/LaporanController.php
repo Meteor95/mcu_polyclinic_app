@@ -931,6 +931,7 @@ class LaporanController extends Controller
             'rontgen_lumbosacral',
             'usg_ubdomain',
             'farmingham_score',
+            'vital_detail',
         ];
         if (!in_array($jenis_laporan_rekap, $allowed)) {
             return response()->json([
@@ -941,20 +942,27 @@ class LaporanController extends Controller
             $perHalaman = (int) $request->length > 0 ? (int) $request->length : 0;
             $nomorHalaman = ($perHalaman > 0) ? (int) $request->start / $perHalaman : 0;
             $offset = $nomorHalaman * $perHalaman;
-            $parameter_pencarian = $request->input('parameter_pencarian');
-            $dari_perusahaan  = $request->input('dari_perusahaan');
             $tanggal_awal = $request->input('tanggal_awal')." 00:00:00";
             $tanggal_akhir = $request->input('tanggal_akhir')." 23:59:59";
-            $query = TandaVital::join('mcu_transaksi_peserta','mcu_pf_tanda_vital.transaksi_id','=','mcu_transaksi_peserta.id')
-            ->join('company','mcu_transaksi_peserta.perusahaan_id','=','company.id')
-            ->select(
-                'company.id',
-                'company.company_name',
-                DB::raw('COUNT(DISTINCT '.$tablePrefix.'mcu_transaksi_peserta.id) as total_peserta')
-            )
-            ->whereBetween('mcu_pf_tanda_vital.created_at', [$tanggal_awal, $tanggal_akhir])
-            ->groupBy('company.id', 'company.company_name')->orderBy('company.company_name', 'asc');
-
+            if ($jenis_laporan_rekap === 'vital') {
+                $parameter_pencarian = $request->input('parameter_pencarian');
+                $dari_perusahaan  = $request->input('dari_perusahaan');
+                $query = TandaVital::join('mcu_transaksi_peserta','mcu_pf_tanda_vital.transaksi_id','=','mcu_transaksi_peserta.id')
+                    ->join('company','mcu_transaksi_peserta.perusahaan_id','=','company.id')
+                    ->select(
+                        'company.id as id_perusahaan',
+                        'company.company_name',
+                        DB::raw('COUNT(DISTINCT '.$tablePrefix.'mcu_transaksi_peserta.id) as total_peserta')
+                    )
+                    ->whereBetween('mcu_pf_tanda_vital.created_at', [$tanggal_awal, $tanggal_akhir])
+                    ->groupBy('company.id', 'company.company_name')->orderBy('company.company_name', 'asc');
+            } else if($jenis_laporan_rekap === 'vital_detail') {
+                $id_perusahaan = $request->input('id_perusahaan');
+                $query = TandaVital::join('mcu_transaksi_peserta','mcu_pf_tanda_vital.transaksi_id','=','mcu_transaksi_peserta.id')
+                    ->join('users_member','users_member.id','=','mcu_transaksi_peserta.user_id')
+                    ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
+                    ->whereBetween('mcu_pf_tanda_vital.created_at', [$tanggal_awal, $tanggal_akhir]);
+            }
             $dataSUMGlobal = $query->get();
             $jumlahdata = $query->count();
             $fetchdata = ($perHalaman > 0)
