@@ -291,6 +291,33 @@
             </ul>
           </li>
           @endif
+          @if ($hasAccessLaporanPenjualan || $hasAccessLaporanKuitansi || $hasAccessLaporanInsentif)
+          <li class="sidebar-list">
+            <i class="fa fa-thumb-tack"></i>
+            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+              <i class="fa-solid fa-book" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+              <span>Rekaptulasi</span>
+            </a>
+            <ul class="sidebar-submenu">
+              @foreach([
+                ['condition' => $hasAccessRekapPemeriksaanFisik, 'url' => 'laporan/transaksi/penjualan', 'label' => 'Pemeriksaan Fisik'],
+                ['condition' => $hasAccessRekapVital, 'url' => 'laporan/transaksi/insentif', 'label' => 'Vital'],
+                ['condition' => $hasAccessRekapSpirometri, 'url' => 'laporan/transaksi/kuitansi', 'label' => 'Spirometri'],
+                ['condition' => $hasAccessRekapAudiometri, 'url' => 'laporan/transaksi/kuitansi', 'label' => 'Audiometri'],
+                ['condition' => $hasAccessRekapEKG, 'url' => 'laporan/transaksi/kuitansi', 'label' => 'EKG'],
+                ['condition' => $hasAccessRekapThreadmill, 'url' => 'laporan/transaksi/kuitansi', 'label' => 'Threadmill'],
+                ['condition' => $hasAccessRekapRontgenThorax, 'url' => 'laporan/transaksi/kuitansi', 'label' => 'Rontgen Thorax'],
+                ['condition' => $hasAccessRekapRontgenLumbosacral, 'url' => 'laporan/transaksi/kuitansi', 'label' => 'Rontgen Lumbosacral'],
+                ['condition' => $hasAccessRekapUSGUbdomain, 'url' => 'laporan/transaksi/kuitansi', 'label' => 'USG Ubdomain'],
+                ['condition' => $hasAccessRekapFarminghamScore, 'url' => 'laporan/transaksi/kuitansi', 'label' => 'Farmingham Score'],
+              ] as $menuItem)
+                @if ($menuItem['condition'])
+                  <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
+                @endif
+              @endforeach
+            </ul>
+          </li>
+          @endif
           <!-- Pengaturan Section -->
           @if ($hasAccessMasterData | $hasAccessPetugas)
           <li class="sidebar-main-title">

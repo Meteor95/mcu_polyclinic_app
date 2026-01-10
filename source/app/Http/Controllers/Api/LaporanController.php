@@ -777,25 +777,14 @@ class LaporanController extends Controller
             $tanggal_akhir = Carbon::parse($request->tanggal_akhir)->endOfDay();
             $tablePrefix = config('database.connections.mysql.prefix');
             if ($jenis_laporan == "insentif_tindakan") { 
-                $query = TransaksiLab::selectRaw('
-                    '.$tablePrefix.'transaksi_fee.id_petugas AS id_petugas,
-                    '.$tablePrefix.'transaksi_fee.nama_petugas AS nama_petugas,
-                    SUM('.$tablePrefix.'transaksi_fee.nominal_fee) AS total_insentif
-                ')
-                ->join('transaksi_fee', 'transaksi_fee.id_transaksi', '=', 'transaksi.id')
-                ->whereBetween('transaksi.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($jenis_transaksi != ""){
-                    $query->where('transaksi.jenis_transaksi', $jenis_transaksi);
-                }
-                if ($jenis_layanan != ""){
-                }
-                if ($jenis_layanan != ""){
-                    $query->where('transaksi.jenis_layanan', $jenis_layanan);
-                }
-                if ($status_pembayaran != ""){
-                    $query->where('transaksi.status_pembayaran', $status_pembayaran);
-                }
-                $query->groupBy(['transaksi_fee.id_petugas'])->orderByRaw($tablePrefix.'transaksi_fee.nama_petugas ASC');
+                $query = EdsJasaPelayanan::join('users_pegawai', 'users_pegawai.id', '=', 'jasa_pelayanan.pegawai_id')
+                ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'jasa_pelayanan.id_mcu_peserta')
+                ->selectRaw('
+                '.$tablePrefix.'users_pegawai.nik,
+                '.$tablePrefix.'users_pegawai.nama_pegawai,
+                SUM('.$tablePrefix.'jasa_pelayanan.nominal) as nominal_jasa_pelayanan')
+                ->whereBetween('jasa_pelayanan.created_at', [$tanggal_awal, $tanggal_akhir]);
+                $query->groupBy(['jasa_pelayanan.pegawai_id'])->orderByRaw($tablePrefix.'jasa_pelayanan.jenis_poli ASC');
             }
             $dataSUMGlobal = $query->get();
             $jumlahdata = $query->count();

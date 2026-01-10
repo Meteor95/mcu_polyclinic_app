@@ -54,19 +54,25 @@ function report_show_modal(jenis_laporan,id_tombol) {
             }},
             { title: "Kode Petugas", className: "align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `${row.id_petugas}`;
+                    return `${row.nik}`;
                 }
                 return data;
             }},
             { title: "Nama Petugas", className: "align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `${row.nama_petugas}`;
+                    return `${row.nama_pegawai}`;
                 }
                 return data;
             }},
             { title: "Besaran Insentif", className: "text-end align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `${row.total_insentif.toLocaleString('id-ID')}`;
+                    return `${new Intl.NumberFormat('id-ID').format(row.nominal_jasa_pelayanan)}`;
+                }
+                return data;
+            }},
+            { title: "Detail Tindakan", className: "text-end align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `<button onclick="lihatdetail_jasa_pelayanan('${row.id}')" class="btn btn-primary btn-sm"><i class="fa fa-print"></i> Lihat</button>`;
                 }
                 return data;
             }}
@@ -135,7 +141,7 @@ function report_show_modal(jenis_laporan,id_tombol) {
                 let totalAll = 0;
                 if (jenis_laporan === 'insentif_tindakan') {
                     dataTotal.forEach(function (item) {
-                        totalAll += item.total_insentif;
+                        totalAll += Number(item.nominal_jasa_pelayanan);
                     });   
                 }
                 $("#total_all").html(totalAll.toLocaleString('id-ID'));
@@ -162,3 +168,6 @@ $('#select_page_length_transaksi_tindakan').on('change', function() {
     $("#datatables_laporan_tindakan").DataTable().page.len($(this).val()).draw();
     $("#datatables_laporan_tindakan").DataTable().ajax.reload();
 });
+function lihatdetail_jasa_pelayanan(id){
+    
+}
