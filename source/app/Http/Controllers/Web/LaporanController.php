@@ -732,4 +732,55 @@ class LaporanController extends Controller
         $pdf->save($fullPath);
         return response()->file($fullPath);
     }
+    protected function laporanRekap(Request $req, string $jenis){
+        $title = 'Laporan Rekap ' . strtoupper(str_replace('_', ' ', $jenis));
+        $data = $this->getData($req, $title, [
+            'Beranda'       => route('admin.beranda'),
+            'Laporan Rekap' => route("admin.laporan.laporan_rekap_$jenis"),
+        ]);
+        return view("paneladmin.laporan.rekap.$jenis", [
+            'data'  => $data,
+            'jenis' => $jenis
+        ]);
+    }
+    public function laporan_rekap_pemeriksaan_fisik(Request $req){
+        return $this->laporanRekap($req, 'pemeriksaan_fisik');
+    }
+
+    public function laporan_rekap_vital(Request $req){
+        return $this->laporanRekap($req, 'vital');
+    }
+
+    public function laporan_rekap_spirometri(Request $req){
+        return $this->laporanRekap($req, 'spirometri');
+    }
+
+    public function laporan_rekap_audiometri(Request $req){
+        return $this->laporanRekap($req, 'audiometri');
+    }
+
+    public function laporan_rekap_ekg(Request $req){
+        return $this->laporanRekap($req, 'ekg');
+    }
+
+    public function laporan_rekap_threadmill(Request $req){
+        return $this->laporanRekap($req, 'threadmill');
+    }
+
+    public function laporan_rekap_rontgen_thorax(Request $req){
+        return $this->laporanRekap($req, 'rontgen_thorax');
+    }
+
+    public function laporan_rekap_rontgen_lumbosacral(Request $req){
+        return $this->laporanRekap($req, 'rontgen_lumbosacral');
+    }
+
+    public function laporan_rekap_usg_ubdomain(Request $req){
+        return $this->laporanRekap($req, 'usg_ubdomain');
+    }
+
+    public function laporan_rekap_farmingham_score(Request $req){
+        return $this->laporanRekap($req, 'farmingham_score');
+    }
+
 }

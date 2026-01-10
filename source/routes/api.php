@@ -231,6 +231,8 @@ Route::prefix('v1')->group(function () {
             Route::get('tindakan/{jenis_laporan}', [LaporanController::class,"laporan_tindakan"]);
             Route::get('kuitansi/{jenis_laporan}', [LaporanController::class,"laporan_kuitansi"]);
             Route::get('insentif/{jenis_laporan}', [LaporanController::class,"laporan_insentif"]);
+            /* Rekap */
+            Route::get('rekap/{jenis_laporan_rekap}', [LaporanController::class,"laporan_rekap_perperusahaan"]);
         });
     });
     Route::prefix('enduser')->group(function () {

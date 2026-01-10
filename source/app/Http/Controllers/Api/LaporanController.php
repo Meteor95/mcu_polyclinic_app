@@ -917,4 +917,61 @@ class LaporanController extends Controller
             return ResponseHelper::error($th);
         }
     }
+    public function laporan_rekap_perperusahaan(Request $request, string $jenis_laporan_rekap)
+    {
+        $tablePrefix = config('database.connections.mysql.prefix');
+        $allowed = [
+            'pemeriksaan_fisik',
+            'vital',
+            'spirometri',
+            'audiometri',
+            'ekg',
+            'threadmill',
+            'rontgen_thorax',
+            'rontgen_lumbosacral',
+            'usg_ubdomain',
+            'farmingham_score',
+        ];
+        if (!in_array($jenis_laporan_rekap, $allowed)) {
+            return response()->json([
+                'message' => 'Jenis laporan tidak valid'
+            ], 404);
+        }
+        try {
+            $perHalaman = (int) $request->length > 0 ? (int) $request->length : 0;
+            $nomorHalaman = ($perHalaman > 0) ? (int) $request->start / $perHalaman : 0;
+            $offset = $nomorHalaman * $perHalaman;
+            $parameter_pencarian = $request->input('parameter_pencarian');
+            $dari_perusahaan  = $request->input('dari_perusahaan');
+            $tanggal_awal = $request->input('tanggal_awal')." 00:00:00";
+            $tanggal_akhir = $request->input('tanggal_akhir')." 23:59:59";
+            $query = TandaVital::join('mcu_transaksi_peserta','mcu_pf_tanda_vital.transaksi_id','=','mcu_transaksi_peserta.id')
+            ->join('company','mcu_transaksi_peserta.perusahaan_id','=','company.id')
+            ->select(
+                'company.id',
+                'company.company_name',
+                DB::raw('COUNT(DISTINCT '.$tablePrefix.'mcu_transaksi_peserta.id) as total_peserta')
+            )
+            ->whereBetween('mcu_pf_tanda_vital.created_at', [$tanggal_awal, $tanggal_akhir])
+            ->groupBy('company.id', 'company.company_name')->orderBy('company.company_name', 'asc');
+
+            $dataSUMGlobal = $query->get();
+            $jumlahdata = $query->count();
+            $fetchdata = ($perHalaman > 0)
+                ? $query->skip($offset)->take($perHalaman)->get()
+                : $query->get();
+            return response()->json([
+                'data' => $fetchdata,
+                'data_total' => $dataSUMGlobal,
+                'recordsFiltered' => $jumlahdata,
+                'pages' => [
+                    'limit' => $perHalaman,
+                    'offset' => $offset,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+
 }
