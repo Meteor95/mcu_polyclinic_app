@@ -55,7 +55,7 @@
                <table  class="table table-bordered table-striped table-hover table-padding-sm" id="datatables_vital_perusahaan_detail" ></table>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="konfirmasi_validasi_rekap_kesimpulan"><i class="fa fa-check"></i> Konfirmasi Kesimpulan</button>
+            
           </div>
         </div>
     </div>

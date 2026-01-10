@@ -163,7 +163,7 @@ function filter_vital_per_perusahaan(id_perusahaan,nama_perusahaan){
                 if (typeof settings.json !== "undefined") {
                     const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                     const recordsFiltered = settings.json.recordsFiltered;
-                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Dari Total : ' + recordsFiltered + ' Data';
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 1000 + ' Dari Total : ' + recordsFiltered + ' Data';
                     return infoString;
                 }
             },
