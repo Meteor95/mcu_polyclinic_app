@@ -145,6 +145,40 @@
       </div>
   </div>
 </div>
+<div class="modal fade" id="report_show_tindakan" tabindex="-1" role="dialog" aria-labelledby="report_show_modalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-fullscreen" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="report_show_modalLabel">Detail Laporan Intensif <span id="no_trx"></span></h5>
+              <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12 mb-2">
+                  <table id="datatables_laporan_insentif_detail" class="table table-bordered table-striped table-hover table-padding-sm"></table>
+              </div>
+          </div>
+            <div class="row">
+                <div class="col-12">
+                    <table id="datatables_laporan_insentif" class="table table-bordered table-striped table-hover table-padding-sm"></table>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="row" id="footer_total">
+              <div class="col-12">
+                  <table class="table table-padding-sm-no-datatable">
+                        <tr id="footer_total_all">
+                            <td class="fw-bold">GRAND TOTAL INSENTIF</td>
+                            <td class="fw-bold text-end"><span id="total_all">0</span></td>
+                        </tr>
+                  </table>
+              </div>
+          </div>
+          </div>
+      </div>
+  </div>
+</div>
 @endsection
 @section('css_load')
 <link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}">

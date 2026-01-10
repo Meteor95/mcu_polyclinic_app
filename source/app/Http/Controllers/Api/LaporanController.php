@@ -775,16 +775,29 @@ class LaporanController extends Controller
             $jenis_laporan = $request->jenis_laporan;
             $tanggal_awal = Carbon::parse($request->tanggal_awal)->startOfDay();
             $tanggal_akhir = Carbon::parse($request->tanggal_akhir)->endOfDay();
+            $pegawai_id = $request->pegawai_id;
             $tablePrefix = config('database.connections.mysql.prefix');
             if ($jenis_laporan == "insentif_tindakan") { 
                 $query = EdsJasaPelayanan::join('users_pegawai', 'users_pegawai.id', '=', 'jasa_pelayanan.pegawai_id')
                 ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'jasa_pelayanan.id_mcu_peserta')
                 ->selectRaw('
+                '.$tablePrefix.'users_pegawai.id as id_pegawai,
                 '.$tablePrefix.'users_pegawai.nik,
                 '.$tablePrefix.'users_pegawai.nama_pegawai,
                 SUM('.$tablePrefix.'jasa_pelayanan.nominal) as nominal_jasa_pelayanan')
                 ->whereBetween('jasa_pelayanan.created_at', [$tanggal_awal, $tanggal_akhir]);
                 $query->groupBy(['jasa_pelayanan.pegawai_id'])->orderByRaw($tablePrefix.'jasa_pelayanan.jenis_poli ASC');
+            }else if ($jenis_laporan == "detail_insentif_tindakan"){
+                $query = EdsJasaPelayanan::join('users_pegawai', 'users_pegawai.id', '=', 'jasa_pelayanan.pegawai_id')
+                ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'jasa_pelayanan.id_mcu_peserta')
+                ->selectRaw('
+                '.$tablePrefix.'mcu_transaksi_peserta.no_transaksi as no_mcu,
+                '.$tablePrefix.'jasa_pelayanan.jenis_poli,
+                '.$tablePrefix.'jasa_pelayanan.role as jenis_tindakan,
+                '.$tablePrefix.'jasa_pelayanan.nominal')
+                ->where('jasa_pelayanan.pegawai_id', $pegawai_id)
+                ->whereBetween('jasa_pelayanan.created_at', [$tanggal_awal, $tanggal_akhir])
+                ->orderByRaw($tablePrefix.'jasa_pelayanan.created_at DESC');
             }
             $dataSUMGlobal = $query->get();
             $jumlahdata = $query->count();

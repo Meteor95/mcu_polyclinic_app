@@ -24,7 +24,7 @@ function getRowGroupConfig(jenis_laporan) {
     }
     return rowGroupConfig;
 }
-function report_show_modal(jenis_laporan,id_tombol) {
+function report_show_modal(jenis_laporan,id_tombol,pegawai_id) {
     let dataParameter = {};
     $("#modal_proses_data_transaksi_tindakan").prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Proses Kalkulasi');
     let ditampilkan = $("#select_page_length_transaksi_tindakan").val();
@@ -72,7 +72,37 @@ function report_show_modal(jenis_laporan,id_tombol) {
             }},
             { title: "Detail Tindakan", className: "text-end align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `<button onclick="lihatdetail_jasa_pelayanan('${row.id}')" class="btn btn-primary btn-sm"><i class="fa fa-print"></i> Lihat</button>`;
+                    return `<button onclick="lihatdetail_jasa_pelayanan('detail_insentif_tindakan','${row.id_pegawai}')" class="btn btn-primary btn-sm"><i class="fa fa-print"></i> Lihat</button>`;
+                }
+                return data;
+            }}
+        ];
+    } else if (jenis_laporan === "detail_insentif_tindakan"){
+        columnsConfig = [
+            { title: "No", className: "text-center align-middle", render: function(data, type, row, meta) {
+                return meta.row + meta.settings._iDisplayStart + 1;
+            }},
+            { title: "No MCU", className: "align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${row.no_mcu}`;
+                }
+                return data;
+            }},
+            { title: "Jenis Poli", className: "align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${row.jenis_poli.replace(/_/g, " ").toUpperCase()}`;
+                }
+                return data;
+            }},
+            { title: "Jenis Tindakan", className: "align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${row.jenis_tindakan.replace(/_/g, " ").toUpperCase()}`;
+                }
+                return data;
+            }},
+            { title: "Insentif Diterima", className: "text-end align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${new Intl.NumberFormat('id-ID').format(row.nominal)}`;
                 }
                 return data;
             }}
@@ -86,11 +116,15 @@ function report_show_modal(jenis_laporan,id_tombol) {
         ];
     }    
     const handleAjaxRequest = (dataParameter) => {
-        if ($.fn.DataTable.isDataTable('#datatables_laporan_insentif')) {
-            $("#datatables_laporan_insentif").DataTable().destroy();
-            $("#datatables_laporan_insentif").empty();
+        // if ($.fn.DataTable.isDataTable('#datatables_laporan_insentif')) {
+        //     $("#datatables_laporan_insentif").DataTable().destroy();
+        //     $("#datatables_laporan_insentif").empty();
+        // }
+        id_datatables_jp = "datatables_laporan_insentif"
+        if (jenis_laporan === "detail_insentif_tindakan") {
+            id_datatables_jp = "datatables_laporan_insentif_detail"
         }
-        $("#datatables_laporan_insentif").DataTable({
+        $("#"+id_datatables_jp).DataTable({
             destroy: true,
             searching: false,
             lengthChange: false,
@@ -120,6 +154,7 @@ function report_show_modal(jenis_laporan,id_tombol) {
                     d.jenis_transaksi = jenis_transaksi;
                     d.tanggal_awal = tanggal_awal_nilai;
                     d.tanggal_akhir = tanggal_akhir_nilai;
+                    d.pegawai_id = pegawai_id;
                 },
                 "dataSrc": function(json) {
                     return json.data;
@@ -156,18 +191,22 @@ function report_show_modal(jenis_laporan,id_tombol) {
         dataParameter.jenis_laporan = jenis_laporan;
         handleAjaxRequest(dataParameter);
         $("#"+id_tombol).prop('disabled', false).html('Lihat Laporan');
-        $("#report_show_modal").modal('show');
+        if (jenis_laporan === "detail_insentif_tindakan") {
+            $("#report_show_tindakan").modal('show');
+        } else {
+            $("#report_show_modal").modal('show');
+        }
     }).fail(function() {
         console.error("Gagal mendapatkan CSRF token.");
     });
 }
 $("#modal_proses_data_transaksi_tindakan").on('click', function() {
-    report_show_modal(let_jenis_laporan,let_id_tombol);
+    report_show_modal(let_jenis_laporan,let_id_tombol,"");
 })
 $('#select_page_length_transaksi_tindakan').on('change', function() {
     $("#datatables_laporan_tindakan").DataTable().page.len($(this).val()).draw();
     $("#datatables_laporan_tindakan").DataTable().ajax.reload();
 });
-function lihatdetail_jasa_pelayanan(id){
-    
+function lihatdetail_jasa_pelayanan(let_jenis_laporan,id_pegawai){
+    report_show_modal(let_jenis_laporan,let_id_tombol,id_pegawai);
 }
