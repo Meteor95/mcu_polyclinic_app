@@ -127,7 +127,7 @@ function filter_vital_per_perusahaan(id_perusahaan,nama_perusahaan){
             serverSide: true,
             scrollX: $(window).width() < 768 ? true : false,
             pagingType: "full_numbers",
-            pageLength: -1,
+            pageLength: 1000,
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -176,14 +176,14 @@ function filter_vital_per_perusahaan(id_perusahaan,nama_perusahaan){
                     return row.id;
                 },
                 startRender: function (rows, group) {
-                    let tr1 = $('<tr>')
-                        .append("<td colspan='4' style='text-align:center;font-weight:bold;'>Nama Peserta : "+ rows.data()[0].nama_peserta +"</td>");
-                    let tr2 = $('<tr>')
-                        .append("<td>No</td>")
-                        .append("<td>Tanda Vital</td>")
-                        .append("<td>Nilai</td>")
-                        .append("<td>Keterangan</td>");
-                    return [tr1, tr2];
+                    let rowJudul = $('<tr class="group-label">')
+                        .append(`<td colspan="4" style="text-align:center;background-color: #f2f2f2; font-weight: bold;">${rows.data()[0].nama_peserta}</td>`);
+                    let rowHeader = $('<tr class="group-header" style="background-color: #fafafa; font-weight: bold;">')
+                        .append('<td style="width:5%">No</td>')
+                        .append('<td style="width:45%">Tanda Vital</td>')
+                        .append('<td style="width:25%">Nilai</td>')
+                        .append('<td style="width:25%">Keterangan</td>');
+                    return rowJudul.add(rowHeader);
                 }
             },
             columns: [
