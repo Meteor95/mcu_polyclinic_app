@@ -178,8 +178,14 @@ function report_show_modal(jenis_laporan,id_tombol,pegawai_id) {
                     dataTotal.forEach(function (item) {
                         totalAll += Number(item.nominal_jasa_pelayanan);
                     });   
+                    $("#total_all").html(totalAll.toLocaleString('id-ID'));
                 }
-                $("#total_all").html(totalAll.toLocaleString('id-ID'));
+                if (jenis_laporan === 'detail_insentif_tindakan') {
+                    dataTotal.forEach(function (item) {
+                        totalAll += Number(item.nominal);
+                    });   
+                    $("#total_all_detail").html(totalAll.toLocaleString('id-ID'));
+                }
             }
         });
     };

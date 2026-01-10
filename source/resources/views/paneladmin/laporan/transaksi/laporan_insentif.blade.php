@@ -168,9 +168,9 @@
             <div class="row" id="footer_total">
               <div class="col-12">
                   <table class="table table-padding-sm-no-datatable">
-                        <tr id="footer_total_all">
+                        <tr id="footer_total_all_detail">
                             <td class="fw-bold">GRAND TOTAL INSENTIF</td>
-                            <td class="fw-bold text-end"><span id="total_all">0</span></td>
+                            <td class="fw-bold text-end"><span id="total_all_detail">0</span></td>
                         </tr>
                   </table>
               </div>
