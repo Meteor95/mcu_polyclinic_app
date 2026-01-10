@@ -127,6 +127,7 @@ function filter_vital_per_perusahaan(id_perusahaan,nama_perusahaan){
             serverSide: true,
             scrollX: $(window).width() < 768 ? true : false,
             pagingType: "full_numbers",
+            pageLength: -1,
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -175,7 +176,7 @@ function filter_vital_per_perusahaan(id_perusahaan,nama_perusahaan){
                     return row.id;
                 },
                 startRender: function (rows, group) {
-                    let tr1 = $('<tr')
+                    let tr1 = $('<tr>')
                         .append("<td colspan='4' style='text-align:center;font-weight:bold;'>Nama Peserta : "+ rows.data()[0].nama_peserta +"</td>");
                     let tr2 = $('<tr>')
                         .append("<td>No</td>")
