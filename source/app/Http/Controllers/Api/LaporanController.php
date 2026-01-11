@@ -1052,6 +1052,45 @@ class LaporanController extends Controller
                     )->whereBetween('mcu_poli_rontgen_thorax.created_at', [$tanggal_awal, $tanggal_akhir]);
                 if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
                 $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
+            } else if($jenis_laporan_rekap === 'rontgen_lumbosacral') {
+                $id_perusahaan = $request->input('id_perusahaan');
+                $query = DB::table($this->determineTableNamePoliklinik('rontgen_lumbosacral'))
+                    ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'mcu_poli_rontgen_lumbosacral.transaksi_id')
+                    ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+                    ->select(
+                        'company.company_name',
+                        'mcu_transaksi_peserta.perusahaan_id',
+                        'mcu_poli_rontgen_lumbosacral.kesimpulan',
+                        DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
+                    )->whereBetween('mcu_poli_rontgen_lumbosacral.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
+            } else if($jenis_laporan_rekap === 'usg_ubdomain') {
+                $id_perusahaan = $request->input('id_perusahaan');
+                $query = DB::table($this->determineTableNamePoliklinik('usg_ubdomain'))
+                    ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'mcu_poli_usg_ubdomain.transaksi_id')
+                    ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+                    ->select(
+                        'company.company_name',
+                        'mcu_transaksi_peserta.perusahaan_id',
+                        'mcu_poli_usg_ubdomain.kesimpulan',
+                        DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
+                    )->whereBetween('mcu_poli_usg_ubdomain.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
+            } else if($jenis_laporan_rekap === 'farmingham_score') {
+                $id_perusahaan = $request->input('id_perusahaan');
+                $query = DB::table($this->determineTableNamePoliklinik('farmingham_score'))
+                    ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'mcu_poli_farmingham_score.transaksi_id')
+                    ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+                    ->select(
+                        'company.company_name',
+                        'mcu_transaksi_peserta.perusahaan_id',
+                        'mcu_poli_farmingham_score.kesimpulan',
+                        DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
+                    )->whereBetween('mcu_poli_farmingham_score.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
             }
             $dataSUMGlobal = $query->get();
             $jumlahdata = $query->count();
