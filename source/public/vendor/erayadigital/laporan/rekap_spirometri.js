@@ -120,12 +120,13 @@ function loadDataPasien() {
                 },
                 startRender: function (rows, group) {
                     let rowJudul = $('<tr class="group-label">')
-                        .append(`<td colspan="4" style="text-align:center;background-color: #f2f2f2; font-weight: bold;">${rows.data()[0].company_name}</td>`);
+                        .append(`<td colspan="5" style="text-align:center;background-color: #f2f2f2; font-weight: bold;">${rows.data()[0].company_name}</td>`);
                     let rowHeader = $('<tr class="group-header" style="background-color: #fafafa; font-weight: bold;">')
                         .append('<td style="width:5%">No</td>')
-                        .append('<td style="width:45%">Kesimpulan</td>')
-                        .append('<td style="width:25%">Keterangan</td>')
-                        .append('<td style="width:25%">Jumlah Pasien</td>');
+                        .append('<td style="width:40%">Kesimpulan Restriksi</td>')
+                        .append('<td style="width:10%">Jumlah</td>')
+                        .append('<td style="width:40%">Kesimpulan Obstruksi</td>')
+                        .append('<td style="width:10%">Jumlah</td>')
                     return rowJudul.add(rowHeader);
                 }
             },
@@ -150,7 +151,7 @@ function loadDataPasien() {
                     title: "",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `-`;
+                            return `${row.jumlah_restriksi}`;
                         }
                         return data;
                     }
@@ -159,7 +160,16 @@ function loadDataPasien() {
                     title: "",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `${row.total_kesimpulan}`;
+                            return `${row.kesimpulan2 ? row.kesimpulan2 : ''}`;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    title: "",
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `${row.jumlah_obstruksi}`;
                         }
                         return data;
                     }

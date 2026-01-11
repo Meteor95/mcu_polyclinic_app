@@ -970,11 +970,26 @@ class LaporanController extends Controller
                     ->select(
                         'company.company_name',
                         'mcu_transaksi_peserta.perusahaan_id',
-                        'mcu_poli_spirometri.kesimpulan',
-                        DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
-                    )->whereBetween('mcu_poli_spirometri.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
-                $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
+                        'mcu_poli_spirometri.kesimpulan', // Kolom Restriksi
+                        'mcu_poli_spirometri.kesimpulan2', // Kolom Obstruksi
+                        // Menghitung jumlah per kategori Restriksi
+                        DB::raw('COUNT(CASE WHEN '.$tablePrefix.'mcu_poli_spirometri.kesimpulan IS NOT NULL THEN 1 END) as jumlah_restriksi'),
+                        // Menghitung jumlah per kategori Obstruksi
+                        DB::raw('COUNT(CASE WHEN '.$tablePrefix.'mcu_poli_spirometri.kesimpulan2 IS NOT NULL THEN 1 END) as jumlah_obstruksi')
+                    )
+                    ->whereBetween('mcu_poli_spirometri.created_at', [$tanggal_awal, $tanggal_akhir]);
+
+                if ($id_perusahaan != "") {
+                    $query->where('company.id', $id_perusahaan);
+                }
+
+                // GroupBy harus menyertakan jenis kesimpulannya agar tidak tergabung jadi satu
+                $query->groupBy(
+                    'mcu_transaksi_peserta.perusahaan_id', 
+                    'mcu_poli_spirometri.kesimpulan', 
+                    'mcu_poli_spirometri.kesimpulan2'
+                )
+                ->orderBy('company.company_name', 'asc');
             } else if($jenis_laporan_rekap === 'audiometri') {
                 $id_perusahaan = $request->input('id_perusahaan');
                 $query = DB::table($this->determineTableNamePoliklinik('audiometri'))
