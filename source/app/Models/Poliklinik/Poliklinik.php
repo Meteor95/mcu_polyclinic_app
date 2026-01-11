@@ -16,6 +16,8 @@ class Poliklinik extends Model
         'judul_laporan',
         'id_kesimpulan',
         'kesimpulan',
+        'id_kesimpulan2',
+        'kesimpulan2',
         'detail_kesimpulan',
         'catatan_kaki',
         'petugas_id',

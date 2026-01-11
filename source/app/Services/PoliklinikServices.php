@@ -56,12 +56,15 @@ class PoliklinikServices
                 'judul_laporan' => $data['judul_laporan'],
                 'id_kesimpulan' => $data['id_kesimpulan'],
                 'kesimpulan' => $data['kesimpulan'],
+                'id_kesimpulan2' => $data['id_kesimpulan2'],
+                'kesimpulan2' => $data['kesimpulan2'],
                 'detail_kesimpulan' => $data['detail_kesimpulan'],
                 'catatan_kaki' => $data['catatan_kaki'],
                 'petugas_id' => $userIdLogin,
                 'pegawai_id_pembaca' => $data['pegawai_id_pembaca'],
                 'pegawai_id_perawat' => $data['pegawai_id_perawat'],
             ];
+            if (!in_array($jenis_poli, ['spirometri', 'audiometri'])) unset($data['id_kesimpulan2'], $data['kesimpulan2']);
             if ($isedit){
                 $unggahan_poliklinik = $model->where('user_id', $data['user_id'])->where('transaksi_id', $data['transaksi_id'])->first();
                 $unggahan_poliklinik->update($data);

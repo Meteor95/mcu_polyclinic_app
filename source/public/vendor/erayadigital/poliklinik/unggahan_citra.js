@@ -29,11 +29,11 @@ const toolbarOptions = [
 let quill,quill_informasi;
 let croppedImages = []; 
 let originalFileNames = [];
-let kesimpulan_citra_unggah_poli,detail_penjelasan_citra_unggah_poli,dokter_citra_unggah_poli,dokter_citra_unggah_poli_pembaca,dokter_citra_unggah_poli_perawat;
+let kesimpulan_citra_unggah_poli,kesimpulan_citra_unggah_poli2,detail_penjelasan_citra_unggah_poli,dokter_citra_unggah_poli,dokter_citra_unggah_poli_pembaca,dokter_citra_unggah_poli_perawat;
 let dokter_citra_unggah_poliElement = document.getElementById('dokter_citra_unggah_poli');
 let dokter_citra_unggah_poli_pembacaElement = document.getElementById('dokter_citra_unggah_poli_pembaca');
 let dokter_citra_unggah_poli_perawatElement = document.getElementById('dokter_citra_unggah_poli_perawat');
-
+const elKesimpulan = document.querySelector('#kesimpulan_citra_unggah_poli2');
 $(document).ready(function(){
     isedit = false;
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
@@ -43,6 +43,12 @@ $(document).ready(function(){
         placeholder: true,
         placeholderValue: 'Pilih kesimpulan yang sesuai dengan kondisi pasien',
     });
+    if (elKesimpulan) {
+        kesimpulan_citra_unggah_poli2 = new Choices('#kesimpulan_citra_unggah_poli2',{
+            placeholder: true,
+            placeholderValue: 'Pilih kesimpulan yang sesuai dengan kondisi pasien',
+        });
+    }
     dokter_citra_unggah_poli = new Choices(dokter_citra_unggah_poliElement,{
         searchEnabled: true,
         shouldSort: false,
@@ -330,6 +336,8 @@ $("#simpan_foto_perserta").on('click', function() {
             formData.append('judul_laporan', $("#judul_citra_unggah_poli").val());
             formData.append('id_kesimpulan', $('#kesimpulan_citra_unggah_poli').val());
             formData.append('kesimpulan', $('#kesimpulan_citra_unggah_poli option:selected').text());
+            formData.append('id_kesimpulan2', $('#kesimpulan_citra_unggah_poli2').val());
+            formData.append('kesimpulan2', $('#kesimpulan_citra_unggah_poli2 option:selected').text());
             formData.append('detail_kesimpulan', detail_kesimpulan);
             formData.append('catatan_kaki', $("#catatan_kaki_citra_unggah_poli").val());
             formData.append('pegawai_id_pembaca', $("#dokter_citra_unggah_poli_pembaca").val());
@@ -395,6 +403,7 @@ function clear_form(){
     $("#pencarian_member_mcu").val(null).trigger('change');
     $("#judul_citra_unggah_poli").val("");
     $("#kesimpulan_citra_unggah_poli").val(null).trigger('change');
+    $("#kesimpulan_citra_unggah_poli2").val(null).trigger('change');
     $("#detail_penjelasan_citra_unggah_poli").val(null).trigger('change');
     quill.setContents([]);
     $("#preview-list").empty();
@@ -546,8 +555,12 @@ function ubah_informasi(id_trx_poli,nomor_identitas,nama_peserta){
                 $("#pencarian_member_mcu").append(newOption).trigger('change');
                 $("#pencarian_member_mcu").val(nomor_identitas).trigger('change');
                 $("#judul_citra_unggah_poli").val(response.data[0].judul_laporan);
-                kesimpulan_citra_unggah_poli.setChoiceByValue(response.data[0].id_kesimpulan.toString());
-                $("#kesimpulan_citra_unggah_poli").val(response.data[0].id_kesimpulan.toString());
+                kesimpulan_citra_unggah_poli.setChoiceByValue(response.data[0].id_kesimpulan?.toString());
+                $("#kesimpulan_citra_unggah_poli").val(response.data[0].id_kesimpulan?.toString());
+                if (elKesimpulan) {
+                    kesimpulan_citra_unggah_poli2.setChoiceByValue(response.data[0].id_kesimpulan2?.toString());
+                    $("#kesimpulan_citra_unggah_poli2").val(response.data[0].id_kesimpulan2?.toString());
+                }
                 dokter_citra_unggah_poli.setChoiceByValue(response.data[0].pegawai_id.toString());
                 dokter_citra_unggah_poli_pembaca.setChoiceByValue(response.data[0].pegawai_id_pembaca.toString());
                 dokter_citra_unggah_poli_perawat.setChoiceByValue(response.data[0].pegawai_id_perawat.toString());
