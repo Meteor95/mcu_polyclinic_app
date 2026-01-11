@@ -944,7 +944,40 @@ class LaporanController extends Controller
             $offset = $nomorHalaman * $perHalaman;
             $tanggal_awal = $request->input('tanggal_awal')." 00:00:00";
             $tanggal_akhir = $request->input('tanggal_akhir')." 23:59:59";
-            if ($jenis_laporan_rekap === 'vital') {
+            if ($jenis_laporan_rekap === 'pemeriksaan_fisik'){
+                $kategoris = ['kepala', 'telinga', 'mata','tenggorokan','mulut','gigi','leher','thorax','abdomen_urogenital','anorectal_genital','ekstremitas','neurologis'];
+                $id_perusahaan = $request->input('id_perusahaan');
+                $query = null;
+                foreach ($kategoris as $kategori) {
+                        $tableName = $this->determineTableNamePemeriksaanFisik($kategori);
+                        
+                        $subQuery = DB::table($tableName)
+                            ->join('mcu_transaksi_peserta', $tableName.'.transaksi_id', '=', 'mcu_transaksi_peserta.id')
+                            ->join('company', 'mcu_transaksi_peserta.perusahaan_id', '=', 'company.id')
+                            ->select(
+                                'company.company_name',
+                                'company.id as id_perusahaan',
+                                DB::raw("'$kategori' as kategori_pemeriksaan"),
+                                $tableName.'.nama_atribut',
+                                $tableName.'.jenis_atribut',
+                                DB::raw("SUM(CASE WHEN ".$tablePrefix.$tableName.".status_atribut = 'normal' THEN 1 ELSE 0 END) as jumlah_normal"),
+                                DB::raw("SUM(CASE WHEN ".$tablePrefix.$tableName.".status_atribut = 'abnormal' THEN 1 ELSE 0 END) as jumlah_abnormal")
+                            )
+                            ->whereBetween($tableName.'.created_at', [$tanggal_awal, $tanggal_akhir]);
+
+                        if ($id_perusahaan != "") {
+                            $subQuery->where('company.id', $id_perusahaan);
+                        }
+
+                        $subQuery->groupBy('company.id', 'company.company_name', $tableName.'.jenis_atribut');
+
+                        if ($query == null) {
+                            $query = $subQuery;
+                        } else {
+                            $query->unionAll($subQuery);
+                        }
+                    }
+            }else if ($jenis_laporan_rekap === 'vital') {
                 $parameter_pencarian = $request->input('parameter_pencarian');
                 $dari_perusahaan  = $request->input('dari_perusahaan');
                 $query = TandaVital::join('mcu_transaksi_peserta','mcu_pf_tanda_vital.transaksi_id','=','mcu_transaksi_peserta.id')
