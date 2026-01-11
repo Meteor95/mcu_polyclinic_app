@@ -999,8 +999,57 @@ class LaporanController extends Controller
                         'company.company_name',
                         'mcu_transaksi_peserta.perusahaan_id',
                         'mcu_poli_audiometri.kesimpulan',
-                        DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
+                        'mcu_poli_audiometri.kesimpulan2',
+                        // Menghitung jumlah per kategori Restriksi
+                        DB::raw('COUNT(CASE WHEN '.$tablePrefix.'mcu_poli_audiometri.kesimpulan IS NOT NULL THEN 1 END) as jumlah_kiri'),
+                        // Menghitung jumlah per kategori Obstruksi
+                        DB::raw('COUNT(CASE WHEN '.$tablePrefix.'mcu_poli_audiometri.kesimpulan2 IS NOT NULL THEN 1 END) as jumlah_kanan')
                     )->whereBetween('mcu_poli_audiometri.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                // GroupBy harus menyertakan jenis kesimpulannya agar tidak tergabung jadi satu
+                $query->groupBy(
+                    'mcu_transaksi_peserta.perusahaan_id', 
+                    'mcu_poli_audiometri.kesimpulan', 
+                    'mcu_poli_audiometri.kesimpulan2'
+                )
+                ->orderBy('company.company_name', 'asc');
+            } else if($jenis_laporan_rekap === 'ekg') {
+                $id_perusahaan = $request->input('id_perusahaan');
+                $query = DB::table($this->determineTableNamePoliklinik('ekg'))
+                    ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'mcu_poli_ekg.transaksi_id')
+                    ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+                    ->select(
+                        'company.company_name',
+                        'mcu_transaksi_peserta.perusahaan_id',
+                        'mcu_poli_ekg.kesimpulan',
+                        DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
+                    )->whereBetween('mcu_poli_ekg.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
+            } else if($jenis_laporan_rekap === 'threadmill') {
+                $id_perusahaan = $request->input('id_perusahaan');
+                $query = DB::table($this->determineTableNamePoliklinik('threadmill'))
+                    ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'mcu_poli_threadmill.transaksi_id')
+                    ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+                    ->select(
+                        'company.company_name',
+                        'mcu_transaksi_peserta.perusahaan_id',
+                        'mcu_poli_threadmill.kesimpulan',
+                        DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
+                    )->whereBetween('mcu_poli_threadmill.created_at', [$tanggal_awal, $tanggal_akhir]);
+                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
+            } else if($jenis_laporan_rekap === 'rontgen_thorax') {
+                $id_perusahaan = $request->input('id_perusahaan');
+                $query = DB::table($this->determineTableNamePoliklinik('rontgen_thorax'))
+                    ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'mcu_poli_rontgen_thorax.transaksi_id')
+                    ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+                    ->select(
+                        'company.company_name',
+                        'mcu_transaksi_peserta.perusahaan_id',
+                        'mcu_poli_rontgen_thorax.kesimpulan',
+                        DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
+                    )->whereBetween('mcu_poli_rontgen_thorax.created_at', [$tanggal_awal, $tanggal_akhir]);
                 if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
                 $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
             }

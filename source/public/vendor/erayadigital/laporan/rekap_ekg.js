@@ -53,15 +53,15 @@ function callselect2mcu(){
     });
 }
 $("#btn_baca_data_rekap").on('click', function() {
-    $("#datatables_audiometri_perusahaan").DataTable().ajax.reload();
+    $("#datatables_ekg_perusahaan").DataTable().ajax.reload();
 });
 function loadDataPasien() {
     $.get('/generate-csrf-token', function(response) {
-        if ($.fn.DataTable.isDataTable('#datatables_audiometri_perusahaan')) {
-            $("#datatables_audiometri_perusahaan").DataTable().destroy();
-            $("#datatables_audiometri_perusahaan").empty();
+        if ($.fn.DataTable.isDataTable('#datatables_ekg_perusahaan')) {
+            $("#datatables_ekg_perusahaan").DataTable().destroy();
+            $("#datatables_ekg_perusahaan").empty();
         }
-        $("#datatables_audiometri_perusahaan").DataTable({
+        $("#datatables_ekg_perusahaan").DataTable({
             searching: false,
             lengthChange: false,
             ordering: false,
@@ -80,7 +80,7 @@ function loadDataPasien() {
                 },
             },
             ajax: {
-                "url": baseurlapi + '/laporan/rekap/audiometri',
+                "url": baseurlapi + '/laporan/rekap/ekg',
                 "type": "GET",
                 "beforeSend": function(xhr) {
                     xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
@@ -120,12 +120,10 @@ function loadDataPasien() {
                 },
                 startRender: function (rows, group) {
                     let rowJudul = $('<tr class="group-label">')
-                        .append(`<td colspan="5" style="text-align:center;background-color: #f2f2f2; font-weight: bold;">${rows.data()[0].company_name}</td>`);
+                        .append(`<td colspan="3" style="text-align:center;background-color: #f2f2f2; font-weight: bold;">${rows.data()[0].company_name}</td>`);
                     let rowHeader = $('<tr class="group-header" style="background-color: #fafafa; font-weight: bold;">')
                         .append('<td style="width:5%">No</td>')
-                        .append('<td style="width:40%">Kesimpulan Telinga Kiri</td>')
-                        .append('<td style="width:10%">Jumlah</td>')
-                        .append('<td style="width:40%">Kesimpulan Telinga Kanan</td>')
+                        .append('<td style="width:40%">Kesimpulan</td>')
                         .append('<td style="width:10%">Jumlah</td>')
                     return rowJudul.add(rowHeader);
                 }
@@ -151,25 +149,7 @@ function loadDataPasien() {
                     title: "",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `${row.jumlah_kiri}`;
-                        }
-                        return data;
-                    }
-                },
-                {
-                    title: "",
-                    render: function(data, type, row, meta) {
-                        if (type === 'display') {
-                            return `${row.kesimpulan2 ? row.kesimpulan2 : ''}`;
-                        }
-                        return data;
-                    }
-                },
-                {
-                    title: "",
-                    render: function(data, type, row, meta) {
-                        if (type === 'display') {
-                            return `${row.jumlah_kanan}`;
+                            return `${row.total_kesimpulan}`;
                         }
                         return data;
                     }
