@@ -101,6 +101,6 @@ class Transaksi extends Model
             'mcu_transaksi_peserta.*',
             'users_member.*',
             DB::raw( $tablePrefix . 'mcu_transaksi_peserta.*, ' . $tablePrefix . 'users_member.*, TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
-        )->where('status_peserta' , '!=', 'selesai')->first();
+        )->first();
     }
 }

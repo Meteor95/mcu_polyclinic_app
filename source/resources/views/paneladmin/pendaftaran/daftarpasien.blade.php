@@ -33,5 +33,5 @@ body.dark-only .dtfc-fixed-right_header {
 @endsection
 @section('js_load')
 <script src="https://cdn.datatables.net/fixedcolumns/4.0.2/js/dataTables.fixedColumns.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/pendaftaran/pasien.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/pendaftaran/pasien.js') }}?v={{ filemtime(public_path('vendor/erayadigital/pendaftaran/pasien.js')) }}"></script>
 @endsection
