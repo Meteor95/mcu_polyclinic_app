@@ -30,6 +30,16 @@
                     </select>
                 </div>
                 <div class="col-md-2">
+                  <label for="jenis_transaksi">Jenis Transaksi</label>
+                    <select id="jenis_transaksi" class="form-select">
+                        <option value="">Pilih Jenis Transaksi</option>
+                        <option value="">Semua</option>
+                        <option value="0">Invoices</option>
+                        <option value="1">Tunai</option>
+                        <option value="2">Non Tunai</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
                   <label for="jenis_layanan">Jenis Layanan</label>
                     <select id="jenis_layanan" class="form-select">
                       <option value="">Semua</option>
@@ -41,7 +51,7 @@
                       <option value="Threadmill">Threadmill</option>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <label for="kotak_pencarian">Cari Data</label>
                     <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan No MCU, Nama Penanggung Jawab, Nama Pasien atau Nama Dokter">
                 </div>
