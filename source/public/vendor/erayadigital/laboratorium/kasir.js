@@ -24,12 +24,78 @@ let nominalApotekKonfirmasi = new AutoNumeric('#nominal_apotek_konfirmasi', {  d
     modifyValueOnUpDownArrow: false,
     modifyValueOnWheel: false,});
 $(document).ready(function(){
+    const tanggalAwal = flatpickr("#tanggal_awal", {
+        dateFormat: "d-m-Y",
+        maxDate: 'today',
+        onChange: function(selectedDates, dateStr) {
+            tanggalAkhir.set('minDate', dateStr);
+        }
+    });
+    $("#tanggal_awal").val(moment().startOf('month').format('DD-MM-YYYY'));
+    const tanggalAkhir = flatpickr("#tanggal_akhir", {
+        dateFormat: "d-m-Y",
+        maxDate: 'today',
+        minDate: $("#tanggal_awal").val()
+    });
+    $("#tanggal_akhir").val(moment().format('DD-MM-YYYY'));
     document.querySelectorAll('[data-state]').forEach(element => {
         element.classList.add('close_icon');
     });
     load_datatables_tindakan();
     daftar_table_tindakan_modal = initDataTable("#table_tindakan_lab_modal");
+    callselect2mcu();
+    $('#check_all_trx').on('click', function() {
+        $('.data-checkbox').prop('checked', this.checked);
+    });
+    $('#daftar_table_tindakan tbody').on('change', '.data-checkbox', function() {
+        if (!this.checked) {
+            let el = $('#check_all_trx').get(0);
+            if (el && el.checked && ('indeterminate' in el)) {
+                el.checked = false;
+            }
+        }
+    });
 });
+$("#btn_baca_data_rekap").on("click", function(){
+    $("#daftar_table_tindakan").DataTable().ajax.reload();
+});
+function callselect2mcu(){
+    $.get('/generate-csrf-token', function(response) {
+        $('#select2_perusahaan').select2({ 
+            placeholder: 'Pilih Perusahaan',
+            ajax: {
+                url: baseurlapi + '/masterdata/daftarperusahaan',
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                method: 'GET',
+                dataType: 'json',
+                delay: 500,
+                allowClear: true,
+                data: function (params) {
+                    return {
+                        _token : response.csrf_token,
+                        parameter_pencarian : (typeof params.term === "undefined" ? "" : params.term),
+                        start : 0,
+                        length : 1000,
+                    }
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: `[${item.company_code}] - ${item.company_name}`,
+                                id: item.id,
+                            }
+                        })
+                    }
+                    
+                },
+                error: function(xhr, status, error) {
+                    return createToast('Kesalahan Penggunaan', 'top-right', xhr.responseJSON.message, 'error', 3000);
+                }
+            },
+        }); 
+    });
+}
 function initDataTable(selector, options = {}) {
     const defaultOptions = {
         searching: false,
@@ -92,6 +158,10 @@ function load_datatables_tindakan(){
                     d.jenis_layanan = $('#jenis_layanan').val();
                     d.length = $('#data_ditampilkan').val();
                     d.jenis_item_tampilkan = $('#jenis_item_tampilkan').val();
+                    d.jenis_transaksi = $('#jenis_transaksi').val();
+                    d.perusahaan_id = $('#select2_perusahaan').val();
+                    d.tanggal_awal = $('#tanggal_awal').val().split('-').reverse().join('-') + ' 00:00:00';
+                    d.tanggal_akhir = $('#tanggal_akhir').val().split('-').reverse().join('-') + ' 23:59:59';
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -114,13 +184,19 @@ function load_datatables_tindakan(){
             },
             columns: [
                 {
-                    title: "No",
+                    orderable: false,
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return `<input type="checkbox" class="data-checkbox" value="">`;
+                    }
+                },
+                {
+                    class: "text-center",
                     render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },
                 {
-                    title: "No Transaksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             let parts = row.no_nota.split('/');
@@ -151,7 +227,6 @@ function load_datatables_tindakan(){
                     }
                 },
                 {
-                    title: "Entitas",
                     render: function(data, type, row, meta) {
                         return `Nama Pasien : ${row.nama_peserta}<br>
                         Nama Dokter : ${row.nama_dokter}<br>
@@ -161,7 +236,6 @@ function load_datatables_tindakan(){
                     }
                 },
                 {
-                    title: "Waktu Transaksi",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
                             return `Trx : ${moment(row.waktu_trx).format('DD-MM-YYYY HH:mm:ss')}<br>Sample : ${moment(row.waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss')}`;
@@ -170,20 +244,17 @@ function load_datatables_tindakan(){
                     }
                 },
                 {
-                    title: "Jenis Layanan",
                     render: function(data, type, row, meta) {
                         return `${row.jenis_transaksi_pendaftaran.replace('_',' ')}<br>Tindakan : ${row.total_tindakan.toLocaleString('id-ID')}<br><span class="badge ${row.status_pembayaran == 'done' ? 'badge-success' : row.status_pembayaran == 'pending' ? 'badge-warning' : 'badge-danger'}">${capitalizeFirstLetter(row.status_pembayaran)}</span>`;
                     }
                 },
                 {
-                    title: "Total Transaksi",
                     className: "text-end",
                     render: function(data, type, row, meta) {
                         return `<span style="font-size: 2rem; font-weight: bold;">${(row.total_transaksi + row.nominal_apotek).toLocaleString('id-ID')}</span>`;
                     }
                 },
                 {
-                    title: "Aksi",
                     className: "text-center",
                     width: "230px",
                     render: function(data, type, row, meta) {

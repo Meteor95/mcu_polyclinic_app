@@ -9,7 +9,17 @@
           </span>
         </div>
         <div class="card-body">
-            <div class="row">
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label for="tanggal_awal">Tanggal Awal</label>
+                <input type="text" class="form-control" id="tanggal_awal" placeholder="Pilih Tanggal Awal">
+              </div>
+              <div class="col-md-6">
+                <label for="tanggal_akhir">Tanggal Akhir</label>
+                <input type="text" class="form-control" id="tanggal_akhir" placeholder="Pilih Tanggal Akhir">
+              </div>
+            </div>
+            <div class="row mb-2">
                 <div class="col-md-2">
                   <label for="data_ditampilkan">Data yang ditampilkan</label>
                     <select id="data_ditampilkan" class="form-select">
@@ -56,11 +66,37 @@
                     <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan No MCU, Nama Penanggung Jawab, Nama Pasien atau Nama Dokter">
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <select class="form-select" id="select2_perusahaan" name="select2_perusahaan" required></select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <button id="btn_baca_data_rekap" class="btn btn-block w-100 btn-success"><i class="fa fa-search"></i> Tampilkan Data </button>
+                </div>
+                <div class="col-md-6">
+                    <button id="btn_buat_tagihan" class="btn btn-block w-100 btn-danger"><i class="fa fa-file-invoice"></i> Buat Tagihan </button>
+                </div>
+            </div>
             <hr>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="table-responsive">
-                        <table id="daftar_table_tindakan" class="table table-bordered table-striped table-hover table-padding-sm"></table>
+                        <table id="daftar_table_tindakan" class="table table-bordered table-striped table-hover table-padding-sm">
+                            <thead>
+                                <tr>
+                                    <th class="text-center"><input type="checkbox" id="check_all_trx"></th>
+                                    <th style="vertical-align: middle;">No</th>
+                                    <th style="vertical-align: middle;">No Transaksi</th>
+                                    <th style="vertical-align: middle;">Entitas</th>
+                                    <th style="vertical-align: middle;">Waktu Transaksi</th>
+                                    <th style="vertical-align: middle;">Jenis Layanan</th>
+                                    <th style="vertical-align: middle;" class="text-end">Total Transaksi</th>
+                                    <th style="vertical-align: middle;" class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -302,7 +338,9 @@
 </div>
 @endsection
 @section('css_load')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}">
 <style>
 #total_pendapatan_text, #total_pendapatan, #nominal_bayar, #nominal_kembalian, #nominal_bayar_konfirmasi, #nominal_apotek_konfirmasi{
   font-family: 'DS-Digital', sans-serif;
@@ -323,6 +361,8 @@
 </style>
 @endsection
 @section('js_load')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
 <script src="{{ asset('vendor/erayadigital/laboratorium/kasir.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laboratorium/kasir.js')) }}"></script>
 @endsection
