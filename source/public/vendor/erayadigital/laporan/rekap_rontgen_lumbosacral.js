@@ -53,15 +53,15 @@ function callselect2mcu(){
     });
 }
 $("#btn_baca_data_rekap").on('click', function() {
-    $("#datatables_rontgen_thorax_perusahaan").DataTable().ajax.reload();
+    $("#datatables_rontgen_lumbosacral_perusahaan").DataTable().ajax.reload();
 });
 function loadDataPasien() {
     $.get('/generate-csrf-token', function(response) {
-        if ($.fn.DataTable.isDataTable('#datatables_rontgen_thorax_perusahaan')) {
-            $("#datatables_rontgen_thorax_perusahaan").DataTable().destroy();
-            $("#datatables_rontgen_thorax_perusahaan").empty();
+        if ($.fn.DataTable.isDataTable('#datatables_rontgen_lumbosacral_perusahaan')) {
+            $("#datatables_rontgen_lumbosacral_perusahaan").DataTable().destroy();
+            $("#datatables_rontgen_lumbosacral_perusahaan").empty();
         }
-        $("#datatables_rontgen_thorax_perusahaan").DataTable({
+        $("#datatables_rontgen_lumbosacral_perusahaan").DataTable({
             searching: false,
             lengthChange: false,
             ordering: false,
