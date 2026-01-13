@@ -1168,6 +1168,10 @@ class LaporanController extends Controller
                 'status_peserta' => $request->input('status_pembayaran'),
                 'updated_at' => now()
             ]);
+            TransaksiLab::whereIn('no_mcu', $all_ids)->update([
+                'status_pembayaran' => $request->input('status_pembayaran') == "selesai" ? "done" : "process",
+                'updated_at' => now()
+            ]);
             return ResponseHelper::success("Transaksi pada Nomor Tagihan: ".$request->input('nomor_tagihan')." dengan Nomor Surat: ".$request->input('nomor_surat')." berhasil diubah ke STATUS TRANSAKSI <strong>". strtoupper($request->input('status_pembayaran'))."</strong>");
         }else if ($jenis_laporan_rekap === "hapus_transaksi"){
             $query_tagihan = Tagihan::where('nomor_tagihan', $request->input('nomor_tagihan'))
