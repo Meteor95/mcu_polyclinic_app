@@ -1146,7 +1146,6 @@ class LaporanController extends Controller
         if ($jenis_laporan_rekap === "buat_tagihan"){
             $pesertaIds = $request->input('array_mcu_peserta_id');
             $dataToInsert = [];
-
             foreach ($pesertaIds as $id) {
                 $dataToInsert[] = [
                     'nomor_tagihan' => $request->input('nomor_tagihan'),
@@ -1159,6 +1158,17 @@ class LaporanController extends Controller
             }
             Tagihan::insert($dataToInsert);
             return ResponseHelper::success('Tagihan berhasil dibuat dengan Nomor Tagihan: '.$request->input('nomor_tagihan').' dan Nomor Surat: '.$request->input('nomor_surat'));
+        }else if ($jenis_laporan_rekap === "status_transaksi"){
+            $query_tagihan = Tagihan::where('nomor_tagihan', $request->input('nomor_tagihan'))
+                ->where('nomor_surat', $request->input('nomor_surat'))
+                ->where('id_perusahaan', $request->input('id_perusahaan'))
+                ->get();
+            $all_ids = $query_tagihan->pluck('array_mcu_peserta_id')->flatten()->toArray();
+            Transaksi::whereIn('id', $all_ids)->update([
+                'status_peserta' => $request->input('status_pembayaran'),
+                'updated_at' => now()
+            ]);
+            return ResponseHelper::success("Transaksi pada Nomor Tagihan: ".$request->input('nomor_tagihan')." dengan Nomor Surat: ".$request->input('nomor_surat')." berhasil diubah ke STATUS TRANSAKSI <strong>". strtoupper($request->input('status_pembayaran'))."</strong>");
         }
     }
 
