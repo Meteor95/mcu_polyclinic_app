@@ -149,11 +149,14 @@ function report_show_modal(jenis_laporan,id_tombol) {
                         <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
                             <i class="fa fa-print"></i> Cetak Kuitansi
                         </button>
-                        <button class="btn btn-success btn-sm" onclick="...">
+                        <button class="btn btn-success btn-sm" onclick="ubah_status_pembayaran('lunas','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
                             <i class="fa fa-check"></i> Status Lunas
                         </button>
-                        <button class="btn btn-warning btn-sm" onclick="...">
+                        <button class="btn btn-warning btn-sm" onclick="ubah_status_pembayaran('proses','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
                             <i class="fa fa-spinner"></i> Status Proses
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="cetak_kuitansi('proses','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
+                            <i class="fa fa-trash"></i> Hapus Tagihan
                         </button>
                     </div>`;
                 }
@@ -366,4 +369,107 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
         }
     })
     
+}
+function ubah_status_pembayaran(status_pembayaran, param1 = null, param2 = null, param3 = null, param4 = null, param5 = null, param6 = null){
+    let html_view = `
+    <div class="mt-3 text-center">
+        <dotlottie-player
+            src="https://lottie.host/bd547524-05f2-4284-8014-58bc610eff0a/s2OEsEAHMn.lottie"
+            background="transparent"
+            speed="1"
+            style="width:150px;height:150px;margin:0 auto"
+            direction="1"
+            playMode="normal"
+            loop
+            autoplay>
+        </dotlottie-player>
+
+        <div>
+            <h4>Ubah Status Transaksi</h4>
+            <p class="text-muted mx-4 mb-0">
+                Apakah anda ingin mengubah transaksi menjadi <strong>${status_pembayaran.toUpperCase()}</strong><br>
+                Pada Nomor tagihan: <strong>${param5}</strong> dengan Nomor Surat <strong>${param6}</strong>
+            </p>
+        </div>
+    </div>`;
+    Swal.fire({
+        html: html_view,
+        target: document.getElementById('report_show_modal'),
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: 'orange',
+        confirmButtonText: 'TRANSAKSI '+status_pembayaran.toUpperCase(),
+        cancelButtonText: 'NANTI DULU!!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.get('/generate-csrf-token', function(response) {
+                $.ajax({
+                    url: baseurlapi + '/laboratorium/detail_tindakan',
+                    type: 'GET',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                    data: {
+                        _token:response.csrf_token,
+                        id_transaksi:id,
+                    },
+                    success: function(response) {
+                        let detail_transaksi_code = encodeURIComponent(btoa(response.transaksi[0].id_transaksi+'|'+response.transaksi[0].no_mcu+'|'+response.transaksi[0].nomor_identitas+'|'+response.transaksi[0].nama_peserta));
+                        let parts = response.transaksi[0].no_nota.split('/');
+                        let no_trx = parts.slice(0, 3).join('/');
+                        let no_mcu = parts.slice(3).join('/');
+                        $("#no_trx").html(no_trx);
+                        $("#total_pendapatan").html((response.transaksi[0].total_transaksi + response.transaksi[0].nominal_apotek).toLocaleString('id-ID'));
+                        $("#total_pendapatan_apotek_keterangan").html("Laboratorium : "+response.transaksi[0].total_transaksi.toLocaleString('id-ID')+"<br>Apotek : "+response.transaksi[0].nominal_apotek.toLocaleString('id-ID'));
+                        $("#no_mcu_label").html(no_mcu);
+                        $("#waktu_transaksi_label").html(moment(response.transaksi[0].waktu_trx).format('DD-MM-YYYY HH:mm:ss'));
+                        $("#waktu_sample_label").html(moment(response.transaksi[0].waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss'));
+                        $("#dibuat_tanggal_label").html(moment(response.transaksi[0].created_at).format('DD-MM-YYYY HH:mm:ss'));
+                        $("#nama_dokter_label").html(response.transaksi[0].nama_dokter);
+                        $("#nama_penanggung_jawab_label").html(response.transaksi[0].nama_pj);
+                        if (response.transaksi[0].is_paket_mcu == 1){
+                            $("#nama_paket_label").html("Terhubung Paket MCU : "+response.transaksi[0].nama_paket_mcu);  
+                        }else if (response.transaksi[0].is_paket_mcu == 0 && response.transaksi[0].nama_paket_mcu == 0){
+                            $("#nama_paket_label").html("Tidak Terhubung Paket MCU");
+                        }else{
+                            $("#nama_paket_label").html("Template Tindakan : "+response.transaksi[0].nama_paket_mcu);
+                        }
+                        if (response.transaksi[0].nama_file_surat_pengantar == ""){
+                            $("#surat_pengantaran_label").html("Tidak Ada Surat Pengantaran / Unggahan");
+                        }else{
+                            $("#surat_pengantaran_label").html("<a href='"+baseurlapi+"/file/unduh_surat_pengantar?file_name="+response.transaksi[0].nama_file_surat_pengantar+"' target='_blank'><i class='fa fa-download'></i> Unduh Berkas</a>");
+                        }
+                        nominal_apotek.set(response.transaksi[0].nominal_apotek);
+                        daftar_table_tindakan_modal.rows().clear().draw();
+                        daftar_table_fee_modal.rows().clear().draw();
+                        response.transaksi.forEach((item, index) => {
+                            daftar_table_tindakan_modal.row.add([
+                                `<div class="text-center">${index + 1}</div>`,
+                                item.kode_item,
+                                item.nama_item,
+                                `<div class="text-end">${item.harga.toLocaleString('id-ID')}</div>`,
+                                `<div class="text-end">${item.diskon.toLocaleString('id-ID')}</div>`,
+                                `<div class="text-end">${item.harga_setelah_diskon.toLocaleString('id-ID')}</div>`,
+                                `<div class="text-end">${item.jumlah.toLocaleString('id-ID')}</div>`,
+                                `<div class="text-end">${(item.harga_setelah_diskon * item.jumlah).toLocaleString('id-ID')}</div>`,
+                            ]).draw();
+                        });
+                        response.transaksi_fee.forEach((item, index) => {
+                            daftar_table_fee_modal.row.add([
+                                index + 1,
+                                item.nama_tindakan,
+                                item.kode_jasa,
+                                item.nama_petugas,
+                                `<div class="text-end">${item.nominal_fee.toLocaleString('id-ID')}</div>`,
+                                `<div class="text-end">${item.besaran_fee.toLocaleString('id-ID')}</div>`,
+                            ]).draw();
+                        });
+                        $("#button_edit_apotek").html(`<button onclick="ubah_data_apotek('${response.transaksi[0].id_transaksi}','${no_trx}')" class="btn btn-amc-orange"><i class="fa fa-edit"></i> Ubah Data Apotek</button>`);
+                        $("#button_edit_transaksi").html(`<a href="/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}" target="_blank" class="btn btn-amc-orange"><i class="fa fa-edit"></i> Ubah Data Transaksi</a>`);
+                    },
+                    error: function(xhr, status, error) {
+                        return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
+                    },
+                });
+            });
+        }
+    })
 }
