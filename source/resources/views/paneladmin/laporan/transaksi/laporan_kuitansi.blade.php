@@ -65,13 +65,13 @@
                                   </div>
                               </div>
                               <div class="col-sm-4">
-                                <dotlottie-player style="p-3" src="https://lottie.host/bd547524-05f2-4284-8014-58bc610eff0a/s2OEsEAHMn.lottie" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player>
+                                <img src="{{ asset('mofi/assets/images/gif/bill_perusahaan.gif')}}" style="height:auto;width:200px;margin-left:-50px" alt="Icon cetak tagihan perusahaan">
                               </div>
                           </div>
                       </div> <!-- end card-body-->
                     </div>
                 </div> <!-- end col-->
-                <div class="col-xl-4">
+                <!-- <div class="col-xl-4">
                     <div class="card">
                         <div class="card-body p-0">
                           <div class="alert alert-warning border-0 rounded-top rounded-0 m-0 d-flex align-items-center" role="alert">
@@ -93,10 +93,10 @@
                                   <img src="{{ asset('mofi/assets/images/gif/bill_perusahaan.gif')}}" style="height:auto;width:200px;margin-left:-50px" alt="Icon cetak tagihan perusahaan">
                               </div>
                           </div>
-                      </div> <!-- end card-body-->
+                      </div>
                     </div>
-                </div> <!-- end col-->
-                <!-- <div class="col-xl-4">
+                </div> 
+                <div class="col-xl-4">
                     <div class="card">
                         <div class="card-body p-0">
                           <div class="alert alert-warning border-0 rounded-top rounded-0 m-0 d-flex align-items-center" role="alert">

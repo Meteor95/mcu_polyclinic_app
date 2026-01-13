@@ -850,7 +850,7 @@ class LaporanController extends Controller
                     $query->where('transaksi.status_pembayaran', $status_pembayaran);
                 }
                 $query->orderByRaw($tablePrefix.'transaksi.waktu_trx DESC');
-            }else if($jenis_laporan == "kuitansi_perusahaan"){
+            }else if($jenis_laporan == "kuitansi_perusahaan" || $jenis_laporan == "tagihan_perusahaan"){
                 $query = Tagihan::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi_tagihan.array_mcu_peserta_id')
                 ->join('transaksi', 'transaksi.no_mcu', '=', 'transaksi_tagihan.array_mcu_peserta_id')
                 ->join('company', 'company.id', '=', 'transaksi_tagihan.id_perusahaan')
@@ -877,27 +877,6 @@ class LaporanController extends Controller
                 }
                 // $query->where('mcu_transaksi_peserta.status_peserta','!=','selesai');
                 $query->groupBy('transaksi_tagihan.id_perusahaan')->orderByRaw($tablePrefix.'company.company_name ASC');
-            }else if($jenis_laporan == "tagihan_perusahaan"){
-                $query = TransaksiLab::selectRaw('
-                    '.$tablePrefix.'company.id AS id_perusahaan,
-                    '.$tablePrefix.'company.company_code AS kode_perusahaan,
-                    '.$tablePrefix.'company.company_name AS nama_perusahaan,
-                    '.$tablePrefix.'company.alamat AS alamat_perusahaan,
-                    SUM('.$tablePrefix.'transaksi.total_transaksi + '.$tablePrefix.'transaksi.nominal_apotek) AS total_transaksi
-                ')
-                ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
-                ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
-                ->whereBetween('transaksi.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($jenis_transaksi != ""){
-                    $query->where('transaksi.jenis_transaksi', $jenis_transaksi);
-                }
-                if ($jenis_layanan != ""){
-                    $query->where('transaksi.jenis_layanan', $jenis_layanan);
-                }
-                if ($status_pembayaran != ""){
-                    $query->where('transaksi.status_pembayaran', $status_pembayaran);
-                }
-                $query->groupBy('company.id')->orderByRaw($tablePrefix.'company.company_name ASC');
             }
             $dataSUMGlobal = $query->get();
             $jumlahdata = $query->count();

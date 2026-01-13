@@ -102,7 +102,7 @@ function report_show_modal(jenis_laporan,id_tombol) {
             }}
 
         ];
-    } else if (jenis_laporan == "kuitansi_perusahaan") {
+    } else if (jenis_laporan == "kuitansi_perusahaan" || jenis_laporan == "tagihan_perusahaan") {
         columnsConfig = [
             { title: "No", className: "text-center align-middle", render: function(data, type, row, meta) {
                 return meta.row + meta.settings._iDisplayStart + 1;
@@ -146,8 +146,11 @@ function report_show_modal(jenis_laporan,id_tombol) {
             { title: "Aksi", className: "text-center align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
                    return `<div class="d-flex gap-2 justify-content-center">
+                        <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('tagihan_perusahaan','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
+                            <i class="fa fa-print"></i> Tagihan
+                        </button>
                         <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
-                            <i class="fa fa-print"></i> Cetak Kuitansi
+                            <i class="fa fa-print"></i> Kuitansi
                         </button>
                         <button class="btn btn-success btn-sm" onclick="ubah_status_pembayaran('selesai','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
                             <i class="fa fa-check"></i> Status Lunas
@@ -156,45 +159,9 @@ function report_show_modal(jenis_laporan,id_tombol) {
                             <i class="fa fa-spinner"></i> Status Proses
                         </button>
                         <button class="btn btn-danger btn-sm" onclick="hapus_status_pembayaran('hapus','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
-                            <i class="fa fa-trash"></i> Hapus Tagihan
+                            <i class="fa fa-trash"></i> Hapus
                         </button>
                     </div>`;
-                }
-                return data;
-            }}
-        ];
-    } else if (jenis_laporan == "tagihan_perusahaan") {
-        columnsConfig = [
-            { title: "No", className: "text-center align-middle", render: function(data, type, row, meta) {
-                return meta.row + meta.settings._iDisplayStart + 1;
-            }},
-            { title: "Kode Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
-                if (type === 'display') {
-                    return `${row.kode_perusahaan}`;
-                }
-                return data;
-            }},
-            { title: "Nama Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
-                if (type === 'display') {
-                    return `${row.nama_perusahaan}`;
-                }
-                return data;
-            }},
-            { title: "Alamat Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
-                if (type === 'display') {
-                    return `${row.alamat_perusahaan}`;
-                }
-                return data;
-            }},
-            { title: "Total Tagihan", className: "text-end align-middle", render: function(data, type, row, meta) {
-                if (type === 'display') {
-                    return `${(row.total_transaksi).toLocaleString('id-ID')}`;
-                }
-                return data;
-            }},
-            { title: "Aksi", className: "text-end align-middle", render: function(data, type, row, meta) {
-                if (type === 'display') {
-                    return `<button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('tagihan_perusahaan','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}')"><i class="fa fa-print"></i> Cetak Tagihan</button>`;
                 }
                 return data;
             }}
