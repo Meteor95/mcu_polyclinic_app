@@ -875,7 +875,7 @@ class LaporanController extends Controller
                 if ($status_pembayaran != ""){
                     $query->where('transaksi.status_pembayaran', $status_pembayaran);
                 }
-                $query->where('mcu_transaksi_peserta.status_peserta','!=','selesai');
+                // $query->where('mcu_transaksi_peserta.status_peserta','!=','selesai');
                 $query->groupBy('transaksi_tagihan.id_perusahaan')->orderByRaw($tablePrefix.'company.company_name ASC');
             }else if($jenis_laporan == "tagihan_perusahaan"){
                 $query = TransaksiLab::selectRaw('

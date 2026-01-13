@@ -540,6 +540,7 @@ class LaporanController extends Controller
         $data_informasi = TransaksiLab::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
             ->join('transaksi_detail', 'transaksi_detail.id_transaksi', '=', 'transaksi.id')
+            ->join('transaksi_tagihan','transaksi_tagihan.array_mcu_peserta_id','=','mcu_transaksi_peserta.id')
             ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
             ->selectRaw('
                 '.$tablePrefix.'transaksi_detail.id_item AS id_item,

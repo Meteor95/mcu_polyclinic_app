@@ -146,7 +146,7 @@ function report_show_modal(jenis_laporan,id_tombol) {
             { title: "Aksi", className: "text-center align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
                    return `<div class="d-flex gap-2 justify-content-center">
-                        <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}')">
+                        <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
                             <i class="fa fa-print"></i> Cetak Kuitansi
                         </button>
                         <button class="btn btn-success btn-sm" onclick="...">
@@ -291,7 +291,7 @@ $('#select_page_length_transaksi_tindakan').on('change', function() {
     $("#datatables_laporan_tindakan").DataTable().page.len($(this).val()).draw();
     $("#datatables_laporan_tindakan").DataTable().ajax.reload();
 });
-function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = null, param4 = null, param5 = null) {
+function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = null, param4 = null, param5 = null, param6 = null) {
     let nomortagihan = ""
     if (param5 !== "") nomortagihan = " dengan Nomor Tagihan <strong>"+param5+"</strong>"; 
     let html_view = `
@@ -337,7 +337,7 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
                     nik_peserta: param3,
                     jenis_kuitansi:
                     jenis_kuitansi,
-                    keterangan: $('#nomor_surat').val(),
+                    keterangan: param6,
                     id_direktur_keuangan: $('#direktur_keuangan').val(),
                     nama_direktur_keuangan: $('#direktur_keuangan').find('option:selected').text(),
                     nomor_surat: $('#nomor_surat').val()
@@ -353,7 +353,7 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
                     jenis_transaksi: $("#jenis_transaksi").val(),
                     jenis_layanan: $("#jenis_layanan").val(),
                     status_pembayaran: $("#status_pembayaran").val(),
-                    nomor_surat: $('#nomor_surat').val(),
+                    nomor_surat: param6,
                     id_direktur_keuangan: $('#direktur_keuangan').val(),
                     nama_direktur_keuangan: $('#direktur_keuangan').find('option:selected').text()
                 }));
