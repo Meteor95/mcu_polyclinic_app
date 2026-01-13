@@ -107,33 +107,41 @@ function report_show_modal(jenis_laporan,id_tombol) {
             { title: "No", className: "text-center align-middle", render: function(data, type, row, meta) {
                 return meta.row + meta.settings._iDisplayStart + 1;
             }},
+            { title: "Nomor Tagihan", className: "align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${row.nomor_tagihan}`;
+                }
+                return data;
+            }},
             { title: "Kode Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `${row.kode_perusahaan}`;
+                    return `${row.company_code}`;
                 }
                 return data;
             }},
             { title: "Nama Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `${row.nama_perusahaan}`;
+                    return `${row.company_name} ${row.company_alias_name ? `(${row.company_alias_name})` : ''}`;
                 }
                 return data;
             }},
             { title: "Alamat Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `${row.alamat_perusahaan}`;
+                    return `${row.alamat}`;
                 }
                 return data;
             }},
             { title: "Total Tagihan", className: "text-end align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `${(row.total_transaksi).toLocaleString('id-ID')}`;
+                    return `${(row.total_transaksi).toLocaleString('id-ID')} (${row.total_transaksi_count} Peserta)`;
                 }
                 return data;
             }},
             { title: "Aksi", className: "text-end align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `<button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.kode_perusahaan}','${row.nama_perusahaan}')"><i class="fa fa-print"></i> Cetak Kuitansi</button>`;
+                    return `<button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.kode_perusahaan}','${row.nama_perusahaan}')"><i class="fa fa-print"></i> Cetak Kuitansi</button>
+                    <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.kode_perusahaan}','${row.nama_perusahaan}')"><i class="fa fa-print"></i> Lunas</button>
+                    <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.kode_perusahaan}','${row.nama_perusahaan}')"><i class="fa fa-print"></i> Proses</button>`;
                 }
                 return data;
             }}

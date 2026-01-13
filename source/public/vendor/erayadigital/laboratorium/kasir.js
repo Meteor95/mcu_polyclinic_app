@@ -56,8 +56,102 @@ $(document).ready(function(){
         }
     });
 });
+function generateInvoiceNumber(sequenceNumber, serviceCode = 'MCU') {
+    const now = new Date();
+    const year = now.getFullYear();
+    const monthsRomawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    const monthRomawi = monthsRomawi[now.getMonth()];
+    const formattedSequence = sequenceNumber.toString().padStart(4, '0');
+    return `INV/${formattedSequence}/${serviceCode}/${monthRomawi}/${year}`;
+}
+function generateUniqueDateTimeID() {
+    const now = new Date();
+    const datePart = now.toISOString().slice(0, 10).replace(/-/g, '');
+    const timePart = now.getTime();
+    return `${datePart}${timePart}`;
+}
 $("#btn_baca_data_rekap").on("click", function(){
     $("#daftar_table_tindakan").DataTable().ajax.reload();
+});
+$("#btn_buat_tagihan").on("click", function(){
+    if (!$("#select2_perusahaan").val()) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops!',
+            text: 'Silakan pilih perusahaan terlebih dahulu'
+        });
+        return;
+    }
+    let nomor_tagihan = generateUniqueDateTimeID()
+    let id_transaksi_array = [];
+    $(".data-checkbox:checked").each(function () {
+        id_transaksi_array.push($(this).val());
+    });
+    if (id_transaksi_array.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops!',
+            text: 'Silakan pilih minimal satu transaksi terlebih dahulu'
+        });
+        return;
+    }
+    let html_view = `
+    <div class="mt-3 text-center">
+        <dotlottie-player
+            src="https://lottie.host/bd547524-05f2-4284-8014-58bc610eff0a/s2OEsEAHMn.lottie"
+            background="transparent"
+            speed="1"
+            style="width:150px;height:150px;margin:0 auto"
+            direction="1"
+            playMode="normal"
+            loop
+            autoplay>
+        </dotlottie-player>
+        <div>
+            <h4>Konfirmasi Cetak Tagihan</h4>
+            <p class="text-muted mx-4 mb-0"> Apakah anda yakin ingin membuat tagihan? Silahkan isi keterangan dan pilih penanggung jawab tagihan ini </p><br>
+            <input type="text" class="form-control mb-2" id="nomor_surat" placeholder="Masukan Nomor Surat. Contoh : 450/ACC-AMC/X/2025">
+        </div>
+    </div>`;
+    Swal.fire({ 
+        html: html_view,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: 'orange',
+        confirmButtonText: 'Buat Tagihan',
+        cancelButtonText: 'Nanti Dulu!!',
+        preConfirm: () => {
+        const nomorSurat = $("#nomor_surat").val();
+        if (!nomorSurat) { Swal.showValidationMessage('Nomor surat wajib diisi'); return false;}
+        return { nomor_surat: nomorSurat};
+    }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.get('/generate-csrf-token', function(response) {
+                $.ajax({
+                    url: baseurlapi + '/laporan/rekap/buat_tagihan',
+                    type: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                    data: {
+                        _token:response.csrf_token,
+                        nomor_tagihan:nomor_tagihan,
+                        nomor_surat:result.value.nomor_surat,
+                        id_perusahaan:$("#select2_perusahaan").val(),
+                        array_mcu_peserta_id:id_transaksi_array,
+                    },
+                    success: function(response) {
+                        if (response.success == false){
+                            return createToast('Kesalahan Pembuatan Tagihan', 'top-right', response.message, 'error', 3000);
+                        }
+                        return createToast("Pembuatan Tagihan Berhasil", 'top-right', response.message, 'success', 3000);
+                    },
+                    error: function(xhr, status, error) {
+                        return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
+                    },
+                });
+            });
+        }
+    }); 
 });
 function callselect2mcu(){
     $.get('/generate-csrf-token', function(response) {
@@ -187,7 +281,7 @@ function load_datatables_tindakan(){
                     orderable: false,
                     className: 'text-center',
                     render: function(data, type, row, meta) {
-                        return `<input type="checkbox" class="data-checkbox" value="">`;
+                        return `<input type="checkbox" class="data-checkbox" value="${row.id_transaksi_mcu}">`;
                     }
                 },
                 {

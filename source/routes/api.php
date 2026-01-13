@@ -233,6 +233,7 @@ Route::prefix('v1')->group(function () {
             Route::get('insentif/{jenis_laporan}', [LaporanController::class,"laporan_insentif"]);
             /* Rekap */
             Route::get('rekap/{jenis_laporan_rekap}', [LaporanController::class,"laporan_rekap_perperusahaan"]);
+            Route::post('rekap/{jenis_laporan_rekap}', [LaporanController::class,"laporan_rekap_perperusahaan_post"]);
         });
     });
     Route::prefix('enduser')->group(function () {

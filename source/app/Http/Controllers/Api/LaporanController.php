@@ -9,7 +9,7 @@ use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\{Transaksi as TransaksiLab, Kategori, TransaksiDetail, Kesimpulan as KesimpulanLabStatus};
 use App\Models\Transaksi\UnggahanCitraLab;
-use App\Models\Laporan\Kesimpulan;
+use App\Models\Laporan\{Kesimpulan,Tagihan};
 use App\Models\EdsJasaPelayanan;
 use App\Models\Masterdata\Jasalayanan;
 use Illuminate\Support\Facades\Validator;
@@ -20,8 +20,7 @@ use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
-    private function determineTableNamePemeriksaanFisik($lokasiFisik)
-    {
+    private function determineTableNamePemeriksaanFisik($lokasiFisik){
         $tables = [
             'kepala' => 'mcu_pf_kepala',
             'telinga' => 'mcu_pf_telinga',
@@ -38,8 +37,7 @@ class LaporanController extends Controller
         ];
         return $tables[strtolower($lokasiFisik)] ?? null;
     }
-    private function determineTableNamePoliklinik($jenis_poli)
-    {
+    private function determineTableNamePoliklinik($jenis_poli){
         $tables = [
             'spirometri' => 'mcu_poli_spirometri',
             'ekg' => 'mcu_poli_ekg',
@@ -512,15 +510,13 @@ class LaporanController extends Controller
             return ResponseHelper::error($th);
        }
     }
-    public function getHasilLaboratorium($id_transaksi)
-    {
+    public function getHasilLaboratorium($id_transaksi){
         $categories = Kategori::whereNull('parent_id')->with('children')->get();
         return $categories->map(function ($kategori) use ($id_transaksi) {
             return $this->formatKategori($kategori, $id_transaksi);
         });
     }
-    private function formatItem($detail, $id_transaksi)
-    {
+    private function formatItem($detail, $id_transaksi){
         return [
             'id' => $detail->id,
             'nama_item' => $detail->nama_item,
@@ -537,8 +533,7 @@ class LaporanController extends Controller
                 })
         ];
     }
-    private function formatKategori($kategori, $id_transaksi)
-    {
+    private function formatKategori($kategori, $id_transaksi){
         $items = TransaksiDetail::join('transaksi','transaksi.id','=','transaksi_detail.id_transaksi')
             ->join('lab_tarif','lab_tarif.id','=','transaksi_detail.id_item')
             ->join('lab_satuan_item', 'lab_satuan_item.id','=','lab_tarif.satuan')
@@ -651,8 +646,7 @@ class LaporanController extends Controller
             return ResponseHelper::error($th);
         }
     }
-    public function laporan_tindakan(Request $request)
-    {
+    public function laporan_tindakan(Request $request){
         $perHalaman = (int) $request->length > 0 ? (int) $request->length : 0;
         $nomorHalaman = ($perHalaman > 0) ? (int) $request->start / $perHalaman : 0;
         $offset = $nomorHalaman * $perHalaman;
@@ -857,16 +851,19 @@ class LaporanController extends Controller
                 }
                 $query->orderByRaw($tablePrefix.'transaksi.waktu_trx DESC');
             }else if($jenis_laporan == "kuitansi_perusahaan"){
-                $query = TransaksiLab::selectRaw('
-                    '.$tablePrefix.'company.id AS id_perusahaan,
-                    '.$tablePrefix.'company.company_code AS kode_perusahaan,
-                    '.$tablePrefix.'company.company_name AS nama_perusahaan,
-                    '.$tablePrefix.'company.alamat AS alamat_perusahaan,
-                    SUM('.$tablePrefix.'transaksi.total_transaksi + '.$tablePrefix.'transaksi.nominal_apotek) AS total_transaksi
+                $query = Tagihan::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi_tagihan.array_mcu_peserta_id')
+                ->join('transaksi', 'transaksi.no_mcu', '=', 'transaksi_tagihan.array_mcu_peserta_id')
+                ->join('company', 'company.id', '=', 'transaksi_tagihan.id_perusahaan')
+                ->selectRaw('
+                    '.$tablePrefix.'transaksi_tagihan.nomor_tagihan,
+                    '.$tablePrefix.'company.company_code,
+                    '.$tablePrefix.'company.company_name,
+                    '.$tablePrefix.'company.company_alias_name,
+                    '.$tablePrefix.'company.alamat,
+                    SUM('.$tablePrefix.'transaksi.total_transaksi) AS total_transaksi,
+                    COUNT('.$tablePrefix.'transaksi_tagihan.id) AS total_transaksi_count
                 ')
-                ->join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
-                ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
-                ->whereBetween('transaksi.created_at', [$tanggal_awal, $tanggal_akhir]);
+                ->whereBetween('transaksi_tagihan.created_at', [$tanggal_awal, $tanggal_akhir]);
                 if ($jenis_transaksi != ""){
                     $query->where('transaksi.jenis_transaksi', $jenis_transaksi);
                 }
@@ -876,7 +873,8 @@ class LaporanController extends Controller
                 if ($status_pembayaran != ""){
                     $query->where('transaksi.status_pembayaran', $status_pembayaran);
                 }
-                $query->groupBy('company.id')->orderByRaw($tablePrefix.'company.company_name ASC');
+                $query->where('mcu_transaksi_peserta.status_peserta','!=','selesai');
+                $query->groupBy('transaksi_tagihan.id_perusahaan')->orderByRaw($tablePrefix.'company.company_name ASC');
             }else if($jenis_laporan == "tagihan_perusahaan"){
                 $query = TransaksiLab::selectRaw('
                     '.$tablePrefix.'company.id AS id_perusahaan,
@@ -917,8 +915,7 @@ class LaporanController extends Controller
             return ResponseHelper::error($th);
         }
     }
-    public function laporan_rekap_perperusahaan(Request $request, string $jenis_laporan_rekap)
-    {
+    public function laporan_rekap_perperusahaan(Request $request, string $jenis_laporan_rekap){
         $tablePrefix = config('database.connections.mysql.prefix');
         $allowed = [
             'pemeriksaan_fisik',
@@ -1141,6 +1138,25 @@ class LaporanController extends Controller
             ]);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
+        }
+    }
+    public function laporan_rekap_perperusahaan_post(Request $request, string $jenis_laporan_rekap){
+        if ($jenis_laporan_rekap === "buat_tagihan"){
+            $pesertaIds = $request->input('array_mcu_peserta_id');
+            $dataToInsert = [];
+
+            foreach ($pesertaIds as $id) {
+                $dataToInsert[] = [
+                    'nomor_tagihan' => $request->input('nomor_tagihan'),
+                    'nomor_surat'   => $request->input('nomor_surat'),
+                    'id_perusahaan' => $request->input('id_perusahaan'),
+                    'array_mcu_peserta_id' => $id,
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
+                ];
+            }
+            Tagihan::insert($dataToInsert);
+            return ResponseHelper::success('Tagihan berhasil dibuat dengan Nomor Tagihan: '.$request->input('nomor_tagihan').' dan Nomor Surat: '.$request->input('nomor_surat'));
         }
     }
 
