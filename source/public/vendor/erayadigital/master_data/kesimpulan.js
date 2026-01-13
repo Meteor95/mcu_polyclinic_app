@@ -65,9 +65,9 @@ function daftarkesimpulan(){
                     let rowJudul = $('<tr class="group-label">')
                         .append(`<td colspan="3" style="text-align:center;background-color: #f2f2f2; font-weight: bold;">${rows.data()[0].jenis_kesimpulan.replace(/_/g, ' ').toUpperCase()}</td>`);
                     let rowHeader = $('<tr class="group-header" style="background-color: #fafafa; font-weight: bold;">')
-                        .append('<td style="width:10%">No</td>')
-                        .append('<td style="text-align:center;width:60%">Keterangan Kesimpulan</td>')
-                        .append('<td style="width:30%">Aksi</td>')
+                        .append('<td style="text-align;center;width:10%">No</td>')
+                        .append('<td style="text-align:center;width:70%">Keterangan Kesimpulan</td>')
+                        .append('<td style="text-align:center;width:20%">Aksi</td>')
                     return rowJudul.add(rowHeader);
                 }
             },
@@ -92,8 +92,8 @@ function daftarkesimpulan(){
                     title: "",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `${row.jenis_kesimpulan}`;
-                        }
+                            return "<div class=\"d-flex justify-content-between gap-2 background_fixed_right_row\"><button class=\"btn btn-primary w-100\" onclick=\"editkesimpulan()\"><i class=\"fa fa-edit\"></i> Ubah</button><button class=\"btn btn-danger w-100\" onclick=\"hapuskesimpulan()\"><i class=\"fa fa-trash-o\"></i> Hapus</button></div>";
+                        }       
                         return data;
                     }
                 }
