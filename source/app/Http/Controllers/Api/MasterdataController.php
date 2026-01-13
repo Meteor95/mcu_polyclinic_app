@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\{Perusahaan, PaketMCU};
 use App\Models\{User};
 use App\Models\Komponen\{Poli,Antrian};
-use App\Models\Masterdata\{Jasalayanan, DepartemenPerusahaan, MemberMCU, DaftarBank, PartnerMCU};
+use App\Models\Masterdata\{Jasalayanan, DepartemenPerusahaan, MemberMCU, DaftarBank, PartnerMCU, Kesimpulan};
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -663,6 +663,78 @@ class MasterdataController extends Controller
         }
     }
     public function editbank(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'idbank' => 'required|integer',
+                'kodebank' => 'required|string',
+                'namabank' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            DaftarBank::where('id', $request->idbank)->update([
+                'kode_bank' => $request->kodebank,
+                'nama_bank' => $request->namabank,
+                'keterangan' => $request->keteranganbank,
+            ]);
+            return ResponseHelper::success("Informasi bank penerima dengan nama " . $request->namabank . " berhasil diubah.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function getkesimpulan(Request $req){
+        try {
+            $perHalaman = (int) $req->length > 0 ? (int) $req->length : 1;
+            $nomorHalaman = (int) $req->start / $perHalaman;
+            $offset = $nomorHalaman * $perHalaman;
+            $data = Kesimpulan::listKesimpulan($req, $perHalaman, $offset);
+            $jumlahdata = $data['total'];
+            $dynamicAttributes = [
+                'data' => $data['data'],
+                'recordsFiltered' => $jumlahdata,
+            ];
+            return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Daftar Kesimpulan Laboratorium']), $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function savekesimpulan(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'kodebank' => 'required|string',
+                'namabank' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            DaftarBank::create([
+                'kode_bank' => $request->kodebank,
+                'nama_bank' => $request->namabank,
+                'keterangan' => $request->keteranganbank,
+            ]);
+            return ResponseHelper::success("Informasi bank penerima berhasil disimpan. Silahkan lanjutkan transaksi jikalau membutuhkan rekam medis MCU.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function deletekesimpulan(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'idbank' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            DaftarBank::where('id', $request->idbank)->delete();
+            return ResponseHelper::success_delete("Informasi bank penerima dengan nama " . $request->namabank . " berhasil dihapus beserta seluruh data yang terkait dengan bank penerima ini secara visual di sistem.");
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function editkesimpulan(Request $request){
         try {
             $validator = Validator::make($request->all(), [
                 'idbank' => 'required|integer',

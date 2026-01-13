@@ -64,6 +64,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
         Route::get('daftar_member_mcu', [MasterdataController::class,"daftar_member_mcu"])->middleware('permission_cache:akses_member_mcu')->name('admin.masterdata.daftar_member_mcu');
         Route::get('daftar_partner_amc', [MasterdataController::class,"daftar_partner_amc"])->middleware('permission_cache:akses_partner_amc')->name('admin.masterdata.daftar_partner_amc');
         Route::get('daftar_bank', [MasterdataController::class,"daftar_bank"])->middleware('permission_cache:akses_daftar_bank')->name('admin.masterdata.daftar_bank');
+        Route::get('daftar_kesimpulan', [MasterdataController::class,"daftar_kesimpulan"])->middleware('permission_cache:akses_daftar_kesimpulan')->name('admin.masterdata.daftar_kesimpulan');
     });
     Route::prefix('laboratorium')->group(function () {
         Route::get('tarif', [LaboratoriumController::class,"tarif"])->middleware('permission_cache:akses_tarif_laboratorium')->name('admin.laboratorium.tarif');

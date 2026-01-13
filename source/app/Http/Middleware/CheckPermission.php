@@ -98,6 +98,7 @@ class CheckPermission
             'hasAccessMemberMcu' => 'akses_member_mcu',
             'hasAccessPartnerAMC' => 'akses_partner_amc',
             'hasAccessDaftarBank' => 'akses_daftar_bank',
+            'hasAccessMasterKesimpulan' => 'akses_daftar_kesimpulan',
             /* Petugas */
             'hasAccessPetugas' => 'akses_petugas',
             'hasAccessPenggunaAplikasi' => 'akses_pengguna_aplikasi',

@@ -1,0 +1,75 @@
+@extends('paneladmin.templateadmin')
+@section('konten_utama_admin')
+<div class="row">
+    <div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+          <h4>Bank Data Kesimpulan Tindakan</h4><span>Silahkan cari data peserta berdasarkan kriteria yang tersedia guna melakukan pengaturan data kesimpulan tindakan medis. Anda dapat menentukan hasil evaluasi dan rekomendasi tindakan lanjut yang berbeda pada masing-masing peserta sesuai dengan hasil pemeriksaan MCU yang telah dilakukan.</span>
+          <button class="mt-2 btn btn-outline-success w-100" id="tambah_perusahaan_baru" type="button"><i class="fa fa-plus"></i> Formulir Tambah Kesimpulan</button>
+        </div>
+        <div class="card-body">
+          <div class="col-md-12">
+            <input type="text" class="form-control" id="kotak_pencarian_kesimpulan" placeholder="Cari data berdasarkan nama kesimpulan yang terdaftar di Aplikasi MCU Artha Medica Clinic">
+            <div class="table">
+              <table class="display table-padding-sm" id="datatables_kesimpulan"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="modal fade" id="formulir_tambah_kesimpulan" tabindex="-1" aria-labelledby="formulir_tambah_perusahaanLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formulir_tambah_perusahaanLabel">Formulir Tambah Perusahaan Baru</h5>
+                <button type="button btn-danger" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <form id="formulir_tambah_perusahaan_baru">
+              <div class="mb-3">
+                <label for="kodeperusahaan" class="form-label">Kode Perusahaan</label>
+                <input placeholder="Ex: EDS" type="text" class="form-control" id="kodeperusahaan" name="kodeperusahaan" required>
+                <div class="invalid-feedback">Masukan kode perusahaan yang valid</div>
+                <div class="valid-feedback">Terlihat bagus! Kode perusahaan sudah terisi</div>
+              </div>
+              <div class="mb-3">
+                <label for="namaperusahaan" class="form-label">Nama Perusahaan</label>
+                <input placeholder="Ex: EDS" type="text" class="form-control" id="namaperusahaan" name="namaperusahaan" required>
+                <div class="invalid-feedback">Masukan nama perusahaan yang valid</div>
+                <div class="valid-feedback">Terlihat bagus! Nama perusahaan sudah terisi</div>
+              </div>
+               <div class="mb-3">
+                <label for="aliasperusahaan" class="form-label">Alias Perusahaan</label>
+                <input placeholder="Ex: PT. Eraya Digital Solusindo" type="text" class="form-control" id="aliasperusahaan" name="aliasperusahaan" required>
+                <div class="invalid-feedback">Masukan alias perusahaan yang valid</div>
+                <div class="valid-feedback">Terlihat bagus! Alias perusahaan sudah terisi</div>
+              </div>
+              <div class="mb-3">
+                <label for="alamatperusahaan" class="form-label">Alamat Perusahaan</label>
+                <input placeholder="Ex: Jl. Raya Bogor KM. 12, Kel. Pasir Jaya, Kec. Bogor Barat, Kota Bogor, Jawa Barat" type="text" class="form-control" id="alamatperusahaan" name="alamatperusahaan" required>
+                <div class="invalid-feedback">Masukan alamat perusahaan yang valid</div>
+                <div class="valid-feedback">Terlihat bagus! Alamat perusahaan sudah terisi</div>
+              </div>
+              <div class="mb-3">
+                <div class="form-label">Keterangan Informasi Perusahaan</div>
+                <div id="keteranganperusahaan"></div>
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" id="simpan_perusahaan" class="btn btn-primary">Simpan Data</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
+@section('css_load')
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+@endsection
+@section('js_load')
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script src="https://cdn.datatables.net/rowgroup/1.5.1/js/dataTables.rowGroup.min.js"></script>
+<script src="{{ asset('vendor/erayadigital/master_data/kesimpulan.js') }}?v={{ filemtime(public_path('vendor/erayadigital/master_data/kesimpulan.js')) }}"></script>
+@endsection

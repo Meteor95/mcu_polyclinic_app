@@ -162,6 +162,11 @@ Route::prefix('v1')->group(function () {
             Route::post('simpanbank', [MasterdataController::class,"savebank"]);
             Route::get('hapusbank', [MasterdataController::class,"deletebank"]);
             Route::post('ubahbank', [MasterdataController::class,"editbank"]);
+            /* Master Data Kesimpulan */
+            Route::get('daftarkesimpulan', [MasterdataController::class,"getkesimpulan"]);
+            Route::post('simpankesimpulan', [MasterdataController::class,"savekesimpulan"]);
+            Route::get('hapuskesimpulan', [MasterdataController::class,"deletekesimpulan"]);
+            Route::post('ubahkesimpulan', [MasterdataController::class,"editkesimpulan"]);
         });
         Route::prefix('poliklinik')->group(function () {
             Route::post('simpan/{poliklinik}', [PoliklinikController::class,"simpan_poliklinik"]);
