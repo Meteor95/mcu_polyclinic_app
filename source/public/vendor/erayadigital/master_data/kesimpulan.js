@@ -102,6 +102,12 @@ function daftarkesimpulan(){
         });
     }); 
 }
+function clearformeditdaftarbank(){
+    isedit = false;
+    idbank = "";
+    $("#kesimpulantindakan").val("");
+    $("#jenis_pemeriksaan").val("");
+}
 $("#tambah_kesimpulan_baru").on("click", function(){
     isedit = false;
     clearformeditdaftarbank();
@@ -115,25 +121,18 @@ function editdaftarbank(id,kodebank,namabank,keterangan){
     $("#keteranganbank").val(keterangan);
     $("#formulir_tambah_bank").modal("show");
 }
-function clearformeditdaftarbank(){
-    isedit = false;
-    idbank = "";
-    $("#kesimpulantindakan").val("");
-}
 $("#jenis_pemeriksaan_pencarian").on('change', function() {
     $("#datatables_kesimpulan").DataTable().ajax.reload();
 });
 $("#kotak_pencarian_kesimpulan").on("keyup", debounce(function(){
     $("#datatables_kesimpulan").DataTable().ajax.reload();
 }, 300));
-$("#simpan_bank").on("click", function(event){
+$("#simpan_kesimpulan").on("click", function(event){
     event.preventDefault();
     formValidasi.addClass("was-validated");
-    if($("#namabank").val() == "" || $("#keteranganbank").val() == "" || $("#kodebank").val() == ""){
-        return createToast('Kesalahan Formulir', 'top-right', 'Silahkan isi semua formulir terlebih dahulu sebelum anda menyimpan data bank penerima', 'error', 3000);
-    }
+    if($("#kesimpulantindakan").val() == "" || $("#jenis_pemeriksaan").val() == "") return createToast('Kesalahan Formulir', 'top-right', 'Silahkan isi semua formulir terlebih dahulu sebelum anda menyimpan informasi tindakan', 'error', 3000);
     Swal.fire({
-        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penyimpanan Data Bank Penerima</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menyimpan informasi bank penerima <strong>'+$(namabank).val()+'</strong> ?. Jika sudah silahkan klik tombol simpan data</p></div></div>',
+        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penyimpanan Kesimpulan Atas Tindakan</h4><p class="text-muted mx-4 mb-0">Apakah anda ingin meyimpan piliha untuk kesimpulan tindakan pada kategori <strong>'+$("#jenis_pemeriksaan").val().replace(/_/g, ' ').toUpperCase()+'</strong></p></div></div>',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: 'orange',

@@ -69,8 +69,8 @@
               </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" id="simpan_kesimpulan" class="btn btn-primary">Simpan Data</button>
+                <button class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                <button id="simpan_kesimpulan" class="btn btn-primary">Simpan Data</button>
             </div>
         </div>
     </div>
