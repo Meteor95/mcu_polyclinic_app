@@ -1169,6 +1169,23 @@ class LaporanController extends Controller
                 'updated_at' => now()
             ]);
             return ResponseHelper::success("Transaksi pada Nomor Tagihan: ".$request->input('nomor_tagihan')." dengan Nomor Surat: ".$request->input('nomor_surat')." berhasil diubah ke STATUS TRANSAKSI <strong>". strtoupper($request->input('status_pembayaran'))."</strong>");
+        }else if ($jenis_laporan_rekap === "hapus_transaksi"){
+            $query_tagihan = Tagihan::where('nomor_tagihan', $request->input('nomor_tagihan'))
+                ->where('nomor_surat', $request->input('nomor_surat'))
+                ->where('id_perusahaan', $request->input('id_perusahaan'))
+                ->get();
+            $all_ids = $query_tagihan->pluck('array_mcu_peserta_id')->flatten()->toArray();
+            $jumlah_lunas = Transaksi::whereIn('id', $all_ids)
+                ->where('status_peserta','=', 'selesai') 
+                ->count();
+            if ($jumlah_lunas > 0){
+                return ResponseHelper::success("Transaksi pada Nomor Tagihan: ".$request->input('nomor_tagihan')." dengan Nomor Surat: ".$request->input('nomor_surat')." tidak dapat dihapus dikarenakan terdapat <strong>STATUS TRANSAKASI yang berstatus LUNAS</strong>");
+            }
+            Tagihan::where('nomor_tagihan', $request->input('nomor_tagihan'))
+                ->where('nomor_surat', $request->input('nomor_surat'))
+                ->where('id_perusahaan', $request->input('id_perusahaan'))
+                ->delete();
+            return ResponseHelper::success_delete("Transaksi pada Nomor Tagihan: ".$request->input('nomor_tagihan')." dengan Nomor Surat: ".$request->input('nomor_surat')." berhasil <strong>DIHAPUS</strong>. Silahkan buat tagihan lagi dengan peserta yang sama atau berbeda");
         }
     }
 

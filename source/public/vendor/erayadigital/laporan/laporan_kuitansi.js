@@ -155,7 +155,7 @@ function report_show_modal(jenis_laporan,id_tombol) {
                         <button class="btn btn-warning btn-sm" onclick="ubah_status_pembayaran('proses','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
                             <i class="fa fa-spinner"></i> Status Proses
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="cetak_kuitansi('proses','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
+                        <button class="btn btn-danger btn-sm" onclick="hapus_status_pembayaran('hapus','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}','${row.nomor_surat}')">
                             <i class="fa fa-trash"></i> Hapus Tagihan
                         </button>
                     </div>`;
@@ -416,6 +416,53 @@ function ubah_status_pembayaran(status_pembayaran, param1 = null, param2 = null,
                     },
                     success: function(response) {
                         return createToast("Ubah Status Tagihan Berhasil", 'top-right', response.message, 'success', 3000);
+                    },
+                    error: function(xhr, status, error) {
+                        return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
+                    },
+                });
+            });
+        }
+    })
+}
+function hapus_status_pembayaran(status_pembayaran, param1 = null, param2 = null, param3 = null, param4 = null, param5 = null, param6 = null){
+    let html_view = `
+    <div class="mt-3 text-center">
+        <dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player>
+        </dotlottie-player>
+        <div>
+            <h4>Hapus Status Transaksi</h4>
+            <p class="text-muted mx-4 mb-0">
+                Apakah anda ingin menghapus transaksi <strong>${status_pembayaran.toUpperCase()}</strong><br>
+                Pada Nomor tagihan: <strong>${param5}</strong> dengan Nomor Surat <strong>${param6}</strong>
+            </p>
+        </div>
+    </div>`;
+    Swal.fire({
+        html: html_view,
+        target: document.getElementById('report_show_modal'),
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: 'orange',
+        confirmButtonText: 'HAPUS TRANSAKSI',
+        cancelButtonText: 'NANTI DULU!!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.get('/generate-csrf-token', function(response) {
+                $.ajax({
+                    url: baseurlapi + '/laporan/rekap/hapus_transaksi',
+                    type: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                    data: {
+                        _token:response.csrf_token,
+                        status_pembayaran:status_pembayaran,
+                        nomor_tagihan:param5,
+                        nomor_surat:param6,
+                        id_perusahaan:param1,
+                    },
+                    success: function(response) {
+                        $("#datatables_laporan_tindakan").DataTable().ajax.reload();
+                        return createToast("Hapus Status Tagihan Berhasil", 'top-right', response.message, 'success', 3000);
                     },
                     error: function(xhr, status, error) {
                         return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
