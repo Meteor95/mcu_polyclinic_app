@@ -13,10 +13,13 @@ class Kesimpulan extends Model
     public static function listKesimpulan($req, $perHalaman, $offset)
     {
         $parameterpencarian = $req->parameter_pencarian;
+        $jenisKesimpulan = $req->jenis_kesimpulan;
         $query = DB::table((new self())->getTable());
+        if (!empty($jenisKesimpulan)) {
+            $query->where('jenis_kesimpulan', '=', $jenisKesimpulan);
+        }
         if (!empty($parameterpencarian)) {
-            $query->where('jenis_kesimpulan', 'LIKE', '%' . $parameterpencarian . '%')
-                  ->orWhere('keterangan_kesimpulan', 'LIKE', '%' . $parameterpencarian . '%');
+            $query->where('keterangan_kesimpulan', 'LIKE', '%' . $parameterpencarian . '%');
         }
         $result = $query->take($perHalaman)
             ->skip($offset)

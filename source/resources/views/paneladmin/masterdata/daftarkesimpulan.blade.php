@@ -5,62 +5,73 @@
     <div class="card">
         <div class="card-header">
           <h4>Bank Data Kesimpulan Tindakan</h4><span>Silahkan cari data peserta berdasarkan kriteria yang tersedia guna melakukan pengaturan data kesimpulan tindakan medis. Anda dapat menentukan hasil evaluasi dan rekomendasi tindakan lanjut yang berbeda pada masing-masing peserta sesuai dengan hasil pemeriksaan MCU yang telah dilakukan.</span>
-          <button class="mt-2 btn btn-outline-success w-100" id="tambah_perusahaan_baru" type="button"><i class="fa fa-plus"></i> Formulir Tambah Kesimpulan</button>
+          <button class="mt-2 btn btn-outline-success w-100" id="tambah_kesimpulan_baru"><i class="fa fa-plus"></i> Formulir Tambah Kesimpulan</button>
         </div>
         <div class="card-body">
-          <div class="col-md-12">
-            <input type="text" class="form-control" id="kotak_pencarian_kesimpulan" placeholder="Cari data berdasarkan nama kesimpulan yang terdaftar di Aplikasi MCU Artha Medica Clinic">
-            <div class="table">
-              <table class="display table-padding-sm" id="datatables_kesimpulan"></table>
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="kotak_pencarian_kesimpulan" placeholder="Cari data berdasarkan nama kesimpulan yang terdaftar di Aplikasi MCU Artha Medica Clinic">
+            </div>
+            <div class="col-md-6">
+              <select class="form-control" id="jenis_pemeriksaan_pencarian">
+                  <option value="">PILIH JENIS TINDAKAN</option>
+                  <option value="pemeriksaan_audiometri">PEMERIKSAAN AUDIOMETRI</option>
+                  <option value="pemeriksaan_ekg">PEMERIKSAAN EKG</option>
+                  <option value="pemeriksaan_farmingham_score">PEMERIKSAAN FARMINGHAM SCORE</option>
+                  <option value="pemeriksaan_fisik">PEMERIKSAAN FISIK</option>
+                  <option value="pemeriksaan_laboratorium">PEMERIKSAAN LABORATORIUM</option>
+                  <option value="pemeriksaan_rontgen_lumbosacral">PEMERIKSAAN RONTGEN LUMBOSACRAL</option>
+                  <option value="pemeriksaan_rontgen_thorax">PEMERIKSAAN RONTGEN THORAX</option>
+                  <option value="pemeriksaan_spirometri">PEMERIKSAAN SPIROMETRI</option>
+                  <option value="pemeriksaan_threadmill">PEMERIKSAAN THREADMILL</option>
+                  <option value="pemeriksaan_usg_ubdomain">PEMERIKSAAN USG UBDOMAIN</option>
+                  <option value="saran">SARAN</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table"><table class="display table-padding-sm" id="datatables_kesimpulan"></table></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 </div>
-<div class="modal fade" id="formulir_tambah_kesimpulan" tabindex="-1" aria-labelledby="formulir_tambah_perusahaanLabel" aria-hidden="true">
+<div class="modal fade" id="formulir_tambah_kesimpulan" tabindex="-1" aria-labelledby="formulir_tambah_kesimpulanLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="formulir_tambah_perusahaanLabel">Formulir Tambah Perusahaan Baru</h5>
+                <h5 class="modal-title" id="formulir_tambah_kesimpulanLabel">Formulir Kesimpulan Tindakan</h5>
                 <button type="button btn-danger" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <form id="formulir_tambah_perusahaan_baru">
               <div class="mb-3">
-                <label for="kodeperusahaan" class="form-label">Kode Perusahaan</label>
-                <input placeholder="Ex: EDS" type="text" class="form-control" id="kodeperusahaan" name="kodeperusahaan" required>
-                <div class="invalid-feedback">Masukan kode perusahaan yang valid</div>
-                <div class="valid-feedback">Terlihat bagus! Kode perusahaan sudah terisi</div>
+                <label for="pilihjeniskesimpulan" class="form-label">Pilih Jenis Kesimpulan</label>
+                <select class="form-control" id="jenis_pemeriksaan">
+                  <option value="">PILIH JENIS TINDAKAN</option>
+                  <option value="pemeriksaan_audiometri">PEMERIKSAAN AUDIOMETRI</option>
+                  <option value="pemeriksaan_ekg">PEMERIKSAAN EKG</option>
+                  <option value="pemeriksaan_farmingham_score">PEMERIKSAAN FARMINGHAM SCORE</option>
+                  <option value="pemeriksaan_fisik">PEMERIKSAAN FISIK</option>
+                  <option value="pemeriksaan_laboratorium">PEMERIKSAAN LABORATORIUM</option>
+                  <option value="pemeriksaan_rontgen_lumbosacral">PEMERIKSAAN RONTGEN LUMBOSACRAL</option>
+                  <option value="pemeriksaan_rontgen_thorax">PEMERIKSAAN RONTGEN THORAX</option>
+                  <option value="pemeriksaan_spirometri">PEMERIKSAAN SPIROMETRI</option>
+                  <option value="pemeriksaan_threadmill">PEMERIKSAAN THREADMILL</option>
+                  <option value="pemeriksaan_usg_ubdomain">PEMERIKSAAN USG UBDOMAIN</option>
+                  <option value="saran">SARAN</option>
+              </select>
               </div>
               <div class="mb-3">
-                <label for="namaperusahaan" class="form-label">Nama Perusahaan</label>
-                <input placeholder="Ex: EDS" type="text" class="form-control" id="namaperusahaan" name="namaperusahaan" required>
-                <div class="invalid-feedback">Masukan nama perusahaan yang valid</div>
-                <div class="valid-feedback">Terlihat bagus! Nama perusahaan sudah terisi</div>
-              </div>
-               <div class="mb-3">
-                <label for="aliasperusahaan" class="form-label">Alias Perusahaan</label>
-                <input placeholder="Ex: PT. Eraya Digital Solusindo" type="text" class="form-control" id="aliasperusahaan" name="aliasperusahaan" required>
-                <div class="invalid-feedback">Masukan alias perusahaan yang valid</div>
-                <div class="valid-feedback">Terlihat bagus! Alias perusahaan sudah terisi</div>
-              </div>
-              <div class="mb-3">
-                <label for="alamatperusahaan" class="form-label">Alamat Perusahaan</label>
-                <input placeholder="Ex: Jl. Raya Bogor KM. 12, Kel. Pasir Jaya, Kec. Bogor Barat, Kota Bogor, Jawa Barat" type="text" class="form-control" id="alamatperusahaan" name="alamatperusahaan" required>
-                <div class="invalid-feedback">Masukan alamat perusahaan yang valid</div>
-                <div class="valid-feedback">Terlihat bagus! Alamat perusahaan sudah terisi</div>
-              </div>
-              <div class="mb-3">
-                <div class="form-label">Keterangan Informasi Perusahaan</div>
-                <div id="keteranganperusahaan"></div>
+                <label for="kesimpulantindakan" class="form-label">Kesimpulan Tindakan</label>
+                <textarea placeholder="Ex: Ambang dengar dalam batas normal" type="text" class="form-control" id="kesimpulantindakan" name="kesimpulantindakan" rows=4></textarea>
               </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" id="simpan_perusahaan" class="btn btn-primary">Simpan Data</button>
+                <button type="submit" id="simpan_kesimpulan" class="btn btn-primary">Simpan Data</button>
             </div>
-            </form>
         </div>
     </div>
 </div>

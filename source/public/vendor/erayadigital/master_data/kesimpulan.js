@@ -31,6 +31,7 @@ function daftarkesimpulan(){
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_kesimpulan").val();
+                    d.jenis_kesimpulan = $("#jenis_pemeriksaan_pencarian").val();
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -101,10 +102,10 @@ function daftarkesimpulan(){
         });
     }); 
 }
-$("#tambah_bank_baru").on("click", function(){
+$("#tambah_kesimpulan_baru").on("click", function(){
     isedit = false;
     clearformeditdaftarbank();
-    $("#formulir_tambah_bank").modal("show");
+    $("#formulir_tambah_kesimpulan").modal("show");
 });
 function editdaftarbank(id,kodebank,namabank,keterangan){
     isedit = true;
@@ -117,13 +118,13 @@ function editdaftarbank(id,kodebank,namabank,keterangan){
 function clearformeditdaftarbank(){
     isedit = false;
     idbank = "";
-    formValidasi.removeClass("was-validated");
-    $("#kodebank").val("");
-    $("#namabank").val("");
-    $("#keteranganbank").val("");
+    $("#kesimpulantindakan").val("");
 }
-$("#kotak_pencarian_bank").on("keyup", debounce(function(){
-    $("#datatables_daftarbank").DataTable().ajax.reload();
+$("#jenis_pemeriksaan_pencarian").on('change', function() {
+    $("#datatables_kesimpulan").DataTable().ajax.reload();
+});
+$("#kotak_pencarian_kesimpulan").on("keyup", debounce(function(){
+    $("#datatables_kesimpulan").DataTable().ajax.reload();
 }, 300));
 $("#simpan_bank").on("click", function(event){
     event.preventDefault();
