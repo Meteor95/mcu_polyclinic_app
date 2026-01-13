@@ -113,6 +113,12 @@ function report_show_modal(jenis_laporan,id_tombol) {
                 }
                 return data;
             }},
+            { title: "Nomor Surat", className: "align-middle", render: function(data, type, row, meta) {
+                if (type === 'display') {
+                    return `${row.nomor_surat}`;
+                }
+                return data;
+            }},
             { title: "Kode Perusahaan", className: "align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
                     return `${row.company_code}`;
@@ -137,11 +143,19 @@ function report_show_modal(jenis_laporan,id_tombol) {
                 }
                 return data;
             }},
-            { title: "Aksi", className: "text-end align-middle", render: function(data, type, row, meta) {
+            { title: "Aksi", className: "text-center align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `<button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.kode_perusahaan}','${row.nama_perusahaan}')"><i class="fa fa-print"></i> Cetak Kuitansi</button>
-                    <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.kode_perusahaan}','${row.nama_perusahaan}')"><i class="fa fa-print"></i> Lunas</button>
-                    <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.kode_perusahaan}','${row.nama_perusahaan}')"><i class="fa fa-print"></i> Proses</button>`;
+                   return `<div class="d-flex gap-2 justify-content-center">
+                        <button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('kuitansi_perusahaan','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}','${row.nomor_tagihan}')">
+                            <i class="fa fa-print"></i> Cetak Kuitansi
+                        </button>
+                        <button class="btn btn-success btn-sm" onclick="...">
+                            <i class="fa fa-check"></i> Status Lunas
+                        </button>
+                        <button class="btn btn-warning btn-sm" onclick="...">
+                            <i class="fa fa-spinner"></i> Status Proses
+                        </button>
+                    </div>`;
                 }
                 return data;
             }}
@@ -177,7 +191,7 @@ function report_show_modal(jenis_laporan,id_tombol) {
             }},
             { title: "Aksi", className: "text-end align-middle", render: function(data, type, row, meta) {
                 if (type === 'display') {
-                    return `<button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('tagihan_perusahaan','${row.id_perusahaan}','${row.kode_perusahaan}','${row.nama_perusahaan}')"><i class="fa fa-print"></i> Cetak Tagihan</button>`;
+                    return `<button class="btn btn-primary btn-sm" onclick="cetak_kuitansi('tagihan_perusahaan','${row.id_perusahaan}','${row.company_code}','${row.company_name}','${row.company_alias_name}')"><i class="fa fa-print"></i> Cetak Tagihan</button>`;
                 }
                 return data;
             }}
@@ -277,16 +291,9 @@ $('#select_page_length_transaksi_tindakan').on('change', function() {
     $("#datatables_laporan_tindakan").DataTable().page.len($(this).val()).draw();
     $("#datatables_laporan_tindakan").DataTable().ajax.reload();
 });
-function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = null) {
-    let inputNomorSurat = '';
-    if (jenis_kuitansi !== 'kuitansi_personal') {
-        inputNomorSurat = `
-            <input type="text"
-                class="form-control mb-2"
-                id="nomor_surat"
-                placeholder="Masukan Nomor Surat. Contoh : 450/ACC-AMC/X/2025">
-        `;
-    }
+function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = null, param4 = null, param5 = null) {
+    let nomortagihan = ""
+    if (param5 !== "") nomortagihan = " dengan Nomor Tagihan <strong>"+param5+"</strong>"; 
     let html_view = `
     <div class="mt-3 text-center">
         <dotlottie-player
@@ -303,13 +310,10 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
         <div>
             <h4>Konfirmasi Cetak Kuitansi</h4>
             <p class="text-muted mx-4 mb-0">
-                Apakah anda yakin ingin meninjau kuitansi <strong>${param2}</strong>?
+                Apakah anda yakin ingin meninjau kuitansi <strong>${param2}</strong> ${nomortagihan}?
                 Silahkan isi keterangan dan pilih penanggung jawab kuitansi ini
             </p>
             <br>
-
-            ${inputNomorSurat}
-
             <select class="form-control" id="direktur_keuangan">
                 ${options}
             </select>
@@ -344,6 +348,7 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
                     id_perusahaan: param1, 
                     kode_perusahaan: param2, 
                     nama_perusahaan: param3, 
+                    alias_nama_perusahaan: param4,
                     jenis_kuitansi: jenis_kuitansi, 
                     jenis_transaksi: $("#jenis_transaksi").val(),
                     jenis_layanan: $("#jenis_layanan").val(),

@@ -856,6 +856,8 @@ class LaporanController extends Controller
                 ->join('company', 'company.id', '=', 'transaksi_tagihan.id_perusahaan')
                 ->selectRaw('
                     '.$tablePrefix.'transaksi_tagihan.nomor_tagihan,
+                    '.$tablePrefix.'transaksi_tagihan.id_perusahaan,
+                    '.$tablePrefix.'transaksi_tagihan.nomor_surat,
                     '.$tablePrefix.'company.company_code,
                     '.$tablePrefix.'company.company_name,
                     '.$tablePrefix.'company.company_alias_name,
