@@ -29,6 +29,7 @@ class Transaksi extends Model
         $parameterpencarianstatuspasien = $request->status_pasien;
         $jenis_laporan = $request->jenis_laporan;
         $from_query = $request->from_query;
+        $id_perusahaan = $request->id_perusahaan;
         $tablePrefix = config('database.connections.mysql.prefix');
         $query = DB::table((new self())->getTable())
             ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
@@ -55,6 +56,9 @@ class Transaksi extends Model
                 DB::raw("DATE_FORMAT(" . $tablePrefix . "mcu_transaksi_peserta.tanggal_transaksi, '%d-%m-%Y %H:%i:%s') as tanggal_transaksi"),
                 DB::raw("TIMESTAMPDIFF(YEAR, " . $tablePrefix . "users_member.tanggal_lahir, CURDATE()) AS umur")
             );
+        if (!empty($id_perusahaan)) {
+            $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan);
+        }
         if (!empty($parameterpencarian)) {
             $query->where('no_transaksi', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');

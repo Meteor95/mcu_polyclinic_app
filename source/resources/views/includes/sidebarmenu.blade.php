@@ -414,6 +414,33 @@
               @endforeach
             </ul>
           </li>
+          @if ($hasAccessRekapPemeriksaanFisikPerusahaan || $hasAccessRekapVitalPerusahaan || $hasAccessRekapSpirometriPerusahaan || $hasAccessRekapAudiometriPerusahaan || $hasAccessRekapEKGPerusahaan || $hasAccessRekapThreadmillPerusahaan || $hasAccessRekapRontgenThoraxPerusahaan || $hasAccessRekapRontgenLumbosacralPerusahaan || $hasAccessRekapUSGUbdomainPerusahaan || $hasAccessRekapFarminghamScorePerusahaan)
+          <li class="sidebar-list">
+            <i class="fa fa-thumb-tack"></i>
+            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+              <i class="fa-solid fa-book" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+              <span>Rekaptulasi</span>
+            </a>
+            <ul class="sidebar-submenu">
+              @foreach([
+                ['condition' => $hasAccessRekapPemeriksaanFisikPerusahaan, 'url' => 'laporan/rekap/pemeriksaan_fisik', 'label' => 'Pemeriksaan Fisik'],
+                ['condition' => $hasAccessRekapVitalPerusahaan, 'url' => 'laporan/rekap/vital', 'label' => 'Vital'],
+                ['condition' => $hasAccessRekapSpirometriPerusahaan, 'url' => 'laporan/rekap/spirometri', 'label' => 'Spirometri'],
+                ['condition' => $hasAccessRekapAudiometriPerusahaan, 'url' => 'laporan/rekap/audiometri', 'label' => 'Audiometri'],
+                ['condition' => $hasAccessRekapEKGPerusahaan, 'url' => 'laporan/rekap/ekg', 'label' => 'EKG'],
+                ['condition' => $hasAccessRekapThreadmillPerusahaan, 'url' => 'laporan/rekap/threadmill', 'label' => 'Threadmill'],
+                ['condition' => $hasAccessRekapRontgenThoraxPerusahaan, 'url' => 'laporan/rekap/rontgen_thorax', 'label' => 'Rontgen Thorax'],
+                ['condition' => $hasAccessRekapRontgenLumbosacralPerusahaan, 'url' => 'laporan/rekap/rontgen_lumbosacral', 'label' => 'Rontgen Lumbosacral'],
+                ['condition' => $hasAccessRekapUSGUbdomainPerusahaan, 'url' => 'laporan/rekap/usg_ubdomain', 'label' => 'USG Ubdomain'],
+                ['condition' => $hasAccessRekapFarminghamScorePerusahaan, 'url' => 'laporan/rekap/farmingham_score', 'label' => 'Farmingham Score'],
+              ] as $menuItem)
+                @if ($menuItem['condition'])
+                  <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
+                @endif
+              @endforeach
+            </ul>
+          </li>
+          @endif
         </ul>
       </div>
       <div class="right-arrow" id="right-arrow">

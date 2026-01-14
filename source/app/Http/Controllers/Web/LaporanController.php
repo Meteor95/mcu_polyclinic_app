@@ -53,10 +53,15 @@ class LaporanController extends Controller
         return view('paneladmin.laporan.validasi_rekap_kesimpulan', ['data' => $data]);
     }
     public function berkas_mcu(Request $req){
+        $user = $req->attributes->get('user_details');
+        $perusahaan = json_decode($user->json_perusahaan, true);
+        $ids = array_column($perusahaan, 'id');
         $data = $this->getData($req, 'Berkas Tindakan MCU', [
             'Beranda' => route('admin.beranda'),
             'Berkas' => route('admin.laporan.berkas_mcu'),
         ]);
+        $data['jenis_berkas'] = $req->segment(2);
+        $data['id_perusahaan'] = $ids;
         return view('paneladmin.laporan.berkas.berkas_mcu', ['data' => $data]);
     }
     public function berkas_mcu_threadmill(Request $req){

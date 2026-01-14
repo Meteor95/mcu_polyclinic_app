@@ -112,6 +112,16 @@ class CheckPermission
             'hasAccessArciveMCUThreadmillPerusahaan' => 'akses_berkas_tindakan_threadmill_perusahaan',
             'hasAccessArciveLaboratoriumPerusahaan' => 'akses_berkas_tindakan_laboratorium_perusahaan',
             'hasAccessLaporanKuitansiPerusahaan' => 'akses_berkas_tindakan_kwitansi_perusahaan',
+            'hasAccessRekapPemeriksaanFisikPerusahaan' => 'akses_rekap_pemeriksaan_fisik_perusahaan',
+            'hasAccessRekapVitalPerusahaan' => 'akses_rekap_vital_perusahaan',
+            'hasAccessRekapSpirometriPerusahaan' => 'akses_rekap_spirometri_perusahaan',
+            'hasAccessRekapAudiometriPerusahaan' => 'akses_rekap_audiometri_perusahaan',
+            'hasAccessRekapEKGPerusahaan' => 'akses_rekap_ekg_perusahaan',
+            'hasAccessRekapThreadmillPerusahaan' => 'akses_rekap_threadmill_perusahaan',
+            'hasAccessRekapRontgenThoraxPerusahaan' => 'akses_rekap_rontgen_thorax_perusahaan',
+            'hasAccessRekapRontgenLumbosacralPerusahaan' => 'akses_rekap_rontgen_lumbosacral_perusahaan',
+            'hasAccessRekapUSGUbdomainPerusahaan' => 'akses_rekap_usg_ubdomain_perusahaan',
+            'hasAccessRekapFarminghamScorePerusahaan' => 'akses_rekap_farmingham_score_perusahaan',
         ];
         $permissionsShared = [];
         foreach ($permissionsToCheck as $key => $permissionName) {
