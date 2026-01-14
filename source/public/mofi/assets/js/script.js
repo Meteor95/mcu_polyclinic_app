@@ -83,7 +83,7 @@
     parent.css({
       "background-image": "url(" + src + ")",
       "background-size": "cover",
-      "background-position": "center",
+      "background-position": "right",
       display: "block",
     });
     el.hide();

@@ -28,7 +28,7 @@ class RouteAndPermission extends Model
         $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
             ->skip($offset)
-            ->orderBy('urutan', 'ASC')
+            ->orderBy('group', 'ASC')
             ->get();
         return [
             'data' => $result,
