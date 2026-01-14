@@ -65,14 +65,18 @@ class LaporanController extends Controller
         return view('paneladmin.laporan.berkas.berkas_mcu', ['data' => $data]);
     }
     public function berkas_mcu_threadmill(Request $req){
+        $user = $req->attributes->get('user_details');
+        $perusahaan = json_decode($user->json_perusahaan, true) ?? [];
+        $ids = array_column($perusahaan, 'id');
         $data = $this->getData($req, 'Berkas Threadmill', [
             'Beranda' => route('admin.beranda'),
             'Berkas' => route('admin.laporan.berkas_mcu_threadmill'),
         ]);
+        $data['jenis_berkas'] = $req->segment(2);
+        $data['id_perusahaan'] = $ids;
         return view('paneladmin.laporan.berkas.berkas_mcu_threadmill', ['data' => $data]);
     }
-    private function determineTableNamePemeriksaanFisik($lokasiFisik)
-    {
+    private function determineTableNamePemeriksaanFisik($lokasiFisik){
         $tables = [
             'kepala' => 'mcu_pf_kepala',
             'telinga' => 'mcu_pf_telinga',
@@ -352,10 +356,15 @@ class LaporanController extends Controller
         return response()->file($fullPath);
     }
     public function berkas_laboratorium(Request $req){
+        $user = $req->attributes->get('user_details');
+        $perusahaan = json_decode($user->json_perusahaan, true) ?? [];
+        $ids = array_column($perusahaan, 'id');
         $data = $this->getData($req, 'Berkas Tindakan Laboratorium', [
             'Beranda' => route('admin.beranda'),
             'Berkas' => route('admin.laporan.berkas_laboratorium'),
         ]);
+        $data['jenis_berkas'] = $req->segment(2);
+        $data['id_perusahaan'] = $ids;
         return view('paneladmin.laporan.berkas.berkas_laboratorium', ['data' => $data]);
     }
     public function cetak_berkas_laboratorium(Request $req){

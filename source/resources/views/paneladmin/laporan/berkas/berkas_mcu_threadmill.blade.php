@@ -116,7 +116,14 @@
 </style>
 @endsection
 @section('js_load')
+<script>
+    let id_perusahaan = {!! json_encode($data['id_perusahaan']) !!};
+</script>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+@if ($data['jenis_berkas'] === "berkas_perusahaan")
+<script src="{{ asset('vendor/erayadigital/laporan/berkas_mcu_threadmill_perusahaan.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laporan/berkas_mcu_threadmill_perusahaan.js')) }}"></script>
+@else
 <script src="{{ asset('vendor/erayadigital/laporan/berkas_mcu_threadmill.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laporan/berkas_mcu_threadmill.js')) }}"></script>
+@endif
 @endsection
