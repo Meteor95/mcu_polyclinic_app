@@ -5,7 +5,7 @@
     <div class="card common-hover">
       <div class="card-header border-l-primary border-3">
         <h4>Informasi Dasar Aplikasi</h4>
-        <p>Bagian ini menampilkan ringkasan data utama yang menggambarkan aktivitas dan penggunaan aplikasi secara keseluruhan. Informasi yang ditampilkan meliputi jumlah member yang terdaftar, total pasien terdaftar, jumlah pasien yang melakukan pendaftaran secara online, serta statistik transaksi yang sedang dalam proses maupun transaksi yang telah berhasil diselesaikan.</p>
+        <p>Statistik yang ditampilkan di bawah ini merepresentasikan aktivitas konsolidasi dari seluruh unit kerja perusahaan. Data mencakup efektivitas pendaftaran member, produktivitas transaksi di Artha Medica Centre, serta akuntabilitas finansial melalui ringkasan total transaksi dan tagihan transaksi yang terintegrasi.</p>
       </div>
       <div class="card-body">
         <div class="row">
