@@ -22,7 +22,6 @@ class BerandaController extends Controller
     public function index(Request $request){
         $user = $request->attributes->get('user_details');
         $perusahaan = json_decode($user->json_perusahaan, true);
-        $ids = array_column($perusahaan, 'id');
         $judul = 'Beranda Aplikasi Arta Medica Centre';
         if (!empty($perusahaan)) {
             $judul = 'Beranda Partner Artha Medica Centre';
@@ -31,6 +30,7 @@ class BerandaController extends Controller
             'Dashboard' => route('admin.beranda'),
         ]);
         if (!empty($perusahaan)) {
+            $ids = array_column($perusahaan, 'id');
             $tablePrefix = config('database.connections.mysql.prefix');
             $data['jumlah_member_terdaftar'] = MemberMCU::join('mcu_transaksi_peserta', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
                 ->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids)
