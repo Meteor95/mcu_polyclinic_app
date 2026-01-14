@@ -19,8 +19,11 @@ class Perusahaan extends Model
     public static function listPerusahaan($req, $perHalaman, $offset)
     {
         $parameterpencarian = $req->parameter_pencarian;
+        $id_perusahaan = $req->id_perusahaan;
         $query = DB::table((new self())->getTable());
-        if (!empty($parameterpencarian)) {
+        if (!empty($id_perusahaan)) {
+            $query->whereIn('id', $id_perusahaan);
+        }else if (!empty($parameterpencarian)) {
             $query->where('company_name', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('company_code', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('company_alias_name', 'LIKE', '%' . $parameterpencarian . '%');

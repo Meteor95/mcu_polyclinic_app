@@ -748,6 +748,9 @@ class LaporanController extends Controller
         return response()->file($fullPath);
     }
     protected function laporanRekap(Request $req, string $jenis){
+        $user = $req->attributes->get('user_details');
+        $perusahaan = json_decode($user->json_perusahaan, true) ?? [];
+        $ids = array_column($perusahaan, 'id');
         $title = 'Laporan Rekap ' . strtoupper(str_replace('_', ' ', $jenis));
         $data = $this->getData($req, $title, [
             'Beranda'       => route('admin.beranda'),
@@ -755,7 +758,8 @@ class LaporanController extends Controller
         ]);
         return view("paneladmin.laporan.rekap.$jenis", [
             'data'  => $data,
-            'jenis' => $jenis
+            'jenis' => $jenis,
+            'ids'   => $ids,
         ]);
     }
     public function laporan_rekap_pemeriksaan_fisik(Request $req){

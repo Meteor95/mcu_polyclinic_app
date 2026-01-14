@@ -25,9 +25,7 @@
             
               <!-- Kolom 2 -->
               <div class="col-md-6">
-                <select class="form-select" onchange="filter_perusahaan(this.value)" id="filter_perusahaan" name="filter_perusahaan" style="cursor: pointer">
-                  <option value="">Semua Perusahaan</option>
-                </select>
+                <select class="form-select" id="select2_perusahaan" name="select2_perusahaan" required></select>
               </div>
             </div>
             <div class="row mb-2">
@@ -62,9 +60,14 @@
 </div>
 @endsection
 @section('css_load')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}">
 @endsection
 @section('js_load')
+<script>
+    let id_perusahaan = {!! json_encode($ids) !!};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
 <script src="https://cdn.datatables.net/rowgroup/1.5.1/js/dataTables.rowGroup.min.js"></script>
 <script src="{{ asset('vendor/erayadigital/laporan/rekap_vital.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laporan/rekap_vital.js')) }}"></script>

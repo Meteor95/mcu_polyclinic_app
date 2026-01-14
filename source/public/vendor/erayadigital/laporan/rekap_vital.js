@@ -14,10 +14,48 @@ $(document).ready(function() {
     });
     $("#tanggal_akhir").val(moment().format('DD-MM-YYYY'));
     loadDataPasien();
+    callselect2mcu();
 });
 $("#btn_baca_data_rekap").on('click', function() {
     $("#datatables_vital_perusahaan").DataTable().ajax.reload();
 });
+function callselect2mcu(){
+    $.get('/generate-csrf-token', function(response) {
+        $('#select2_perusahaan').select2({ 
+            placeholder: 'Pilih Perusahaan',
+            ajax: {
+                url: baseurlapi + '/masterdata/daftarperusahaan',
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                method: 'GET',
+                dataType: 'json',
+                delay: 500,
+                data: function (params) {
+                    return {
+                        _token : response.csrf_token,
+                        parameter_pencarian : (typeof params.term === "undefined" ? "" : params.term),
+                        id_perusahaan:id_perusahaan,
+                        start : 0,
+                        length : 1000,
+                    }
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: `[${item.company_code}] - ${item.company_name}`,
+                                id: item.id,
+                            }
+                        })
+                    }
+                    
+                },
+                error: function(xhr, status, error) {
+                    return createToast('Kesalahan Penggunaan', 'top-right', xhr.responseJSON.message, 'error', 3000);
+                }
+            },
+        }); 
+    });
+}
 function loadDataPasien() {
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_vital_perusahaan").DataTable({

@@ -30,6 +30,7 @@ function callselect2mcu(){
                     return {
                         _token : response.csrf_token,
                         parameter_pencarian : (typeof params.term === "undefined" ? "" : params.term),
+                        id_perusahaan:id_perusahaan,
                         start : 0,
                         length : 1000,
                     }

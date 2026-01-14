@@ -897,6 +897,9 @@ class LaporanController extends Controller
         }
     }
     public function laporan_rekap_perperusahaan(Request $request, string $jenis_laporan_rekap){
+        $user = $request->attributes->get('user_details');
+        $perusahaan = json_decode($user->json_perusahaan, true) ?? [];
+        $ids = array_column($perusahaan, 'id');
         $tablePrefix = config('database.connections.mysql.prefix');
         $allowed = [
             'pemeriksaan_fisik',
@@ -942,8 +945,9 @@ class LaporanController extends Controller
                                 DB::raw("SUM(CASE WHEN ".$tablePrefix.$tableName.".status_atribut = 'abnormal' THEN 1 ELSE 0 END) as jumlah_abnormal")
                             )
                             ->whereBetween($tableName.'.created_at', [$tanggal_awal, $tanggal_akhir]);
-
-                        if ($id_perusahaan != "") {
+                        if (!empty($perusahaan)) {
+                            $subQuery->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                        }else if ($id_perusahaan != "") {
                             $subQuery->where('company.id', $id_perusahaan);
                         }
 
@@ -967,6 +971,11 @@ class LaporanController extends Controller
                     )
                     ->whereBetween('mcu_pf_tanda_vital.created_at', [$tanggal_awal, $tanggal_akhir])
                     ->groupBy('company.id', 'company.company_name')->orderBy('company.company_name', 'asc');
+                if (!empty($perusahaan)) {
+                    $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                }else if ($id_perusahaan != "") {
+                    $query->where('company.id', $id_perusahaan);
+                }
             } else if($jenis_laporan_rekap === 'vital_detail') {
                 $id_perusahaan = $request->input('id_perusahaan');
                 $query = TandaVital::join('mcu_transaksi_peserta','mcu_pf_tanda_vital.transaksi_id','=','mcu_transaksi_peserta.id')
@@ -990,7 +999,9 @@ class LaporanController extends Controller
                     )
                     ->whereBetween('mcu_poli_spirometri.created_at', [$tanggal_awal, $tanggal_akhir]);
 
-                if ($id_perusahaan != "") {
+                if (!empty($perusahaan)) {
+                    $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                }else if ($id_perusahaan != "") {
                     $query->where('company.id', $id_perusahaan);
                 }
 
@@ -1016,7 +1027,11 @@ class LaporanController extends Controller
                         // Menghitung jumlah per kategori Obstruksi
                         DB::raw('COUNT(CASE WHEN '.$tablePrefix.'mcu_poli_audiometri.kesimpulan2 IS NOT NULL THEN 1 END) as jumlah_kanan')
                     )->whereBetween('mcu_poli_audiometri.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                if (!empty($perusahaan)) {
+                    $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                }else if ($id_perusahaan != "") {
+                    $query->where('company.id', $id_perusahaan);
+                }
                 // GroupBy harus menyertakan jenis kesimpulannya agar tidak tergabung jadi satu
                 $query->groupBy(
                     'mcu_transaksi_peserta.perusahaan_id', 
@@ -1035,7 +1050,11 @@ class LaporanController extends Controller
                         'mcu_poli_ekg.kesimpulan',
                         DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
                     )->whereBetween('mcu_poli_ekg.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                if (!empty($perusahaan)) {
+                    $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                }else if ($id_perusahaan != "") {
+                    $query->where('company.id', $id_perusahaan);
+                }
                 $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
             } else if($jenis_laporan_rekap === 'threadmill') {
                 $id_perusahaan = $request->input('id_perusahaan');
@@ -1048,7 +1067,11 @@ class LaporanController extends Controller
                         'mcu_poli_threadmill.kesimpulan',
                         DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
                     )->whereBetween('mcu_poli_threadmill.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                if (!empty($perusahaan)) {
+                    $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                }else if ($id_perusahaan != "") {
+                    $query->where('company.id', $id_perusahaan);
+                }
                 $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
             } else if($jenis_laporan_rekap === 'rontgen_thorax') {
                 $id_perusahaan = $request->input('id_perusahaan');
@@ -1061,7 +1084,11 @@ class LaporanController extends Controller
                         'mcu_poli_rontgen_thorax.kesimpulan',
                         DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
                     )->whereBetween('mcu_poli_rontgen_thorax.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                if (!empty($perusahaan)) {
+                    $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                }else if ($id_perusahaan != "") {
+                    $query->where('company.id', $id_perusahaan);
+                }
                 $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
             } else if($jenis_laporan_rekap === 'rontgen_lumbosacral') {
                 $id_perusahaan = $request->input('id_perusahaan');
@@ -1074,7 +1101,11 @@ class LaporanController extends Controller
                         'mcu_poli_rontgen_lumbosacral.kesimpulan',
                         DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
                     )->whereBetween('mcu_poli_rontgen_lumbosacral.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                if (!empty($perusahaan)) {
+                    $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                }else if ($id_perusahaan != "") {
+                    $query->where('company.id', $id_perusahaan);
+                }
                 $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
             } else if($jenis_laporan_rekap === 'usg_ubdomain') {
                 $id_perusahaan = $request->input('id_perusahaan');
@@ -1087,7 +1118,11 @@ class LaporanController extends Controller
                         'mcu_poli_usg_ubdomain.kesimpulan',
                         DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
                     )->whereBetween('mcu_poli_usg_ubdomain.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                if (!empty($perusahaan)) {
+                    $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                }else if ($id_perusahaan != "") {
+                    $query->where('company.id', $id_perusahaan);
+                }
                 $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
             } else if($jenis_laporan_rekap === 'farmingham_score') {
                 $id_perusahaan = $request->input('id_perusahaan');
@@ -1100,7 +1135,11 @@ class LaporanController extends Controller
                         'mcu_poli_farmingham_score.kesimpulan',
                         DB::raw('COUNT('.$tablePrefix.'mcu_transaksi_peserta.id) as total_kesimpulan')
                     )->whereBetween('mcu_poli_farmingham_score.created_at', [$tanggal_awal, $tanggal_akhir]);
-                if ($id_perusahaan != "") $query->where('company.id', $id_perusahaan);
+                if (!empty($perusahaan)) {
+                    $query->whereIn('mcu_transaksi_peserta.perusahaan_id', $ids);
+                }else if ($id_perusahaan != "") {
+                    $query->where('company.id', $id_perusahaan);
+                }
                 $query->groupBy('mcu_transaksi_peserta.perusahaan_id')->orderBy('company.company_name', 'asc');
             }
             $dataSUMGlobal = $query->get();
