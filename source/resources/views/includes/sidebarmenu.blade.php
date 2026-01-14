@@ -319,7 +319,7 @@
           </li>
           @endif
           <!-- Pengaturan Section -->
-          @if ($hasAccessMasterData | $hasAccessPetugas)
+          @if ($hasAccessMasterData || $hasAccessPetugas)
           <li class="sidebar-main-title">
             <div>
               <h6>PENGATURAN</h6>
@@ -388,11 +388,13 @@
             </ul>
           </li>
           @endif
+          @if ($hasAccessArciveMCUPerusahaan || $hasAccessArciveMCUThreadmillPerusahaan || $hasAccessArciveLaboratoriumPerusahaan)
           <li class="sidebar-main-title">
             <div>
               <h6>BERKAS PERUSAHAAN</h6>
             </div>
           </li>
+          @endif
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">

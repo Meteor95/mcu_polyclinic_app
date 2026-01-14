@@ -33,7 +33,17 @@ class GlobalHelper
         }
         return $temp;
     }
-
+    public static function singkat_angka($n) {
+        if ($n < 1000) {
+            return $n;
+        } elseif ($n < 1000000) {
+            return number_format($n / 1000, 1, ',', '.') . ' K';
+        } elseif ($n < 1000000000) {
+            return number_format($n / 1000000, 1, ',', '.') . ' Jt';
+        } else {
+            return number_format($n / 1000000000, 1, ',', '.') . ' M';
+        }
+    }
     // Fungsi untuk menambahkan kata "minus" jika nilai negatif
     public static function terbilang($nilai) {
         if ($nilai < 0) {

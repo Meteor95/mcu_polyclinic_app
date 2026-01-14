@@ -15,7 +15,7 @@
                 <div class="d-flex gap-2 align-items-end"> 
                   <div class="flex-grow-1">
                     <h2><span id="dashboard_total_berkas">{{ $data['jumlah_member_terdaftar'] }}</span> Orang</h2>
-                    <p class="mb-0 text-truncate"> Pegawai Terdaftar</p>
+                    <p class="mb-0 text-truncate"> Terdaftar Pada Aplikasi AMC</p>
                     <div class="d-flex student-arrow text-truncate">
                       
                     </div>
@@ -31,8 +31,8 @@
               <div class="card-body student">
                 <div class="d-flex gap-2 align-items-end"> 
                   <div class="flex-grow-1">
-                    <h2><span id="dashboard_total_berkas">{{ $data['jumlah_transaksi'] }}</span> Trx</h2>
-                    <p class="mb-0 text-truncate"> Transaksi Di AMC</p>
+                    <h2><span id="dashboard_total_berkas">{{ $data['jumlah_transaksi'] }}</span> Transaksi</h2>
+                    <p class="mb-0 text-truncate"> Di Artha Medica Centre</p>
                     <div class="d-flex student-arrow text-truncate">
                       
                     </div>
@@ -65,8 +65,8 @@
               <div class="card-body student">
                 <div class="d-flex gap-2 align-items-end"> 
                   <div class="flex-grow-1">
-                    <h2><span id="dashboard_total_berkas">{{ $data['jumlah_tindakan_selesai'] }}</span></h2>
-                    <p class="mb-0 text-truncate">Total Transaksi Selesai</p>
+                    <h2><span id="dashboard_total_berkas">{{ App\Helpers\GlobalHelper::singkat_angka($data['jumlah_tindakan_selesai']) }}</span></h2>
+                    <p class="mb-0 text-truncate">Total Transaksi di Artha Medica Centre </p>
                     <div class="d-flex student-arrow text-truncate">
                       
                     </div>
@@ -82,7 +82,7 @@
               <div class="card-body student">
                 <div class="d-flex gap-2 align-items-end"> 
                   <div class="flex-grow-1">
-                    <h2><span id="dashboard_total_berkas">{{ $data['jumlah_tindakan_proses'] }}</span></h2>
+                    <h2><span id="dashboard_total_berkas">{{ App\Helpers\GlobalHelper::singkat_angka($data['jumlah_tindakan_proses']) }}</span></h2>
                     <p class="mb-0 text-truncate">Total Tagihan Transaksi</p>
                     <div class="d-flex student-arrow text-truncate">
                       
