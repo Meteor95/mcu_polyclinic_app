@@ -67,5 +67,5 @@
 </style>
 @endsection
 @section('js_load')
-<script src="{{asset('vendor/erayadigital/auth/role.js')}}"></script>
+<script src="{{ asset('vendor/erayadigital/auth/role.js') }}?v={{ filemtime(public_path('vendor/erayadigital/auth/role.js')) }}"></script>
 @endsection
