@@ -96,6 +96,7 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
             Route::get('mcu',[LaporanController::class,"berkas_mcu"])->middleware('permission_cache:akses_berkas_tindakan_mcu')->name('admin.laporan.berkas_mcu');
             Route::get('threadmill',[LaporanController::class,"berkas_mcu_threadmill"])->middleware('permission_cache:akses_berkas_tindakan_threadmill')->name('admin.laporan.berkas_mcu_threadmill');
             Route::get('laboratorium',[LaporanController::class,"berkas_laboratorium"])->middleware('permission_cache:akses_berkas_tindakan_laboratorium')->name('admin.laporan.berkas_laboratorium');
+            Route::get('kuitansi',[LaporanController::class,"laporan_kuitansi"])->middleware('permission_cache:akses_laporan_kuitansi')->name('admin.laporan.laporan_kuitansi');
         });
         Route::prefix('rekap')->group(function () {
             Route::get('pemeriksaan_fisik',[LaporanController::class,"laporan_rekap_pemeriksaan_fisik"])->middleware('permission_cache:akses_laporan_rekap_pemeriksaan_fisik')->name('admin.laporan.laporan_rekap_pemeriksaan_fisik');

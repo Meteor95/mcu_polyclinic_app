@@ -405,7 +405,8 @@
               @foreach([
                 ['condition' => $hasAccessArciveMCUPerusahaan, 'url' => 'laporan/berkas_perusahaan/mcu', 'label' => 'MCU'],
                 ['condition' => $hasAccessArciveMCUThreadmillPerusahaan, 'url' => 'laporan/berkas_perusahaan/threadmill', 'label' => 'Threadmill'],
-                ['condition' => $hasAccessArciveLaboratoriumPerusahaan, 'url' => 'laporan/berkas_perusahaan/laboratorium', 'label' => 'Laboratorium']
+                ['condition' => $hasAccessArciveLaboratoriumPerusahaan, 'url' => 'laporan/berkas_perusahaan/laboratorium', 'label' => 'Laboratorium'],
+                ['condition' => $hasAccessLaporanKuitansiPerusahaan, 'url' => 'laporan/berkas_perusahaan/kuitansi', 'label' => 'Kuitansi']
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>

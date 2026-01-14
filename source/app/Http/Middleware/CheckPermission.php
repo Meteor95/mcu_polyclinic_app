@@ -111,6 +111,7 @@ class CheckPermission
             'hasAccessArciveMCUPerusahaan' => 'akses_berkas_tindakan_mcu_perusahaan',
             'hasAccessArciveMCUThreadmillPerusahaan' => 'akses_berkas_tindakan_threadmill_perusahaan',
             'hasAccessArciveLaboratoriumPerusahaan' => 'akses_berkas_tindakan_laboratorium_perusahaan',
+            'hasAccessLaporanKuitansiPerusahaan' => 'akses_berkas_tindakan_kwitansi_perusahaan',
         ];
         $permissionsShared = [];
         foreach ($permissionsToCheck as $key => $permissionName) {
