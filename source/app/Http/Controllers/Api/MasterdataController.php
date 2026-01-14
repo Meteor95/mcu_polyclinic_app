@@ -702,19 +702,18 @@ class MasterdataController extends Controller
     public function savekesimpulan(Request $request){
         try {
             $validator = Validator::make($request->all(), [
-                'kodebank' => 'required|string',
-                'namabank' => 'required|string',
+                'jenis_pemeriksaan' => 'required|string',
+                'kesimpulantindakan' => 'required|string',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            DaftarBank::create([
-                'kode_bank' => $request->kodebank,
-                'nama_bank' => $request->namabank,
-                'keterangan' => $request->keteranganbank,
+            Kesimpulan::create([
+                'jenis_kesimpulan' => $request->jenis_pemeriksaan,
+                'keterangan_kesimpulan' => $request->kesimpulantindakan,
             ]);
-            return ResponseHelper::success("Informasi bank penerima berhasil disimpan. Silahkan lanjutkan transaksi jikalau membutuhkan rekam medis MCU.");
+            return ResponseHelper::success("Informasi kesimpulan pada tindakan ".strtoupper(str_replace('_', ' ', $request->jenis_pemeriksaan))." berhasil disimpan. Silahkan lanjutkan transaksi jikalau membutuhkan rekam medis MCU.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -722,14 +721,14 @@ class MasterdataController extends Controller
     public function deletekesimpulan(Request $request){
         try {
             $validator = Validator::make($request->all(), [
-                'idbank' => 'required|integer',
+                'idkesimpulan' => 'required|integer',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            DaftarBank::where('id', $request->idbank)->delete();
-            return ResponseHelper::success_delete("Informasi bank penerima dengan nama " . $request->namabank . " berhasil dihapus beserta seluruh data yang terkait dengan bank penerima ini secara visual di sistem.");
+            Kesimpulan::where('id', $request->idkesimpulan)->delete();
+            return ResponseHelper::success_delete("Informasi kesimpulan dengan ID " . strtoupper(str_replace('_', ' ', $request->jenis_pemeriksaan)) . " berhasil dihapus.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
@@ -737,20 +736,18 @@ class MasterdataController extends Controller
     public function editkesimpulan(Request $request){
         try {
             $validator = Validator::make($request->all(), [
-                'idbank' => 'required|integer',
-                'kodebank' => 'required|string',
-                'namabank' => 'required|string',
+                'jenis_pemeriksaan' => 'required|string',
+                'kesimpulantindakan' => 'required|string',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            DaftarBank::where('id', $request->idbank)->update([
-                'kode_bank' => $request->kodebank,
-                'nama_bank' => $request->namabank,
-                'keterangan' => $request->keteranganbank,
+            Kesimpulan::where('id', $request->idkesimpulan)->update([
+                'jenis_kesimpulan' => $request->jenis_pemeriksaan,
+                'keterangan_kesimpulan' => $request->kesimpulantindakan,
             ]);
-            return ResponseHelper::success("Informasi bank penerima dengan nama " . $request->namabank . " berhasil diubah.");
+            return ResponseHelper::success("Informasi kesimpulan dengan ID " . $request->idkesimpulan . " pada kategori " . strtoupper(str_replace('_', ' ', $request->jenis_pemeriksaan)) . " berhasil diubah.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

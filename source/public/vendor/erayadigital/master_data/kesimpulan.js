@@ -1,4 +1,4 @@
-let formValidasi = $("#formulir_tambah_bank_baru");let isedit = false; let idbank = "";
+let formValidasi = $("#formulir_tambah_bank_baru");let isedit = false; let idkesimpulan = "";
 $(document).ready(function(){
    daftarkesimpulan();
 });
@@ -93,7 +93,7 @@ function daftarkesimpulan(){
                     title: "",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return "<div class=\"d-flex justify-content-between gap-2 background_fixed_right_row\"><button class=\"btn btn-primary w-100\" onclick=\"editkesimpulan()\"><i class=\"fa fa-edit\"></i> Ubah</button><button class=\"btn btn-danger w-100\" onclick=\"hapuskesimpulan()\"><i class=\"fa fa-trash-o\"></i> Hapus</button></div>";
+                            return "<div class=\"d-flex justify-content-between gap-2 background_fixed_right_row\"><button class=\"btn btn-primary w-100\" onclick=\"editdaftarkesimpulan('"+row.id+"','"+row.jenis_kesimpulan+"','"+row.keterangan_kesimpulan+"')\"><i class=\"fa fa-edit\"></i> Ubah</button><button class=\"btn btn-danger w-100\" onclick=\"hapusdaftarkesimpulan('"+row.id+"','"+row.jenis_kesimpulan+"','"+row.keterangan_kesimpulan+"')\"><i class=\"fa fa-trash-o\"></i> Hapus</button></div>";
                         }       
                         return data;
                     }
@@ -102,24 +102,23 @@ function daftarkesimpulan(){
         });
     }); 
 }
-function clearformeditdaftarbank(){
+function clearformeditdaftarkesimpulan(){
     isedit = false;
-    idbank = "";
+    idkesimpulan = "";
     $("#kesimpulantindakan").val("");
     $("#jenis_pemeriksaan").val("");
 }
 $("#tambah_kesimpulan_baru").on("click", function(){
     isedit = false;
-    clearformeditdaftarbank();
+    clearformeditdaftarkesimpulan();
     $("#formulir_tambah_kesimpulan").modal("show");
 });
-function editdaftarbank(id,kodebank,namabank,keterangan){
+function editdaftarkesimpulan(id,jenis_pemeriksaan,kesimpulantindakan){
     isedit = true;
-    idbank = id;
-    $("#kodebank").val(kodebank);
-    $("#namabank").val(namabank);
-    $("#keteranganbank").val(keterangan);
-    $("#formulir_tambah_bank").modal("show");
+    idkesimpulan = id;
+    $("#jenis_pemeriksaan").val(jenis_pemeriksaan);
+    $("#kesimpulantindakan").val(kesimpulantindakan);
+    $("#formulir_tambah_kesimpulan").modal("show");
 }
 $("#jenis_pemeriksaan_pencarian").on('change', function() {
     $("#datatables_kesimpulan").DataTable().ajax.reload();
@@ -142,24 +141,23 @@ $("#simpan_kesimpulan").on("click", function(event){
         if (result.isConfirmed) {
             $.get('/generate-csrf-token', function(response){
                 $.ajax({
-                    url: baseurlapi + '/masterdata/'+(isedit ? 'ubahbank' : 'simpanbank'),
+                    url: baseurlapi + '/masterdata/'+(isedit ? 'ubahkesimpulan' : 'simpankesimpulan'),
                     type: 'POST',
                     beforeSend: function(xhr){
                         xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
                     },
                     data: {
                         _token: response.csrf_token,
-                        idbank: idbank,
-                        kodebank: $("#kodebank").val(),
-                        namabank: $("#namabank").val(),
-                        keteranganbank: $("#keteranganbank").val(),
+                        idkesimpulan: idkesimpulan,
+                        jenis_pemeriksaan: $("#jenis_pemeriksaan").val(),
+                        kesimpulantindakan: $("#kesimpulantindakan").val(),
                     },
                     success: function(response){
                         if(response.success){
                             createToast('Berhasil', 'top-right', response.message, 'success', 3000);
-                            clearformeditdaftarbank();
-                            $("#formulir_tambah_bank").modal("hide");
-                            $("#datatables_daftarbank").DataTable().ajax.reload();
+                            clearformeditdaftarkesimpulan();
+                            $("#formulir_tambah_kesimpulan").modal("hide");
+                            $("#datatables_kesimpulan").DataTable().ajax.reload();
                         }
                     },
                     error: function(xhr, status, error){
@@ -170,7 +168,7 @@ $("#simpan_kesimpulan").on("click", function(event){
         }
     });
 });
-function hapusdaftarbank(idbank,namabank){
+function hapusdaftarkesimpulan(id,namabank){
     Swal.fire({
         html: '<div class="mt-3 text-center"><dotlottie-player src="https://cdn.lordicon.com/gsqxdxog.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penghapusan Data Bank Penerima</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus informasi bank penerima <strong>'+namabank+'</strong> ?. Jika sudah silahkan klik tombol hapus data</p></div></div>',
         showCancelButton: true,
@@ -182,21 +180,20 @@ function hapusdaftarbank(idbank,namabank){
         if (result.isConfirmed) {
             $.get('/generate-csrf-token', function(response){
                 $.ajax({
-                    url: baseurlapi + '/masterdata/hapusbank',
+                    url: baseurlapi + '/masterdata/hapuskesimpulan',
                     type: 'GET',
                     beforeSend: function(xhr){
                         xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
                     },
                     data: {
                         _token: response.csrf_token,
-                        idbank: idbank,
-                        namabank: namabank,
+                        idkesimpulan: id,
                     },
                     success: function(response){
                         if(response.success){
                             createToast('Berhasil', 'top-right', response.message, 'success', 3000);
-                            clearformeditdaftarbank()
-                            $("#datatables_daftarbank").DataTable().ajax.reload();
+                            clearformeditdaftarkesimpulan()
+                            $("#datatables_kesimpulan").DataTable().ajax.reload();
                         }
                     },
                     error: function(xhr, status, error){
