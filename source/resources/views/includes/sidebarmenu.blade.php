@@ -404,7 +404,7 @@
             <ul class="sidebar-submenu">
               @foreach([
                 ['condition' => $hasAccessArciveMCUPerusahaan, 'url' => 'laporan/berkas_perusahaan/mcu', 'label' => 'MCU'],
-                ['condition' => $hasAccessArciveMCUThreadmillPerusahaan, 'url' => 'laporan/berkas_perusahaan/mcu_threadmill', 'label' => 'Threadmill'],
+                ['condition' => $hasAccessArciveMCUThreadmillPerusahaan, 'url' => 'laporan/berkas_perusahaan/threadmill', 'label' => 'Threadmill'],
                 ['condition' => $hasAccessArciveLaboratoriumPerusahaan, 'url' => 'laporan/berkas_perusahaan/laboratorium', 'label' => 'Laboratorium']
               ] as $menuItem)
                 @if ($menuItem['condition'])
