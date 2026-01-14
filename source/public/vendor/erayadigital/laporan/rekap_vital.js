@@ -84,7 +84,7 @@ function loadDataPasien() {
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
-                    d.dari_perusahaan = $("#filter_perusahaan").val();
+                    d.id_perusahaan = $('#select2_perusahaan').val();
                     d.tanggal_awal = $("#tanggal_awal").val().split('-').reverse().join('-');
                     d.tanggal_akhir = $("#tanggal_akhir").val().split('-').reverse().join('-');
                 },
