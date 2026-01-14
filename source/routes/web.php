@@ -110,6 +110,18 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
             Route::get('usg_ubdomain',[LaporanController::class,"laporan_rekap_usg_ubdomain"])->middleware('permission_cache:akses_laporan_rekap_usg_ubdomain')->name('admin.laporan.laporan_rekap_usg_ubdomain');
             Route::get('farmingham_score',[LaporanController::class,"laporan_rekap_farmingham_score"])->middleware('permission_cache:akses_laporan_rekap_farmingham_score')->name('admin.laporan.laporan_rekap_farmingham_score');
         });
+        Route::prefix('rekap_perusahaan')->group(function () {
+            Route::get('pemeriksaan_fisik',[LaporanController::class,"laporan_rekap_pemeriksaan_fisik"])->middleware('permission_cache:akses_rekap_pemeriksaan_fisik_perusahaan')->name('admin.laporan.laporan_rekap_pemeriksaan_fisik');
+            Route::get('vital',[LaporanController::class,"laporan_rekap_vital"])->middleware('permission_cache:akses_rekap_vital_perusahaan')->name('admin.laporan.laporan_rekap_vital');
+            Route::get('spirometri',[LaporanController::class,"laporan_rekap_spirometri"])->middleware('permission_cache:akses_rekap_spirometri_perusahaan')->name('admin.laporan.laporan_rekap_spirometri');
+            Route::get('audiometri',[LaporanController::class,"laporan_rekap_audiometri"])->middleware('permission_cache:akses_rekap_audiometri_perusahaan')->name('admin.laporan.laporan_rekap_audiometri');
+            Route::get('ekg',[LaporanController::class,"laporan_rekap_ekg"])->middleware('permission_cache:akses_rekap_ekg_perusahaan')->name('admin.laporan.laporan_rekap_ekg');
+            Route::get('threadmill',[LaporanController::class,"laporan_rekap_threadmill"])->middleware('permission_cache:akses_rekap_threadmill_perusahaan')->name('admin.laporan.laporan_rekap_threadmill');
+            Route::get('rontgen_thorax',[LaporanController::class,"laporan_rekap_rontgen_thorax"])->middleware('permission_cache:akses_rekap_rontgen_thorax_perusahaan')->name('admin.laporan.laporan_rekap_rontgen_thorax');
+            Route::get('rontgen_lumbosacral',[LaporanController::class,"laporan_rekap_rontgen_lumbosacral"])->middleware('permission_cache:akses_rekap_rontgen_lumbosacral_perusahaan')->name('admin.laporan.laporan_rekap_rontgen_lumbosacral');
+            Route::get('usg_ubdomain',[LaporanController::class,"laporan_rekap_usg_ubdomain"])->middleware('permission_cache:akses_rekap_usg_ubdomain_perusahaan')->name('admin.laporan.laporan_rekap_usg_ubdomain');
+            Route::get('farmingham_score',[LaporanController::class,"laporan_rekap_farmingham_score"])->middleware('permission_cache:akses_rekap_farmingham_score_perusahaan')->name('admin.laporan.laporan_rekap_farmingham_score');
+        });
         Route::prefix('kuitansi')->group(function () {
             Route::get('personal/cetak',[LaporanController::class,"cetak_kuitansi_personal"])->middleware('permission_cache:akses_berkas_tindakan_personal')->name('admin.laporan.berkas_personal');
             Route::get('perusahaan/cetak',[LaporanController::class,"cetak_kuitansi_perusahaan"])->middleware('permission_cache:akses_berkas_tindakan_perusahaan')->name('admin.laporan.berkas_perusahaan');

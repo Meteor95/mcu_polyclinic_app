@@ -54,7 +54,7 @@ class LaporanController extends Controller
     }
     public function berkas_mcu(Request $req){
         $user = $req->attributes->get('user_details');
-        $perusahaan = json_decode($user->json_perusahaan, true);
+        $perusahaan = json_decode($user->json_perusahaan, true) ?? [];
         $ids = array_column($perusahaan, 'id');
         $data = $this->getData($req, 'Berkas Tindakan MCU', [
             'Beranda' => route('admin.beranda'),
