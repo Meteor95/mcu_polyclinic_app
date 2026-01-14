@@ -51,8 +51,8 @@ class MasterdataController extends Controller
         return view('paneladmin.masterdata.daftarbank', ['data' => $data]);
     }
     function daftar_kesimpulan(Request $req){
-        $data = $this->getData($req, 'Daftar Bank', [
-            'Daftar Bank' => route('admin.masterdata.daftar_kesimpulan'),
+        $data = $this->getData($req, 'Daftar Kesimpulan Tindakan', [
+            'Daftar Kesimpulan Tindakan' => route('admin.masterdata.daftar_kesimpulan'),
         ]);
         return view('paneladmin.masterdata.daftarkesimpulan', ['data' => $data]);
     }
