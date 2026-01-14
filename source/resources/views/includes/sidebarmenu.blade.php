@@ -296,7 +296,7 @@
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
               <i class="fa-solid fa-book" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
-              <span>Rekaptulasi</span>
+              <span>Rekapitulasi</span>
             </a>
             <ul class="sidebar-submenu">
               @foreach([
@@ -419,7 +419,7 @@
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
               <i class="fa-solid fa-book" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
-              <span>Rekaptulasi</span>
+              <span>Rekapitulasi</span>
             </a>
             <ul class="sidebar-submenu">
               @foreach([
