@@ -29,6 +29,7 @@ class RouteAndPermission extends Model
         $result = $query->take($perHalaman)
             ->skip($offset)
             ->orderBy('group', 'ASC')
+            ->orderBy('name', 'ASC')
             ->get();
         return [
             'data' => $result,
