@@ -960,6 +960,7 @@ class LaporanController extends Controller
                         }
                     }
             }else if ($jenis_laporan_rekap === 'vital') {
+                $id_perusahaan = $request->input('id_perusahaan');
                 $parameter_pencarian = $request->input('parameter_pencarian');
                 $dari_perusahaan  = $request->input('dari_perusahaan');
                 $query = TandaVital::join('mcu_transaksi_peserta','mcu_pf_tanda_vital.transaksi_id','=','mcu_transaksi_peserta.id')
