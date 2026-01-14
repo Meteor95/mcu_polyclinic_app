@@ -388,6 +388,29 @@
             </ul>
           </li>
           @endif
+          <li class="sidebar-main-title">
+            <div>
+              <h6>BERKAS PERUSAHAAN</h6>
+            </div>
+          </li>
+          <li class="sidebar-list">
+            <i class="fa fa-thumb-tack"></i>
+            <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+              <i class="fa-solid fa-folder-tree" style="padding-right: 10px;font-size: 20px;color: #fff;"></i>
+              <span>Berkas Tindakan</span>
+            </a>
+            <ul class="sidebar-submenu">
+              @foreach([
+                ['condition' => $hasAccessArciveMCUPerusahaan, 'url' => 'laporan/berkas_perusahaan/mcu', 'label' => 'MCU'],
+                ['condition' => $hasAccessArciveMCUThreadmillPerusahaan, 'url' => 'laporan/berkas_perusahaan/mcu_threadmill', 'label' => 'Threadmill'],
+                ['condition' => $hasAccessArciveLaboratoriumPerusahaan, 'url' => 'laporan/berkas_perusahaan/laboratorium', 'label' => 'Laboratorium']
+              ] as $menuItem)
+                @if ($menuItem['condition'])
+                  <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
+                @endif
+              @endforeach
+            </ul>
+          </li>
         </ul>
       </div>
       <div class="right-arrow" id="right-arrow">

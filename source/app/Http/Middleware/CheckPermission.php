@@ -107,6 +107,10 @@ class CheckPermission
             /* Developer Area */
             'hasAccessErrorLog' => 'akses_error_log',
             'hasVisiblePrice' => 'akses_informasi_harga_kasir',
+            /* Perusahaan Area */
+            'hasAccessArciveMCUPerusahaan' => 'akses_berkas_tindakan_mcu_perusahaan',
+            'hasAccessArciveMCUThreadmillPerusahaan' => 'akses_berkas_tindakan_threadmill_perusahaan',
+            'hasAccessArciveLaboratoriumPerusahaan' => 'akses_berkas_tindakan_laboratorium_perusahaan',
         ];
         $permissionsShared = [];
         foreach ($permissionsToCheck as $key => $permissionName) {
