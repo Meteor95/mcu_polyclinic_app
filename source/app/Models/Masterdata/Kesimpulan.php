@@ -24,6 +24,7 @@ class Kesimpulan extends Model
         $result = $query->take($perHalaman)
             ->skip($offset)
             ->orderBy('jenis_kesimpulan', 'ASC')
+            ->orderBy('keterangan_kesimpulan', 'ASC')
             ->get();
         $jumlahdata = $query->count();
         return [

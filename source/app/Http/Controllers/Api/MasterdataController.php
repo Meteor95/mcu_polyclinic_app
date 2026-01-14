@@ -728,7 +728,7 @@ class MasterdataController extends Controller
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
             Kesimpulan::where('id', $request->idkesimpulan)->delete();
-            return ResponseHelper::success_delete("Informasi kesimpulan dengan ID " . strtoupper(str_replace('_', ' ', $request->jenis_pemeriksaan)) . " berhasil dihapus.");
+            return ResponseHelper::success_delete("Informasi kesimpulan dengan Jenis " . strtoupper(str_replace('_', ' ', $request->jenis_kesimpulan)) . " dan Keterangan " . $request->keterangan_kesimpulan . " berhasil dihapus.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }

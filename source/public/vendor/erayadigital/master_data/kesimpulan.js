@@ -168,9 +168,9 @@ $("#simpan_kesimpulan").on("click", function(event){
         }
     });
 });
-function hapusdaftarkesimpulan(id,namabank){
+function hapusdaftarkesimpulan(id,jenis_kesimpulan,keterangan_kesimpulan){
     Swal.fire({
-        html: '<div class="mt-3 text-center"><dotlottie-player src="https://cdn.lordicon.com/gsqxdxog.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penghapusan Data Bank Penerima</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus informasi bank penerima <strong>'+namabank+'</strong> ?. Jika sudah silahkan klik tombol hapus data</p></div></div>',
+        html: '<div class="mt-3 text-center"><dotlottie-player src="https://cdn.lordicon.com/gsqxdxog.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penghapusan Data Kesimpulan</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menghapus informasi kesimpulan pada jenis <strong>'+jenis_kesimpulan.replace(/_/g, ' ').toUpperCase()+'</strong> dengan keterangan <strong>'+keterangan_kesimpulan+'</strong> ?. Jika sudah silahkan klik tombol hapus data</p></div></div>',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: 'orange',
@@ -188,6 +188,8 @@ function hapusdaftarkesimpulan(id,namabank){
                     data: {
                         _token: response.csrf_token,
                         idkesimpulan: id,
+                        jenis_kesimpulan: jenis_kesimpulan,
+                        keterangan_kesimpulan: keterangan_kesimpulan,
                     },
                     success: function(response){
                         if(response.success){
