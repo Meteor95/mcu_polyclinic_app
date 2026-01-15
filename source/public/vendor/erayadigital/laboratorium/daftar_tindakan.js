@@ -8,6 +8,20 @@ let nominal_apotek = new AutoNumeric('#nominal_apotek', {
     modifyValueOnWheel: false,
 });
 $(document).ready(function(){
+    const tanggalAwal = flatpickr("#tanggal_awal", {
+        dateFormat: "d-m-Y",
+        maxDate: 'today',
+        onChange: function(selectedDates, dateStr) {
+            tanggalAkhir.set('minDate', dateStr);
+        }
+    });
+    $("#tanggal_awal").val(moment().startOf('month').format('DD-MM-YYYY'));
+    const tanggalAkhir = flatpickr("#tanggal_akhir", {
+        dateFormat: "d-m-Y",
+        maxDate: 'today',
+        minDate: $("#tanggal_awal").val()
+    });
+    $("#tanggal_akhir").val(moment().format('DD-MM-YYYY'));
     document.querySelectorAll('[data-state]').forEach(element => {
         element.classList.add('close_icon');
     });
@@ -42,6 +56,8 @@ function initDataTable(selector, options = {}) {
     return $(selector).DataTable($.extend(true, {}, defaultOptions, options));
 }
 function load_datatables_tindakan(){
+    let tanggal_awal_nilai = $("#tanggal_awal").val().split('-').reverse().join('-');
+    let tanggal_akhir_nilai = $("#tanggal_akhir").val().split('-').reverse().join('-');
     $.get('/generate-csrf-token', function(response) {
         $("#daftar_table_tindakan").DataTable({
             searching: false,
@@ -78,6 +94,8 @@ function load_datatables_tindakan(){
                     d.jenis_layanan = $('#jenis_layanan').val();
                     d.length = $('#data_ditampilkan').val();
                     d.jenis_item_tampilkan = $('#jenis_item_tampilkan').val();
+                    d.tanggal_awal = tanggal_awal_nilai;
+                    d.tanggal_akhir = tanggal_akhir_nilai;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

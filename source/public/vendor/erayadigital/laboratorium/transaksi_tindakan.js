@@ -152,7 +152,7 @@ function onload_detail_tindakan(){
                             item.kode_item,
                             item.nama_item,
                             createInput(nomor, 'nilai_tindakan', item.kode_item, item.nilai_tindakan),
-                            createInput(nomor, 'harga_jual', item.kode_item, item.is_paket_mcu > 0 ? 0 : item.harga),
+                            createInput(nomor, 'harga_jual', item.kode_item, item.is_paket_mcu > 0 ? item.harga : item.harga),
                             createInput(nomor, 'diskon', item.kode_item, item.is_paket_mcu > 0 ? 0 : item.diskon),
                             createInput(nomor, 'harga_setelah_diskon', item.kode_item, item.is_paket_mcu > 0 ? 0 : item.harga_setelah_diskon, true),
                             createInput(nomor, 'jumlah', item.kode_item, '1'),
@@ -568,7 +568,7 @@ function updateRowNumbers(harga_paket = null) {
     
 }
 const rowIndexMap = {};
-function tambah_ke_keranjang_tindakan(data_tarif, dari = null, harga_paket = false) {
+function tambah_ke_keranjang_tindakan(data_tarif, dari = null, harga_paket = false, ada_paket_mcu = null) {
     if (data_tarif.length == 0) {
         return createToast('Tidak ada data yang dipilih', 'top-right', 'Setidaknya pilih 1 data tindakan untuk ditambahkan ke dalam keranjang tindakan lab dan pengobatan', 'error', 3000);
     }
@@ -583,7 +583,7 @@ function tambah_ke_keranjang_tindakan(data_tarif, dari = null, harga_paket = fal
         tarif.kode_item,
         tarif.nama_item,
         createInput(nomor, 'nilai_tindakan', kode_item, 0),
-        createInput(nomor, 'harga_jual', kode_item, harga_paket > 0 ? 0 : tarif.harga_jual),
+        createInput(nomor, 'harga_jual', kode_item, ((harga_paket > 0 || ada_paket_mcu == 1 ) ? 0 : tarif.harga_jual)),
         createInput(nomor, 'diskon', kode_item, '0'),
         createInput(nomor, 'harga_setelah_diskon', kode_item, '0', true),
         createInput(nomor, 'jumlah', kode_item, '1'),
@@ -734,7 +734,7 @@ $("#btn_baca_template_tindakan_mcu").on('click', function(){
 });
 function pilih_template_tindakan_mcu(id_template_tindakan, nama_template, id_button, used_paket_mcu, harga_paket = false){
     $("#btn_pilih_template_tindakan_mcu_"+id_button).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memuat Data...');
-    data_table_tindakan.rows().clear().draw();
+    // data_table_tindakan.rows().clear().draw();
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
             url: baseurlapi + '/laboratorium/pilih_template_tindakan_mcu',
@@ -751,8 +751,17 @@ function pilih_template_tindakan_mcu(id_template_tindakan, nama_template, id_but
                 }
                 is_paket_mcu = used_paket_mcu;
                 nama_paket_mcu = nama_template;
+                let table = $('#table_tindakan_mcu').DataTable();
+                let adaPaketMCU = 0
+                table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    let data = this.data(); 
+                    let kode = data[1]; 
+                    if (kode == "1000001000001") {
+                        adaPaketMCU = 1;
+                    }
+                });
                 response.data.forEach(tarif => {
-                    tambah_ke_keranjang_tindakan(tarif, "template", harga_paket);
+                    tambah_ke_keranjang_tindakan(tarif, "template", harga_paket, adaPaketMCU);
                 });
                 $("#btn_pilih_template_tindakan_mcu_"+id_button).prop('disabled', false).html('<i class="fa fa-check"></i> Pilih');
                 $("#modal_baca_template_tindakan_mcu").modal('hide');

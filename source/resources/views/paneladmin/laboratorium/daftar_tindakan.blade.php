@@ -14,6 +14,16 @@
           </div>
         </div>
         <div class="card-body">
+           <div class="row">
+              <div class="col-md-6">
+                <label for="tanggal_awal">Tanggal Awal</label>
+                <input type="text" class="form-control" id="tanggal_awal" placeholder="Pilih Tanggal Awal">
+              </div>
+              <div class="col-md-6">
+                <label for="tanggal_akhir">Tanggal Akhir</label>
+                <input type="text" class="form-control" id="tanggal_akhir" placeholder="Pilih Tanggal Akhir">
+              </div>
+            </div>
             <div class="row">
                 <div class="col-md-2">
                   <label for="data_ditampilkan">Data yang ditampilkan</label>
@@ -207,6 +217,7 @@
 </div>
 @endsection
 @section('css_load')
+<link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/dropzone.min.css') }}">
 <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/ds-digital">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" integrity="sha512-UtLOu9C7NuThQhuXXrGwx9Jb/z9zPQJctuAgNUBK3Z6kkSYT9wJ+2+dh6klS+TDBCV9kNPBbAxbVD+vCcfGPaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -300,8 +311,9 @@
 </style>
 @endsection
 @section('js_load')
-<script src="{{ asset('mofi/assets/js/dropzone/dropzone.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" integrity="sha512-JyCZjCOZoyeQZSd5+YEAcFgz2fowJ1F1hyJOXgtKu4llIa0KneLcidn5bwfutiehUTiOuK87A986BZJMko0eWQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.8.1/autoNumeric.min.js"></script>
+<script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/dropzone/dropzone.js') }}"></script>
 <script src="{{ asset('vendor/erayadigital/laboratorium/daftar_tindakan.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laboratorium/daftar_tindakan.js')) }}"></script>
 @endsection
