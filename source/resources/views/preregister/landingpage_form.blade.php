@@ -500,7 +500,7 @@
 @endsection
 @section('js_load')
 <script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
-<script src="{{asset('vendor/erayadigital/landingpage.js')}}"></script>
+<script src="{{ asset('vendor/erayadigital/landingpage.js') }}?v={{ filemtime(public_path('vendor/erayadigital/landingpage.js')) }}"></script>
 <script>
 const tanggalAwal = flatpickr("#tanggal_lahir_peserta_temp", {
     dateFormat: "d-m-Y",
