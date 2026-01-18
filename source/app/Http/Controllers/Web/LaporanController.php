@@ -900,6 +900,7 @@ class LaporanController extends Controller
                 $pemeriksaan = [
                     ['label' => 'RIWAYAT MEDIS', 'data' => $this->data['quill_pemeriksaan_riwayat_medis']],
                     ['label' => 'PEMERIKSAAN FISIK', 'data' => $this->data['quill_pemeriksaan_fisik']],
+                    ['label' => 'PEMERIKSAAN MATA', 'data' => $this->data['penglihatan'][0]],
                     ['label' => 'HASIL LABORATORIUM', 'data' => $this->data['quill_pemeriksaan_laboratorium']],
                     ['label' => 'RO THORAX', 'data' => $this->data['quill_pemeriksaan_rontgen_thorax']],
                     ['label' => 'RO LUMBOSACRAL', 'data' => $this->data['quill_pemeriksaan_rontgen_lumbosacral']],
@@ -908,8 +909,66 @@ class LaporanController extends Controller
                 ];
 
                 foreach ($pemeriksaan as $item) {
+                    // 1. Filter agar JSON mentah tidak muncul (seperti di gambar sebelumnya)
+                    if (is_string($item['data']) && (strpos($item['data'], '{') !== false || strpos($item['data'], '[') !== false)) {
+                        continue;
+                    }
+
                     $cleanData = trim(strip_tags($item['data']));
+                    $isJson = false;
+                    if (is_string($item['data'])) {
+                        $decoded = json_decode($item['data']);
+                        if (json_last_error() === JSON_ERROR_NONE && is_object($decoded)) {
+                            $isJson = true;
+                        }
+                    }
+
+                    // Jika ini string JSON mentah DAN bukan label Pemeriksaan Mata, lewati agar tidak berantakan
+                    if ($isJson && $item['label'] !== "PEMERIKSAAN MATA") {
+                        continue;
+                    }
+                    if ($item['label'] === "PEMERIKSAAN MATA") {
+                        $p = $this->data['penglihatan'][0];
+                        // --- BARIS 1: Label & Data Visus ---
+                        $this->SetFont('Arial', '', 10); 
+                        $this->SetTextColor(0, 0, 0);    
+                        
+                        // Gunakan struktur yang sama persis dengan fungsi bulletRow Anda
+                        $this->Cell(5, 6, chr(149), 0, 0, 'C'); 
+                        $this->Cell(50, 6, 'PEMERIKSAAN MATA', 0, 0, 'L');
+                        $this->Cell(5, 6, ':', 0, 0, 'C');
+
+                        // Isi Data Jauh
+                        $this->Write(6, 'Jauh : ');
+                        $this->SetFont('Arial', 'B', 10); $this->Write(6, 'OD ');
+                        $this->SetFont('Arial', '', 10);  $this->Write(6, ($p->visus_od_tanpa_kacamata_jauh ?? '-') . ' ');
+                        $this->SetFont('Arial', 'B', 10); $this->Write(6, 'OS ');
+                        $this->SetFont('Arial', '', 10);  $this->Write(6, ($p->visus_os_tanpa_kacamata_jauh ?? '-') . '  ');
+
+                        // Isi Data Dekat
+                        $this->Write(6, 'Dekat : ');
+                        $this->SetFont('Arial', 'B', 10); $this->Write(6, 'OD ');
+                        $this->SetFont('Arial', '', 10);  $this->Write(6, ($p->visus_od_tanpa_kacamata_dekat ?? '-') . ' ');
+                        $this->SetFont('Arial', 'B', 10); $this->Write(6, 'OS ');
+                        $this->SetFont('Arial', '', 10);  $this->Write(6, ($p->visus_os_tanpa_kacamata_dekat ?? '-'));
+                        $this->Ln(6);
+
+                        // --- BARIS 2: Tes Buta Warna ---
+                        // Sejajarkan posisi X (5mm bullet + 50mm label + 5mm titik dua = 60mm)
+                        // Tambahkan sedikit offset manual (misal ke 65) agar teks lurus di bawah kata "Jauh"
+                        $this->SetX(70); 
+                        $this->SetFont('Arial', 'B', 10);
+                        $this->Write(6, 'Tes Buta Warna : ');
+                        $this->SetFont('Arial', '', 10);
+                        $butaWarna = ($p->buta_warna == 'tidak_buta_warna') ? 'Tidak buta warna' : 'Buta warna';
+                        $this->Write(6, $butaWarna);
+                        $this->Ln(8);
+                        
+                        continue; 
+                    }
+
                     if (!empty($cleanData)) {
+                        $this->SetTextColor(0, 0, 0);
                         $this->bulletRow($item['label'], $cleanData);
                     }
                 }
@@ -1710,7 +1769,12 @@ class LaporanController extends Controller
                 $this->Cell($wJ, 8, $judul, 0, 1, 'C');
                 $this->Ln(2);
 
-                $p = $this->data['penglihatan'][0]; // Alias data
+                // --- PROSES DATA JSON ---
+                $p = $this->data['penglihatan'][0];
+                if (is_string($p)) {
+                    $p = json_decode($p); // Ubah string JSON menjadi object
+                }
+
                 $this->SetFont('Times', 'B', 9);
                 $this->SetFillColor(44, 148, 42); // Hijau
                 $this->SetTextColor(255);
@@ -1718,46 +1782,48 @@ class LaporanController extends Controller
                 // Header Baris 1
                 $yHeader = $this->GetY();
                 $this->Cell(150, 6, 'VISUS', 1, 0, 'C', true);
-                $this->Cell(40, 18, 'Tes Buta Warna', 1, 0, 'C', true); // Rowspan 3 (6+6+6)
+                $this->Cell(40, 18, 'Tes Buta Warna', 1, 0, 'C', true); // Rowspan 3
                 $this->Ln(6);
 
                 // Header Baris 2
                 $this->SetX(10);
-                $this->Cell(30, 12, 'Status', 1, 0, 'C', true); // Rowspan 2 (6+6)
+                $this->Cell(30, 12, 'Status', 1, 0, 'C', true); // Rowspan 2
                 $this->Cell(60, 6, 'Tanpa Kacamata', 1, 0, 'C', true);
                 $this->Cell(60, 6, 'Dengan Kacamata', 1, 1, 'C', true);
 
-                // Header Baris 3
+                // Header Baris 3 (DIBALIK: OD dulu baru OS)
                 $this->SetX(40);
-                $this->Cell(30, 6, 'OS', 1, 0, 'C', true);
                 $this->Cell(30, 6, 'OD', 1, 0, 'C', true);
                 $this->Cell(30, 6, 'OS', 1, 0, 'C', true);
-                $this->Cell(30, 6, 'OD', 1, 1, 'C', true);
+                $this->Cell(30, 6, 'OD', 1, 0, 'C', true);
+                $this->Cell(30, 6, 'OS', 1, 1, 'C', true);
 
                 // Isi Data Visus
                 $this->SetTextColor(0);
                 $this->SetFont('Times', '', 9);
 
-                // Baris Jauh
+                // Baris Jauh (DIBALIK: OD dulu baru OS)
                 $yDataStart = $this->GetY();
                 $this->Cell(30, 8, ' Jauh', 1, 0, 'L');
-                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_jauh, 1, 0, 'C');
-                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_jauh, 1, 0, 'C');
-                $this->Cell(30, 8, $p->visus_os_kacamata_jauh, 1, 0, 'C');
-                $this->Cell(30, 8, $p->visus_od_kacamata_jauh, 1, 0, 'C');
-                // Isi Buta Warna (Rowspan 2)
+                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_jauh ?? '-', 1, 0, 'C'); // OD
+                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_jauh ?? '-', 1, 0, 'C'); // OS
+                $this->Cell(30, 8, $p->visus_od_kacamata_jauh ?? '-', 1, 0, 'C');       // OD
+                $this->Cell(30, 8, $p->visus_os_kacamata_jauh ?? '-', 1, 0, 'C');       // OS
+
+                // Isi Buta Warna
                 $this->SetXY(160, $yDataStart);
-                $butaWarna = strtoupper(str_replace('_', ' ', $p->buta_warna));
+                $butaWarnaRaw = $p->buta_warna ?? '-';
+                $butaWarna = strtoupper(str_replace('_', ' ', $butaWarnaRaw));
                 $this->Cell(40, 16, $butaWarna, 1, 0, 'C'); 
                 $this->Ln(8);
 
-                // Baris Dekat
+                // Baris Dekat (DIBALIK: OD dulu baru OS)
                 $this->SetX(10);
                 $this->Cell(30, 8, ' Dekat', 1, 0, 'L');
-                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_dekat, 1, 0, 'C');
-                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_dekat, 1, 0, 'C');
-                $this->Cell(30, 8, $p->visus_os_kacamata_dekat, 1, 0, 'C');
-                $this->Cell(30, 8, $p->visus_od_kacamata_dekat, 1, 1, 'C');
+                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_dekat ?? '-', 1, 0, 'C'); // OD
+                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_dekat ?? '-', 1, 0, 'C'); // OS
+                $this->Cell(30, 8, $p->visus_od_kacamata_dekat ?? '-', 1, 0, 'C');       // OD
+                $this->Cell(30, 8, $p->visus_os_kacamata_dekat ?? '-', 1, 1, 'C');       // OS
                 
                 $this->SetFillColor(44, 148, 42);
                 $this->SetTextColor(255);
@@ -1941,9 +2007,8 @@ class LaporanController extends Controller
 
                     foreach ($this->data['lampiran_berkas_pdf'] as $index => $item) {
                         // 1. Perhitungan dimensi dan posisi (sama seperti sebelumnya)
-                        $margin = 10;
-                        $maxW = 190;
-                        $maxH = 257;
+                        $maxW = 200;
+                        $maxH = 215;
 
                         $imgPath = $item->data_foto;
                         $size = @getimagesize($imgPath);
@@ -1956,11 +2021,12 @@ class LaporanController extends Controller
                         $finalW = $size[0] * $scale;
                         $finalH = $size[1] * $scale;
 
-                        $posX = (210 - $finalW) / 2;
-                        $posY = (297 - $finalH) / 2;
+                        $posX = ($this->GetPageWidth() - $finalW) / 2;
+                        $posY = $this->GetY() - 10;
 
                         // 2. Cetak Gambar
                         $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
+                        $this->SetY($posY + $finalH + 10);
                         $this->SetTextColor(0, 0, 0);
 
                         // 3. LOGIKA ADD PAGE:
@@ -1991,9 +2057,8 @@ class LaporanController extends Controller
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
-                            $margin = 10;
-                            $maxW = 190;
-                            $maxH = 257;
+                            $maxW = 200;
+                            $maxH = 220;
 
                             $imgPath = $item->data_foto;
                             $size = @getimagesize($imgPath);
@@ -2006,8 +2071,8 @@ class LaporanController extends Controller
                             $finalW = $size[0] * $scale;
                             $finalH = $size[1] * $scale;
 
-                            $posX = (210 - $finalW) / 2;
-                            $posY = (297 - $finalH) / 2;
+                            $posX = ($this->GetPageWidth() - $finalW) / 2;
+                            $posY = $this->GetY() - 10;
 
                             // 2. Cetak Gambar
                             $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
@@ -2088,9 +2153,8 @@ class LaporanController extends Controller
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
-                            $margin = 10;
-                            $maxW = 190;
-                            $maxH = 257;
+                            $maxW = 200;
+                            $maxH = 220;
 
                             $imgPath = $item->data_foto;
                             $size = @getimagesize($imgPath);
@@ -2103,8 +2167,8 @@ class LaporanController extends Controller
                             $finalW = $size[0] * $scale;
                             $finalH = $size[1] * $scale;
 
-                            $posX = (210 - $finalW) / 2;
-                            $posY = (297 - $finalH) / 2;
+                            $posX = ($this->GetPageWidth() - $finalW) / 2;
+                            $posY = $this->GetY() - 10;
 
                             // 2. Cetak Gambar
                             $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
@@ -2190,9 +2254,8 @@ class LaporanController extends Controller
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
-                            $margin = 10;
-                            $maxW = 190;
-                            $maxH = 257;
+                            $maxW = 200;
+                            $maxH = 215;
 
                             $imgPath = $item->data_foto;
                             $size = @getimagesize($imgPath);
@@ -2205,8 +2268,8 @@ class LaporanController extends Controller
                             $finalW = $size[0] * $scale;
                             $finalH = $size[1] * $scale;
 
-                            $posX = (210 - $finalW) / 2;
-                            $posY = (297 - $finalH) / 2;
+                            $posX = ($this->GetPageWidth() - $finalW) / 2;
+                            $posY = $this->GetY() - 10;
 
                             // 2. Cetak Gambar
                             $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
@@ -2292,9 +2355,8 @@ class LaporanController extends Controller
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
-                            $margin = 10;
-                            $maxW = 190;
-                            $maxH = 257;
+                            $maxW = 200;
+                            $maxH = 215;
 
                             $imgPath = $item->data_foto;
                             $size = @getimagesize($imgPath);
@@ -2307,8 +2369,8 @@ class LaporanController extends Controller
                             $finalW = $size[0] * $scale;
                             $finalH = $size[1] * $scale;
 
-                            $posX = (210 - $finalW) / 2;
-                            $posY = (297 - $finalH) / 2;
+                            $posX = ($this->GetPageWidth() - $finalW) / 2;
+                            $posY = $this->GetY() - 10;
 
                             // 2. Cetak Gambar
                             $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
@@ -2394,9 +2456,8 @@ class LaporanController extends Controller
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
-                            $margin = 10;
-                            $maxW = 190;
-                            $maxH = 257;
+                            $maxW = 200;
+                            $maxH = 215;
 
                             $imgPath = $item->data_foto;
                             $size = @getimagesize($imgPath);
@@ -2409,8 +2470,8 @@ class LaporanController extends Controller
                             $finalW = $size[0] * $scale;
                             $finalH = $size[1] * $scale;
 
-                            $posX = (210 - $finalW) / 2;
-                            $posY = (297 - $finalH) / 2;
+                            $posX = ($this->GetPageWidth() - $finalW) / 2;
+                            $posY = $this->GetY() - 10;
 
                             // 2. Cetak Gambar
                             $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
@@ -2498,9 +2559,11 @@ class LaporanController extends Controller
                         // Render Semua Gambar dalam Poli ini
                         $totalLampiran = count($dataPoli);
                         foreach ($dataPoli as $index => $item) {
-                            $margin = 10;
-                            $maxW = 190;
-                            $maxH = 257;
+                            $maxW = $this->GetPageWidth() - 20;
+                            $maxH = 140;
+                            if ($index > 0){
+                                $maxH = 180;   
+                            }
 
                             $imgPath = $item->data_foto;
                             $size = @getimagesize($imgPath);
@@ -2513,8 +2576,8 @@ class LaporanController extends Controller
                             $finalW = $size[0] * $scale;
                             $finalH = $size[1] * $scale;
 
-                            $posX = (210 - $finalW) / 2;
-                            $posY = (297 - $finalH) / 2;
+                            $posX = ($this->GetPageWidth() - $finalW) / 2;
+                            $posY = $this->GetY() - 10;
 
                             // 2. Cetak Gambar
                             $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
@@ -2613,7 +2676,11 @@ class LaporanController extends Controller
         $fpdf->poliAudiometri();
         $fpdf->poliSpirometri();
         $fpdf->poliThreadmill();
-
+        // 7. Penutup Cover
+        $fpdf->AddPage('P');
+        $fpdf->SetFont('Arial','B',16);
+        $fpdf->SetXY(0, 0);
+        $fpdf->Image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, 210, 297);
 
         // // 3. Halaman Hasil Pemeriksaan (Sesuai CSS page-break-after: always)
         // $pdf->AddPage('P');
