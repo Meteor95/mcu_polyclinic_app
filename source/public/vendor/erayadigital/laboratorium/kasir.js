@@ -353,7 +353,6 @@ function load_datatables_tindakan(){
                     width: "230px",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            console.log(row);
                             return `<div class="d-flex justify-content-between gap-2">
                                 <!-- Kolom kiri -->
                                 <div class="d-flex flex-column gap-2 w-50">
@@ -717,7 +716,6 @@ $("#konfirmasi_jasa_pelayanan").on('click', function() {
                 data: payload
             },
             success: function(response) {
-                console.log(response)
                 if (!response.success) {
                     return createToast('Kesalahan Dalam Mengubah Data Jasa Pelayanan', 'top-right', response.message, 'error', 3000);
                 }

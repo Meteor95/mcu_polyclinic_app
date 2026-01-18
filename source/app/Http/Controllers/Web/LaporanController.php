@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Pegawai;
 use Carbon\Carbon;
 use App\Models\User;
+use Codedge\Fpdf\Fpdf\Fpdf;
 
 
 class LaporanController extends Controller
@@ -189,7 +190,7 @@ class LaporanController extends Controller
             return $item;
         });
     }
-    public function cetak_berkas_mcu(Request $req){
+    public function cetak_berkas_mcu(Request $req, Fpdf $fpdf){
         $dataparameter = json_decode(base64_decode($req->query('data')), true);
         $tanggal_cetak = date('d').' '.GlobalHelper::getNamaBulanIndonesia(date('n')).' '.date('Y');
         $id_mcu = $dataparameter['id_mcu'];
@@ -207,10 +208,10 @@ class LaporanController extends Controller
             ->where('mcu_transaksi_peserta.id', $id_mcu)->first();
         $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
         $logoPath = public_path('mofi/assets/images/logo/Logo_AMC_Full.png');
-        $qrcode = base64_encode(QrCode::format('svg')
-                    ->size(75)
+        $qrcode = base64_encode(QrCode::format('png')
+                    ->size(200)
                     ->margin(1)
-                    ->merge($logoPath, 0.3, true)
+                    ->merge($logoPath, 0.2, true)
                     ->generate($informasi_data_diri->nomor_identitas));
         $riwayat_penyakit_terdahulu = RiwayatPenyakitTerdahulu::where('transaksi_id', $id_mcu)->get();
         $riwayat_penyakit_keluarga = RiwayatPenyakitKeluarga::where('transaksi_id', $id_mcu)->get();
@@ -307,28 +308,2340 @@ class LaporanController extends Controller
             'all_citra_data' => $all_citra_data,
             'lampiran_berkas_pdf' => $lampiran_berkas_pdf
         ];
-        $folderPath = 'public/mcu/berkas/mcu/';
-        $filename = "MCU_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
-        $fullPath = storage_path("app/$folderPath$filename");
-        $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
-            ->setPaper('a4', 'portrait')
-            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
-        $pdf->render();
-        $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
-            if ($pageNumber > 1 && $pageNumber < $pageCount) {
-                $width = $canvas->get_width();
-                $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
-                $x = ($width / 2) + 175;              
-                $y = $canvas->get_height() - 40;
-                $canvas->text($x, $y, $text, null, 12);
+        // Membuat instance FPDF dengan Anonymous Class agar bisa custom Header/Footer
+        $fpdf = new class($data) extends \Codedge\Fpdf\Fpdf\Fpdf {
+            protected $data;
+            public function __construct($data) {
+                parent::__construct('P', 'mm', 'A4'); 
+                $this->data = $data;
             }
-            if ($pageCount == $pageNumber) {
-                $width = $canvas->get_width();
-                $height = $canvas->get_height();
-                $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
+            protected $extgstates = array();
+            function SetAlpha($alpha, $bm='Normal'){
+                $gs = $this->AddExtGState(array('ca'=>$alpha, 'CA'=>$alpha, 'BM'=>'/'.$bm));
+                $this->SetExtGState($gs);
             }
-        });
-        $pdf->save($fullPath);
+            function AddExtGState($parms){
+                $n = count($this->extgstates)+1;
+                $this->extgstates[$n]['parms'] = $parms;
+                return $n;
+            }
+            function SetExtGState($gs){
+                $this->_out(sprintf('/GS%d gs', $gs));
+            }
+            function _enddoc(){
+                if(!empty($this->extgstates) && $this->PDFVersion<'1.4')
+                    $this->PDFVersion='1.4';
+                parent::_enddoc();
+            }
+            function _putextgstates(){
+                for ($i = 1; $i <= count($this->extgstates); $i++)
+                {
+                    $this->_newobj();
+                    $this->extgstates[$i]['n'] = $this->n;
+                    $this->_put('<</Type /ExtGState');
+                    $parms = $this->extgstates[$i]['parms'];
+                    $this->_put(sprintf('/ca %.3F', $parms['ca']));
+                    $this->_put(sprintf('/CA %.3F', $parms['CA']));
+                    $this->_put('/BM '.$parms['BM']);
+                    $this->_put('>>');
+                    $this->_put('endobj');
+                }
+            }
+            function _putresourcedict(){
+                parent::_putresourcedict();
+                $this->_put('/ExtGState <<');
+                foreach($this->extgstates as $k=>$extgstate)
+                    $this->_put('/GS'.$k.' '.$extgstate['n'].' 0 R');
+                $this->_put('>>');
+            }
+            function _putresources(){
+                $this->_putextgstates();
+                parent::_putresources();
+            }
+            function AliasNbPages($alias = '{total_hal}') {
+                parent::AliasNbPages($alias);
+            }
+            function _putpages() {
+                $total_sebenarnya = count($this->pages) - 1;
+                for($n=1; $n<=count($this->pages); $n++) {
+                    $this->pages[$n] = str_replace('{total_hal}', $total_sebenarnya, $this->pages[$n]);
+                }
+                parent::_putpages();
+            }
+            private function bulletRow($label, $value) {
+                $this->SetFont('Arial', '', 10);
+                $this->Cell(5, 6, chr(149), 0, 0, 'C'); // Karakter Bullet
+                $this->Cell(50, 6, $label, 0, 0, 'L');
+                $this->Cell(5, 6, ':', 0, 0, 'C');
+                $this->MultiCell(0, 6, $value, 0, 'L');
+            }
+            function RoundedRect($x, $y, $w, $h, $r, $style = '', $angle = '1234') {
+                $k = $this->k;
+                $hp = $this->h;
+                if($style=='F') $op='f';
+                elseif($style=='FD' || $style=='DF') $op='B';
+                elseif($style=='CN') $op='W n'; // Khusus untuk Clipping
+                else $op='S';
+                
+                $MyArc = 4/3 * (sqrt(2) - 1);
+                $this->_out(sprintf('%.2F %.2F m',($x+$r)*$k,($hp-$y)*$k));
+
+                $xc = $x+$w-$r; $yc = $y+$r;
+                $this->_out(sprintf('%.2F %.2F l', $xc*$k,($hp-$y)*$k));
+                if (strpos($angle, '2')===false) $this->_out(sprintf('%.2F %.2F l', ($x+$w)*$k,($hp-$y)*$k));
+                else $this->_Arc($xc + $r*$MyArc, $yc - $r, $xc + $r, $yc - $r*$MyArc, $xc + $r, $yc);
+
+                $xc = $x+$w-$r; $yc = $y+$h-$r;
+                $this->_out(sprintf('%.2F %.2F l',($x+$w)*$k,($hp-$yc)*$k));
+                if (strpos($angle, '3')===false) $this->_out(sprintf('%.2F %.2F l',($x+$w)*$k,($hp-($y+$h))*$k));
+                else $this->_Arc($xc + $r, $yc + $r*$MyArc, $xc + $r*$MyArc, $yc + $r, $xc, $yc + $r);
+
+                $xc = $x+$r; $yc = $y+$h-$r;
+                $this->_out(sprintf('%.2F %.2F l',$xc*$k,($hp-($y+$h))*$k));
+                if (strpos($angle, '4')===false) $this->_out(sprintf('%.2F %.2F l',($x)*$k,($hp-($y+$h))*$k));
+                else $this->_Arc($xc - $r*$MyArc, $yc + $r, $xc - $r, $yc + $r*$MyArc, $xc - $r, $yc);
+
+                $xc = $x+$r ; $yc = $y+$r;
+                $this->_out(sprintf('%.2F %.2F l',($x)*$k,($hp-$yc)*$k));
+                if (strpos($angle, '1')===false) {
+                    $this->_out(sprintf('%.2F %.2F l',($x)*$k,($hp-$y)*$k));
+                    $this->_out(sprintf('%.2F %.2F l',($x+$r)*$k,($hp-$y)*$k));
+                } else $this->_Arc($xc - $r, $yc - $r*$MyArc, $xc - $r*$MyArc, $yc - $r, $xc, $yc - $r);
+                $this->_out($op);
+            }
+            function _Arc($x1, $y1, $x2, $y2, $x3, $y3) {
+                $h = $this->h;
+                $this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c ', $x1*$this->k, ($h-$y1)*$this->k, 
+                    $x2*$this->k, ($h-$y2)*$this->k, $x3*$this->k, ($h-$y3)*$this->k));
+            }
+            function ClippingRoundedRect($x, $y, $w, $h, $r, $outline=false, $angle='23') {
+                $this->_out(sprintf('q %.2F %.2F m', ($x+$r)*$this->k, ($this->h-$y)*$this->k));
+                // ... (Logika path rounded sama dengan RoundedRect sebelumnya)
+                // Bedanya di akhir kita panggil 'W n' untuk clipping
+                $this->RoundedRect($x, $y, $w, $h, $r, 'CN', $angle); 
+            }
+            function StartRoundedClipping($x, $y, $w, $h, $r, $angle='23') {
+                $this->_out('q'); // Save state
+                $this->RoundedRect($x, $y, $w, $h, $r, 'CN', $angle); // Buat jalur potong
+                $this->_out('W n'); // Aktifkan clipping
+            }
+            function StopClipping() {
+                $this->_out('Q'); // Restore state (mematikan clipping)
+            }
+            private function hexToRgb($hex) {
+                $hex = str_replace("#", "", $hex);
+                if(strlen($hex) == 3) {
+                    $r = hexdec(substr($hex,0,1).substr($hex,0,1));
+                    $g = hexdec(substr($hex,1,1).substr($hex,1,1));
+                    $b = hexdec(substr($hex,2,1).substr($hex,2,1));
+                } else {
+                    $r = hexdec(substr($hex,0,2));
+                    $g = hexdec(substr($hex,2,2));
+                    $b = hexdec(substr($hex,4,2));
+                }
+                return [$r, $g, $b];
+            }
+            function GetNbLines($w, $txt) {
+                $cw = &$this->CurrentFont['cw'];
+                if($w == 0) $w = $this->w - $this->rMargin - $this->x;
+                $wmax = ($w - 2 * $this->cMargin) * 1000 / $this->FontSize;
+                $s = str_replace("\r", '', $txt);
+                $nb = strlen($s);
+                if($nb > 0 and $s[$nb-1] == "\n") $nb--;
+                $sep = -1; $i = 0; $j = 0; $l = 0; $nl = 1;
+                while($i < $nb) {
+                    $c = $s[$i];
+                    if($c == "\n") { $i++; $sep = -1; $j = $i; $l = 0; $nl++; continue; }
+                    if($c == ' ') $sep = $i;
+                    $l += $cw[$c];
+                    if($l > $wmax) {
+                        if($sep == -1) { if($i == $j) $i++; } else $i = $sep + 1;
+                        $sep = -1; $j = $i; $l = 0; $nl++;
+                    } else $i++;
+                }
+                return $nl;
+            }
+            function CheckPageBreak($h) {
+                if($this->GetY() + $h > $this->PageBreakTrigger)
+                    $this->AddPage($this->CurOrientation);
+            }
+            function GenerateRow($widths, $data, $lineHeight = 5, $fill = false) {
+                // Cari tinggi maksimal baris
+                $maxNb = 0;
+                foreach($data as $i => $txt) {
+                    $nb = $this->GetNbLines($widths[$i], $txt);
+                    if($nb > $maxNb) $maxNb = $nb;
+                }
+                $h = max($maxNb * $lineHeight, 7);
+
+                // Cek Page Break
+                if($this->GetY() + $h > 270) $this->AddPage();
+
+                // Warna Zebra Cross
+                $this->SetFillColor($fill ? 245 : 255, $fill ? 245 : 255, $fill ? 245 : 255);
+
+                $startX = $this->GetX();
+                $startY = $this->GetY();
+
+                foreach($data as $i => $txt) {
+                    $this->SetXY($startX, $startY);
+                    
+                    if($i == count($data)-1) {
+                        // Kolom terakhir (KETERANGAN)
+                        $this->Cell($widths[$i], $h, '', 0, 0, 'L', true); 
+                        $this->SetXY($startX, $startY);
+                        $this->MultiCell($widths[$i], $lineHeight, $txt, 0, 'C');
+                    } else {
+                        // Kolom 0-3
+                        $align = ($i == 0) ? 'L' : 'C';
+                        $padding = ($i == 0) ? "  " : "";
+                        $this->Cell($widths[$i], $h, $padding . $txt, 0, 0, $align, true);
+                        $startX += $widths[$i];
+                    }
+                }
+                $this->SetY($startY + $h);
+            }
+            function CheckPageBreakWithHeader($widths, $headers, $totalWidth, &$yHeaderRef) {
+                if ($this->GetY() + 15 > 270) {
+                    $this->Rect(10, $yHeaderRef, $totalWidth, $this->GetY() - $yHeaderRef, 'D');
+                    
+                    $this->AddPage();
+                    $this->drawHeaderMcuTable();
+                    $this->Line(10, $this->GetY(), 200, $this->GetY());
+                    $this->ln(5);
+                    // 2. Reset koordinat Header untuk halaman baru
+                    $yHeaderRef = $this->GetY();
+                    
+                    // 3. Cetak ulang Header Hijau
+                    $this->SetFillColor(44, 148, 42);
+                    $this->SetTextColor(255);
+                    $this->SetFont('Times', 'B', 12);
+                    foreach ($headers as $i => $title) {
+                        $this->Cell($widths[$i], 8, $title, 0, 0, 'C', true);
+                    }
+                    $this->Ln();
+                    
+                    // Kembalikan font ke normal untuk isi tabel
+                    $this->SetTextColor(0);
+                    $this->SetFont('Times', '', 11);
+                }
+            }
+            function drawCheckbox($x, $y, $hRow, $wCol, $isChecked, $border = 'LR') {
+                $this->SetXY($x, $y);
+                $this->Cell($wCol, $hRow, '', $border, 0, 'C'); // Gambar border sel
+                
+                // Gambar kotak kecil di tengah sel
+                $boxSize = 4;
+                $boxX = $x + ($wCol - $boxSize) / 2;
+                $boxY = $y + ($hRow - $boxSize) / 2;
+                
+                $this->Rect($boxX, $boxY, $boxSize, $boxSize); // Kotak luar checkbox
+                
+                if ($isChecked) {
+                    // 1. Simpan Font lama agar bisa dikembalikan nanti
+                    $currentFont = $this->FontFamily;
+                    $currentSize = $this->FontSizePt;
+
+                    // 2. Set ke font ZapfDingbats
+                    // Karakter '4' adalah centang biasa, '5' adalah centang tebal
+                    $this->SetFont('ZapfDingbats', '', 10);
+                    
+                    // 3. Tentukan posisi teks agar berada di tengah kotak
+                    // Kita gunakan Text() agar tidak mengganggu aliran Cell
+                    $this->Text($boxX + 0.5, $boxY + $boxSize - 0.5, '4');
+
+                    // 4. Kembalikan ke font awal
+                    $this->SetFont($currentFont, '', $currentSize);
+                }
+
+                // Kembalikan kursor ke posisi setelah kolom
+                $this->SetXY($x + $wCol, $y);
+            }
+            //variables of html parser
+            protected $B;
+            protected $I;
+            protected $U;
+            protected $HREF;
+            protected $fontlist;
+            protected $issetfont;
+            protected $issetcolor;
+            protected $is_list;
+            protected $list_count;
+            function txtentities($html){
+                $trans = get_html_translation_table(HTML_ENTITIES);
+                $trans = array_flip($trans);
+                return strtr($html, $trans);
+            }
+            function WriteHTML($html){
+                //HTML parser
+                $html=strip_tags($html,"<b><u><i><a><img><p><br><strong><em><font><tr><blockquote><ol><li>"); 
+                $html=str_replace("\n",' ',$html); 
+                $a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE);
+                foreach($a as $i=>$e)
+                {
+                    if($i%2==0)
+                    {
+                        //Text
+                        if($this->HREF)
+                            $this->PutLink($this->HREF,$e);
+                        else
+                            $this->Write(5,$this->txtentities($e));
+                    }
+                    else
+                    {
+                        //Tag
+                        if($e[0]=='/')
+                            $this->CloseTag(strtoupper(substr($e,1)));
+                        else
+                        {
+                            //Extract attributes
+                            $a2=explode(' ',$e);
+                            $tag=strtoupper(array_shift($a2));
+                            $attr=array();
+                            foreach($a2 as $v)
+                            {
+                                if(preg_match('/([^=]*)=["\']?([^"\']*)/',$v,$a3))
+                                    $attr[strtoupper($a3[1])]=$a3[2];
+                            }
+                            $this->OpenTag($tag,$attr);
+                        }
+                    }
+                }
+            }
+            function OpenTag($tag, $attr){
+                //Opening tag
+                switch($tag){
+                    case 'STRONG':
+                        $this->SetStyle('B',true);
+                        break;
+                    case 'EM':
+                        $this->SetStyle('I',true);
+                        break;
+                    case 'B':
+                    case 'I':
+                    case 'U':
+                        $this->SetStyle($tag,true);
+                        break;
+                    case 'A':
+                        $this->HREF=$attr['HREF'];
+                        break;
+                    case 'IMG':
+                        if(isset($attr['SRC']) && (isset($attr['WIDTH']) || isset($attr['HEIGHT']))) {
+                            if(!isset($attr['WIDTH']))
+                                $attr['WIDTH'] = 0;
+                            if(!isset($attr['HEIGHT']))
+                                $attr['HEIGHT'] = 0;
+                            $this->Image($attr['SRC'], $this->GetX(), $this->GetY(), px2mm($attr['WIDTH']), px2mm($attr['HEIGHT']));
+                        }
+                        break;
+                    case 'TR':
+                    case 'BLOCKQUOTE':
+                    case 'BR':
+                        break;
+                    case 'P':
+                        break;
+                    case 'FONT':
+                        if (isset($attr['COLOR']) && $attr['COLOR']!='') {
+                            $coul=hex2dec($attr['COLOR']);
+                            $this->SetTextColor($coul['R'],$coul['V'],$coul['B']);
+                            $this->issetcolor=true;
+                        }
+                        if (isset($attr['FACE']) && in_array(strtolower($attr['FACE']), $this->fontlist)) {
+                            $this->SetFont(strtolower($attr['FACE']));
+                            $this->issetfont=true;
+                        }
+                        break;
+                    case 'OL':
+                        $this->is_list = true;
+                        $this->list_count = 0;
+                        break;
+                        
+                    case 'LI':
+                        $this->Ln(5);
+                        $this->SetX($this->GetX() + 5); // Geser ke kanan sedikit
+                        if($this->is_list){
+                            $this->list_count++;
+                            $this->Write(5, $this->list_count . ". ");
+                        } else {
+                            $this->Write(5, chr(149) . " "); // Jika ingin bullet (•)
+                        }
+                        break;
+                }
+            }
+            function CloseTag($tag){
+                //Closing tag
+                if($tag=='STRONG')
+                    $tag='B';
+                if($tag=='EM')
+                    $tag='I';
+                if($tag=='B' || $tag=='I' || $tag=='U')
+                    $this->SetStyle($tag,false);
+                if($tag=='A')
+                    $this->HREF='';
+                if($tag=='FONT'){
+                    if ($this->issetcolor==true) {
+                        $this->SetTextColor(0);
+                    }
+                    if ($this->issetfont) {
+                        $this->SetFont('arial');
+                        $this->issetfont=false;
+                    }
+                }
+                if($tag == 'OL') {
+                    $this->is_list = false;
+                    $this->list_count = 0;
+                    $this->Ln(2);
+                }
+                if($tag == 'LI') {}
+            }
+            function SetStyle($tag, $enable){
+                //Modify style and select corresponding font
+                $this->$tag+=($enable ? 1 : -1);
+                $style='';
+                foreach(array('B','I','U') as $s)
+                {
+                    if($this->$s>0)
+                        $style.=$s;
+                }
+                $this->SetFont('',$style);
+            }
+            function PutLink($URL, $txt){
+                //Put a hyperlink
+                $this->SetTextColor(0,0,255);
+                $this->SetStyle('U',true);
+                $this->Write(5,$txt,$URL);
+                $this->SetStyle('U',false);
+                $this->SetTextColor(0);
+            }
+
+
+            function Header() {
+                if ($this->PageNo() == 1) return;
+
+                // 1. Ambil dimensi halaman saat ini secara dinamis
+                $pageWidth = $this->GetPageWidth();
+                $pageHeight = $this->GetPageHeight();
+                $isLandscape = ($this->CurOrientation == 'L');
+
+                // 2. Gambar Border Atas (Mengikuti lebar halaman)
+                $this->SetAlpha(0.5);
+                // Menggunakan $pageWidth agar gambar border menutupi seluruh lebar kertas
+                $this->Image(public_path('mofi/assets/images/logo/border_hasil_mcu_atas.png'), 0, 0, $pageWidth);
+                $this->SetAlpha(1);
+                // 3. Logo AMC (Posisi tetap di kiri)
+                $this->Image(public_path('mofi/assets/images/logo/Logo_AMC_Full.png'), 10, 0, 60);
+                // 4. Pengaturan Teks Klinik (Menyesuaikan sisa lebar halaman)
+                // Hitung sisa lebar untuk teks: Total Lebar - Margin Kiri Logo (60) - Margin Kanan (10)
+                $textWidth = $pageWidth - 70; 
+                $this->SetFont('Times', 'B', 25);
+                $this->SetXY(60, 3);
+                // Gunakan $textWidth agar alignment 'R' benar-benar mentok ke kanan kertas
+                $this->Cell($textWidth, 10, 'Klinik Artha Medical Centre', 0, 1, 'R');
+                $this->SetFont('Times', '', 12);
+                $this->SetX(60);
+                $this->MultiCell($textWidth, 4, "Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765\nE-Mail: amc.clinic.yhs@gmail.com | website: arthamedicalcentre.com\nContact Person: 0812-3456-7890 | 0812-3456-7890", 0, 'R');
+            }
+            function drawHeaderMcuTable() {
+                $this->ln(5);
+                $d = $this->data['informasi_data_diri'];
+                
+                // 1. Hitung lebar halaman dinamis
+                // GetPageWidth() memberikan 210 (P) atau 297 (L)
+                $totalWidth = $this->GetPageWidth() - 20; // Dikurangi margin kiri 10 & kanan 10
+                
+                // 2. Tentukan persentase lebar kolom
+                // Kita bagi dua kolom besar (Kiri & Kanan)
+                $wLabel1 = $totalWidth * 0.13; // Kolom Label Kiri (~25mm di Portrait)
+                $wValue1 = $totalWidth * 0.39; // Kolom Isi Kiri (~75mm di Portrait)
+                $wLabel2 = $totalWidth * 0.11; // Kolom Label Kanan (~20mm di Portrait)
+                $wValue2 = $totalWidth * 0.37; // Kolom Isi Kanan (~70mm di Portrait)
+
+                $this->SetFont('Times', 'B', 10);
+                $this->SetFillColor(255, 255, 255);
+                $h = 4; // Tinggi baris
+
+                // Baris 1
+                $this->Cell($wLabel1, $h, 'Nama', 0, 0);
+                $this->Cell($wValue1, $h, ': ' . strtoupper($d['nama_peserta']), 0, 0);
+                $this->Cell($wLabel2, $h, 'No MCU', 0, 0);
+                $this->Cell($wValue2, $h, ': ' . $this->data['nomor_mcu'], 0, 1);
+                
+                // Baris 2
+                $this->Cell($wLabel1, $h, 'TTL / Umur', 0, 0);
+                $this->Cell($wValue1, $h, ': ' . $d['tempat_lahir'] . ', ' . date('d-m-Y', strtotime($d['tanggal_lahir'])) . ' / ' . $d['umur'] . ' Thn', 0, 0);
+                $this->Cell($wLabel2, $h, 'Tanggal', 0, 0);
+                $this->Cell($wValue2, $h, ': ' . date('d-m-Y', strtotime($d['tanggal_mcu'])), 0, 1);
+
+                // Baris 3
+                $this->Cell($wLabel1, $h, 'NIK', 0, 0);
+                $this->Cell($wValue1, $h, ': ' . $d['nomor_identitas'], 0, 0);
+                $this->Cell($wLabel2, $h, 'Perusahaan', 0, 0);
+                $this->Cell($wValue2, $h, ': ' . $d['company_name'], 0, 1);
+
+                // Baris 4
+                $this->Cell($wLabel1, $h, 'Jenis Kelamin', 0, 0);
+                $this->Cell($wValue1, $h, ': ' . $d['jenis_kelamin'], 0, 0);
+                $this->Cell($wLabel2, $h, 'Departemen', 0, 0);
+                $this->Cell($wValue2, $h, ': ' . $d['nama_departemen'], 0, 1);
+
+                // Baris 5
+                $this->Cell($wLabel1, $h, 'Tipe MCU', 0, 0);
+                $this->Cell($wValue1, $h, ': ' . $d['tipe_mcu_peserta'], 0, 0);
+                $this->Cell($wLabel2, $h, 'Dokter', 0, 0);
+                $this->Cell($wValue2, $h, ': dr. Muhammad Taufiq Amrullah, S.Ked' , 0, 1);
+            }
+            function Footer() {
+                if ($this->PageNo() == 1) return;
+
+                $this->SetAlpha(0.5);
+                $this->Image(public_path('mofi/assets/images/logo/border_hasil_mcu_bawah.png'), 0, 256, 210);
+                $this->SetAlpha(0.1);
+                $this->Image(public_path('mofi/assets/images/logo/confidential_wlogo.png'), 50, 120, 110);
+                $this->SetAlpha(1);
+
+                $this->SetXY(0, 280);
+                $this->SetFont('Times', '', 12);
+                $hal_sekarang = $this->PageNo() - 1;
+                $teks = 'Halaman ' . $hal_sekarang . ' Dari {total_hal}';
+                $this->SetX(150); 
+                $this->Cell(50, 10, $teks, 0, 0, 'R');
+                
+                // Logo-logo sertifikasi (Kiri)
+                $this->Image(public_path('mofi/assets/images/logo/IASCB.png'), 10, 275, 15);
+                $this->Image(public_path('mofi/assets/images/logo/KEMENTAKER.png'), 25, 275, 15);
+                $this->Image(public_path('mofi/assets/images/logo/VRC.png'), 40, 278, 25);
+            }
+            /*section 1*/
+            public function renderProfilPeserta() {
+                // 1. Judul Tengah
+                $this->SetFont('Times', 'B', 14);
+                $this->Ln(10);
+                $this->Cell(0, 7, 'PEMERIKSAAN KESEHATAN', 0, 1, 'C');
+                $this->Cell(0, 7, '(MEDICAL CHECKUP)', 0, 1, 'C');
+                $this->Ln(5);
+
+                // 2. Foto Peserta (Sesuai img height: 250px)
+                // Kita posisikan di tengah secara manual
+                $fotoUrl = $this->data['riwayat_informasi_foto']['data_foto']?? null;
+                if ($fotoUrl && @get_headers($fotoUrl)[0] == 'HTTP/1.1 404 Not Found') {
+                    // Jika 404, ganti dengan gambar placeholder transparan atau default
+                    $fotoUrl = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
+                }
+                $xCenter = (210 - 50) / 2; // (Lebar kertas - lebar foto) / 2
+                $this->Image($fotoUrl, $xCenter, $this->GetY(), 50, 65); 
+                $this->Ln(70); // Kasih jarak setelah foto
+
+                // 3. Tabel Identitas (Sesuai table width: 80%)
+                $this->SetFont('Arial', 'B', 12);
+                $leftMargin = 25; // Agar terlihat center (width 80%)
+                $this->SetX($leftMargin);
+                
+                $d = $this->data['informasi_data_diri'];
+                $rows = [
+                    ['NOMOR MEDICAL CHECKUP', ': ' . $this->data['nomor_mcu']],
+                    ['NAMA PESERTA', ': ' . $d['nama_peserta']],
+                    ['NIK / NRR', ': ' . $d['nomor_identitas']],
+                    ['TEMPAT TGL LAHIR / UMUR', ': ' . $d['tempat_lahir'] . ', ' . date('d-m-Y', strtotime($d['tanggal_lahir'])) . ' / ' . $d['umur'] . ' Tahun'],
+                    ['JENIS KELAMIN', ': ' . $d['jenis_kelamin']],
+                    ['PERUSAHAAN', ': ' . $d['company_name']],
+                    ['DEPARTEMEN JABATAN', ': ' . $d['nama_departemen']],
+                    ['ALAMAT', ': ' . $d['alamat']],
+                    ['TANGGAL MCU / TIPE MCU', ': ' . date('d-m-Y', strtotime($d['tanggal_mcu'])) . ' / ' . $d['tipe_mcu_peserta']],
+                ];
+
+                foreach ($rows as $row) {
+                    $this->SetX($leftMargin);
+                    $this->Cell(60, 8, $row[0], 0, 0);
+                    $this->Cell(5, 8, '', 0, 0); // Spacer
+                    
+                    // Gunakan MultiCell jika Alamat terlalu panjang
+                    if ($row[0] == 'ALAMAT') {
+                        $this->MultiCell(100, 8, $row[1], 0, 'L');
+                    } else {
+                        $this->Cell(100, 8, $row[1], 0, 1);
+                    }
+                }
+
+                // 4. ISO Certified (Sesuai position: absolute bottom: 80px)
+                $this->SetY(-45);
+                $this->SetX(10);
+                $this->SetFont('Times', 'B', 11);
+                $this->Cell(0, 5, 'ISO 9001:2015 Certified', 0, 1, 'L');
+                $this->SetFont('Times', '', 11);
+                $this->Cell(0, 5, '2410010019699K001', 0, 1, 'L');
+                $this->SetFont('Times', 'B', 11);
+                $this->Cell(0, 5, 'ISO 14001:2015 Certified', 0, 1, 'L');
+                $this->SetFont('Times', '', 11);
+                $this->Cell(0, 5, '24100100196914K001', 0, 1, 'L');
+            }
+            /*section 2*/
+            public function renderLaporanKesimpulan() {
+                $this->drawHeaderMcuTable();
+                $this->Line(10, $this->GetY(), 200, $this->GetY());
+                $this->ln(5);
+                $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                $this->_out('q'); 
+                $this->RoundedRect(10, $y_awal, 100, 10, 5, 'CN', '23'); 
+                $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 120, 10);
+                $this->_out('Q');
+
+                $this->SetTextColor(255, 255, 255);
+                $this->SetFont('Times', 'B', 14);
+                $this->Cell(0, 10, 'LAPORAN HASIL MEDICAL CHECKUP', 0, 1, 'L');
+                
+                $this->Ln(5);
+                $this->SetTextColor(0, 0, 0);
+                $this->SetFont('Times', 'B', 12);
+                $this->Cell(0, 7, 'HASIL PEMERIKSAAN', 0, 1, 'L');
+
+                // 2. Tabel Hasil Pemeriksaan
+                $this->SetFont('Times', '', 10);
+                
+                $pemeriksaan = [
+                    ['label' => 'RIWAYAT MEDIS', 'data' => $this->data['quill_pemeriksaan_riwayat_medis']],
+                    ['label' => 'PEMERIKSAAN FISIK', 'data' => $this->data['quill_pemeriksaan_fisik']],
+                    ['label' => 'HASIL LABORATORIUM', 'data' => $this->data['quill_pemeriksaan_laboratorium']],
+                    ['label' => 'RO THORAX', 'data' => $this->data['quill_pemeriksaan_rontgen_thorax']],
+                    ['label' => 'RO LUMBOSACRAL', 'data' => $this->data['quill_pemeriksaan_rontgen_lumbosacral']],
+                    ['label' => 'USG UB DOMAIN', 'data' => $this->data['quill_pemeriksaan_usg_ubdomain']],
+                    ['label' => 'EKG', 'data' => $this->data['quill_pemeriksaan_ekg']],
+                ];
+
+                foreach ($pemeriksaan as $item) {
+                    $cleanData = trim(strip_tags($item['data']));
+                    if (!empty($cleanData)) {
+                        $this->bulletRow($item['label'], $cleanData);
+                    }
+                }
+
+                // Audiometri (Logika Khusus)
+                $audioKiri = trim(strip_tags($this->data['quill_pemeriksaan_audio_kiri']));
+                $audioKanan = trim(strip_tags($this->data['quill_pemeriksaan_audio_kanan']));
+                if (!empty($audioKiri) || !empty($audioKanan)) {
+                    $this->bulletRow('AUDIOMETRI', ''); 
+                    $this->SetY($this->GetY() - 6); 
+                    $this->SetX(70); 
+                    $this->SetFont('Times', 'B', 10);
+                    $this->Write(6, 'Kiri: ');
+                    $this->SetFont('Times', '', 10);
+                    $this->Write(6, $audioKiri . '   ');
+                    $this->SetFont('Times', 'B', 10);
+                    $this->Write(6, 'Kanan: ');
+                    $this->SetFont('Times', '', 10);
+                    $this->Write(6, $audioKanan);
+                    $this->Ln(6); 
+                }
+
+                // Spirometri (Logika Khusus)
+                $spiroRes = trim(strip_tags($this->data['quill_pemeriksaan_spiro_restriksi']));
+                $spiroObs = trim(strip_tags($this->data['quill_pemeriksaan_spiro_obstruksi']));
+                if (!empty($spiroRes) || !empty($spiroObs)) {
+                    $this->bulletRow('SPIROMETRI', '');
+                    $this->SetY($this->GetY() - 6);
+                    $this->SetX(70);
+                    
+                    $this->SetFont('Times', 'B', 10);
+                    $this->Write(6, 'Restriksi: ');
+                    $this->SetFont('Times', '', 10);
+                    $this->Write(6, $spiroRes . '   ');
+                    
+                    $this->SetFont('Times', 'B', 10);
+                    $this->Write(6, 'Obstruksi: ');
+                    $this->SetFont('Times', '', 10);
+                    $this->Write(6, $spiroObs);
+                    $this->Ln(6);
+                }
+                $this->Ln(5);
+                $this->SetFont('Times', 'B', 12);
+                $this->Cell(0, 7, 'KESIMPULAN HASIL MEDICAL CHECKUP', 0, 1, 'L');
+                
+                $this->SetFont('Times', 'B', 14);
+                $textKesimpulan = strtoupper(str_replace("_", " ", $this->data['kesimpulan_hasil_medical_checkup']));
+                $width = $this->GetStringWidth($textKesimpulan) + 55;
+                $this->SetX(11);
+                $this->SetLineWidth(1.0); 
+                $this->Cell($width, 13, $textKesimpulan, 1, 1, 'C');
+                $this->SetLineWidth(0.2);
+                $this->SetFont('Times', 'B', 12);
+                $this->Ln(2);
+                $this->Cell(0, 7, 'SARAN HASIL MEDICAL CHECKUP', 0, 1, 'L');
+                $this->SetFont('Times', '', 10);
+                $this->MultiCell(0, 5, trim(strip_tags($this->data['quill_tindakan_saran'])), 0, 'L');
+
+                // 5. Tanda Tangan (Footer Page)
+                $this->SetY(-65); // Pindah ke area bawah halaman
+                $ySkg = $this->GetY();
+                
+                // Sisi Kiri (QR Keaslian)
+                $this->SetFont('Times', '', 10);
+                $this->SetXY(10, $ySkg);
+                $this->MultiCell(90, 4, "Pindai untuk periksa keaslian dokumen\nDokumen ini tervalidasi dan dicetak secara otomatis", 0, 'C');
+                if($this->data['qrcode']) {
+                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 40, $this->GetY(), 25, 25, 'PNG');
+                }
+
+                // // Sisi Kanan (Dokter)
+                $this->SetXY(110, $ySkg);
+                $this->MultiCell(90, 4, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                if($this->data['qrcode']) {
+                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY(), 25, 25, 'PNG');
+                }
+                $this->SetXY(110, 265);
+                $this->SetFont('Arial', 'BU', 10);
+                $this->MultiCell(90, 5, 'dr. Muhammad Taufiq Amrullah, S.Ked\n440.007.2/127/SIP-DINKES/XI/2023', 0, 'C');
+            }
+            /*section 3*/
+            public function statusKesehatan(){
+                $this->drawHeaderMcuTable();
+                $this->Line(10, $this->GetY(), 200, $this->GetY());
+                $this->ln(5);
+                // Judul "STATUS KESEHATAN"
+                $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                $this->_out('q'); 
+                $this->RoundedRect(10, $y_awal, 65, 10, 5, 'CN', '23'); 
+                $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 120, 10);
+                $this->_out('Q');
+
+                $this->SetTextColor(255, 255, 255);
+                $this->SetFont('Times', 'B', 14);
+                $this->Cell(0, 10, 'STATUS KESEHATAN', 0, 1, 'L');
+                $this->Ln(2);
+
+                $groupedItems = [];
+                foreach ($this->data['status_kesimpulan_lab'] as $status => $items) {
+                    foreach ($items as $item) {
+                        $raw_status = strtoupper(trim($item->status));
+                        $normalized_status = (str_contains($raw_status, 'FIT TO WORK') || str_contains($raw_status, 'FIT WITH NOTE')) 
+                                            ? 'FIT' : $raw_status;
+                        $groupedItems[$normalized_status][] = $item;
+                    }
+                }
+
+                $target_kesimpulan = strtoupper(trim($this->data['kesimpulan_hasil_medical_checkup']));
+                if (str_contains($target_kesimpulan, 'FIT_TO_WORK') || str_contains($target_kesimpulan, 'FIT_WITH_NOTE')) {
+                    $target_kesimpulan = 'FIT';
+                }
+                $id_terpilih = $this->data['kesimpulan_tindakan']->kesimpulan_keseluruhan;
+                $id_terpilih_hex = $this->data['kesimpulan_tindakan']->kesimpulan_warna;
+                $rgbTerpilih = $this->hexToRgb($id_terpilih_hex);
+                // --- 3. Tabel MCU ---
+                // Header
+                $this->SetFillColor(44, 148, 42);
+                $this->SetTextColor(255, 255, 255);
+                $this->SetFont('Times', 'B', 12);
+                $this->Cell(40, 8, 'STATUS', 1, 0, 'C', true);
+                $this->Cell(40, 8, 'KATEGORI', 1, 0, 'C', true);
+                $this->Cell(110, 8, 'CATATAN', 1, 1, 'C', true);
+                $this->SetTextColor(0, 0, 0);
+                $this->SetFont('Times', '', 11);
+                $lineHeight = 7;
+                foreach ($groupedItems as $normalized_status => $items) {
+                    // A. Hitung total tinggi untuk kolom STATUS (Rowspan)
+                    $groupHeight = 0;
+                    foreach ($items as $item) {
+                        $nb = $this->GetNbLines(110, $item->catatan);
+                        $groupHeight += ($nb * $lineHeight);
+                    }
+
+                    $startX = $this->GetX();
+                    $startY = $this->GetY();
+
+                    // B. Cetak Kolom STATUS (Hanya 1x per grup)
+                    $isHighlightedGroup = ($normalized_status == $target_kesimpulan);
+                    $this->SetFillColor($isHighlightedGroup ? $rgbTerpilih[0] : 255, $isHighlightedGroup ? $rgbTerpilih[1] : 255, $isHighlightedGroup ? $rgbTerpilih[2] : 255);
+                    $this->Cell(40, $groupHeight, $normalized_status, 1, 0, 'C', true);
+
+                    // C. Cetak baris-baris di dalam grup
+                    foreach ($items as $index => $item) {
+                        // Hitung tinggi spesifik baris ini berdasarkan kolom CATATAN
+                        $nbLines = $this->GetNbLines(110, $item->catatan);
+                        $rowHeight = $nbLines * $lineHeight;
+
+                        // Tentukan warna baris ini
+                        if ($item->id == $id_terpilih) {
+                            $this->SetFillColor($rgbTerpilih[0], $rgbTerpilih[1], $rgbTerpilih[2]);
+                        } else {
+                            $this->SetFillColor(255, 255, 255);
+                        }
+
+                        // Pindah ke posisi kolom KATEGORI
+                        $this->SetXY($startX + 40, $this->GetY());
+                        // Kolom KATEGORI (Tinggi harus sama dengan rowHeight)
+                        $this->Cell(40, $rowHeight, $item->kategori, 1, 0, 'C', true);
+                        // Kolom CATATAN (Gunakan MultiCell)
+                        $this->MultiCell(110, $lineHeight, $item->catatan, 1, 'L', true);
+                    }
+                }
+                // --- 4. Keterangan & Catatan ---
+                $this->Ln(5);
+                $this->SetFont('Times', 'B', 12);
+                $this->Cell(0, 5, 'KETERANGAN:', 0, 1);
+                
+                // Legend (Simulasi kotak warna)
+                $this->SetFont('Times', '', 9);
+                $yLeg = $this->GetY() + 2;
+                $lebarKotak = 40;
+                $tinggiKotak = 5;
+                $jarakAntar = 1;
+                // Contoh satu kotak legend
+                // 1. SEHAT (Hijau Muda)
+                $this->SetFillColor(144, 238, 144); 
+                $this->Rect(10, $yLeg, $lebarKotak, $tinggiKotak, 'DF'); 
+                $this->SetXY(10, $yLeg + $tinggiKotak + 1);
+                $this->MultiCell($lebarKotak, 4, 'SEHAT', 0, 'C');
+
+                // 2. SEHAT RESIKO RINGAN (Kuning)
+                $newX = 10 + $lebarKotak + $jarakAntar;
+                $this->SetFillColor(255, 255, 0);
+                $this->Rect($newX, $yLeg, $lebarKotak, $tinggiKotak, 'DF');
+                $this->SetXY($newX, $yLeg + $tinggiKotak + 1);
+                $this->MultiCell($lebarKotak, 4, 'SEHAT RESIKO RINGAN', 0, 'C');
+
+                // 3. RESIKO SEDANG / TINGGI (Oranye)
+                $newX = 10 + (($lebarKotak + $jarakAntar) * 2);
+                $this->SetFillColor(255, 165, 0);
+                $this->Rect($newX, $yLeg, $lebarKotak + 10, $tinggiKotak, 'DF');
+                $this->SetXY($newX, $yLeg + $tinggiKotak + 1);
+                $this->MultiCell($lebarKotak + 10, 3.5, "RESIKO SEDANG / TINGGI DAN\nPERLU PENGOBATAN", 0, 'C');
+
+                // 4. TIDAK SEHAT (Merah Muda)
+                $newX = 10 + (($lebarKotak + 3.3 + $jarakAntar) * 3);
+                $this->SetFillColor(255, 114, 114);
+                $this->Rect($newX, $yLeg, $lebarKotak + 17, $tinggiKotak, 'DF');
+                $this->SetXY($newX, $yLeg + $tinggiKotak + 1);
+                $this->MultiCell($lebarKotak + 17, 3.5, "TIDAK SEHAT / PERLU PENGOBATAN DAN PERAWATAN RUTIN", 0, 'C');
+
+                $this->SetFont('Times', 'B', 12);
+                $this->Cell(0, 5, 'CATATAN:', 0, 1);
+                $this->SetFont('Times', '', 11);
+                $this->MultiCell(0, 5, "1. Kesimpulan yang dikeluarkan berdasarkan hasil temuan yang didapatkan pada pemeriksaan medical check up.\n2. Kesimpulan hasil medical check up tidak dapat diganggu gugat.\n3. Bila masih ada hal yang perlu dijelaskan, mohon segera menghubungi dokter. Terima kasih atas kerja samanya.", 0, 'L');
+                // --- 5. Footer (Tanda Tangan) ---
+                $this->SetY(-75);
+                $yFooter = $this->GetY();
+
+                // Kiri: Tim Dokter
+                $this->SetFont('Times', 'B', 10);
+                $this->SetXY(10, $yFooter);
+                $this->Cell(90, 5, "Tim Dokter Medical Check Up:", 0, 1, 'L');
+                $this->SetFont('Times', '', 9);
+                $this->Cell(90, 4, "1. dr. Muhammad Taufiq Amrullah, S.Ked", 0, 1, 'L');
+                $this->Cell(90, 4, "2. dr. Khadijah Amir, S.Ked", 0, 1, 'L');
+                $this->Cell(90, 4, "3. dr. Devi Grania Amelia Selekede, Sp.P.", 0, 1, 'L');
+                $this->Cell(90, 4, "4. dr. Muhammad Asrul. M.Kes Sp.JP(K)", 0, 1, 'L');
+                $this->Cell(90, 4, "5. dr. Amir. Sp.Rad", 0, 1, 'L');
+
+                // Kanan: QR & Pengesahan
+                $this->SetXY(110, $yFooter);
+                $this->SetFont('Arial', '', 10);
+                $this->MultiCell(90, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+
+                if($this->data['qrcode']) {
+                    // Posisi QR di tengah kolom kanan
+                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY() + 2, 25, 25, 'PNG');
+                }
+
+                $this->SetXY(110, $yFooter + 40);
+                $this->SetFont('Arial', 'BU', 10);
+                $this->Cell(90, 5, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 1, 'C');
+                $this->SetX(110);
+                $this->SetFont('Arial', 'B', 10);
+                $this->Cell(90, 5, '440.007.2/127/SIP-DINKES/XI/2023', 0, 1, 'C');
+            }
+            /*section 4*/
+            public function cetakRiwayat() {
+                $this->drawHeaderMcuTable();
+                $this->Line(10, $this->GetY(), 200, $this->GetY());
+                $this->ln(5);
+                $lineHeight = 6;
+                // --- RIWAYAT PENYAKIT TERDAHULU & KELUARGA ---
+                $sections = [
+                    'RIWAYAT PENYAKIT TERDAHULU' => $this->data['riwayat_penyakit_terdahulu'],
+                    'RIWAYAT PENYAKIT KELUARGA' => $this->data['riwayat_penyakit_keluarga'],
+                ];
+                $widths = [90, 30, 70];
+                $totalWidth = array_sum($widths);
+                foreach ($sections as $judul => $items) {
+                    $this->SetFillColor(255, 87, 34); 
+                    $this->SetTextColor(255, 255, 255);
+                    $this->SetFont('Times', 'B', 12);
+                    $xPos = $this->GetX();
+                    $yPos = $this->GetY();
+                    $w = $this->GetStringWidth($judul) + 10; // Lebar otomatis sesuai teks + padding
+                    $h = 8;
+                    $this->RoundedRect($xPos, $yPos, $w, $h, 3.5, 'F');
+                    $this->SetXY($xPos, $yPos);
+                    $this->Cell($w, $h, $judul, 0, 1, 'C');
+                    $this->ln(2);
+                    // 1. Simpan posisi Y TEPAT sebelum Header dimulai
+                    $yHeader = $this->GetY(); 
+                    
+                    // Header Tabel
+                    $this->SetFillColor(44, 148, 42);
+                    $this->SetTextColor(255, 255, 255);
+                    $this->Cell(90, 8, 'PERTANYAAN', 0, 0, 'C', true);
+                    $this->Cell(30, 8, 'JAWABAN', 0, 0, 'C', true);
+                    $this->Cell(70, 8, 'KETERANGAN', 0, 1, 'C', true);
+
+                    $this->SetTextColor(0, 0, 0);
+                    $this->SetFont('Times', '', 11);
+
+                    $isGrey = false;
+
+                    foreach ($items as $item) {
+                        // 2. Cek apakah baris ini akan memicu halaman baru
+                        // Kita butuh estimasi tinggi baris, misal 7mm
+                        if($this->GetY() + 10 > 270) {
+                            // A. Tutup kotak di halaman lama
+                            $totalH = $this->GetY() - $yHeader;
+                            $this->Rect(10, $yHeader, $totalWidth, $totalH, 'D');
+                            
+                            $this->AddPage();
+
+                            // B. Cetak Logo & Garis Pembatas (Sesuai maumu, manual di tiap new page)
+                            $this->drawHeaderMcuTable();
+                            $this->Line(10, $this->GetY(), 200, $this->GetY());
+                            $this->ln(5);
+
+                            // C. Reset Y Header di halaman baru (PENTING: Setelah logo & sebelum header hijau)
+                            $yHeader = $this->GetY(); 
+
+                            // D. Cetak Ulang Header Hijau di Halaman Baru
+                            $this->SetFillColor(44, 148, 42);
+                            $this->SetTextColor(255, 255, 255);
+                            $this->SetFont('Times', 'B', 12);
+                            $this->Cell(90, 8, 'PERTANYAAN', 0, 0, 'C', true);
+                            $this->Cell(30, 8, 'JAWABAN', 0, 0, 'C', true);
+                            $this->Cell(70, 8, 'KETERANGAN', 0, 1, 'C', true);
+                            
+                            // Kembalikan font ke normal untuk isi tabel
+                            $this->SetTextColor(0, 0, 0);
+                            $this->SetFont('Times', '', 11);
+                        }
+
+                        $row = [
+                            $item->nama_atribut_saat_ini,
+                            ($item->status == "1" ? "Ya" : "Tidak"),
+                            ($item->keterangan ?: "-")
+                        ];
+                        
+                        $this->GenerateRow($widths, $row, 0, $isGrey);
+                        $isGrey = !$isGrey; 
+                    }
+
+                    // 3. Gambar kotak penutup untuk section ini
+                    $yEndBody = $this->GetY();
+                    $totalHeight = $yEndBody - $yHeader;
+                    $this->Rect(10, $yHeader, $totalWidth, $totalHeight, 'D'); 
+                    
+                    $this->Ln(2);
+                }
+                
+                $this->SetFillColor(255, 87, 34); 
+                $this->SetTextColor(255, 255, 255);
+                $this->SetFont('Times', 'B', 12);
+
+                $xPos = $this->GetX();
+                $yPos = $this->GetY();
+                $text = 'RIWAYAT KECELAKAAN KERJA';
+                $w = $this->GetStringWidth($text) + 10; 
+                $h = 8; 
+                $this->RoundedRect($xPos, $yPos, $w, $h, 3.5, 'F'); 
+                $this->Cell($w, $h, $text, 0, 1, 'L'); 
+                $this->Ln(2); 
+                $this->SetTextColor(0, 0, 0);
+                $this->SetFont('Times', '', 10);
+                $this->MultiCell(0, 6, strip_tags($this->data['riwayat_kecelakaan_kerja']), 0, 'L');
+                $this->Ln(2);
+                
+                // --- RIWAYAT KEBIASAAN ---
+                $this->SetFillColor(255, 87, 34); 
+                $this->SetTextColor(255, 255, 255);
+                $this->SetFont('Times', 'B', 12);
+
+                $xPos = $this->GetX();
+                $yPos = $this->GetY();
+                $text = 'RIWAYAT KEBIASAAN';
+                $w = $this->GetStringWidth($text) + 10; 
+                $h = 8; 
+                $this->RoundedRect($xPos, $yPos, $w, $h, 3.5, 'F'); 
+                $this->Cell($w, $h, $text, 0, 1, 'L'); 
+                $this->Ln(2); 
+                $this->SetTextColor(0, 0, 0);
+
+                // Lebar: 50 + 25 + 25 + 30 + 60 = 190
+                $widthsKebiasaan = [50, 25, 25, 30, 60];
+                $totalWidthK = array_sum($widthsKebiasaan);
+
+                // Header
+                $yHeaderK = $this->GetY();
+                $this->SetFillColor(44, 148, 42); $this->SetTextColor(255);
+                $this->SetFont('Times', 'B', 12);
+                $this->Cell(50, 8, 'PERTANYAAN', 0, 0, 'C', true);
+                $this->Cell(25, 8, 'JAWABAN', 0, 0, 'C', true);
+                $this->Cell(25, 8, 'NILAI', 0, 0, 'C', true);
+                $this->Cell(30, 8, 'SATUAN', 0, 0, 'C', true);
+                $this->Cell(60, 8, 'KETERANGAN', 0, 1, 'C', true);
+
+                // Body
+                $this->SetTextColor(0); $this->SetFont('Times', '', 11);
+                $isGrey = false;
+
+                foreach ($this->data['riwayat_kebiasaan_hidup'] as $item) {
+                    if ($item->jenis_kebiasaan == 1) {
+                        if ($this->GetY() + 8 > 270) {
+                            $this->Rect(10, $yHeaderK, $totalWidthK, $this->GetY() - $yHeaderK, 'D'); // Tutup lama
+                            $this->AddPage();
+                            $this->drawHeaderMcuTable(); // Logo New Page
+                            $this->Line(10, $this->GetY(), 200, $this->GetY());
+                            $this->ln(5);
+                            
+                            $yHeaderK = $this->GetY(); // Reset Y awal border
+                            // Cetak ulang Header Hijau
+                            $this->SetFillColor(44, 148, 42); $this->SetTextColor(255); $this->SetFont('Times', 'B', 9);
+                            $this->Cell(50, 8, 'PERTANYAAN', 0, 0, 'C', true);
+                            $this->Cell(25, 8, 'JAWABAN', 0, 0, 'C', true);
+                            $this->Cell(25, 8, 'NILAI', 0, 0, 'C', true);
+                            $this->Cell(30, 8, 'SATUAN', 0, 0, 'C', true);
+                            $this->Cell(60, 8, 'KETERANGAN', 0, 1, 'C', true);
+                            $this->SetTextColor(0); $this->SetFont('Times', '', 9);
+                        }
+                        $row = [
+                            $item->nama_kebiasaan,
+                            ($item->status_kebiasaan == 0 ? 'Tidak' : 'Ya'),
+                            $item->nilai_kebiasaan,
+                            $item->satuan_kebiasaan,
+                            ($item->keterangan ?: '-')
+                        ];
+                        $this->GenerateRow($widthsKebiasaan, $row, 5, $isGrey);
+                        $isGrey = !$isGrey;
+                    }
+                }
+
+                // Border Luar
+                $this->Rect(10, $yHeaderK, $totalWidthK, $this->GetY() - $yHeaderK, 'D');
+                if ($this->data['informasi_data_diri']->jenis_kelamin == 'Perempuan') {
+                    $this->Ln(5);
+                    
+                    // Label Merah
+                    $this->SetFillColor(255, 87, 34); 
+                    $this->SetTextColor(255, 255, 255);
+                    $this->SetFont('Times', 'B', 12);
+
+                    $xPos = $this->GetX();
+                    $yPos = $this->GetY();
+                    $text = 'KHUSUS WANITA';
+                    $w = $this->GetStringWidth($text) + 10; 
+                    $h = 8; 
+                    $this->RoundedRect($xPos, $yPos, $w, $h, 3.5, 'F'); 
+                    $this->Cell($w, $h, $text, 0, 1, 'L'); 
+                    $this->Ln(2); 
+                    $this->SetTextColor(0, 0, 0);
+                    
+                    // Lebar: 50 + 25 + 45 + 70 = 190
+                    $widthsWanita = [50, 25, 45, 70];
+                    $totalWidthW = array_sum($widthsWanita);
+
+                    // Header
+                    $yHeaderW = $this->GetY();
+                    $this->SetFillColor(44, 148, 42); $this->SetFont('Times', 'B', 12);
+                    $this->Cell(50, 8, 'PERTANYAAN', 0, 0, 'C', true);
+                    $this->Cell(25, 8, 'JAWABAN', 0, 0, 'C', true);
+                    $this->Cell(45, 8, 'WAKTU', 0, 0, 'C', true);
+                    $this->Cell(70, 8, 'KETERANGAN', 0, 1, 'C', true);
+
+                    // Body
+                    $this->SetTextColor(0); $this->SetFont('Times', '', 11);
+                    $isGrey = false;
+
+                    foreach ($this->data['riwayat_kebiasaan_hidup'] as $item) {
+                        if ($item->jenis_kebiasaan == 2) {
+                            // --- CEK PAGE BREAK ---
+                            if ($this->GetY() + 8 > 270) {
+                                $this->Rect(10, $yHeaderW, $totalWidthW, $this->GetY() - $yHeaderW, 'D'); // Tutup lama
+                                $this->AddPage();
+                                $this->drawHeaderMcuTable(); // Logo New Page
+                                $this->Line(10, $this->GetY(), 200, $this->GetY());
+                                $this->ln(5);
+                                
+                                $yHeaderW = $this->GetY(); // Reset Y awal border
+                                // Cetak ulang Header Hijau
+                                $this->SetFillColor(44, 148, 42); $this->SetTextColor(255); $this->SetFont('Times', 'B', 9);
+                                $this->Cell(50, 8, 'PERTANYAAN', 0, 0, 'C', true);
+                                $this->Cell(25, 8, 'JAWABAN', 0, 0, 'C', true);
+                                $this->Cell(45, 8, 'WAKTU', 0, 0, 'C', true);
+                                $this->Cell(70, 8, 'KETERANGAN', 0, 1, 'C', true);
+                                $this->SetTextColor(0); $this->SetFont('Times', '', 8);
+                            }
+                            $waktu = ($item->waktu_kebiasaan) ? date('d-m-Y H:i', strtotime($item->waktu_kebiasaan)) : '-';
+                            $row = [
+                                $item->nama_kebiasaan,
+                                ($item->status_kebiasaan == 0 ? 'Tidak' : 'Ya'),
+                                $waktu,
+                                ($item->keterangan ?: '-')
+                            ];
+                            $this->GenerateRow($widthsWanita, $row, 5, $isGrey);
+                            $isGrey = !$isGrey;
+                        }
+                    }
+
+                    // Border Luar
+                    $this->Rect(10, $yHeaderW, $totalWidthW, $this->GetY() - $yHeaderW, 'D');
+                }
+                // RIWAYAT IMUNISASI
+                $this->ln(2);
+                $sections = [
+                    'RIWAYAT IMUNISASI' => $this->data['riwayat_imunisasi'],
+                ];
+                $widths = [90, 30, 70];
+                $totalWidth = array_sum($widths);
+                foreach ($sections as $judul => $items) {
+                    $this->SetFillColor(255, 87, 34); 
+                    $this->SetTextColor(255, 255, 255);
+                    $this->SetFont('Times', 'B', 12);
+                    $xPos = $this->GetX();
+                    $yPos = $this->GetY();
+                    $w = $this->GetStringWidth($judul) + 10; // Lebar otomatis sesuai teks + padding
+                    $h = 8;
+                    $this->RoundedRect($xPos, $yPos, $w, $h, 3.5, 'F');
+                    $this->SetXY($xPos, $yPos);
+                    $this->Cell($w, $h, $judul, 0, 1, 'L');
+                    $this->ln(2);
+
+                    // Header Tabel
+                    $yHeader = $this->GetY(); // Simpan posisi awal tabel
+                    $this->SetFillColor(44, 148, 42);
+                    $this->SetTextColor(255, 255, 255);
+                    $this->Cell(90, 8, 'PERTANYAAN', 0, 0, 'C', true);
+                    $this->Cell(30, 8, 'JAWABAN', 0, 0, 'C', true);
+                    $this->Cell(70, 8, 'KETERANGAN', 0, 1, 'C', true);
+
+                    $this->SetTextColor(0, 0, 0);
+                    $this->SetFont('Times', '', 11);
+
+                    $isGrey = false;
+                    $yStartBody = $this->GetY();
+
+                    foreach ($items as $item) {
+                        $row = [
+                            $item->nama_atribut_saat_ini,
+                            ($item->status == "1" ? "Ya" : "Tidak"),
+                            ($item->keterangan ?: "-")
+                        ];
+                        $this->GenerateRow($widths, $row, 5, $isGrey);
+                        $isGrey = !$isGrey; 
+                    }
+
+                    // --- BAGIAN PENTING: Gambar Border Pinggir ---
+                    $yEndBody = $this->GetY();
+                    $totalHeight = $yEndBody - $yHeader;
+                    
+                    // Gambar kotak kosong (tanpa fill) hanya di pinggiran tabel
+                    $this->Rect(10, $yHeader, $totalWidth, $totalHeight, 'D'); 
+                    $this->Ln(2);
+                }
+
+                //RIWAYAT PAPARAN KERJA
+                $widthsPaparan = [60, 25, 35, 30, 40];
+                $totalWidthPaparan = array_sum($widthsPaparan);
+                $headerTitles = ['PERTANYAAN', 'STATUS', 'JAM / HARI', 'X TAHUN', 'KETERANGAN'];
+
+                $this->SetFillColor(255, 87, 34); 
+                $this->SetTextColor(255, 255, 255);
+                $this->SetFont('Times', 'B', 12);
+
+                $xPos = $this->GetX();
+                $yPos = $this->GetY();
+                $text = 'RIWAYAT PAPARAN KERJA';
+                $w = $this->GetStringWidth($text) + 10; 
+                $h = 8; 
+                $this->RoundedRect($xPos, $yPos, $w, $h, 3.5, 'F'); 
+                $this->Cell($w, $h, $text, 0, 1, 'L'); 
+                $this->Ln(2); 
+                $this->SetTextColor(0, 0, 0);
+
+                // Ambil posisi Y awal tepat sebelum header pertama kali dicetak
+                $yHeaderPaparan = $this->GetY();
+
+                // Header Tabel Pertama
+                $this->SetFillColor(44, 148, 42); 
+                $this->SetTextColor(255);
+                $this->SetFont('Times', 'B', 12);
+                foreach ($headerTitles as $i => $title) {
+                    $this->Cell($widthsPaparan[$i], 8, $title, 0, 0, 'C', true);
+                }
+                $this->Ln();
+
+                // Body Tabel
+                $this->SetTextColor(0);
+                $this->SetFont('Times', '', 11);
+                $isGrey = false;
+
+                foreach ($this->data['riwayat_lingkungan_kerja'] as $item) {
+                    $this->CheckPageBreakWithHeader($widthsPaparan, $headerTitles, $totalWidthPaparan, $yHeaderPaparan);
+                    $row = [
+                        str_replace('≥', '>=', $item->nama_atribut_saat_ini),
+                        ($item->status == "1" ? "Ya" : "Tidak"),
+                        $item->nilai_jam_per_hari,
+                        $item->nilai_selama_x_tahun,
+                        ($item->keterangan ?: "-")
+                    ];
+
+                    $this->GenerateRow($widthsPaparan, $row, 5, $isGrey);
+                    $isGrey = !$isGrey;
+                }
+                $this->Rect(10, $yHeaderPaparan, $totalWidthPaparan, $this->GetY() - $yHeaderPaparan, 'D'); 
+                $this->Ln(2);
+                $this->SetFont('Times', 'B', 11);
+                $this->Cell(0, 7, 'PERNYATAAN PERSETUJUAN PEMERIKSAAN KESEHATAN', 0, 1, 'C');
+                $this->SetFont('Times', '', 10);
+                $this->MultiCell(0, 5, "Melalui pengisian formulir MCU secara elektronik maupun tertulis, dengan ini saya menyatakan persetujuan ketentuan sebagai berikut:", 0, 'L');
+                
+                $persetujuan = [
+                    "Seluruh pernyataan yang saya jawab di atas adalah benar dan dapat dipertanggungjawabkan, apabila terdapat ketidaksesuaian dikemudian hari, saya bersedia diberi sanksi sesuai dengan ketentuan perusahaan.",
+                    "Saya menyetujui bahwa hasil pemeriksaan kesehatan yang telah dilakukan dapat disimpan dalam bentuk tertulis (hardcopy) dan elektronik (softcopy) oleh perusahaan.",
+                    "Saya menyetujui dan memberikan kewenangan pada staf kesehatan kerja perusahaan untuk melakukan analisa terkait hasil pemeriksaan kesehatan saya. Hal tersebut terkait kegunaan untuk dievaluasi berkaitan dengan pekerjaan saya di perusahaan ini",
+                    "Saya menyetujui dan memberikan kewenangan pada staf kesehatan kerja perusahaan untuk memberikan hasil analisa dan evaluasi pemeriksaan terhadap kesehatan saya kepada manajemen perusahaan agar dilakukan tindak lanjut berdasarkan hasil pemeriksaan kondisi fisik dan kesehatan saya."
+                ];
+                foreach ($persetujuan as $i => $teks) {
+                    $this->Cell(5, 5, ($i+1).". ", 0, 0, 'L');
+                    $this->MultiCell(185, 5, $teks, 0, 'L');
+                }
+                $this->Cell(0, 7, 'Demikian pernyataan persetujuan ini saya buat dengan sebenar-benarnya dalam keadaan sadar dan tanpa ada paksaan dari pihak manapun.', 0, 1, 'L');
+                $this->Ln(5);
+                $yFooter = $this->GetY();
+                // Kiri: Tim Dokter
+                $this->SetFont('Times', 'B', 10);
+                $this->SetXY(10, $yFooter);
+                $this->Cell(90, 5, "Tim Dokter Medical Check Up:", 0, 1, 'L');
+                $this->SetFont('Times', '', 9);
+                $this->Cell(90, 4, "1. dr. Muhammad Taufiq Amrullah, S.Ked", 0, 1, 'L');
+                $this->Cell(90, 4, "2. dr. Khadijah Amir, S.Ked", 0, 1, 'L');
+                $this->Cell(90, 4, "3. dr. Devi Grania Amelia Selekede, Sp.P.", 0, 1, 'L');
+                $this->Cell(90, 4, "4. dr. Muhammad Asrul. M.Kes Sp.JP(K)", 0, 1, 'L');
+                $this->Cell(90, 4, "5. dr. Amir. Sp.Rad", 0, 1, 'L');
+
+                // Kanan: QR & Pengesahan
+                $this->SetXY(110, $yFooter);
+                $this->SetFont('Arial', '', 10);
+                $this->MultiCell(90, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+
+                if($this->data['qrcode']) {
+                    // Posisi QR di tengah kolom kanan
+                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY() + 2, 25, 25, 'PNG');
+                }
+
+                $this->SetXY(110, $yFooter + 40);
+                $this->SetFont('Arial', 'BU', 10);
+                $this->Cell(90, 5, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 1, 'C');
+                $this->SetX(110);
+                $this->SetFont('Arial', 'B', 10);
+                $this->Cell(90, 5, '440.007.2/127/SIP-DINKES/XI/2023', 0, 1, 'C');
+            }
+            /*section 5*/
+            public function cetakPemeriksaanKondisiFisik() {
+                $this->drawHeaderMcuTable();
+                $this->Line(10, $this->GetY(), 200, $this->GetY());
+                $this->ln(5);
+                $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                $this->_out('q'); 
+                $this->RoundedRect(10, $y_awal, 100, 10, 5, 'CN', '23'); 
+                $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 120, 10);
+                $this->_out('Q');
+
+                $this->SetTextColor(255, 255, 255);
+                $this->SetFont('Times', 'B', 14);
+                $this->Cell(0, 10, 'PEMERIKSAAN KONDISI FISIK', 0, 1, 'L');
+                $this->SetFillColor(72, 171, 198); // Warna Biru Laut
+                $this->SetTextColor(255);
+                $this->SetFont('Times', 'B', 11);
+                $this->Ln(3);
+                $judul = "TINGKAT KESADARAN";
+                $wJudul = $this->GetStringWidth($judul) + 10;
+                $hJudul = 8;
+
+                $this->RoundedRect($this->GetX(), $this->GetY(), $wJudul, $hJudul, 3.5, 'F');
+                $this->Cell($wJudul, $hJudul, $judul, 0, 1, 'C');
+                $this->Ln(2);
+                // Reset warna teks ke hitam
+                $this->SetTextColor(0);
+                $this->SetFont('Times', '', 10);
+
+                // Simpan Y awal untuk border tabel
+                $yAwalTabel = $this->GetY();
+                $lebarTotal = 190; // Standar lebar A4 (210 - margin 10*2)
+                $wKolom = $lebarTotal / 3; // Pembagian rata 3 kolom
+
+                // Ambil data (asumsi variabel $data tersedia)
+                $keadaan = ucfirst($this->data['tingkat_kesadaran']->nama_atribut_tingkat_kesadaran);
+                $status = ucfirst($this->data['tingkat_kesadaran']->nama_atribut_status_tingkat_kesadaran);
+                $keluhan = $this->data['tingkat_kesadaran']->keluhan ?: "-";
+                $keterangan = strip_tags($this->data['tingkat_kesadaran']->keterangan_status_tingkat_kesadaran) ?: "-";
+
+                // --- BARIS 1: 3 KOLOM ---
+                // Kita gunakan Cell dengan border 'LTR' (Left, Top, Right) 
+                // agar garis antar kolom terlihat
+                $this->Cell($wKolom, 10, " Keadaan Umum : " . $keadaan, 1, 0, 'L');
+                $this->Cell($wKolom, 10, " Status Kesadaran : " . $status, 1, 0, 'L');
+                $this->Cell($wKolom + 1, 10, " Keluhan : " . $keluhan, 1, 1, 'L');
+
+                // --- BARIS 2: KETERANGAN (COLSPAN 3) ---
+                // Gunakan MultiCell jika keterangan sangat panjang
+                $this->SetFont('Times', 'I', 9); // Font italic untuk keterangan agar beda
+                $this->MultiCell($lebarTotal + 1, 8, " Keterangan : " . $keterangan, 0, 'L');
+                $this->Ln(2);
+                // Ambil data asli
+                $items = collect($this->data['tanda_vital'])->values();
+                // Hitung BMI
+                $BB = 0;
+                $TB = 0;
+                foreach ($items as $item) {
+                    $name = strtolower(str_replace(' ', '', $item->nama_atribut_saat_ini));
+                    if ($name === 'beratbadan') {
+                        $BB = $item->nilai_tanda_vital;
+                    } elseif ($name === 'tinggibadan') {
+                        $TB = $item->nilai_tanda_vital / 100;
+                    }
+                }
+
+                $status_gizi = "-";
+                $rgbColor = [0, 0, 0]; // Default Hitam
+
+                if ($TB > 0) {
+                    $BMI = $BB / ($TB * $TB);
+                    $BMI_formatted = number_format(ceil($BMI * 100) / 100, 2);
+                    
+                    if ($BMI < 18.5) {
+                        $status_gizi = "KEKURANGAN BERAT BADAN";
+                        $rgbColor = [255, 140, 0]; // Orange
+                    } elseif ($BMI >= 18.5 && $BMI <= 24.9) {
+                        $status_gizi = "NORMAL";
+                        $rgbColor = [0, 128, 0]; // Hijau
+                    } elseif ($BMI >= 25 && $BMI <= 29.9) {
+                        $status_gizi = "KELEBIHAN BERAT BADAN";
+                        $rgbColor = [255, 0, 0]; // Merah
+                    } else {
+                        $status_gizi = "OBESITAS";
+                        $rgbColor = [139, 0, 0]; // Merah Tua
+                    }
+
+                    // Tambahkan BMI ke list
+                    $items->push((object)[
+                        'nama_atribut_saat_ini' => 'BMI',
+                        'nilai_tanda_vital' => $BMI_formatted,
+                        'satuan_tanda_vital' => 'IMT',
+                    ]);
+
+                    // Tambahkan Status Gizi ke list
+                    $items->push((object)[
+                        'nama_atribut_saat_ini' => 'Status Gizi',
+                        'nilai_tanda_vital' => $status_gizi,
+                        'satuan_tanda_vital' => '',
+                        'is_status' => true // Penanda untuk warna khusus
+                    ]);
+                }
+
+                $totalItems = $items->count();
+                $columns = 3;
+                $rowsPerCol = ceil($totalItems / $columns);
+
+                // --- JUDUL (Warna Biru Langit) ---
+                $this->SetFillColor(72, 171, 198); 
+                $this->SetTextColor(255);
+                $this->SetFont('Times', 'B', 11);
+
+                $judul = "TANDA VITAL DAN GIZI";
+                $wJ = $this->GetStringWidth($judul) + 12;
+                $this->RoundedRect($this->GetX(), $this->GetY(), $wJ, 8, 3.5, 'F');
+                $this->Cell($wJ, 8, $judul, 0, 1, 'C');
+                $this->Ln(3); // Spasi tambahan setelah judul
+
+                // --- PENGATURAN TABEL 3 KOLOM ---
+                $this->SetTextColor(0);
+                $this->SetFont('Times', '', 9);
+
+                $lebarTotal = 190;
+                $lebarKolom = $lebarTotal / 3;
+                $tinggiSel = 5; // Memberikan padding atas & bawah yang lega
+                $startY = $this->GetY();
+
+                for ($i = 0; $i < $totalItems; $i++) {
+                    // Hitung posisi kolom dan baris
+                    $col = floor($i / $rowsPerCol);
+                    $rowInCol = $i % $rowsPerCol;
+                    
+                    // Hitung koordinat X dan Y
+                    $x = 10 + ($col * $lebarKolom);
+                    $y = $startY + ($rowInCol * ($tinggiSel + 1)); // +2 untuk memberi jarak antar kotak (spasi vertikal)
+                    
+                    $item = $items[$i];
+                    $label = $item->nama_atribut_saat_ini;
+                    $val = $item->nilai_tanda_vital;
+                    $satuan = $item->satuan_tanda_vital ?? '';
+
+                    $this->SetXY($x, $y);
+                    
+                    if (isset($item->is_status)) {
+                        // Khusus Status Gizi dengan warna dinamis
+                        $this->Cell($lebarKolom - 2, $tinggiSel, "", 1, 0); // Gambar Border
+                        $this->SetXY($x, $y); // Reset posisi ke dalam kotak
+                        
+                        $this->Write($tinggiSel, "  $label : "); // Spasi awal sebagai padding kiri
+                        $this->SetTextColor($rgbColor[0], $rgbColor[1], $rgbColor[2]);
+                        $this->SetFont('Times', 'B', 9);
+                        $this->Write($tinggiSel, $val);
+                        
+                        $this->SetTextColor(0); // Reset ke hitam
+                        $this->SetFont('Times', '', 9);
+                    } else {
+                        // Sel Standar: Tambahkan spasi di awal string " $label" agar ada padding kiri
+                        $this->Cell($lebarKolom - 2, $tinggiSel, "  $label : $val $satuan", 1, 0, 'L');
+                    }
+                }
+                $this->SetY($startY + ($rowsPerCol * ($tinggiSel + 2)));
+
+                // tabel penglihatan
+                $this->SetFillColor(72, 171, 198); 
+                $this->SetTextColor(255);
+                $this->SetFont('Times', 'B', 12);
+
+                $judul = "PENGLIHATAN";
+                $wJ = $this->GetStringWidth($judul) + 12;
+                $this->RoundedRect($this->GetX(), $this->GetY(), $wJ, 8, 3.5, 'F');
+                $this->Cell($wJ, 8, $judul, 0, 1, 'C');
+                $this->Ln(2);
+
+                $p = $this->data['penglihatan'][0]; // Alias data
+                $this->SetFont('Times', 'B', 9);
+                $this->SetFillColor(44, 148, 42); // Hijau
+                $this->SetTextColor(255);
+
+                // Header Baris 1
+                $yHeader = $this->GetY();
+                $this->Cell(150, 6, 'VISUS', 1, 0, 'C', true);
+                $this->Cell(40, 18, 'Tes Buta Warna', 1, 0, 'C', true); // Rowspan 3 (6+6+6)
+                $this->Ln(6);
+
+                // Header Baris 2
+                $this->SetX(10);
+                $this->Cell(30, 12, 'Status', 1, 0, 'C', true); // Rowspan 2 (6+6)
+                $this->Cell(60, 6, 'Tanpa Kacamata', 1, 0, 'C', true);
+                $this->Cell(60, 6, 'Dengan Kacamata', 1, 1, 'C', true);
+
+                // Header Baris 3
+                $this->SetX(40);
+                $this->Cell(30, 6, 'OS', 1, 0, 'C', true);
+                $this->Cell(30, 6, 'OD', 1, 0, 'C', true);
+                $this->Cell(30, 6, 'OS', 1, 0, 'C', true);
+                $this->Cell(30, 6, 'OD', 1, 1, 'C', true);
+
+                // Isi Data Visus
+                $this->SetTextColor(0);
+                $this->SetFont('Times', '', 9);
+
+                // Baris Jauh
+                $yDataStart = $this->GetY();
+                $this->Cell(30, 8, ' Jauh', 1, 0, 'L');
+                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_jauh, 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_jauh, 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_os_kacamata_jauh, 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_od_kacamata_jauh, 1, 0, 'C');
+                // Isi Buta Warna (Rowspan 2)
+                $this->SetXY(160, $yDataStart);
+                $butaWarna = strtoupper(str_replace('_', ' ', $p->buta_warna));
+                $this->Cell(40, 16, $butaWarna, 1, 0, 'C'); 
+                $this->Ln(8);
+
+                // Baris Dekat
+                $this->SetX(10);
+                $this->Cell(30, 8, ' Dekat', 1, 0, 'L');
+                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_dekat, 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_dekat, 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_os_kacamata_dekat, 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_od_kacamata_dekat, 1, 1, 'C');
+                
+                $this->SetFillColor(44, 148, 42);
+                $this->SetTextColor(255);
+                $this->SetFont('Times', 'B', 9);
+
+                // Header Baris 1
+                $this->Cell(30, 12, 'Posisi Mata', 1, 0, 'C', true);
+                $this->Cell(160, 6, 'LAPANG PANDANG', 1, 1, 'C', true);
+
+                // Header Baris 2
+                $this->SetX(40);
+                $this->Cell(25, 6, 'Superior', 1, 0, 'C', true);
+                $this->Cell(25, 6, 'Inferior', 1, 0, 'C', true);
+                $this->Cell(25, 6, 'Temporal', 1, 0, 'C', true);
+                $this->Cell(25, 6, 'Nasal', 1, 0, 'C', true);
+                $this->Cell(60, 6, 'Keterangan', 1, 1, 'C', true);
+
+                // Data Lapang Pandang
+                $this->SetTextColor(0);
+                $this->SetFont('Times', '', 9);
+
+                // Mata Kiri (OS)
+                $this->Cell(30, 8, ' Mata Kiri', 1, 0, 'L');
+                $this->Cell(25, 8, $p->lapang_pandang_superior_os, 1, 0, 'C');
+                $this->Cell(25, 8, $p->lapang_pandang_inferior_os, 1, 0, 'C');
+                $this->Cell(25, 8, $p->lapang_pandang_temporal_os, 1, 0, 'C');
+                $this->Cell(25, 8, $p->lapang_pandang_nasal_os, 1, 0, 'C');
+                $this->Cell(60, 8, " " . $p->lapang_pandang_keterangan_os, 1, 1, 'L');
+
+                // Mata Kanan (OD)
+                $this->Cell(30, 8, ' Mata Kanan', 1, 0, 'L');
+                $this->Cell(25, 8, $p->lapang_pandang_superior_od, 1, 0, 'C');
+                $this->Cell(25, 8, $p->lapang_pandang_inferior_od, 1, 0, 'C');
+                $this->Cell(25, 8, $p->lapang_pandang_temporal_od, 1, 0, 'C');
+                $this->Cell(25, 8, $p->lapang_pandang_nasal_od, 1, 0, 'C');
+                $this->Cell(60, 8, " " . $p->lapang_pandang_keterangan_od, 1, 1, 'L');
+                $this->Ln(2);
+
+                // --- JUDUL (Warna Biru Langit) ---
+                $this->SetFillColor(72, 171, 198); 
+                $this->SetTextColor(255);
+                $this->SetFont('Times', 'B', 11);
+
+                $judul = "KONDISI FISIK";
+                $wJ = $this->GetStringWidth($judul) + 12;
+                $this->RoundedRect($this->GetX(), $this->GetY(), $wJ, 8, 3.5, 'F');
+                $this->Cell($wJ, 8, $judul, 0, 1, 'C');
+                $this->Ln(2);
+                $groupedData = [];
+                foreach ($this->data['kondisi_fisik'] as $item) {
+                    $groupedData[$item->kategori][] = $item;
+                }
+                $this->SetFillColor(44, 148, 42); // Warna Hijau
+                $this->SetTextColor(255);
+                $this->SetFont('Times', 'B', 12);
+                
+                $gap = 2;
+                $widths = [50, 65, 15, 15, 50];
+                $headers = ['PEMERIKSAAN', 'JENIS PEMERIKSAAN', 'AB', 'N', 'KETERANGAN'];
+                $totalWidth = array_sum($widths);
+
+                // Titik awal koordinat Y untuk border luar
+                $yHeaderRef = $this->GetY(); 
+
+                // Cetak Header Pertama kali di section ini
+                $this->SetFillColor(44, 148, 42);
+                $this->SetTextColor(255);
+                foreach ($headers as $i => $title) {
+                    $this->Cell($widths[$i], 8, $title, 1, 0, 'C', true);
+                }
+                $this->Ln();
+                $this->SetTextColor(0);
+
+                foreach ($groupedData as $kategori => $items) {
+                    $totalRows = count($items);
+                    foreach ($items as $index => $item) {
+                        // Panggil fungsi pengecekan halaman
+                        $this->CheckPageBreakWithHeader($widths, $headers, $totalWidth, $yHeaderRef);
+                        
+                        $startX = $this->GetX();
+                        $startY = $this->GetY();
+                        $hRow = 7;
+
+                        // Kolom PEMERIKSAAN (Kategori)
+                        if ($index === 0) {
+                            $txtKategori = strtoupper(str_replace('_', ' ', $kategori));
+                            $this->SetFont('Times', 'B', 10);
+                            $this->Cell($widths[0], $hRow, " " . $txtKategori, 'LR', 0, 'C');
+                        } else {
+                            // Garis samping tetap ada agar kategori terlihat menyatu
+                            $this->Cell($widths[0], $hRow, "", 'LR', 0, 'C');
+                        }
+
+                        // Kolom JENIS PEMERIKSAAN
+                        $this->SetXY($startX + $widths[0], $startY);
+                        $this->SetFont('Times', '', 11);
+                        // Tentukan border berdasarkan posisi baris dalam kategori
+                        if ($index === 0) {
+                            // Baris pertama: garis Atas, Kiri, Kanan
+                            $borderJenis = 'TLR'; 
+                        } else if ($index === $totalRows - 1) {
+                            // Baris terakhir: garis Bawah, Kiri, Kanan
+                            $borderJenis = 'BLR'; 
+                        } else {
+                            // Baris tengah: HANYA Kiri dan Kanan (Garis tengah hilang)
+                            $borderJenis = 'LR'; 
+                        }
+                        $this->Cell($widths[1], $hRow, "  " . $item->jenis_atribut, $borderJenis, 0, 'L');
+
+                        // Kolom AB & N (Checkbox)
+                        $this->drawCheckbox($this->GetX(), $startY, $hRow, $widths[2], ($item->status_atribut === 'abnormal'), $borderJenis);
+                        $this->drawCheckbox($this->GetX(), $startY, $hRow, $widths[3], ($item->status_atribut === 'normal'), $borderJenis);
+
+                        // Kolom KETERANGAN
+                        $ket = $item->keterangan_atribut ?: 'Normal';
+                        $this->Cell($widths[4], $hRow, "  " . $ket, $borderJenis, 1, 'L');
+                    }
+                    // Garis penutup antar kategori
+                    $this->Line(10, $this->GetY(), 10 + $totalWidth, $this->GetY());
+                }
+                // 5. Tanda Tangan (Footer Page)
+                $this->SetY(-65); // Pindah ke area bawah halaman
+                $ySkg = $this->GetY();
+                
+                // Sisi Kiri (QR Keaslian)
+                $this->SetFont('Times', '', 10);
+                $this->SetXY(10, $ySkg);
+                $this->MultiCell(90, 4, "Pindai untuk periksa keaslian dokumen\nDokumen ini tervalidasi dan dicetak secara otomatis", 0, 'C');
+                if($this->data['qrcode']) {
+                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 40, $this->GetY(), 25, 25, 'PNG');
+                }
+
+                // // Sisi Kanan (Dokter)
+                $this->SetXY(110, $ySkg);
+                $this->MultiCell(90, 4, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                if($this->data['qrcode']) {
+                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY(), 25, 25, 'PNG');
+                }
+                $this->SetXY(110, 265);
+                $this->SetFont('Arial', 'BU', 10);
+                $this->MultiCell(90, 5, 'dr. Muhammad Taufiq Amrullah, S.Ked\n440.007.2/127/SIP-DINKES/XI/2023', 0, 'C');
+            }
+            public function cetakLaboratorium() {
+                $this->drawHeaderMcuTable();
+                $this->Line(10, $this->GetY(), 200, $this->GetY());
+                $this->ln(2);
+                $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                $this->_out('q'); 
+                $this->RoundedRect(10, $y_awal, 60, 10, 5, 'CN', '23'); 
+                $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 80, 10);
+                $this->_out('Q');
+
+                $this->SetTextColor(255, 255, 255);
+                $this->SetFont('Times', 'B', 14);
+                $this->Cell(0, 10, 'LABORATORIUM', 0, 1, 'L');
+                $this->SetTextColor(0, 0, 0);
+                if ($this->data['ada_lampiran_laboratorium_pdf'] == 0 && $this->data['total_tindakan'] > 0) {
+               
+                    // --- HEADER TABEL ---
+                    $this->SetFillColor(44, 148, 42); // Hijau (#2c942a)
+                    $this->SetFont('Arial', 'B', 10);
+                    $widths = [50, 35, 45, 30, 30]; // Sesuaikan total 190mm (A4)
+                    $headers = ['PARAMETER', 'HASIL', 'NILAI RUJUKAN', 'SATUAN', 'STATUS'];
+                    foreach ($headers as $i => $head) {
+                        $this->Cell($widths[$i], 8, $head, 1, 0, 'C', true);
+                    }
+                    $this->Ln();
+                    // --- ISI TABEL (Render Kategori) ---
+                    $this->SetTextColor(0, 0, 0);
+                    $this->SetFont('Arial', '', 9);
+                    foreach ($this->data['laboratorium'] as $kategori) {
+                        $this->renderKategoriFPDF($kategori, $widths);
+                    }
+                    // --- FOOTER TANDA TANGAN (Dinamis di bawah tabel) ---
+                    $yFooter = $this->GetY() + 10;
+                    if ($yFooter > 240) { $this->AddPage(); $yFooter = 20; }
+                    $this->renderFooterDokter($yFooter, $data);
+                } else {
+                    // Hitung total lampiran
+                    $totalLampiran = count($this->data['lampiran_berkas_pdf']);
+
+                    foreach ($this->data['lampiran_berkas_pdf'] as $index => $item) {
+                        // 1. Perhitungan dimensi dan posisi (sama seperti sebelumnya)
+                        $margin = 10;
+                        $maxW = 190;
+                        $maxH = 257;
+
+                        $imgPath = $item->data_foto;
+                        $size = @getimagesize($imgPath);
+                        if ($size === false) {
+                            $imgPath = public_path('mofi/assets/images/logo/doc_not_found.jpg');
+                            $size = @getimagesize($imgPath);
+                        }
+
+                        $scale = min($maxW / $size[0], $maxH / $size[1]);
+                        $finalW = $size[0] * $scale;
+                        $finalH = $size[1] * $scale;
+
+                        $posX = (210 - $finalW) / 2;
+                        $posY = (297 - $finalH) / 2;
+
+                        // 2. Cetak Gambar
+                        $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
+                        $this->SetTextColor(0, 0, 0);
+
+                        // 3. LOGIKA ADD PAGE:
+                        // Cek apakah ini BUKAN gambar terakhir (index dimulai dari 0)
+                        if (($index + 1) < $totalLampiran) {
+                            $this->AddPage();
+                        }
+                    }
+                }
+            }
+            public function poliRontgenThorax(){
+                foreach ($this->data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli) {
+                    $cek_poli = strtoupper(str_replace(' ', '', trim($jenis_poli)));
+                    if ($cek_poli === "POLI_RONTGEN_THORAX") {
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                        $this->_out('q'); 
+                        $this->RoundedRect(10, $y_awal, 100, 10, 5, 'CN', '23'); 
+                        $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 100, 10);
+                        $this->_out('Q');
+
+                        $this->SetTextColor(255, 255, 255);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->SetTextColor(0, 0, 0);
+                        // Render Semua Gambar dalam Poli ini
+                        foreach ($dataPoli as $item) {
+                            $margin = 10;
+                            $maxW = 190;
+                            $maxH = 257;
+
+                            $imgPath = $item->data_foto;
+                            $size = @getimagesize($imgPath);
+                            if ($size === false) {
+                                $imgPath = public_path('mofi/assets/images/logo/doc_not_found.jpg');
+                                $size = @getimagesize($imgPath);
+                            }
+
+                            $scale = min($maxW / $size[0], $maxH / $size[1]);
+                            $finalW = $size[0] * $scale;
+                            $finalH = $size[1] * $scale;
+
+                            $posX = (210 - $finalW) / 2;
+                            $posY = (297 - $finalH) / 2;
+
+                            // 2. Cetak Gambar
+                            $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
+                            $this->SetTextColor(0, 0, 0);
+                        }
+                        // 2. HALAMAN INTERPRETASI
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $firstItem = $dataPoli->first();
+                        $this->SetTextColor(0, 0, 0);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        // Tabel Interpretasi
+                        $this->SetFont('Times', '', 11);
+                        $html = $firstItem->kesimpulan_citra_spirometri;
+                        $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        $html = preg_replace('/<\/body>/i', '', $html);
+                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        $this->WriteHTML($html);
+                        $this->ln(5);
+
+                        $fields = [
+                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
+                        ];
+
+                        foreach ($fields as $label => $value) {
+                            $this->Cell(60, 4, $label, 0, 0);
+                            $this->Cell(5, 4, ':', 0, 0);
+                            $this->MultiCell(0, 4, $value, 0, 'L');
+                        }
+
+                        // 3. TANDA TANGAN (Posisi Absolute Bawah)
+                        $this->SetY(-80); // Set posisi dari bawah kertas
+                        $yTtd = $this->GetY();
+                        
+                        // QR Code dan Nama Petugas (Kiri)
+                        $this->SetXY(10, $yTtd);
+                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+
+                        // QR Code dan Nama Dokter (Kanan)
+                        $this->SetXY(105, $yTtd);
+                        $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
+                    }
+                    if ($cek_poli === "POLI_RONTGEN_LUMBOSACRAL") {
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                        $this->_out('q'); 
+                        $this->RoundedRect(10, $y_awal, 100, 10, 5, 'CN', '23'); 
+                        $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 100, 10);
+                        $this->_out('Q');
+
+                        $this->SetTextColor(255, 255, 255);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->SetTextColor(0, 0, 0);
+                        // Render Semua Gambar dalam Poli ini
+                        foreach ($dataPoli as $item) {
+                            $margin = 10;
+                            $maxW = 190;
+                            $maxH = 257;
+
+                            $imgPath = $item->data_foto;
+                            $size = @getimagesize($imgPath);
+                            if ($size === false) {
+                                $imgPath = public_path('mofi/assets/images/logo/doc_not_found.jpg');
+                                $size = @getimagesize($imgPath);
+                            }
+
+                            $scale = min($maxW / $size[0], $maxH / $size[1]);
+                            $finalW = $size[0] * $scale;
+                            $finalH = $size[1] * $scale;
+
+                            $posX = (210 - $finalW) / 2;
+                            $posY = (297 - $finalH) / 2;
+
+                            // 2. Cetak Gambar
+                            $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
+                            $this->SetTextColor(0, 0, 0);
+                        }
+                        // 2. HALAMAN INTERPRETASI
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $firstItem = $dataPoli->first();
+                        $this->SetTextColor(0, 0, 0);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        // Tabel Interpretasi
+                        $this->SetFont('Times', '', 11);
+                        $html = $firstItem->kesimpulan_citra_spirometri;
+                        $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        $html = preg_replace('/<\/body>/i', '', $html);
+                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        $this->WriteHTML($html);
+                        $this->ln(5);
+
+                        $fields = [
+                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
+                        ];
+
+                        foreach ($fields as $label => $value) {
+                            $this->Cell(60, 4, $label, 0, 0);
+                            $this->Cell(5, 4, ':', 0, 0);
+                            $this->MultiCell(0, 4, $value, 0, 'L');
+                        }
+
+                        // 3. TANDA TANGAN (Posisi Absolute Bawah)
+                        $this->SetY(-80); // Set posisi dari bawah kertas
+                        $yTtd = $this->GetY();
+                        
+                        // QR Code dan Nama Petugas (Kiri)
+                        $this->SetXY(10, $yTtd);
+                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+
+                        // QR Code dan Nama Dokter (Kanan)
+                        $this->SetXY(105, $yTtd);
+                        $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
+                    }
+                }
+            }
+            public function poliEkg(){
+                foreach ($this->data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli) {
+                    $cek_poli = strtoupper(str_replace(' ', '', trim($jenis_poli)));
+                    if ($cek_poli === "POLI_EKG") {
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                        $this->_out('q'); 
+                        $this->RoundedRect(10, $y_awal, 100, 10, 5, 'CN', '23'); 
+                        $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 100, 10);
+                        $this->_out('Q');
+
+                        $this->SetTextColor(255, 255, 255);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->SetTextColor(0, 0, 0);
+                        // Render Semua Gambar dalam Poli ini
+                        foreach ($dataPoli as $item) {
+                            $margin = 10;
+                            $maxW = 190;
+                            $maxH = 257;
+
+                            $imgPath = $item->data_foto;
+                            $size = @getimagesize($imgPath);
+                            if ($size === false) {
+                                $imgPath = public_path('mofi/assets/images/logo/doc_not_found.jpg');
+                                $size = @getimagesize($imgPath);
+                            }
+
+                            $scale = min($maxW / $size[0], $maxH / $size[1]);
+                            $finalW = $size[0] * $scale;
+                            $finalH = $size[1] * $scale;
+
+                            $posX = (210 - $finalW) / 2;
+                            $posY = (297 - $finalH) / 2;
+
+                            // 2. Cetak Gambar
+                            $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
+                            $this->SetTextColor(0, 0, 0);
+                        }
+                        // 2. HALAMAN INTERPRETASI
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $firstItem = $dataPoli->first();
+                        $this->SetTextColor(0, 0, 0);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        // Tabel Interpretasi
+                        $this->SetFont('Times', '', 11);
+                        $html = $firstItem->kesimpulan_citra_spirometri;
+                        $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        $html = preg_replace('/<\/body>/i', '', $html);
+                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        $this->WriteHTML($html);
+                        $this->ln(5);
+
+                        $fields = [
+                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
+                        ];
+
+                        foreach ($fields as $label => $value) {
+                            $this->Cell(60, 4, $label, 0, 0);
+                            $this->Cell(5, 4, ':', 0, 0);
+                            $this->MultiCell(0, 4, $value, 0, 'L');
+                        }
+
+                        // 3. TANDA TANGAN (Posisi Absolute Bawah)
+                        $this->SetY(-80); // Set posisi dari bawah kertas
+                        $yTtd = $this->GetY();
+                        
+                        // QR Code dan Nama Petugas (Kiri)
+                        $this->SetXY(10, $yTtd);
+                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+
+                        // QR Code dan Nama Dokter (Kanan)
+                        $this->SetXY(105, $yTtd);
+                        $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
+                    }
+                }
+            }
+            public function poliAudiometri(){
+                foreach ($this->data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli) {
+                    $cek_poli = strtoupper(str_replace(' ', '', trim($jenis_poli)));
+                    if ($cek_poli === "POLI_AUDIOMETRI") {
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                        $this->_out('q'); 
+                        $this->RoundedRect(10, $y_awal, 100, 10, 5, 'CN', '23'); 
+                        $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 100, 10);
+                        $this->_out('Q');
+
+                        $this->SetTextColor(255, 255, 255);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->SetTextColor(0, 0, 0);
+                        // Render Semua Gambar dalam Poli ini
+                        foreach ($dataPoli as $item) {
+                            $margin = 10;
+                            $maxW = 190;
+                            $maxH = 257;
+
+                            $imgPath = $item->data_foto;
+                            $size = @getimagesize($imgPath);
+                            if ($size === false) {
+                                $imgPath = public_path('mofi/assets/images/logo/doc_not_found.jpg');
+                                $size = @getimagesize($imgPath);
+                            }
+
+                            $scale = min($maxW / $size[0], $maxH / $size[1]);
+                            $finalW = $size[0] * $scale;
+                            $finalH = $size[1] * $scale;
+
+                            $posX = (210 - $finalW) / 2;
+                            $posY = (297 - $finalH) / 2;
+
+                            // 2. Cetak Gambar
+                            $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
+                            $this->SetTextColor(0, 0, 0);
+                        }
+                        // 2. HALAMAN INTERPRETASI
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $firstItem = $dataPoli->first();
+                        $this->SetTextColor(0, 0, 0);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        // Tabel Interpretasi
+                        $this->SetFont('Times', '', 11);
+                        $html = $firstItem->kesimpulan_citra_spirometri;
+                        $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        $html = preg_replace('/<\/body>/i', '', $html);
+                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        $this->WriteHTML($html);
+                        $this->ln(5);
+
+                        $fields = [
+                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
+                        ];
+
+                        foreach ($fields as $label => $value) {
+                            $this->Cell(60, 4, $label, 0, 0);
+                            $this->Cell(5, 4, ':', 0, 0);
+                            $this->MultiCell(0, 4, $value, 0, 'L');
+                        }
+
+                        // 3. TANDA TANGAN (Posisi Absolute Bawah)
+                        $this->SetY(-80); // Set posisi dari bawah kertas
+                        $yTtd = $this->GetY();
+                        
+                        // QR Code dan Nama Petugas (Kiri)
+                        $this->SetXY(10, $yTtd);
+                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+
+                        // QR Code dan Nama Dokter (Kanan)
+                        $this->SetXY(105, $yTtd);
+                        $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
+                    }
+                }
+            }
+            public function poliSpirometri(){
+                foreach ($this->data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli) {
+                    $cek_poli = strtoupper(str_replace(' ', '', trim($jenis_poli)));
+                    if ($cek_poli === "POLI_SPIROMETRI") {
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                        $this->_out('q'); 
+                        $this->RoundedRect(10, $y_awal, 100, 10, 5, 'CN', '23'); 
+                        $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 100, 10);
+                        $this->_out('Q');
+
+                        $this->SetTextColor(255, 255, 255);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->SetTextColor(0, 0, 0);
+                        // Render Semua Gambar dalam Poli ini
+                        foreach ($dataPoli as $item) {
+                            $margin = 10;
+                            $maxW = 190;
+                            $maxH = 257;
+
+                            $imgPath = $item->data_foto;
+                            $size = @getimagesize($imgPath);
+                            if ($size === false) {
+                                $imgPath = public_path('mofi/assets/images/logo/doc_not_found.jpg');
+                                $size = @getimagesize($imgPath);
+                            }
+
+                            $scale = min($maxW / $size[0], $maxH / $size[1]);
+                            $finalW = $size[0] * $scale;
+                            $finalH = $size[1] * $scale;
+
+                            $posX = (210 - $finalW) / 2;
+                            $posY = (297 - $finalH) / 2;
+
+                            // 2. Cetak Gambar
+                            $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
+                            $this->SetTextColor(0, 0, 0);
+                        }
+                        // 2. HALAMAN INTERPRETASI
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $firstItem = $dataPoli->first();
+                        $this->SetTextColor(0, 0, 0);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        // Tabel Interpretasi
+                        $this->SetFont('Times', '', 11);
+                        $html = $firstItem->kesimpulan_citra_spirometri;
+                        $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        $html = preg_replace('/<\/body>/i', '', $html);
+                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        $this->WriteHTML($html);
+                        $this->ln(5);
+
+                        $fields = [
+                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
+                        ];
+
+                        foreach ($fields as $label => $value) {
+                            $this->Cell(60, 4, $label, 0, 0);
+                            $this->Cell(5, 4, ':', 0, 0);
+                            $this->MultiCell(0, 4, $value, 0, 'L');
+                        }
+
+                        // 3. TANDA TANGAN (Posisi Absolute Bawah)
+                        $this->SetY(-80); // Set posisi dari bawah kertas
+                        $yTtd = $this->GetY();
+                        
+                        // QR Code dan Nama Petugas (Kiri)
+                        $this->SetXY(10, $yTtd);
+                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+
+                        // QR Code dan Nama Dokter (Kanan)
+                        $this->SetXY(105, $yTtd);
+                        $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
+                    }
+                }
+            }
+            public function poliThreadmill(){
+                foreach ($this->data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli) {
+                    $cek_poli = strtoupper(str_replace(' ', '', trim($jenis_poli)));
+                    if ($cek_poli === "POLI_THREADMILL") {
+                        $this->AddPage('L', 'A4');
+                        $this->drawHeaderMcuTable();
+                        $pageWidth = $this->GetPageWidth();
+                        $this->Line(10, $this->GetY(), $pageWidth - 10, $this->GetY());
+                        $this->ln(2);
+                        $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
+                        $this->_out('q'); 
+                        $this->RoundedRect(10, $y_awal, 100, 10, 5, 'CN', '23'); 
+                        $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 100, 10);
+                        $this->_out('Q');
+
+                        $this->SetTextColor(255, 255, 255);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->SetTextColor(0, 0, 0);
+                        // Render Semua Gambar dalam Poli ini
+                        $totalLampiran = count($dataPoli);
+                        foreach ($dataPoli as $index => $item) {
+                            $margin = 10;
+                            $maxW = 190;
+                            $maxH = 257;
+
+                            $imgPath = $item->data_foto;
+                            $size = @getimagesize($imgPath);
+                            if ($size === false) {
+                                $imgPath = public_path('mofi/assets/images/logo/doc_not_found.jpg');
+                                $size = @getimagesize($imgPath);
+                            }
+
+                            $scale = min($maxW / $size[0], $maxH / $size[1]);
+                            $finalW = $size[0] * $scale;
+                            $finalH = $size[1] * $scale;
+
+                            $posX = (210 - $finalW) / 2;
+                            $posY = (297 - $finalH) / 2;
+
+                            // 2. Cetak Gambar
+                            $this->Image($imgPath, $posX, $posY + 10, $finalW, $finalH);
+                            $this->SetTextColor(0, 0, 0);
+                            if (($index + 1) < $totalLampiran) {
+                               $this->AddPage('L', 'A4');
+                            }
+                        }
+                        // 2. HALAMAN INTERPRETASI
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $firstItem = $dataPoli->first();
+                        $this->SetTextColor(0, 0, 0);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        // Tabel Interpretasi
+                        $this->SetFont('Times', '', 11);
+                        $html = $firstItem->kesimpulan_citra_spirometri;
+                        $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        $html = preg_replace('/<\/body>/i', '', $html);
+                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        $this->WriteHTML($html);
+                        $this->ln(5);
+
+                        $fields = [
+                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
+                        ];
+
+                        foreach ($fields as $label => $value) {
+                            $this->Cell(60, 4, $label, 0, 0);
+                            $this->Cell(5, 4, ':', 0, 0);
+                            $this->MultiCell(0, 4, $value, 0, 'L');
+                        }
+
+                        // 3. TANDA TANGAN (Posisi Absolute Bawah)
+                        $this->SetY(-80); // Set posisi dari bawah kertas
+                        $yTtd = $this->GetY();
+                        
+                        // QR Code dan Nama Petugas (Kiri)
+                        $this->SetXY(10, $yTtd);
+                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+
+                        // QR Code dan Nama Dokter (Kanan)
+                        $this->SetXY(105, $yTtd);
+                        $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
+                    }
+                }
+            }
+
+        };
+        $fpdf->AliasNbPages();
+        // 1. Halaman Cover
+        $fpdf->AddPage('P');
+        $fpdf->SetFont('Arial','B',16);
+        $fpdf->SetXY(0, 0);
+        $fpdf->Image(public_path('mofi/assets/images/logo/compress_cover.jpg'), 0, 0, 210, 297);
+        // 2. Halaman Profil (Section yang barusan kamu berikan)
+        $fpdf->AddPage('P');
+        $fpdf->renderProfilPeserta();
+        // 3. Halaman Hasil Pemeriksaan
+        $fpdf->AddPage('P');
+        $fpdf->renderLaporanKesimpulan();
+        // 4. Halaman Status Kesehatan
+        $fpdf->AddPage('P');
+        $fpdf->statusKesehatan();
+        // 4. Halaman Riwayat Kesehatan
+        $fpdf->AddPage('P');
+        $fpdf->cetakRiwayat();
+        // 5. PEMERIKSAAN KONDISI FISIK
+        $fpdf->AddPage('P');
+        $fpdf->cetakPemeriksaanKondisiFisik();
+        $fpdf->AddPage('P');
+        $fpdf->cetakLaboratorium();
+        $fpdf->poliRontgenThorax();
+        $fpdf->poliEkg();
+        $fpdf->poliAudiometri();
+        $fpdf->poliSpirometri();
+        $fpdf->poliThreadmill();
+
+
+        // // 3. Halaman Hasil Pemeriksaan (Sesuai CSS page-break-after: always)
+        // $pdf->AddPage('P');
+        // $pdf->SetMargins(10, 65, 10);
+        // Lanjut render kategori laboratorium...
+        return response($fpdf->Output('S'))->header('Content-Type', 'application/pdf');
+        // $folderPath = 'public/mcu/berkas/mcu/';
+        // $filename = "MCU_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
+        // $fullPath = storage_path("app/$folderPath$filename");
+        // $pdf = PDF::loadView('paneladmin.laporan.berkas.pdf_berkas_mcu', ['data' => $data])
+        //     ->setPaper('a4', 'portrait')
+        //     ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true, 'isPhpEnabled' => true]);
+        // $pdf->render();
+        // $pdf->get_canvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
+        //     if ($pageNumber > 1 && $pageNumber < $pageCount) {
+        //         $width = $canvas->get_width();
+        //         $text = "Halaman " . ($pageNumber - 1) . " Dari " . ($pageCount - 2);
+        //         $x = ($width / 2) + 175;              
+        //         $y = $canvas->get_height() - 40;
+        //         $canvas->text($x, $y, $text, null, 12);
+        //     }
+        //     if ($pageCount == $pageNumber) {
+        //         $width = $canvas->get_width();
+        //         $height = $canvas->get_height();
+        //         $canvas->image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, $width, $height);
+        //     }
+        // });
+        // $pdf->save($fullPath);
         /*if (!Storage::exists($folderPath)) {
             Storage::makeDirectory($folderPath, 0755, true);
         }
