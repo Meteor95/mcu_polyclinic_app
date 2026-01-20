@@ -939,29 +939,50 @@ class LaporanController extends Controller
                         $this->Cell(5, 6, ':', 0, 0, 'C');
 
                         // Isi Data Jauh
+                        $text_pakai_kacamata = "(Tanpa Kacamata)";
+                        if ($p->visus_od_kacamata_jauh == 'Ya' || $p->visus_os_kacamata_jauh == 'Ya' || $p->visus_od_kacamata_dekat == 'Ya' || $p->visus_os_kacamata_dekat == 'Ya') {
+                            $text_pakai_kacamata = "(Dengan Kacamata)";
+                        }
                         $this->Write(6, 'Jauh : ');
-                        $this->SetFont('Arial', 'B', 10); $this->Write(6, 'OD ');
-                        $this->SetFont('Arial', '', 10);  $this->Write(6, ($p->visus_od_tanpa_kacamata_jauh ?? '-') . ' ');
-                        $this->SetFont('Arial', 'B', 10); $this->Write(6, 'OS ');
-                        $this->SetFont('Arial', '', 10);  $this->Write(6, ($p->visus_os_tanpa_kacamata_jauh ?? '-') . '  ');
+                        $this->SetFont('Times', 'B', 10); $this->Write(6, 'OD ');
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($p->visus_od_tanpa_kacamata_jauh ?? '-') . ' ');
+                        $this->SetFont('Times', 'B', 10); $this->Write(6, 'OS ');
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($p->visus_os_tanpa_kacamata_jauh ?? '-') . ',  ');
 
                         // Isi Data Dekat
                         $this->Write(6, 'Dekat : ');
-                        $this->SetFont('Arial', 'B', 10); $this->Write(6, 'OD ');
-                        $this->SetFont('Arial', '', 10);  $this->Write(6, ($p->visus_od_tanpa_kacamata_dekat ?? '-') . ' ');
-                        $this->SetFont('Arial', 'B', 10); $this->Write(6, 'OS ');
-                        $this->SetFont('Arial', '', 10);  $this->Write(6, ($p->visus_os_tanpa_kacamata_dekat ?? '-'));
+                        $this->SetFont('Times', 'B', 10); $this->Write(6, 'OD ');
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($p->visus_od_tanpa_kacamata_dekat ?? '-') . ' ');
+                        $this->SetFont('Times', 'B', 10); $this->Write(6, 'OS ');
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($p->visus_os_tanpa_kacamata_dekat ?? '-') . ' '.$text_pakai_kacamata);
                         $this->Ln(6);
 
                         // --- BARIS 2: Tes Buta Warna ---
                         // Sejajarkan posisi X (5mm bullet + 50mm label + 5mm titik dua = 60mm)
                         // Tambahkan sedikit offset manual (misal ke 65) agar teks lurus di bawah kata "Jauh"
                         $this->SetX(70); 
-                        $this->SetFont('Arial', 'B', 10);
+                        $this->SetFont('Times', 'B', 10);
                         $this->Write(6, 'Tes Buta Warna : ');
-                        $this->SetFont('Arial', '', 10);
-                        $butaWarna = ($p->buta_warna == 'tidak_buta_warna') ? 'Tidak buta warna' : 'Buta warna';
-                        $this->Write(6, $butaWarna);
+                        $this->SetFont('Times', '', 10);
+                        $butaWarna = ($p->buta_warna == 'tidak_buta_warna') ? 'Tidak buta warna' : ($p->buta_warna == 'buta_warna_partial' ? 'Buta warna partial' : 'Buta warna');
+                        $this->Write(6, $butaWarna.', ');
+                        $lapangPandang = 'Normal';
+                        if (
+                            $p->lapang_pandang_superior_os != '+' ||
+                            $p->lapang_pandang_inferior_os != '+' ||
+                            $p->lapang_pandang_temporal_os != '+' ||
+                            $p->lapang_pandang_nasal_os != '+' ||
+                            $p->lapang_pandang_superior_od != '+' ||
+                            $p->lapang_pandang_inferior_od != '+' ||
+                            $p->lapang_pandang_temporal_od != '+' ||
+                            $p->lapang_pandang_nasal_od != '+'
+                        ) {
+                            $lapangPandang = 'Abnormal';
+                        }
+                        $this->SetFont('Times', 'B', 10);
+                        $this->Write(6, 'Lapang Pandang : ');
+                        $this->SetFont('Times', '', 10);
+                        $this->Write(6, $lapangPandang);
                         $this->Ln(8);
                         
                         continue; 
