@@ -930,7 +930,7 @@ class LaporanController extends Controller
                     if ($item['label'] === "PEMERIKSAAN MATA") {
                         $p = $this->data['penglihatan'][0];
                         // --- BARIS 1: Label & Data Visus ---
-                        $this->SetFont('Arial', '', 10); 
+                        $this->SetFont('Times', '', 10); 
                         $this->SetTextColor(0, 0, 0);    
                         
                         // Gunakan struktur yang sama persis dengan fungsi bulletRow Anda
@@ -964,8 +964,7 @@ class LaporanController extends Controller
                         $this->SetFont('Times', 'B', 10);
                         $this->Write(6, 'Tes Buta Warna : ');
                         $this->SetFont('Times', '', 10);
-                        $butaWarna = ($p->buta_warna == 'tidak_buta_warna') ? 'Tidak buta warna' : ($p->buta_warna == 'buta_warna_partial' ? 'Buta warna partial' : 'Buta warna');
-                        $this->Write(6, $butaWarna.', ');
+                        $this->Write(6, $p->buta_warna_keterangan.', ');
                         $lapangPandang = 'Normal';
                         if (
                             $p->lapang_pandang_superior_os != '+' ||
@@ -1802,54 +1801,88 @@ class LaporanController extends Controller
 
                 // Header Baris 1
                 $yHeader = $this->GetY();
-                $this->Cell(150, 6, 'VISUS', 1, 0, 'C', true);
-                $this->Cell(40, 18, 'Tes Buta Warna', 1, 0, 'C', true); // Rowspan 3
+                // Lebar VISUS ditambah dari 150 menjadi 190 (mengambil jatah Tes Buta Warna)
+                $this->Cell(190, 6, 'VISUS', 1, 0, 'C', true); 
                 $this->Ln(6);
 
                 // Header Baris 2
                 $this->SetX(10);
                 $this->Cell(30, 12, 'Status', 1, 0, 'C', true); // Rowspan 2
-                $this->Cell(60, 6, 'Tanpa Kacamata', 1, 0, 'C', true);
-                $this->Cell(60, 6, 'Dengan Kacamata', 1, 1, 'C', true);
+                // Lebar sub-header disesuaikan (80 + 80 = 160. Ditambah Status 30 = total 190)
+                $this->Cell(80, 6, 'Tanpa Kacamata', 1, 0, 'C', true);
+                $this->Cell(80, 6, 'Dengan Kacamata', 1, 1, 'C', true);
 
                 // Header Baris 3 (DIBALIK: OD dulu baru OS)
                 $this->SetX(40);
-                $this->Cell(30, 6, 'OD', 1, 0, 'C', true);
-                $this->Cell(30, 6, 'OS', 1, 0, 'C', true);
-                $this->Cell(30, 6, 'OD', 1, 0, 'C', true);
-                $this->Cell(30, 6, 'OS', 1, 1, 'C', true);
+                $this->Cell(40, 6, 'OD', 1, 0, 'C', true);
+                $this->Cell(40, 6, 'OS', 1, 0, 'C', true);
+                $this->Cell(40, 6, 'OD', 1, 0, 'C', true);
+                $this->Cell(40, 6, 'OS', 1, 1, 'C', true);
 
                 // Isi Data Visus
                 $this->SetTextColor(0);
                 $this->SetFont('Times', '', 9);
 
-                // Baris Jauh (DIBALIK: OD dulu baru OS)
+                // Baris Jauh
                 $yDataStart = $this->GetY();
                 $this->Cell(30, 8, ' Jauh', 1, 0, 'L');
-                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_jauh ?? '-', 1, 0, 'C'); // OD
-                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_jauh ?? '-', 1, 0, 'C'); // OS
-                $this->Cell(30, 8, $p->visus_od_kacamata_jauh ?? '-', 1, 0, 'C');       // OD
-                $this->Cell(30, 8, $p->visus_os_kacamata_jauh ?? '-', 1, 0, 'C');       // OS
+                $this->Cell(40, 8, $p->visus_od_tanpa_kacamata_jauh ?? '-', 1, 0, 'C'); // OD
+                $this->Cell(40, 8, $p->visus_os_tanpa_kacamata_jauh ?? '-', 1, 0, 'C'); // OS
+                $this->Cell(40, 8, $p->visus_od_kacamata_jauh ?? '-', 1, 0, 'C');       // OD
+                $this->Cell(40, 8, $p->visus_os_kacamata_jauh ?? '-', 1, 1, 'C');       // OS
 
-                // Isi Buta Warna
-                $this->SetXY(160, $yDataStart);
-                $butaWarnaRaw = $p->buta_warna ?? '-';
-                $butaWarna = strtoupper(str_replace('_', ' ', $butaWarnaRaw));
-                $this->Cell(40, 16, $butaWarna, 1, 0, 'C'); 
-                $this->Ln(8);
-
-                // Baris Dekat (DIBALIK: OD dulu baru OS)
+                // Baris Dekat
                 $this->SetX(10);
                 $this->Cell(30, 8, ' Dekat', 1, 0, 'L');
-                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_dekat ?? '-', 1, 0, 'C'); // OD
-                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_dekat ?? '-', 1, 0, 'C'); // OS
-                $this->Cell(30, 8, $p->visus_od_kacamata_dekat ?? '-', 1, 0, 'C');       // OD
-                $this->Cell(30, 8, $p->visus_os_kacamata_dekat ?? '-', 1, 1, 'C');       // OS
-                
+                $this->Cell(40, 8, $p->visus_od_tanpa_kacamata_dekat ?? '-', 1, 0, 'C'); // OD
+                $this->Cell(40, 8, $p->visus_os_tanpa_kacamata_dekat ?? '-', 1, 0, 'C'); // OS
+                $this->Cell(40, 8, $p->visus_od_kacamata_dekat ?? '-', 1, 0, 'C');       // OD
+                $this->Cell(40, 8, $p->visus_os_kacamata_dekat ?? '-', 1, 1, 'C');       // OS
+
                 $this->SetFillColor(44, 148, 42);
                 $this->SetTextColor(255);
                 $this->SetFont('Times', 'B', 9);
 
+                // --- Konfigurasi Warna & Font Header ---
+                $this->SetFillColor(44, 148, 42); // Warna Hijau sesuai gambar
+                $this->SetTextColor(255); // Teks Putih
+                $this->SetFont('Times', 'B', 9);
+
+                // --- Header Baris 1 ---
+                // Pemeriksaan (Tinggi 12 untuk simulasi Rowspan)
+                $this->Cell(30, 12, 'Pemeriksaan', 1, 0, 'C', true); 
+
+                // Group Header Test Buta Warna (Lebar 90 untuk 3 sub-kolom)
+                $this->Cell(90, 6, 'Test Buta Warna', 1, 0, 'C', true); 
+
+                // Keterangan (Tinggi 12 untuk simulasi Rowspan)
+                $this->Cell(70, 12, 'Keterangan', 1, 0, 'C', true); 
+                $this->Ln(6);
+
+                // --- Header Baris 2 (Sub-Kolom) ---
+                $this->SetX(40); // Geser X ke posisi setelah kolom 'Pemeriksaan'
+                $this->Cell(30, 6, 'Red Green', 1, 0, 'C', true);
+                $this->Cell(30, 6, 'Colour Blind', 1, 0, 'C', true);
+                $this->Cell(30, 6, 'Normal', 1, 1, 'C', true);
+
+                // --- Data Body ---
+                $this->SetTextColor(0); // Kembali ke teks hitam
+                $this->SetFont('Times', '', 9);
+                
+                // Logika penentuan tanda centang atau kata "Ya"
+                $butaWarnaRaw = strtolower($p->buta_warna ?? '');
+                $isNormal = ($butaWarnaRaw == 'tidak_buta_warna') ? 'Ya' : '-';
+                $isPartial = ($butaWarnaRaw == 'buta_warna_partial') ? 'Ya' : '-';
+                $isTotal = ($butaWarnaRaw == 'buta_warna') ? 'Ya' : '-';
+
+                $this->Cell(30, 8, 'Hasil Tes', 1, 0, 'L');       // Kolom Pemeriksaan
+                $this->Cell(30, 8, $isPartial, 1, 0, 'C');        // Kolom Red-Green
+                $this->Cell(30, 8, $isTotal, 1, 0, 'C');          // Kolom Colour Blind
+                $this->Cell(30, 8, $isNormal, 1, 0, 'C');         // Kolom Normal
+                $this->Cell(70, 8, $p->buta_warna_keterangan ?? '-', 1, 1, 'C'); // Kolom Keterangan
+                
+                $this->SetTextColor(255);
+                $this->SetFont('Times', 'B', 9);
                 // Header Baris 1
                 $this->Cell(30, 12, 'Posisi Mata', 1, 0, 'C', true);
                 $this->Cell(160, 6, 'LAPANG PANDANG', 1, 1, 'C', true);

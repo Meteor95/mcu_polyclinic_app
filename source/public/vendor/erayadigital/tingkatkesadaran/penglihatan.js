@@ -142,6 +142,7 @@ $("#simpan_penglihatan").on('click', function(){
                         visus_os_kacamata_dekat : $("#visus_os_kacamata_dekat").val(),
                         visus_od_kacamata_dekat : $("#visus_od_kacamata_dekat").val(),
                         buta_warna : $('input[name="buta_warna"]:checked').val(),
+                        buta_warna_keterangan : $("#buta_warna_keterangan").val(),
                         lapang_pandang_superior_os : $("#lapang_pandang_superior_os").val(),
                         lapang_pandang_inferior_os : $("#lapang_pandang_inferior_os").val(),
                         lapang_pandang_temporal_os : $("#lapang_pandang_temporal_os").val(),
@@ -189,6 +190,7 @@ function clear_penglihatan(){
     $("#visus_os_kacamata_dekat").val("Tidak").trigger('change');
     $("#visus_od_kacamata_dekat").val("Tidak").trigger('change');
     $('#buta_warna_tidak').prop('checked', true); 
+    $('#buta_warna_keterangan').val("");
     $("#lapang_pandang_superior_os").val("+").trigger('change');
     $("#lapang_pandang_inferior_os").val("+").trigger('change');
     $("#lapang_pandang_temporal_os").val("+").trigger('change');
@@ -265,6 +267,7 @@ function fill_detail_penglihatan(user_id,transaksi_id,nama_peserta,detail){
                     $("#visus_os_kacamata_dekat_modal_modal").text(response.data.visus_os_kacamata_dekat);
                     $("#visus_od_kacamata_dekat_modal_modal").text(response.data.visus_od_kacamata_dekat);
                     $("#buta_warna_modal").text(response.data.buta_warna.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '));
+                    $("#buta_warna_keterangan_modal").text("("+response.data.buta_warna_keterangan+")");
                     $("#lapang_pandang_superior_os_modal").text(response.data.lapang_pandang_superior_os);
                     $("#lapang_pandang_inferior_os_modal").text(response.data.lapang_pandang_inferior_os);
                     $("#lapang_pandang_temporal_os_modal").text(response.data.lapang_pandang_temporal_os);
@@ -287,6 +290,7 @@ function fill_detail_penglihatan(user_id,transaksi_id,nama_peserta,detail){
                     $("#visus_os_kacamata_dekat").val(response.data.visus_os_kacamata_dekat);
                     $("#visus_od_kacamata_dekat").val(response.data.visus_od_kacamata_dekat);
                     $(`input[name="buta_warna"][value="${response.data.buta_warna}"]`).prop('checked', true);
+                    $("#buta_warna_keterangan").val(response.data.buta_warna_keterangan);
                     $("#lapang_pandang_superior_os").val(response.data.lapang_pandang_superior_os);
                     $("#lapang_pandang_inferior_os").val(response.data.lapang_pandang_inferior_os);
                     $("#lapang_pandang_temporal_os").val(response.data.lapang_pandang_temporal_os);

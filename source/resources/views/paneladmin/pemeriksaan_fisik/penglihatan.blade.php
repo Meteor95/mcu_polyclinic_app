@@ -39,17 +39,18 @@
                                         <div class="card-wrapper border rounded-3 h-100 checkbox-checked" style="text-align: left;">
                                             <div class="form-check radio radio-secondary">
                                               <input class="form-check-input" id="buta_warna_partial" type="radio" name="buta_warna" value="buta_warna_partial">
-                                              <label class="form-check-label" for="buta_warna_partial">Buta Warna Partial </label>
+                                              <label class="form-check-label" for="buta_warna_partial">Red Green </label>
                                             </div>
                                             <div class="form-check radio radio-success">
                                               <input checked class="form-check-input" id="buta_warna_tidak" type="radio" name="buta_warna" value="tidak_buta_warna">
-                                              <label class="form-check-label" for="buta_warna_tidak">Tidak Buta Warna </label>
+                                              <label class="form-check-label" for="buta_warna_tidak">Normal </label>
                                             </div>
                                             <div class="form-check radio radio-warning">
                                               <input class="form-check-input" id="buta_warna_total" type="radio" name="buta_warna" value="buta_warna_total">
-                                              <label class="form-check-label" for="buta_warna_total">Buta Warna Total </label>
+                                              <label class="form-check-label" for="buta_warna_total">Color Blind</label>
                                             </div>
                                         </div>
+                                        <input type="text" id="buta_warna_keterangan" class="form-control mt-2" placeholder="Keterangan Buta Warna">
                                     </td>
                                 </tr>
                                 <tr>
@@ -151,6 +152,7 @@
                                 <td><div id="visus_od_kacamata_jauh_modal"></div></td>
                                 <td rowspan="2" style="vertical-align: middle;text-align: center;">
                                     <div id="buta_warna_modal"></div>
+                                    <div id="buta_warna_keterangan_modal"></div>
                                 </td>
                             </tr>
                             <tr style="text-align: center;">
@@ -218,7 +220,7 @@ table.dataTable tbody td.focus {
 <script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('mofi/assets/js/select2/tagify.js') }}"></script>
-<script src="{{ asset('vendor/erayadigital/tingkatkesadaran/penglihatan.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/tingkatkesadaran/penglihatan.js') }}?v={{ filemtime(public_path('vendor/erayadigital/tingkatkesadaran/penglihatan.js')) }}"></script>
 <script>
   let param_nomor_identitas = '{{$data['nomor_identitas']}}'
   let param_nama_peserta = '{{$data['nama_peserta']}}'
