@@ -21,6 +21,7 @@ class Penglihatan extends Model
         'visus_os_kacamata_dekat', 
         'visus_od_kacamata_dekat', 
         'buta_warna', 
+        'buta_warna_red_green',
         'buta_warna_keterangan',
         'lapang_pandang_superior_os', 
         'lapang_pandang_inferior_os', 

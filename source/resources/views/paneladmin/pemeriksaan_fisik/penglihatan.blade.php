@@ -37,20 +37,21 @@
                                     <td><select class="form-select" id="visus_od_kacamata_jauh" name="visus_od_kacamata_jauh"><option value="Tidak">Tidak</option><option value="Ya">Ya</option></select></td>
                                     <td rowspan="2" style="vertical-align: middle;text-align: center;">
                                         <div class="card-wrapper border rounded-3 h-100 checkbox-checked" style="text-align: left;">
-                                            <div class="form-check radio radio-secondary">
-                                              <input class="form-check-input" id="buta_warna_partial" type="radio" name="buta_warna" value="buta_warna_partial">
-                                              <label class="form-check-label" for="buta_warna_partial">Red Green </label>
+                                            <div class="form-check checkbox checkbox-secondary">
+                                              <input class="form-check-input" id="buta_warna_partial_red_green" type="checkbox" name="buta_warna_partial_red_green">
+                                              <label class="form-check-label" for="buta_warna_partial_red_green">Red Green </label>
                                             </div>
-                                            <div class="form-check radio radio-success">
-                                              <input checked class="form-check-input" id="buta_warna_tidak" type="radio" name="buta_warna" value="tidak_buta_warna">
-                                              <label class="form-check-label" for="buta_warna_tidak">Normal </label>
-                                            </div>
-                                            <div class="form-check radio radio-warning">
-                                              <input class="form-check-input" id="buta_warna_total" type="radio" name="buta_warna" value="buta_warna_total">
+                                            <div class="form-check checkbox checkbox-warning">
+                                              <input class="form-check-input" id="buta_warna_total" type="checkbox" name="buta_warna_total">
                                               <label class="form-check-label" for="buta_warna_total">Color Blind</label>
                                             </div>
                                         </div>
-                                        <input type="text" id="buta_warna_keterangan" class="form-control mt-2" placeholder="Keterangan Buta Warna">
+                                        <select class="form-select mt-2" id="buta_warna_keterangan" name="buta_warna_keterangan">
+                                            <option value="" disabled selected hidden>Keterangan Buta Warna</option>
+                                            <option value="">-</option>
+                                            <option value="Normal">Normal</option>
+                                            <option value="AbNormal">AbNormal</option>
+                                        </select>
                                     </td>
                                 </tr>
                                 <tr>
@@ -152,6 +153,7 @@
                                 <td><div id="visus_od_kacamata_jauh_modal"></div></td>
                                 <td rowspan="2" style="vertical-align: middle;text-align: center;">
                                     <div id="buta_warna_modal"></div>
+                                    <div id="buta_warna_red_green_modal"></div>
                                     <div id="buta_warna_keterangan_modal"></div>
                                 </td>
                             </tr>

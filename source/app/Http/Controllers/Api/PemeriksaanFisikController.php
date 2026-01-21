@@ -236,6 +236,7 @@ class PemeriksaanFisikController extends Controller
                 'visus_os_kacamata_dekat' => $request->visus_os_kacamata_dekat,
                 'visus_od_kacamata_dekat' => $request->visus_od_kacamata_dekat,
                 'buta_warna' => $request->buta_warna,
+                'buta_warna_red_green' => $request->buta_warna_red_green,
                 'buta_warna_keterangan' => $request->buta_warna_keterangan,
                 'lapang_pandang_superior_os' => $request->lapang_pandang_superior_os,
                 'lapang_pandang_inferior_os' => $request->lapang_pandang_inferior_os,
