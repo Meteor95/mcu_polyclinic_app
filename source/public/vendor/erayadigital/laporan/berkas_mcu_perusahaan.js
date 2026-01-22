@@ -464,7 +464,9 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu, button) {
                 $("#visus_od_tanpa_kacamata_dekat_modal").text(response.penglihatan.visus_od_tanpa_kacamata_dekat);
                 $("#visus_os_kacamata_dekat_modal_modal").text(response.penglihatan.visus_os_kacamata_dekat);
                 $("#visus_od_kacamata_dekat_modal_modal").text(response.penglihatan.visus_od_kacamata_dekat);
-                $("#buta_warna_modal").text(response.penglihatan.buta_warna.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '));
+                $('#buta_warna_modal').text(response.data.buta_warna == 1 ? "Color Blind" : "Normal");
+                $('#buta_warna_red_green_modal').text(response.data.buta_warna_red_green == 1 ? "Red Green" : "Normal");
+                $("#buta_warna_keterangan_modal").text("("+response.data.buta_warna_keterangan+")");
                 $("#lapang_pandang_superior_os_modal").text(response.penglihatan.lapang_pandang_superior_os);
                 $("#lapang_pandang_inferior_os_modal").text(response.penglihatan.lapang_pandang_inferior_os);
                 $("#lapang_pandang_temporal_os_modal").text(response.penglihatan.lapang_pandang_temporal_os);

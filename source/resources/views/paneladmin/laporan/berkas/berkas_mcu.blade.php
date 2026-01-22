@@ -392,6 +392,8 @@
                                 <td><div id="visus_od_kacamata_jauh_modal"></div></td>
                                 <td rowspan="2" style="vertical-align: middle;text-align: center;">
                                     <div id="buta_warna_modal"></div>
+                                    <div id="buta_warna_red_green_modal"></div>
+                                    <div id="buta_warna_keterangan_modal"></div>
                                 </td>
                             </tr>
                             <tr style="text-align: center;">
