@@ -16,13 +16,13 @@
               <h4>Masukan Informasi Yang Diberikan TIM AMC</h4>
               <p>Ketikan Surel / Nama Pengguna dan Katasandi Terdaftar</p>
               <div class="form-group">
-                <label class="col-form-label">ID Perusahaan</label>
-                <input autocomplete="off" value="erayadigitalstudio" class="form-control" type="text" id="namapengguna" required="" placeholder="hallo@arthamedicalcenter.com">
+                <label class="col-form-label">ID/Mail Perusahaan</label>
+                <input autocomplete="off" value="" class="form-control" type="text" id="namapengguna" required="" placeholder="hallo@arthamedicalcenter.com">
               </div>
               <div class="form-group">
                 <label class="col-form-label">Katasandi</label>
                 <div class="form-input position-relative">
-                  <input autocomplete="off" value="Salam1jiwa" class="form-control" name="password" type="password" id="katasandi" required="" placeholder="*********">
+                  <input autocomplete="off" value="" class="form-control" name="password" type="password" id="katasandi" required="" placeholder="*********">
                   <div class="show-hide"><span class="show"></span></div>
                 </div>
               </div>
