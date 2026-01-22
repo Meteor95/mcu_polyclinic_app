@@ -1839,47 +1839,35 @@ class LaporanController extends Controller
                 $this->Cell(40, 8, $p->visus_od_kacamata_dekat ?? '-', 1, 0, 'C');       // OD
                 $this->Cell(40, 8, $p->visus_os_kacamata_dekat ?? '-', 1, 1, 'C');       // OS
 
-                $this->SetFillColor(44, 148, 42);
+               $this->SetFillColor(44, 148, 42);
                 $this->SetTextColor(255);
                 $this->SetFont('Times', 'B', 9);
 
-                // --- Konfigurasi Warna & Font Header ---
-                $this->SetFillColor(44, 148, 42); // Warna Hijau sesuai gambar
-                $this->SetTextColor(255); // Teks Putih
-                $this->SetFont('Times', 'B', 9);
-
-                // --- Header Baris 1 ---
-                // Pemeriksaan (Tinggi 12 untuk simulasi Rowspan)
+                // Header Baris 1
                 $this->Cell(30, 12, 'Pemeriksaan', 1, 0, 'C', true); 
-
-                // Group Header Test Buta Warna (Lebar 90 untuk 3 sub-kolom)
-                $this->Cell(90, 6, 'Test Buta Warna', 1, 0, 'C', true); 
-
-                // Keterangan (Tinggi 12 untuk simulasi Rowspan)
-                $this->Cell(70, 12, 'Keterangan', 1, 0, 'C', true); 
+                // Lebar dikurangi dari 90 menjadi 60 karena kolom 'Normal' (lebar 30) dihapus
+                $this->Cell(80, 6, 'Test Buta Warna', 1, 0, 'C', true); 
+                $this->Cell(80, 12, 'Keterangan', 1, 0, 'C', true); 
                 $this->Ln(6);
 
-                // --- Header Baris 2 (Sub-Kolom) ---
-                $this->SetX(40); // Geser X ke posisi setelah kolom 'Pemeriksaan'
-                $this->Cell(30, 6, 'Red Green', 1, 0, 'C', true);
-                $this->Cell(30, 6, 'Colour Blind', 1, 0, 'C', true);
-                $this->Cell(30, 6, 'Normal', 1, 1, 'C', true);
+                // Header Baris 2 (Sub-kolom)
+                $this->SetX(40); // Pastikan posisi X sesuai dengan lebar kolom 'Pemeriksaan'
+                $this->Cell(40, 6, 'Red Green', 1, 0, 'C', true);
+                $this->Cell(40, 6, 'Colour Blind', 1, 1, 'C', true); // ln diset ke 1 untuk pindah baris
 
-                // --- Data Body ---
-                $this->SetTextColor(0); // Kembali ke teks hitam
+                // Isi Data
+                $this->SetTextColor(0);
                 $this->SetFont('Times', '', 9);
-                
-                // Logika penentuan tanda centang atau kata "Ya"
+
                 $butaWarnaRaw = strtolower($p->buta_warna ?? '');
-                $isNormal = ($butaWarnaRaw == 'tidak_buta_warna') ? 'Ya' : '-';
-                $isPartial = ($butaWarnaRaw == 'buta_warna_partial') ? 'Ya' : '-';
-                $isTotal = ($butaWarnaRaw == 'buta_warna') ? 'Ya' : '-';
+                $isPartial = ($butaWarnaRaw == 1) ? 'Ya' : 'Tidak';
+                $isTotal = ($butaWarnaRaw == 1) ? 'Ya' : 'Tidak';
 
                 $this->Cell(30, 8, 'Hasil Tes', 1, 0, 'L');       // Kolom Pemeriksaan
-                $this->Cell(30, 8, $isPartial, 1, 0, 'C');        // Kolom Red-Green
-                $this->Cell(30, 8, $isTotal, 1, 0, 'C');          // Kolom Colour Blind
-                $this->Cell(30, 8, $isNormal, 1, 0, 'C');         // Kolom Normal
-                $this->Cell(70, 8, $p->buta_warna_keterangan ?? '-', 1, 1, 'C'); // Kolom Keterangan
+                $this->Cell(40, 8, $isPartial, 1, 0, 'C');        // Kolom Red-Green
+                $this->Cell(40, 8, $isTotal, 1, 0, 'C');          // Kolom Colour Blind
+                // Kolom Normal dihapus di sini
+                $this->Cell(80, 8, $p->buta_warna_keterangan ?? '-', 1, 1, 'C'); // Kolom Keterangan
                 
                 $this->SetTextColor(255);
                 $this->SetFont('Times', 'B', 9);
