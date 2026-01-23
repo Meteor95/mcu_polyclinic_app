@@ -802,7 +802,7 @@ class LaporanController extends Controller
                 $this->SetXY(0, 280);
                 $this->SetFont('Times', '', 12);
                 $hal_sekarang = $this->PageNo() - 1;
-                $teks = 'Halaman ' . $hal_sekarang . ' Dari {total_hal}';
+                $teks = 'Halaman ' . $hal_sekarang . ' Dari {total_hal - 1}';
                 $this->SetX(150); 
                 $this->Cell(50, 10, $teks, 0, 0, 'R');
                 
@@ -2735,12 +2735,21 @@ class LaporanController extends Controller
         $fpdf->SetFont('Arial','B',16);
         $fpdf->SetXY(0, 0);
         $fpdf->Image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, 210, 297);
-
+        $nomor_mcu = $data['nomor_mcu'];
+        $nik_peserta = $data['nik_peserta'];
+        $tanggal_cetak = $data['tanggal_cetak'];
+        $namaFile = 'Laporan_' . $nomor_mcu . '_' . $nik_peserta . '_' . str_replace(' ', '', $tanggal_cetak) . '.pdf';
+        $fpdf->SetTitle('Laporan '.$namaFile);
+        $fpdf->SetAuthor('Artha Medical Centre');
+        $fpdf->SetSubject('Hasil Medical Check Up');
+        $fpdf->SetCreator('Aplikasi MCU');
+        return response($fpdf->Output('S'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="'.$namaFile.'"');
         // // 3. Halaman Hasil Pemeriksaan (Sesuai CSS page-break-after: always)
         // $pdf->AddPage('P');
         // $pdf->SetMargins(10, 65, 10);
         // Lanjut render kategori laboratorium...
-        return response($fpdf->Output('S'))->header('Content-Type', 'application/pdf');
         // $folderPath = 'public/mcu/berkas/mcu/';
         // $filename = "MCU_".str_replace('/', '_', $nomor_mcu).'_'.$id_mcu.'_'.$nik_peserta.'.pdf';
         // $fullPath = storage_path("app/$folderPath$filename");
