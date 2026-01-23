@@ -184,12 +184,12 @@ function clear_penglihatan(){
     $("#status_kawin_temp").text("");
     $("#visus_os_tanpa_kacamata_jauh").val("");
     $("#visus_od_tanpa_kacamata_jauh").val("");
-    $("#visus_os_kacamata_jauh").val("Tidak").trigger('change');
-    $("#visus_od_kacamata_jauh").val("Tidak").trigger('change');
+    $("#visus_os_kacamata_jauh").val("");
+    $("#visus_od_kacamata_jauh").val("");
     $("#visus_os_tanpa_kacamata_dekat").val("");
     $("#visus_od_tanpa_kacamata_dekat").val("");
-    $("#visus_os_kacamata_dekat").val("Tidak").trigger('change');
-    $("#visus_od_kacamata_dekat").val("Tidak").trigger('change');
+    $("#visus_os_kacamata_dekat").val("");
+    $("#visus_od_kacamata_dekat").val("");
     $('#buta_warna_partial_red_green').prop('checked', false);
     $('#buta_warna_total').prop('checked', false);
     $('#buta_warna_keterangan').val("");

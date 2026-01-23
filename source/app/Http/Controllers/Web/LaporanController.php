@@ -369,7 +369,7 @@ class LaporanController extends Controller
                 parent::_putpages();
             }
             private function bulletRow($label, $value) {
-                $this->SetFont('Arial', '', 10);
+                $this->SetFont('Times', '', 10);
                 $this->Cell(5, 6, chr(149), 0, 0, 'C'); // Karakter Bullet
                 $this->Cell(50, 6, $label, 0, 0, 'L');
                 $this->Cell(5, 6, ':', 0, 0, 'C');
@@ -940,21 +940,30 @@ class LaporanController extends Controller
 
                         // Isi Data Jauh
                         $text_pakai_kacamata = "(Tanpa Kacamata)";
-                        if ($p->visus_od_kacamata_jauh == 'Ya' || $p->visus_os_kacamata_jauh == 'Ya' || $p->visus_od_kacamata_dekat == 'Ya' || $p->visus_os_kacamata_dekat == 'Ya') {
+                        $nilaiJauhOD = $p->visus_od_tanpa_kacamata_jauh;
+                        $nilaiJauhOS = $p->visus_od_tanpa_kacamata_jauh;
+                        $nilaiDekatOD = $p->visus_od_tanpa_kacamata_dekat;
+                        $nilaiDekatOS = $p->visus_od_tanpa_kacamata_dekat;
+
+                        if (!empty($p->visus_od_kacamata_jauh) || !empty($p->visus_os_kacamata_jauh) || !empty($p->visus_od_kacamata_dekat) || !empty($p->visus_os_kacamata_dekat)) {
                             $text_pakai_kacamata = "(Dengan Kacamata)";
+                            $nilaiJauhOD = $p->visus_od_kacamata_jauh;
+                            $nilaiJauhOS = $p->visus_os_kacamata_jauh;
+                            $nilaiDekatOD = $p->visus_od_kacamata_dekat;
+                            $nilaiDekatOS = $p->visus_os_kacamata_dekat;
                         }
                         $this->Write(6, 'Jauh : ');
                         $this->SetFont('Times', 'B', 10); $this->Write(6, 'OD ');
-                        $this->SetFont('Times', '', 10);  $this->Write(6, ($p->visus_od_tanpa_kacamata_jauh ?? '-') . ' ');
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($nilaiJauhOD ?? '-') . ' ');
                         $this->SetFont('Times', 'B', 10); $this->Write(6, 'OS ');
-                        $this->SetFont('Times', '', 10);  $this->Write(6, ($p->visus_os_tanpa_kacamata_jauh ?? '-') . ',  ');
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($nilaiJauhOS ?? '-') . ',  ');
 
                         // Isi Data Dekat
                         $this->Write(6, 'Dekat : ');
                         $this->SetFont('Times', 'B', 10); $this->Write(6, 'OD ');
-                        $this->SetFont('Times', '', 10);  $this->Write(6, ($p->visus_od_tanpa_kacamata_dekat ?? '-') . ' ');
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($nilaiDekatOD ?? '-') . ' ');
                         $this->SetFont('Times', 'B', 10); $this->Write(6, 'OS ');
-                        $this->SetFont('Times', '', 10);  $this->Write(6, ($p->visus_os_tanpa_kacamata_dekat ?? '-') . ' '.$text_pakai_kacamata);
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($nilaiDekatOS ?? '-') . ' '.$text_pakai_kacamata);
                         $this->Ln(6);
 
                         // --- BARIS 2: Tes Buta Warna ---
@@ -1846,7 +1855,7 @@ class LaporanController extends Controller
                 // Header Baris 1
                 $this->Cell(30, 12, 'Pemeriksaan', 1, 0, 'C', true); 
                 // Lebar dikurangi dari 90 menjadi 60 karena kolom 'Normal' (lebar 30) dihapus
-                $this->Cell(80, 6, 'Test Buta Warna', 1, 0, 'C', true); 
+                $this->Cell(80, 6, 'Tes Buta Warna', 1, 0, 'C', true); 
                 $this->Cell(80, 12, 'Keterangan', 1, 0, 'C', true); 
                 $this->Ln(6);
 
@@ -1859,13 +1868,14 @@ class LaporanController extends Controller
                 $this->SetTextColor(0);
                 $this->SetFont('Times', '', 9);
 
-                $butaWarnaRaw = strtolower($p->buta_warna ?? '');
-                $isPartial = ($butaWarnaRaw == 1) ? 'Ya' : 'Tidak';
-                $isTotal = ($butaWarnaRaw == 1) ? 'Ya' : 'Tidak';
+                $buta_warna = strtolower($p->buta_warna ?? '');
+                $buta_warna_red_green = strtolower($p->buta_warna_red_green ?? '');
+                $isbuta_warna = ($buta_warna == 1) ? 'Ya' : 'Tidak';
+                $isbuta_warna_red_green = ($buta_warna_red_green == 1) ? 'Ya' : 'Tidak';
 
                 $this->Cell(30, 8, 'Hasil Tes', 1, 0, 'L');       // Kolom Pemeriksaan
-                $this->Cell(40, 8, $isPartial, 1, 0, 'C');        // Kolom Red-Green
-                $this->Cell(40, 8, $isTotal, 1, 0, 'C');          // Kolom Colour Blind
+                $this->Cell(40, 8, $isbuta_warna_red_green, 1, 0, 'C');        // Kolom Red-Green
+                $this->Cell(40, 8, $isbuta_warna, 1, 0, 'C');          // Kolom Colour Blind
                 // Kolom Normal dihapus di sini
                 $this->Cell(80, 8, $p->buta_warna_keterangan ?? '-', 1, 1, 'C'); // Kolom Keterangan
                 
