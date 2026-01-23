@@ -910,10 +910,7 @@ class LaporanController extends Controller
 
                 foreach ($pemeriksaan as $item) {
                     // 1. Filter agar JSON mentah tidak muncul (seperti di gambar sebelumnya)
-                    if (is_string($item['data']) && (strpos($item['data'], '{') !== false || strpos($item['data'], '[') !== false)) {
-                        continue;
-                    }
-
+                    if (is_string($item['data']) && (strpos($item['data'], '{') !== false || strpos($item['data'], '[') !== false)) continue;
                     $cleanData = trim(strip_tags($item['data']));
                     $isJson = false;
                     if (is_string($item['data'])) {
@@ -1038,6 +1035,11 @@ class LaporanController extends Controller
                     $this->SetFont('Times', '', 10);
                     $this->Write(6, $spiroObs);
                     $this->Ln(6);
+                }
+                $treadmillData = trim(strip_tags($this->data['quill_pemeriksaan_threadmill'] ?? ''));
+                if (!empty($treadmillData)) {
+                    $this->SetTextColor(0, 0, 0);
+                    $this->bulletRow('TREADMILL', $treadmillData);
                 }
                 $this->Ln(5);
                 $this->SetFont('Times', 'B', 12);
