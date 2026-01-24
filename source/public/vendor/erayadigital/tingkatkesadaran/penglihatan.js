@@ -192,8 +192,8 @@ function clear_penglihatan(){
     $("#visus_od_tanpa_kacamata_dekat").val("");
     $("#visus_os_kacamata_dekat").val("");
     $("#visus_od_kacamata_dekat").val("");
-    $('#keterangan_pilihan_jauh').val("normal");
-    $('#keterangan_pilihan_dekat').val("normal");
+    $('#keterangan_pilihan_jauh').val("Normal");
+    $('#keterangan_pilihan_dekat').val("Normal");
     $('#buta_warna_partial_red_green').prop('checked', false);
     $('#buta_warna_total').prop('checked', false);
     $('#buta_warna_keterangan').val("");
