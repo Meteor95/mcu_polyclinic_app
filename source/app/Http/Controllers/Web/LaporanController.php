@@ -1803,54 +1803,56 @@ class LaporanController extends Controller
                 // --- PROSES DATA JSON ---
                 $p = $this->data['penglihatan'][0];
                 if (is_string($p)) {
-                    $p = json_decode($p); // Ubah string JSON menjadi object
+                    $p = json_decode($p);
                 }
 
                 $this->SetFont('Times', 'B', 9);
                 $this->SetFillColor(44, 148, 42); // Hijau
                 $this->SetTextColor(255);
 
-                // Header Baris 1
-                $yHeader = $this->GetY();
-                // Lebar VISUS ditambah dari 150 menjadi 190 (mengambil jatah Tes Buta Warna)
-                $this->Cell(190, 6, 'VISUS', 1, 0, 'C', true); 
-                $this->Ln(6);
+                // Header Baris 1 - Total Lebar tetap 190
+                $this->Cell(190, 6, 'VISUS', 1, 1, 'C', true); 
 
                 // Header Baris 2
                 $this->SetX(10);
-                $this->Cell(30, 12, 'Status', 1, 0, 'C', true); // Rowspan 2
-                // Lebar sub-header disesuaikan (80 + 80 = 160. Ditambah Status 30 = total 190)
-                $this->Cell(80, 6, 'Tanpa Kacamata', 1, 0, 'C', true);
-                $this->Cell(80, 6, 'Dengan Kacamata', 1, 1, 'C', true);
+                $this->Cell(25, 12, 'Status', 1, 0, 'C', true); // Lebar dikurangi dari 30 ke 25
+                $this->Cell(60, 6, 'Tanpa Kacamata', 1, 0, 'C', true); // Lebar dikurangi dari 80 ke 60
+                $this->Cell(60, 6, 'Dengan Kacamata', 1, 0, 'C', true); // Lebar dikurangi dari 80 ke 60
+                $this->Cell(45, 12, 'KETERANGAN', 1, 1, 'C', true); // Kolom baru (Rowspan 2)
 
-                // Header Baris 3 (DIBALIK: OD dulu baru OS)
-                $this->SetX(40);
-                $this->Cell(40, 6, 'OD', 1, 0, 'C', true);
-                $this->Cell(40, 6, 'OS', 1, 0, 'C', true);
-                $this->Cell(40, 6, 'OD', 1, 0, 'C', true);
-                $this->Cell(40, 6, 'OS', 1, 1, 'C', true);
+                // Header Baris 3 (Sub-kolom OD/OS)
+                // Kita naikkan posisi Y karena Keterangan & Status pakai rowspan
+                $currentY = $this->GetY();
+                $this->SetY($currentY - 6); 
+                $this->SetX(35); // Geser setelah kolom Status (10 + 25)
+                $this->Cell(30, 6, 'OD', 1, 0, 'C', true);
+                $this->Cell(30, 6, 'OS', 1, 0, 'C', true);
+                $this->Cell(30, 6, 'OD', 1, 0, 'C', true);
+                $this->Cell(30, 6, 'OS', 1, 1, 'C', true);
 
                 // Isi Data Visus
                 $this->SetTextColor(0);
                 $this->SetFont('Times', '', 9);
 
                 // Baris Jauh
-                $yDataStart = $this->GetY();
-                $this->Cell(30, 8, ' Jauh', 1, 0, 'L');
-                $this->Cell(40, 8, $p->visus_od_tanpa_kacamata_jauh ?? '-', 1, 0, 'C'); // OD
-                $this->Cell(40, 8, $p->visus_os_tanpa_kacamata_jauh ?? '-', 1, 0, 'C'); // OS
-                $this->Cell(40, 8, $p->visus_od_kacamata_jauh ?? '-', 1, 0, 'C');       // OD
-                $this->Cell(40, 8, $p->visus_os_kacamata_jauh ?? '-', 1, 1, 'C');       // OS
+                $this->Cell(25, 8, ' Jauh', 1, 0, 'L');
+                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_jauh ?? '-', 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_jauh ?? '-', 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_od_kacamata_jauh ?? '-', 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_os_kacamata_jauh ?? '-', 1, 0, 'C');
+                // Kolom Keterangan Jauh (Ambil data normal/abnormal)
+                $this->Cell(45, 8, $p->keterangan_jauh ?? 'NORMAL', 1, 1, 'C'); 
 
                 // Baris Dekat
-                $this->SetX(10);
-                $this->Cell(30, 8, ' Dekat', 1, 0, 'L');
-                $this->Cell(40, 8, $p->visus_od_tanpa_kacamata_dekat ?? '-', 1, 0, 'C'); // OD
-                $this->Cell(40, 8, $p->visus_os_tanpa_kacamata_dekat ?? '-', 1, 0, 'C'); // OS
-                $this->Cell(40, 8, $p->visus_od_kacamata_dekat ?? '-', 1, 0, 'C');       // OD
-                $this->Cell(40, 8, $p->visus_os_kacamata_dekat ?? '-', 1, 1, 'C');       // OS
+                $this->Cell(25, 8, ' Dekat', 1, 0, 'L');
+                $this->Cell(30, 8, $p->visus_od_tanpa_kacamata_dekat ?? '-', 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_os_tanpa_kacamata_dekat ?? '-', 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_od_kacamata_dekat ?? '-', 1, 0, 'C');
+                $this->Cell(30, 8, $p->visus_os_kacamata_dekat ?? '-', 1, 0, 'C');
+                // Kolom Keterangan Dekat
+                $this->Cell(45, 8, $p->keterangan_dekat ?? 'NORMAL', 1, 1, 'C');
 
-               $this->SetFillColor(44, 148, 42);
+                $this->SetFillColor(44, 148, 42);
                 $this->SetTextColor(255);
                 $this->SetFont('Times', 'B', 9);
 
@@ -2743,9 +2745,7 @@ class LaporanController extends Controller
         $fpdf->SetAuthor('Artha Medical Centre');
         $fpdf->SetSubject('Hasil Medical Check Up');
         $fpdf->SetCreator('Aplikasi MCU');
-        return response($fpdf->Output('S'))
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="'.$namaFile.'"');
+        return response($fpdf->Output('S'))->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="'.$namaFile.'"');
         // // 3. Halaman Hasil Pemeriksaan (Sesuai CSS page-break-after: always)
         // $pdf->AddPage('P');
         // $pdf->SetMargins(10, 65, 10);

@@ -14,6 +14,7 @@
                             <thead style="text-align: center;">
                                 <tr>
                                     <th colspan="5">VISUS</th>
+                                    <th rowspan="3" style="text-align: center;vertical-align: middle;">Keterangan</th>
                                     <th rowspan="3" style="vertical-align: middle;text-align: center;">Tes Buta Warna</th>
                                 </tr>
                                 <tr>
@@ -35,7 +36,12 @@
                                     <td><input type="text" class="form-control" id="visus_os_tanpa_kacamata_jauh" name="visus_os_tanpa_kacamata_jauh" placeholder="Nilai (OS) 20/20"></td>
                                     <td><input type="text" class="form-control" id="visus_od_kacamata_jauh" name="visus_od_kacamata_jauh" placeholder="Nilai (OD) 20/20"></td>
                                     <td><input type="text" class="form-control" id="visus_os_kacamata_jauh" name="visus_os_kacamata_jauh" placeholder="Nilai (OS) 20/20"></td>
-                                    
+                                    <td>
+                                        <select id="keterangan_pilihan_jauh" name="keterangan_pilihan_jauh" class="form-select">
+                                            <option value="Normal">Normal</option>
+                                            <option value="Abnormal">Abnormal</option>
+                                        </select>
+                                    </td>
                                     <td rowspan="2" style="vertical-align: middle;text-align: center;">
                                         <div class="card-wrapper border rounded-3 h-100 checkbox-checked" style="text-align: left;">
                                             <div class="form-check checkbox checkbox-secondary">
@@ -61,6 +67,12 @@
                                     <td><input type="text" class="form-control" id="visus_os_tanpa_kacamata_dekat" name="visus_os_tanpa_kacamata_dekat" placeholder="Nilai (OS) 20/20"></td>
                                     <td><input type="text" class="form-control" id="visus_od_kacamata_dekat" name="visus_od_kacamata_dekat" placeholder="Nilai (OD) 20/20"></td>
                                     <td><input type="text" class="form-control" id="visus_os_kacamata_dekat" name="visus_os_kacamata_dekat" placeholder="Nilai (OS) 20/20"></td>
+                                    <td>
+                                        <select id="keterangan_pilihan_dekat" name="keterangan_pilihan_dekat" class="form-select">
+                                            <option value="Normal">Normal</option>
+                                            <option value="Abnormal">Abnormal</option>
+                                        </select>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

@@ -141,6 +141,8 @@ $("#simpan_penglihatan").on('click', function(){
                         visus_od_tanpa_kacamata_dekat : $("#visus_od_tanpa_kacamata_dekat").val(),
                         visus_os_kacamata_dekat : $("#visus_os_kacamata_dekat").val(),
                         visus_od_kacamata_dekat : $("#visus_od_kacamata_dekat").val(),
+                        keterangan_dekat : $('#keterangan_pilihan_jauh').val(),
+                        keterangan_jauh : $('#keterangan_pilihan_dekat').val(),
                         buta_warna: $('#buta_warna_total').is(':checked') ? 1 : 0,
                         buta_warna_red_green: $('#buta_warna_partial_red_green').is(':checked') ? 1 : 0,
                         buta_warna_keterangan : $("#buta_warna_keterangan").val(),
@@ -190,6 +192,8 @@ function clear_penglihatan(){
     $("#visus_od_tanpa_kacamata_dekat").val("");
     $("#visus_os_kacamata_dekat").val("");
     $("#visus_od_kacamata_dekat").val("");
+    $('#keterangan_pilihan_jauh').val("normal");
+    $('#keterangan_pilihan_dekat').val("normal");
     $('#buta_warna_partial_red_green').prop('checked', false);
     $('#buta_warna_total').prop('checked', false);
     $('#buta_warna_keterangan').val("");
@@ -292,6 +296,8 @@ function fill_detail_penglihatan(user_id,transaksi_id,nama_peserta,detail){
                     $("#visus_od_tanpa_kacamata_dekat").val(response.data.visus_od_tanpa_kacamata_dekat);
                     $("#visus_os_kacamata_dekat").val(response.data.visus_os_kacamata_dekat);
                     $("#visus_od_kacamata_dekat").val(response.data.visus_od_kacamata_dekat);
+                    $('#keterangan_pilihan_jauh').val(response.data.keterangan_jauh);
+                    $('#keterangan_pilihan_dekat').val(response.data.keterangan_dekat);
                     $('#buta_warna_total').prop('checked', response.data.buta_warna == 1 ? true : false);
                     $('#buta_warna_partial_red_green').prop('checked', response.data.buta_warna_red_green == 1 ? true : false);
                     $("#buta_warna_keterangan").val(response.data.buta_warna_keterangan);
