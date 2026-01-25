@@ -88,11 +88,13 @@
                         </div>
                     </div>
                 @endif
+                @if(!empty($data['segment_controller']))
                 <div class="row">
                     <div class="col-md-12">
                         <button class="btn w-100 btn-primary" id="btnIsiFormulirPakaiDataIni">Isi Formulir Pakai Data Ini</button>
                     </div>
                 </div>
+                @endif
                 <form id="formulir_pendaftaran_peserta">
                     <div class="row">
                         <div class="col-md-6">

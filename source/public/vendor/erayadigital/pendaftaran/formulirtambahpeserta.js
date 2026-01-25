@@ -365,18 +365,20 @@ $('#pencarian_member_mcu').on('select2:select', function (e) {
                         cancelButtonText: 'Nanti Dulu!!',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            $("#nomor_identitas").val(response.data.nomor_identitas);
-                            $("#nama_peserta").val(response.data.nama_peserta);
-                            $("#jenis_kelamin").val(response.data.jenis_kelamin);
-                            $("#tempat_lahir").val(response.data.tempat_lahir);
-                            $("#tanggal_lahir_peserta").val(moment(response.data.tanggal_lahir).format('DD-MM-YYYY'));
-                            $("#alamat").val(response.data.alamat);
-                            $("#no_telepon").val(response.data.no_telepon);
-                            $("#email").val(response.data.email);
-                            $("#jenis_kelamin").val(response.data.jenis_kelamin).trigger('change');
-                            $("#status_kawin").val(response.data.status_kawin).trigger('change');
-                            $("#tipe_identitas").val(response.data.tipe_identitas).trigger('change');
+                            const data = response.data ?? response.data_identitas;
+                            $("#nomor_identitas").val(data.nomor_identitas);
+                            $("#nama_peserta").val(data.nama_peserta);
+                            $("#jenis_kelamin").val(data.jenis_kelamin);
+                            $("#tempat_lahir").val(data.tempat_lahir);
+                            $("#tanggal_lahir_peserta").val(data.tanggal_lahir ? moment(data.tanggal_lahir).format('DD-MM-YYYY') : '');
+                            $("#alamat").val(data.alamat);
+                            $("#no_telepon").val(data.no_telepon);
+                            $("#email").val(data.email);
+                            $("#jenis_kelamin").val(data.jenis_kelamin).trigger('change');
+                            $("#status_kawin").val(data.status_kawin).trigger('change');
+                            $("#tipe_identitas").val(data.tipe_identitas).trigger('change');
                         }
+
                     });
                 }
             },

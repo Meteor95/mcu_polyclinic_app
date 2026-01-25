@@ -73,13 +73,13 @@ class PendaftaranController extends Controller
             'Daftar Peserta' => route('admin.pendaftaran.daftar_peserta'),
         ]);
         if($nomor_identifikasi != null){
-            $data['peserta'] = Peserta::where('nomor_identifikasi', $nomor_identifikasi)
-                ->first();
+            $data['peserta'] = Peserta::where('nomor_identifikasi', $nomor_identifikasi)->first();
         }else{
             $data['peserta'] = null;
         }
         $data['bank'] = DaftarBank::all();
         $data['ubah'] = "";
+        $data['segment_controller'] = $req->segment(3);
         $data['nomor_identifikasi'] = $nomor_identifikasi;
         $data['json_data_diri'] = $data['peserta'] ? json_decode($data['peserta']->json_data_diri, true) : null;
         return view('paneladmin.pendaftaran.formulirtambahpeserta', ['data' => $data]);
