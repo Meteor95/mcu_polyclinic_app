@@ -24,7 +24,7 @@ class Antrian extends Model
         $query = DB::table('mcu_transaksi_peserta')
             ->leftJoin('mcu_transaksi_antrian', 'mcu_transaksi_antrian.id_pendaftaran', '=', 'mcu_transaksi_peserta.id')
             ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
-            ->join('company', 'mcu_transaksi_peserta.departemen_id', '=', 'company.id')
+            ->join('company', 'mcu_transaksi_peserta.perusahaan_id', '=', 'company.id')
             ->select(
                 'mcu_transaksi_peserta.id as id_antrian_peserta',
                 'users_member.nama_peserta as nama_peserta_antrian',
@@ -41,7 +41,9 @@ class Antrian extends Model
                 DB::raw("MAX(CASE WHEN jenis_kategori = 'poli_dokter' THEN status END) AS poli_dokter_status"),
                 DB::raw("MAX(CASE WHEN jenis_kategori = 'kesimpulan' THEN status END) AS kesimpulan_status")
             )
-            ->groupBy('mcu_transaksi_peserta.id');
+            ->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai')
+            ->groupBy('mcu_transaksi_peserta.id')
+            ->orderBy('mcu_transaksi_peserta.id', 'ASC');
         if (filter_var($check_kosong_semua, FILTER_VALIDATE_BOOLEAN)) {
             $query->havingRaw("
                 tanda_vital_status IS NULL AND 
@@ -57,8 +59,6 @@ class Antrian extends Model
                 kesimpulan_status IS NULL
             ");
         }
-        $query->orderBy('mcu_transaksi_peserta.id', 'ASC');
-        $query->where('status_peserta', '!=', 'selesai');
         if ($parameterpencarian != "") {
             if (ctype_digit($parameterpencarian)){
                 $query->where('id_pendaftaran', $parameterpencarian);
