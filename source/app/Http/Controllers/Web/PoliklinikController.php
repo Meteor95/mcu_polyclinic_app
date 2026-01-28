@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Komponen\{PoliKesumpulan, PoliDetailKesimpulan};
+use App\Models\Komponen\{PoliKesumpulan, PoliDetailKesimpulan, TingkatKesadaran};
 use App\Models\User;
 class PoliklinikController extends Controller
 {
@@ -36,6 +36,13 @@ class PoliklinikController extends Controller
         $data['jenis_poli_terpilih'] = $jenis_poli;
         $data['daftar_dokter'] = User::role('dokter')->join('users_pegawai', 'users.id', '=', 'users_pegawai.id')->get()->toArray();
         $data['daftar_perawat'] = User::role('perawat')->join('users_pegawai', 'users.id', '=', 'users_pegawai.id')->get()->toArray();
-        return view('paneladmin.pemeriksaan_fisik.poliklinik.'.$jenis_poli, ['data' => $data]);
+        $data['tingkat_kesadaran'] = TingkatKesadaran::where('status', 1)->get();
+        $data['nomor_identitas'] = $req->nomor_identitas;
+        $data['nama_peserta'] = $req->nama_peserta;
+        if ($jenis_poli == "poli_dokter"){
+            return view('paneladmin.pemeriksaan_fisik.tingkat_kesadaran', ['data' => $data]);
+        }else{
+            return view('paneladmin.pemeriksaan_fisik.poliklinik.'.$jenis_poli, ['data' => $data]);
+        }
     }
 }

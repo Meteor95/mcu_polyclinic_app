@@ -515,6 +515,8 @@ function status_antrian(id, nama_peserta, status, jenis_kategori_sekarang, statu
             if (pergi_ke_menu != ""){
                 if (pergi_ke_menu == 'tanda_vital'){
                     url = '/pemeriksaan_fisik/' + pergi_ke_menu + '?nomor_identitas='+nomor_identitas+'&nama_peserta='+nama_peserta;
+                }else if(pergi_ke_menu == 'poli_dokter'){
+                    url = '/pemeriksaan_fisik/tingkat_kesadaran?nomor_identitas='+nomor_identitas+'&nama_peserta='+nama_peserta;
                 }else{
                     url = '/poli/' + pergi_ke_menu + '?nomor_identitas='+nomor_identitas+'&nama_peserta='+nama_peserta;
                 }
