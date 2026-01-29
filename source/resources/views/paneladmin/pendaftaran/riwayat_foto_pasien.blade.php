@@ -17,7 +17,7 @@
                   <video id="webcam-preview" autoplay playsinline></video>
                   <button class="btn btn-primary w-100 mt-2 mb-2" id="tangkap_citra_cropper_js"> Tangkap Citra </button>
                 </div>
-                <div id="citra_proses_crop"><img id="tampilan_citra_unggahan" style="display: none;"></div>
+                <div id="citra_proses_crop"><img src="/mofi/assets/images/logo/doc_not_found.jpg" id="tampilan_citra_unggahan" style="display: none;"></div>
               </div>
             </div>
             <div class="col-md-6">

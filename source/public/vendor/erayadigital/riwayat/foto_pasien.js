@@ -13,7 +13,22 @@ $(document).ready(function(){
     onloadcropperjs();
     onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
     onloaddatatables();
+    defaultimage();
 });
+function defaultimage(){
+    const img = document.getElementById('tampilan_citra_unggahan');
+    img.src = '/mofi/assets/images/logo/doc_not_found.jpg';
+    img.style.display = 'block';
+    img.onload = function() {
+        cropper = new Cropper(img, {
+            aspectRatio: 1, 
+            viewMode: 1,    
+            autoCrop: false,
+            responsive: true,
+        });
+    };
+
+}
 function onloaddatatables(){
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_daftarpeserta_unggah_citra").DataTable({
@@ -215,6 +230,16 @@ $("#simpan_foto_perserta").on('click', function() {
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
     if (isCanvasEmpty(previewCanvas[0])){
+        if (cropper) {
+            previewCanvas.show();
+            $("#preview_citra_pasien_canvas").show()
+            const canvas = cropper.getCroppedCanvas();
+            previewCanvas[0].width = canvas.width;
+            previewCanvas[0].height = canvas.height;
+            previewCanvas.css('display', 'block');
+            const ctx = previewCanvas[0].getContext('2d');
+            ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+        }
         //return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan unggahan citra terlebih dahulu untuk dijadikan laporan MCU atas Nama Peserta : '+$("#nama_peserta_temp_1").text()+' dengan Nomor Identitas : '+$("#nomor_identitas_temp").text(), 'error', 3000);
     }
     Swal.fire({
