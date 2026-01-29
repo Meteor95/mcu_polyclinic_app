@@ -182,7 +182,7 @@
                 ['condition' => $hasAccessThreadmill, 'url' => 'poli/threadmill', 'label' => 'Treadmill'],
                 ['condition' => $hasAccessRontgenThorax, 'url' => 'poli/rontgen_thorax', 'label' => 'Rontgen Thorax'],
                 ['condition' => $hasAccessRontgenLumbosacral, 'url' => 'poli/rontgen_lumbosacral', 'label' => 'Rontgen Lumbosacral'],
-                ['condition' => $hasAccessUSGUbdomain, 'url' => 'poli/usg_ubdomain', 'label' => 'USG Ubdomain'],
+                ['condition' => $hasAccessUSGUbdomain, 'url' => 'poli/usg_ubdomain', 'label' => 'USG Abdomain'],
                 ['condition' => $hasAccessFarminghamScore, 'url' => 'poli/farmingham_score', 'label' => 'Farmingham Score']
               ] as $menuItem)
                 <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
@@ -305,11 +305,11 @@
                 ['condition' => $hasAccessRekapSpirometri, 'url' => 'laporan/rekap/spirometri', 'label' => 'Spirometri'],
                 ['condition' => $hasAccessRekapAudiometri, 'url' => 'laporan/rekap/audiometri', 'label' => 'Audiometri'],
                 ['condition' => $hasAccessRekapEKG, 'url' => 'laporan/rekap/ekg', 'label' => 'EKG'],
-                ['condition' => $hasAccessRekapThreadmill, 'url' => 'laporan/rekap/threadmill', 'label' => 'Threadmill'],
+                ['condition' => $hasAccessRekapThreadmill, 'url' => 'laporan/rekap/threadmill', 'label' => 'Treadmill'],
                 ['condition' => $hasAccessRekapRontgenThorax, 'url' => 'laporan/rekap/rontgen_thorax', 'label' => 'Rontgen Thorax'],
                 ['condition' => $hasAccessRekapRontgenLumbosacral, 'url' => 'laporan/rekap/rontgen_lumbosacral', 'label' => 'Rontgen Lumbosacral'],
-                ['condition' => $hasAccessRekapUSGUbdomain, 'url' => 'laporan/rekap/usg_ubdomain', 'label' => 'USG Ubdomain'],
-                ['condition' => $hasAccessRekapFarminghamScore, 'url' => 'laporan/rekap/farmingham_score', 'label' => 'Farmingham Score'],
+                ['condition' => $hasAccessRekapUSGUbdomain, 'url' => 'laporan/rekap/usg_ubdomain', 'label' => 'USG Abdomain'],
+                ['condition' => $hasAccessRekapFarminghamScore, 'url' => 'laporan/rekap/farmingham_score', 'label' => 'Framingham Score'],
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
@@ -404,7 +404,7 @@
             <ul class="sidebar-submenu">
               @foreach([
                 ['condition' => $hasAccessArciveMCUPerusahaan, 'url' => 'laporan/berkas_perusahaan/mcu', 'label' => 'MCU'],
-                ['condition' => $hasAccessArciveMCUThreadmillPerusahaan, 'url' => 'laporan/berkas_perusahaan/threadmill', 'label' => 'Threadmill'],
+                ['condition' => $hasAccessArciveMCUThreadmillPerusahaan, 'url' => 'laporan/berkas_perusahaan/threadmill', 'label' => 'Treadmill'],
                 ['condition' => $hasAccessArciveLaboratoriumPerusahaan, 'url' => 'laporan/berkas_perusahaan/laboratorium', 'label' => 'Laboratorium'],
                 ['condition' => $hasAccessLaporanKuitansiPerusahaan, 'url' => 'laporan/berkas_perusahaan/kuitansi', 'label' => 'Kuitansi']
               ] as $menuItem)
@@ -428,11 +428,11 @@
                 ['condition' => $hasAccessRekapSpirometriPerusahaan, 'url' => 'laporan/rekap_perusahaan/spirometri', 'label' => 'Spirometri'],
                 ['condition' => $hasAccessRekapAudiometriPerusahaan, 'url' => 'laporan/rekap_perusahaan/audiometri', 'label' => 'Audiometri'],
                 ['condition' => $hasAccessRekapEKGPerusahaan, 'url' => 'laporan/rekap_perusahaan/ekg', 'label' => 'EKG'],
-                ['condition' => $hasAccessRekapThreadmillPerusahaan, 'url' => 'laporan/rekap_perusahaan/threadmill', 'label' => 'Threadmill'],
+                ['condition' => $hasAccessRekapThreadmillPerusahaan, 'url' => 'laporan/rekap_perusahaan/threadmill', 'label' => 'Treadmill'],
                 ['condition' => $hasAccessRekapRontgenThoraxPerusahaan, 'url' => 'laporan/rekap_perusahaan/rontgen_thorax', 'label' => 'Rontgen Thorax'],
                 ['condition' => $hasAccessRekapRontgenLumbosacralPerusahaan, 'url' => 'laporan/rekap_perusahaan/rontgen_lumbosacral', 'label' => 'Rontgen Lumbosacral'],
-                ['condition' => $hasAccessRekapUSGUbdomainPerusahaan, 'url' => 'laporan/rekap_perusahaan/usg_ubdomain', 'label' => 'USG Ubdomain'],
-                ['condition' => $hasAccessRekapFarminghamScorePerusahaan, 'url' => 'laporan/rekap_perusahaan/farmingham_score', 'label' => 'Farmingham Score'],
+                ['condition' => $hasAccessRekapUSGUbdomainPerusahaan, 'url' => 'laporan/rekap_perusahaan/usg_ubdomain', 'label' => 'USG Abdomain'],
+                ['condition' => $hasAccessRekapFarminghamScorePerusahaan, 'url' => 'laporan/rekap_perusahaan/farmingham_score', 'label' => 'Framingham Score'],
               ] as $menuItem)
                 @if ($menuItem['condition'])
                   <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
