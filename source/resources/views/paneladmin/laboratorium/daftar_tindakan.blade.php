@@ -158,6 +158,10 @@
                     </thead>
                 </table>
               </div>
+              <div class="col-md-12">
+                <h1 style="text-align: center;">Berkas Laboratorium</h1>
+                <div class="row" id="laboratoriumGallery"></div>
+              </div>
             </div>
           </div>
           <div class="modal-footer">

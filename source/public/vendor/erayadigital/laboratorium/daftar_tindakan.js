@@ -301,6 +301,26 @@ function detail_tindakan(id,parts,nama_peserta){
                         `<div class="text-end">${item.besaran_fee.toLocaleString('id-ID')}</div>`,
                     ]).draw();
                 });
+
+                const galleryContainer = document.getElementById('laboratoriumGallery');
+                console.log(response)
+                response.berkas_laboratorium.forEach((item, index) => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3 mb-3';
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    const img = document.createElement('img');
+                    img.src = item.data_foto;
+                    img.className = 'card-img-top';
+                    img.alt = `Gambar ${index + 1}`;
+                    const cardBody = document.createElement('div');
+                    cardBody.className = 'card-body p-2 text-center';
+                    cardBody.innerText = item.nama_file_citra;
+                    card.appendChild(img);
+                    card.appendChild(cardBody);
+                    col.appendChild(card);
+                    galleryContainer.appendChild(col);
+                });
                 $("#button_edit_apotek").html(`<button onclick="ubah_data_apotek('${response.transaksi[0].id_transaksi}','${no_trx}')" class="btn btn-amc-orange"><i class="fa fa-edit"></i> Ubah Data Apotek</button>`);
                 $("#button_edit_transaksi").html(`<a href="/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}" target="_blank" class="btn btn-amc-orange"><i class="fa fa-edit"></i> Ubah Data Transaksi</a>`);
             },

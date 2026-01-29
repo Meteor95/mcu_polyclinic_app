@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\ResponseHelper;
 use App\Models\Laboratorium\{Tarif, Kategori, Satuan, Kenormalan, TemplateLab, Transaksi, Kesimpulan, KesimpulanTindakan, TransaksiApotek};
+use App\Models\Transaksi\UnggahanCitraLab;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Services\LaboratoriumServices;
@@ -580,14 +581,17 @@ class LaboratoriumController extends Controller
             ->join('mcu_transaksi_peserta', 'transaksi.no_mcu', '=', 'mcu_transaksi_peserta.id')
             ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
             ->select('transaksi.*', 'transaksi.id as id_transaksi', 'transaksi_detail.*', 'mcu_transaksi_peserta.*', 'users_member.*')
-            ->where('transaksi.id', $req->id_transaksi)
-            ->get();
-            $transaksiFee = Transaksi::where('id_transaksi', $req->id_transaksi)
-            ->join('transaksi_fee', 'transaksi.id', '=', 'transaksi_fee.id_transaksi')
-            ->get();
+            ->where('transaksi.id', $req->id_transaksi)->get();
+            $transaksiFee = Transaksi::where('id_transaksi', $req->id_transaksi)->join('transaksi_fee', 'transaksi.id', '=', 'transaksi_fee.id_transaksi')->get();
+            $berkasLaboratorium = UnggahanCitraLab::where('id_trx_lab', $req->id_transaksi)->get();
+            $dataWithFoto = $berkasLaboratorium->map(function ($item) {
+                $item->data_foto = url(env('APP_VERSI_API') . "/file/download_lampiran_pdf_laboratorium?file_name=" . $item->nama_file);
+                return $item;
+            });
             $dynamicAttributes = [
                 'transaksi' => $transaksiData,
                 'transaksi_fee' => $transaksiFee,
+                'berkas_laboratorium' => $berkasLaboratorium,
             ];
             return ResponseHelper::data('Informasi Transaksi Tindakan', $dynamicAttributes);
         } catch (\Throwable $th) {

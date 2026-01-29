@@ -5,6 +5,7 @@
 <meta name="keywords" content="">
 <meta name="author" content="PT. Eraya Digital Solusindo">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="session-expire" content="{{ config('session.lifetime') }}">
 <link rel="icon" href="{{asset('mofi/assets/images/logo/logo_amc.png')}}" type="image/x-icon">
 <link rel="shortcut icon" href="{{asset('mofi/assets/images/logo/logo_amc.png')}}" type="image/x-icon">
 <title>Aplikasi MCU - {{ config('app.name') }}</title>

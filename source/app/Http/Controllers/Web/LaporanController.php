@@ -51,6 +51,7 @@ class LaporanController extends Controller
             'Beranda' => route('admin.beranda'),
             'Validasi' => route('admin.laporan.validasi_rekap_kesimpulan'),
         ]);
+        
         return view('paneladmin.laporan.validasi_rekap_kesimpulan', ['data' => $data]);
     }
     public function berkas_mcu(Request $req){

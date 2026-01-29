@@ -52,7 +52,12 @@ $(document).ready(function() {
     pemeriksaanConfig.forEach(item => {
         quillInstances[item.id] = new Quill(`#${item.id}_quill`, {
             placeholder: item.placeholder,
-            theme: 'snow'
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'clean'],
+                ]
+            }
         });
     });
     choicesConfig.forEach(item => {

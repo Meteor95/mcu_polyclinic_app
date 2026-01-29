@@ -5,7 +5,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\{AuthController, RoleAndPermissionController, UserController, MasterdataController, PendaftaranController, TransaksiController, FileController, AtributController, PemeriksaanFisikController, PoliklinikController, LaboratoriumController, LaporanController, DeveloperController};
 use App\Http\Controllers\Api\EndUser\FormulirController;
 
-Route::get('/', function(){return ResponseHelper::error(401);})->name('login');
+Route::get('/', function (Request $req) {
+    $domain = $req->getHost();
+    if ($domain === config('app.domains.pendaftaran_artha')) {
+        $data = ['tipe_halaman' => 'login_perusahaan'];
+        return view('login_perusahaan', ['data' => $data]);
+    }
+    $data = ['tipe_halaman' => 'login'];
+    return view('login', ['data' => $data]);
+})->name('login');
 Route::prefix('v1')->group(function () {
     Route::prefix('developer')->group(function () {
         Route::get('error_log_app', [DeveloperController::class, "error_log_app"]);
