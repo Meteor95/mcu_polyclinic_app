@@ -93,7 +93,7 @@
 @section('js_load')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" integrity="sha512-JyCZjCOZoyeQZSd5+YEAcFgz2fowJ1F1hyJOXgtKu4llIa0KneLcidn5bwfutiehUTiOuK87A986BZJMko0eWQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/riwayat/foto_pasien.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/riwayat/foto_pasien.js') }}?v={{ filemtime(public_path('vendor/erayadigital/riwayat/foto_pasien.js')) }}"></script>
 <script>
   let param_nomor_identitas = '{{$data['nomor_identitas']}}'
   let param_nama_peserta = '{{$data['nama_peserta']}}'
