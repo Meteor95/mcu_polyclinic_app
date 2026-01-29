@@ -1810,8 +1810,9 @@ class LaporanController extends Controller
                 $this->SetFillColor(44, 148, 42); // Hijau
                 $this->SetTextColor(255);
 
-                // Header Baris 1 - Total Lebar tetap 190
-                $this->Cell(190, 6, 'VISUS', 1, 1, 'C', true); 
+                $this->SetX(10);
+                $this->Cell(25, 6, 'Pemeriksaan', 1, 0, 'C', true); // Lebar harus sama dengan kolom 'Status' di bawahnya
+                $this->Cell(165, 6, 'VISUS', 1, 1, 'C', true);       // Sisa lebar (190 - 25 = 165)
 
                 // Header Baris 2
                 $this->SetX(10);
@@ -1883,18 +1884,26 @@ class LaporanController extends Controller
                 // Kolom Normal dihapus di sini
                 $this->Cell(80, 8, $p->buta_warna_keterangan ?? '-', 1, 1, 'C'); // Kolom Keterangan
                 
-                $this->SetTextColor(255);
+               $this->SetTextColor(255);
                 $this->SetFont('Times', 'B', 9);
-                // Header Baris 1
-                $this->Cell(30, 12, 'Posisi Mata', 1, 0, 'C', true);
+
+                // --- BARIS 1 ---
+                $this->SetX(10);
+                // Cell Pemeriksaan: Lebarnya harus SAMA dengan kolom "Posisi Mata" di bawahnya (misal: 30)
+                $this->Cell(30, 6, 'Pemeriksaan', 1, 0, 'C', true); 
+                // Cell LAPANG PANDANG: Mengambil sisa lebar (190 - 30 = 160)
                 $this->Cell(160, 6, 'LAPANG PANDANG', 1, 1, 'C', true);
 
-                // Header Baris 2
-                $this->SetX(40);
+                // --- BARIS 2 ---
+                $this->SetX(10);
+                // Kolom Posisi Mata tepat di bawah Pemeriksaan
+                $this->Cell(30, 6, 'Posisi Mata', 1, 0, 'C', true); 
+                // Pembagian kolom arah mata (misal 25 x 4 = 100)
                 $this->Cell(25, 6, 'Superior', 1, 0, 'C', true);
                 $this->Cell(25, 6, 'Inferior', 1, 0, 'C', true);
                 $this->Cell(25, 6, 'Temporal', 1, 0, 'C', true);
                 $this->Cell(25, 6, 'Nasal', 1, 0, 'C', true);
+                // Sisa lebar untuk Keterangan (160 - 100 = 60)
                 $this->Cell(60, 6, 'Keterangan', 1, 1, 'C', true);
 
                 // Data Lapang Pandang
