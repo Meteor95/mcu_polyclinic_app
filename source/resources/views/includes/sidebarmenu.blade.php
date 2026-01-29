@@ -179,7 +179,7 @@
                 ['condition' => $hasAccessSpirometri, 'url' => 'poli/spirometri', 'label' => 'Spirometri'],
                 ['condition' => $hasAccessAudiometri, 'url' => 'poli/audiometri', 'label' => 'Audiometri'],
                 ['condition' => $hasAccessEkg, 'url' => 'poli/ekg', 'label' => 'EKG'],
-                ['condition' => $hasAccessThreadmill, 'url' => 'poli/threadmill', 'label' => 'Threadmill'],
+                ['condition' => $hasAccessThreadmill, 'url' => 'poli/threadmill', 'label' => 'Treadmill'],
                 ['condition' => $hasAccessRontgenThorax, 'url' => 'poli/rontgen_thorax', 'label' => 'Rontgen Thorax'],
                 ['condition' => $hasAccessRontgenLumbosacral, 'url' => 'poli/rontgen_lumbosacral', 'label' => 'Rontgen Lumbosacral'],
                 ['condition' => $hasAccessUSGUbdomain, 'url' => 'poli/usg_ubdomain', 'label' => 'USG Ubdomain'],
