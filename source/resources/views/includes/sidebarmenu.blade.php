@@ -261,7 +261,7 @@
             <ul class="sidebar-submenu">
               @foreach([
                 ['condition' => $hasAccessArciveMCU, 'url' => 'laporan/berkas/mcu', 'label' => 'MCU'],
-                ['condition' => $hasAccessArciveMCUThreadmill, 'url' => 'laporan/berkas/mcu_threadmill', 'label' => 'Threadmill'],
+                ['condition' => $hasAccessArciveMCUThreadmill, 'url' => 'laporan/berkas/mcu_threadmill', 'label' => 'Treadmill'],
                 ['condition' => $hasAccessArciveLaboratorium, 'url' => 'laporan/berkas/laboratorium', 'label' => 'Laboratorium']
               ] as $menuItem)
                 @if ($menuItem['condition'])
