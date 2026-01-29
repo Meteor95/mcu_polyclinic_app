@@ -64,11 +64,7 @@ class Transaksi extends Model
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');
         }
         if ($status_peserta != "" || $parameterpencarianstatuspasien != ""){
-            if (!empty($status_peserta) || !empty($parameterpencarianstatuspasien)) {
-                $query->where('status_peserta', '=', ($status_peserta == "" ? $parameterpencarianstatuspasien : $status_peserta));
-            } else {
-                $query->where('status_peserta', '!=', 'selesai');
-            }   
+            $query->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai');
         }
         if ($jenis_laporan === 'laboratorium'){
             $query->where('transaksi.total_tindakan', '>', 0);
