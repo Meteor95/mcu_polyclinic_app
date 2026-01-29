@@ -264,7 +264,7 @@ function onloadcropperjs(){
 $("#tambah_foto_poliklinik").on('click', function() {
     const fileInput = document.getElementById('citra_pasien');
     if (fileInput.files.length === 0) {
-        //return createToast('Kesalahan Unggahan', 'top-right', `Silahkan tentukan foto dari ${title_poliklinik} terlebih dahulu untuk dijadikan laporan MCU`, 'error', 3000);
+        return createToast('Kesalahan Unggahan', 'top-right', `Silahkan tentukan foto dari ${title_poliklinik} terlebih dahulu untuk dijadikan laporan MCU`, 'error', 3000);
     }
     const originalFileName = fileInput.files[0].name;
     if (cropper) {

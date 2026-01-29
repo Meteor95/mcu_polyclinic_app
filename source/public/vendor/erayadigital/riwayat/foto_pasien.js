@@ -215,7 +215,7 @@ $("#simpan_foto_perserta").on('click', function() {
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     }
     if (isCanvasEmpty(previewCanvas[0])){
-        return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan unggahan citra terlebih dahulu untuk dijadikan laporan MCU atas Nama Peserta : '+$("#nama_peserta_temp_1").text()+' dengan Nomor Identitas : '+$("#nomor_identitas_temp").text(), 'error', 3000);
+        //return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan unggahan citra terlebih dahulu untuk dijadikan laporan MCU atas Nama Peserta : '+$("#nama_peserta_temp_1").text()+' dengan Nomor Identitas : '+$("#nomor_identitas_temp").text(), 'error', 3000);
     }
     Swal.fire({
         html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penyimpanan Data Member MCU</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menyimpan informasi member MCU <strong>'+$("#nama_peserta_temp_1").text()+'</strong> ?. Jika sudah silahkan tentukan paket MCU',
