@@ -43,7 +43,7 @@
                     <option value="spirometri">Poli Spirometri</option>
                     <option value="audiometri">Poli Audiometri</option>
                     <option value="ekg">Poli EKG</option>
-                    <option value="threadmill">Poli Threadmill</option>
+                    <option value="threadmill">Poli Treadmill</option>
                     <option value="rontgen_thorax">Poli Ronsen Thorax</option>
                     <option value="rontgen_lumbosacral">Poli Ronsen Lumbosacral</option>
                     <option value="usg_ubdomain">Poli Rontgen Abdomen (USG)</option>

@@ -57,8 +57,8 @@
                     <option value="Follow_Up">Follow Up</option>
                     <option value="Berobat">Berobat</option>
                     <option value="MCU_Tambahan">MCU Tambahan</option>
-                    <option value="MCU_Threadmill">MCU Threadmill</option>
-                    <option value="Threadmill">Threadmill</option>
+                    <option value="MCU_Threadmill">MCU Treadmill</option>
+                    <option value="Threadmill">Treadmill</option>
                 </select>
                 <div class="invalid-feedback">Masukan keterangan yang valid</div>
                 <div class="valid-feedback">Terlihat bagus! Keterangan sudah terisi</div>
@@ -175,7 +175,7 @@
                             <td><input type="checkbox" class="form-check-input" id="poliklinik_ekg" name="poliklinik_ekg"></td>
                         </tr>
                         <tr>
-                            <td>Threadmill</td>
+                            <td>Treadmill</td>
                             <td><input type="checkbox" class="form-check-input" id="poliklinik_threadmill" name="poliklinik_threadmill"></td>
                         </tr>
                         <tr>

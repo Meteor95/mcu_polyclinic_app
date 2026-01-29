@@ -4,7 +4,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4>Berkas Tindakan Threadmill</h4><span>Pada halaman ini anda dapat melihat semua berkas peserta yang melakukan tindakan MCU mulai dari data awal hingga data akhir. Informasi berkas MCU akan tampil pada halaman ini jikalau berkas tersebut telah validasi oleh dokter atau admin aplikasi.</span>
+          <h4>Berkas Tindakan Treadmill</h4><span>Pada halaman ini anda dapat melihat semua berkas peserta yang melakukan tindakan MCU mulai dari data awal hingga data akhir. Informasi berkas MCU akan tampil pada halaman ini jikalau berkas tersebut telah validasi oleh dokter atau admin aplikasi.</span>
         </div>
         <div class="card-body">
           <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data berdasarkan nama peserta">

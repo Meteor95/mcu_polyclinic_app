@@ -95,8 +95,8 @@
                   <option value="Follow_Up">Follow Up</option>
                   <option value="Berobat">Berobat</option>
                   <option value="MCU_Tambahan">MCU Tambahan</option>
-                  <option value="MCU_Threadmill">MCU Threadmill</option>
-                  <option value="Threadmill">Threadmill</option>
+                  <option value="MCU_Threadmill">MCU Treadmill</option>
+                  <option value="Threadmill">Treadmill</option>
                 </select>
               </div>
               <div class="col-md-2">

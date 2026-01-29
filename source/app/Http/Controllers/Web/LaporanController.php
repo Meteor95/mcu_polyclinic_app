@@ -69,7 +69,7 @@ class LaporanController extends Controller
         $user = $req->attributes->get('user_details');
         $perusahaan = json_decode($user->json_perusahaan, true) ?? [];
         $ids = array_column($perusahaan, 'id');
-        $data = $this->getData($req, 'Berkas Threadmill', [
+        $data = $this->getData($req, 'Berkas Treadmill', [
             'Beranda' => route('admin.beranda'),
             'Berkas' => route('admin.laporan.berkas_mcu_threadmill'),
         ]);

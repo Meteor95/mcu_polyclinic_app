@@ -42,7 +42,7 @@
               <td><span class="progress_sp" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Spirometri">SP</span></td>
               <td><span class="progress_au" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Audiometri">AU</span></td>
               <td><span class="progress_ekg" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="EKG">EKG</span></td>
-              <td><span class="progress_tm" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Threadmill">TM</span></td>
+              <td><span class="progress_tm" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Treadmill">TM</span></td>
               <td><span class="progress_rsn_thorax" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Rontgen Thorax">RSN</span></td>
               <td><span class="progress_rsn_lumbosacral" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Rontgen Lumbosacral">RSN</span></td>
               <td><span class="progress_usg_ubdomain" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="USG Ubdomain">USG</span></td>
@@ -359,7 +359,7 @@
                       </tr>
                       <tr>
                         <td>25</td>
-                        <td>Threadmill</td>
+                        <td>Treadmill</td>
                         <td><span class="progress_tm">TM</span></td>
                         <td><button onclick="process_ajax('tm','modalPoliklinik','Threadmill')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                       </tr>
@@ -471,7 +471,7 @@
                         </th>
                     </tr>
                     <tr class="pemeriksaan_threadmill" style="display: none;">
-                        <th>ThreadMill</th>
+                        <th>Treadmill</th>
                         <th>
                             <div class="row">
                                 <div class="col-md-12">

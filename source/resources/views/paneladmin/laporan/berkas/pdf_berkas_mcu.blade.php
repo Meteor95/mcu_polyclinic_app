@@ -421,7 +421,7 @@
                 @if (preg_replace('/\s+/', '', strip_tags($data['quill_pemeriksaan_threadmill'])) != '')
                 <tr>
                     <td style="width: 1%; text-align: center;">&#8226;</td>
-                    <td style="width: 29%;">THREADMILL</td>
+                    <td style="width: 29%;">TREADMILL</td>
                     <td style="width: 5%;">:</td>
                     <td style="width: 70%;">{!! trim(strip_tags($data['quill_pemeriksaan_threadmill'])) !!}</td>
                 </tr>

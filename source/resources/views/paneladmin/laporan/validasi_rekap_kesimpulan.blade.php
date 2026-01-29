@@ -95,7 +95,7 @@
                         </th>
                     </tr>
                     <tr class="pemeriksaan_threadmill" style="display: none;">
-                        <th>ThreadMill</th>
+                        <th>Treadmill</th>
                         <th>
                             <div class="row">
                                 <div class="col-md-9 mb-1">

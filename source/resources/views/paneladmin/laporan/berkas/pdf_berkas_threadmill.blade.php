@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Berkas Threadmill {{ $data['nomor_mcu'] }}</title>
+<title>Berkas Treadmill {{ $data['nomor_mcu'] }}</title>
 <style>
 @page { 
     margin:0;

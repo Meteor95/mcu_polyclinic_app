@@ -23,8 +23,8 @@
                   <option value="pemeriksaan_rontgen_lumbosacral">PEMERIKSAAN RONTGEN LUMBOSACRAL</option>
                   <option value="pemeriksaan_rontgen_thorax">PEMERIKSAAN RONTGEN THORAX</option>
                   <option value="pemeriksaan_spirometri">PEMERIKSAAN SPIROMETRI</option>
-                  <option value="pemeriksaan_threadmill">PEMERIKSAAN THREADMILL</option>
-                  <option value="pemeriksaan_usg_ubdomain">PEMERIKSAAN USG UBDOMAIN</option>
+                  <option value="pemeriksaan_threadmill">PEMERIKSAAN TREADMILL</option>
+                  <option value="pemeriksaan_usg_ubdomain">PEMERIKSAAN USG ABDOMAIN</option>
                   <option value="saran">SARAN</option>
               </select>
             </div>
@@ -58,8 +58,8 @@
                   <option value="pemeriksaan_rontgen_lumbosacral">PEMERIKSAAN RONTGEN LUMBOSACRAL</option>
                   <option value="pemeriksaan_rontgen_thorax">PEMERIKSAAN RONTGEN THORAX</option>
                   <option value="pemeriksaan_spirometri">PEMERIKSAAN SPIROMETRI</option>
-                  <option value="pemeriksaan_threadmill">PEMERIKSAAN THREADMILL</option>
-                  <option value="pemeriksaan_usg_ubdomain">PEMERIKSAAN USG UBDOMAIN</option>
+                  <option value="pemeriksaan_threadmill">PEMERIKSAAN TREADMILL</option>
+                  <option value="pemeriksaan_usg_ubdomain">PEMERIKSAAN USG ABDOMAIN</option>
                   <option value="saran">SARAN</option>
               </select>
               </div>
