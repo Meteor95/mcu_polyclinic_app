@@ -144,7 +144,7 @@
                                     <td><div id="berkas_mcu_pemeriksaan_farmingham_score_quill"></div></td>
                                 </tr>
                                 <tr>
-                                    <td>THREADMILL</td>
+                                    <td>TREADMILL</td>
                                     <td>:</td>
                                     <td><div id="berkas_mcu_pemeriksaan_threadmill_quill"></div></td>
                                 </tr>
