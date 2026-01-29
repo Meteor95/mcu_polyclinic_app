@@ -274,12 +274,22 @@ function fill_form_tanda_vital_tabel(user_id,transaksi_id,nama_peserta,detail){
                     $('#datatables_tanda_vital_modal_tanda_vital tbody').empty();
                     $('#datatables_tanda_vital_modal_tanda_gizi tbody').empty();
                     $("#modal_nama_peserta_parameter").text(nama_peserta);
+                    let beratBadan = null;
+                    let tinggiBadan = null;
                     for (let i = 0; i < response.data.length; i++) {
                         let no = i + 1;
                         let item = response.data[i];
                         let row = $('#datatables_tanda_vital_modal_tanda_vital tbody tr').filter(function() {
                             return $(this).find('td:eq(0)').text() == item.id_atribut_lv;
                         });
+                         // tangkap BB & TB
+                        if (item.id_atribut_lv == 5) {
+                            beratBadan = parseFloat(item.nilai_tanda_vital);
+                        }
+
+                        if (item.id_atribut_lv == 6) {
+                            tinggiBadan = parseFloat(item.nilai_tanda_vital);
+                        }
                         if (row.length === 0 && item.jenis_tanda_vital === 'tanda_vital') {
                             $('#datatables_tanda_vital_modal_tanda_vital tbody').append(`
                                 <tr>
@@ -300,7 +310,29 @@ function fill_form_tanda_vital_tabel(user_id,transaksi_id,nama_peserta,detail){
                                 </tr>
                             `);
                         }
-                    }                    
+                    }  
+                    if (beratBadan !== null && tinggiBadan !== null && tinggiBadan > 0) {
+                    let tinggiMeter = tinggiBadan / 100;
+                    let bmi = beratBadan / (tinggiMeter * tinggiMeter);
+                    bmi = bmi.toFixed(2);
+                    let statusGizi = '';
+                    let colorClass = '';
+                    if (bmi < 18.5) {
+                        statusGizi = 'KEKURANGAN BERAT BADAN';
+                        colorClass = 'text-orange';
+                    } else if (bmi < 25) {
+                        statusGizi = 'NORMAL';
+                        colorClass = 'text-green';
+                    } else if (bmi < 29.9) {
+                        statusGizi = 'KELEBIHAN BERAT BADAN';
+                        colorClass = 'text-red';
+                    } else {
+                        statusGizi = 'OBESITAS';
+                        colorClass = 'text-darkred';
+                    }
+                    $('#bmi_informasi').html("BMI : "+bmi + " IMT");
+                    $('#status_gizi_informasi').removeClass('text-orange text-green text-red text-darkred').addClass(colorClass).html(`Status Gizi : <strong>${statusGizi}</strong>`);
+                }                  
                     $("#modalLihatParameter").modal('show');
                 }else{
                     createToast('LKP MCU', 'top-right', response.message, 'success', 3000);

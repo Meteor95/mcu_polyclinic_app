@@ -39,7 +39,7 @@
                                     <td>
                                         <select id="keterangan_pilihan_jauh" name="keterangan_pilihan_jauh" class="form-select">
                                             <option value="Normal">Normal</option>
-                                            <option value="Abnormal">Abnormal</option>
+                                            <option value="Myopia">Myopia</option>
                                         </select>
                                     </td>
                                     <td rowspan="2" style="vertical-align: middle;text-align: center;">
@@ -57,7 +57,8 @@
                                             <option value="" disabled selected hidden>Keterangan Buta Warna</option>
                                             <option value="">-</option>
                                             <option value="Normal">Normal</option>
-                                            <option value="Abnormal">Abnormal</option>
+                                            <option value="Partial">Partial</option>
+                                            <option value="Total">Total</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -70,7 +71,8 @@
                                     <td>
                                         <select id="keterangan_pilihan_dekat" name="keterangan_pilihan_dekat" class="form-select">
                                             <option value="Normal">Normal</option>
-                                            <option value="Abnormal">Abnormal</option>
+                                            <option value="Presbiopia">Presbiopia</option>
+                                            <option value="Hipermetropia">Hipermetropia</option>
                                         </select>
                                     </td>
                                 </tr>
