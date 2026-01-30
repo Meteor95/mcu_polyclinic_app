@@ -26,6 +26,7 @@ class LaboratoriumServices
             $jenis_layanan = TransaksiMCU::where('id',$data['no_mcu'])->first();
             $informasi_file = Transaksi::where('id', $data['id_transaksi'])->first();
             $filename = $informasi_file->nama_file_surat_pengantar ?? "";
+            $id_transaksi_data_transaksi = $data['id_transaksi'];
             if($file){
                 $nomor_transaksi_mcu = $jenis_layanan->no_transaksi;
                 $originalName = $file->getClientOriginalName();
@@ -171,6 +172,10 @@ class LaboratoriumServices
                     ];
                 }
                 UnggahanCitraLab::insert($dataToInsert_fileLab);
+            }else{
+                UnggahanCitraLab::where('id_trx_lab', $id_transaksi_data_transaksi)->update([
+                        'id_trx_lab' => $hasil_query_tranaksi->id
+                ]);
             }
         });
     }
