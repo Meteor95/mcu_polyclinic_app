@@ -377,7 +377,7 @@ function daftar_peserta() {
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
-                    d.status_peserta = 'selesai';
+                    d.status_peserta_antrian = 1;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

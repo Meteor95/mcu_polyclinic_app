@@ -30,6 +30,7 @@ class Transaksi extends Model
         $jenis_laporan = $request->jenis_laporan;
         $from_query = $request->from_query;
         $id_perusahaan = $request->id_perusahaan;
+        $status_peserta_antrian = $request->status_peserta_antrian;
         $tablePrefix = config('database.connections.mysql.prefix');
         $query = DB::table((new self())->getTable())
             ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
@@ -69,6 +70,9 @@ class Transaksi extends Model
             } else {
                 $query->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai');
             }   
+        }
+        if ($status_peserta_antrian == 1){
+            $query->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai');
         }
         if ($jenis_laporan === 'laboratorium'){
             $query->where('transaksi.total_tindakan', '>', 0);
