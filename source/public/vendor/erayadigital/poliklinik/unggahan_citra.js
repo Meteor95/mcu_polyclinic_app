@@ -294,7 +294,7 @@ $(document).on('click', '.btn-lihat', function () {
     $('#modalImage').attr('src', imgSrc);
     $('#imageModal').modal('show');
 });
-$("#simpan_foto_perserta").on('click', function() {
+$("#simpan_foto_perserta").on('click', async function() {
     // if ($("#dokter_citra_unggah_poli").val() == null){
     //     return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan dokter yang bertugas terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     // }
@@ -319,7 +319,7 @@ $("#simpan_foto_perserta").on('click', function() {
         cancelButtonColor: 'orange',
         confirmButtonText: 'Simpan Data',
         cancelButtonText: 'Nanti Dulu!!',
-    }).then((result) => {
+    }).then(async (result) => {
         if (result.isConfirmed) {
             const formData = new FormData();
             const quillContent = quill.getContents();
@@ -343,20 +343,31 @@ $("#simpan_foto_perserta").on('click', function() {
             formData.append('pegawai_id_pembaca', $("#dokter_citra_unggah_poli_pembaca").val());
             formData.append('pegawai_id_perawat', $("#dokter_citra_unggah_poli_perawat").val());
             
-            if (jenis_poli.toLowerCase().replace(/ /g, "") !== "farmingham_score"){
-                formData.append('citra_unggahan_poliklinik_pdf', $("#pdf_file")[0].files[0]);   
-                croppedImages.forEach((base64Image, index) => {
-                    const isURL = (str) => {
-                        const urlPattern = /^(http|https):\/\/[^\s$.?#].[^\s]*$/;
-                        return urlPattern.test(str);
-                    };
-                    if (!isURL(base64Image)) {
-                        const blob = dataURLToBlob(base64Image);
-                        const fileName = originalFileNames[index];
-                        const file = new File([blob], fileName, { type: 'image/png' });
-                        formData.append('citra_unggahan_poliklinik[]', file);
-                    }   
-                });
+            if (jenis_poli.toLowerCase().replace(/ /g, "") !== "farmingham_score") {
+                // PDF
+                const pdfFile = $("#pdf_file")[0].files[0];
+                if (pdfFile) {
+                    formData.append('citra_unggahan_poliklinik_pdf', pdfFile);
+                }
+
+                // Gambar
+                if (croppedImages.length > 0) {
+                    croppedImages.forEach((base64Image, index) => {
+                        const isURL = (str) => /^(http|https):\/\/[^\s$.?#].[^\s]*$/.test(str);
+                        if (!isURL(base64Image)) {
+                            const blob = dataURLToBlob(base64Image);
+                            const fileName = originalFileNames[index] || `image_${Date.now()}.png`;
+                            const file = new File([blob], fileName, { type: 'image/png' });
+                            formData.append('citra_unggahan_poliklinik[]', file);
+                        }
+                    });
+                } else {
+                    // Default image
+                    const res = await fetch('/mofi/assets/images/logo/error_gambar.png');
+                    const blob = await res.blob();
+                    const defaultFile = new File([blob], `default_image_${Date.now()}.png`, { type: 'image/png' });
+                    formData.append('citra_unggahan_poliklinik[]', defaultFile);
+                }
             }
             $.ajax({
                 url: baseurlapi + '/poliklinik/simpan/'+jenis_poli,
