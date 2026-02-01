@@ -38,6 +38,7 @@ function callGlobalSelect2SearchByMember(namaid){
                         parameter_pencarian : (typeof params.term === "undefined" ? "" : params.term),
                         start : 0,
                         length : 100,
+                        tipe: 0,
                     }
                 },
                 processResults: function (data) {
