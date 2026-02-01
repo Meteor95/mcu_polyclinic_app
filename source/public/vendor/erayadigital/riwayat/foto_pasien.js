@@ -4,7 +4,7 @@ const tampil_canvas = $('#panggil_webcame');
 const tangkap_citra = $('#tangkap_citra_cropper_js');
 const fileInput = $('#citra_pasien');
 const citra_proses_crop = $('#citra_proses_crop');
-const image = $('#tampilan_citra_unggahan');
+const image = $('#tampilan_citra_unggahan')                             ;
 const cropButton = $('#crop-btn');
 const previewCanvas = $('#preview_citra_pasien');
 let cropper;
@@ -13,21 +13,16 @@ $(document).ready(function(){
     onloadcropperjs();
     onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
     onloaddatatables();
-    defaultimage();
 });
 function defaultimage(){
-    const img = document.getElementById('tampilan_citra_unggahan');
-    img.src = '/mofi/assets/images/logo/doc_not_found.jpg';
-    img.style.display = 'block';
-    img.onload = function() {
-        cropper = new Cropper(img, {
+    image.src = '/mofi/assets/images/logo/doc_not_found.jpg';
+    image.style.display = 'block';
+    image.onload = function() {
+        cropper = new Cropper(image, {
             aspectRatio: 1, 
             viewMode: 1,    
-            autoCrop: false,
-            responsive: true,
         });
     };
-
 }
 function onloaddatatables(){
     $.get('/generate-csrf-token', function(response) {
@@ -225,6 +220,7 @@ function isCanvasEmpty(canvas) {
     }
     return true;
 }
+let isDefaultImage = true;
 $("#simpan_foto_perserta").on('click', function() {
     if ($("#pencarian_member_mcu").val() == null){
         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
@@ -251,42 +247,54 @@ $("#simpan_foto_perserta").on('click', function() {
         cancelButtonText: 'Nanti Dulu!!',
     }).then((result) => {
         if (result.isConfirmed) {
-            const croppedCanvas = cropper.getCroppedCanvas();
-            if (croppedCanvas) {
-                croppedCanvas.toBlob((blob) => {
-                    const formData = new FormData();
-                    const timestamp = Date.now();
-                    const generatedName = `cropped_image_${timestamp}`;
-                    formData.append('foto', blob, generatedName);
-                    formData.append('nomor_identitas', $("#pencarian_member_mcu").val());
-                    formData.append('informasimember', $("#pencarian_member_mcu").text());
-                    formData.append('id_transaksi', $("#id_transaksi_mcu").text());
-                    $.ajax({
-                        url: baseurlapi + '/pendaftaran/upload_citra_peserta',
-                        type: 'POST',
-                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            if (!response.success){
-                                return createToast('Data Conflict '+response.rc, 'top-right', response.message, 'error', 3000);
-                            }
-                            clear_form();
-                            $("#datatables_daftarpeserta_unggah_citra").DataTable().ajax.reload();
-                            createToast('Sukses Unggah Citra', 'top-right', response.message, 'success', 3000);
-                        },
-                        error: function(xhr, status, error) {
-                            createToast('Kesalahan Unggah Citra', 'top-right', xhr.responseJSON.message, 'error', 3000);
-                        }
+            if (isDefaultImage) {
+                fetch('/mofi/assets/images/logo/error_gambar.png')
+                    .then(res => res.blob())
+                    .then(blob => {
+                        uploadBlob(blob, 'default_image');
                     });
-                }, 'image/png');  
             } else {
-                createToast('Kesalahan', 'top-right', 'Tidak ada foto yang dipotong', 'error', 3000);
+                const croppedCanvas = cropper.getCroppedCanvas();
+                if (!croppedCanvas) {
+                    return createToast('Silakan pilih area crop terlebih dahulu', 'top-right', '', 'error', 3000);
+                }
+                croppedCanvas.toBlob((blob) => {
+                    uploadBlob(blob, 'cropped_image');
+                }, 'image/png');
             }
         }
     });
 });
+function uploadBlob(blob, prefix) {
+    const formData = new FormData();
+    const timestamp = Date.now();
+    const generatedName = `${prefix}_${timestamp}.png`;
+
+    formData.append('foto', blob, generatedName);
+    formData.append('nomor_identitas', $("#pencarian_member_mcu").val());
+    formData.append('informasimember', $("#pencarian_member_mcu").text());
+    formData.append('id_transaksi', $("#id_transaksi_mcu").text());
+
+    $.ajax({
+        url: baseurlapi + '/pendaftaran/upload_citra_peserta',
+        type: 'POST',
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (!response.success){
+                return createToast('Data Conflict '+response.rc, 'top-right', response.message, 'error', 3000);
+            }
+            clear_form();
+            $("#datatables_daftarpeserta_unggah_citra").DataTable().ajax.reload();
+            createToast('Sukses Unggah Citra', 'top-right', response.message, 'success', 3000);
+        },
+        error: function(xhr, status, error) {
+            createToast('Kesalahan Unggah Citra', 'top-right', xhr.responseJSON?.message || 'Terjadi error', 'error', 3000);
+        }
+    });
+}
 function clear_form(){
     $("#nomor_identitas_temp").text("");
     $("#id_transaksi_mcu").text("");
