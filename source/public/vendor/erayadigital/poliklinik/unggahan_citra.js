@@ -67,7 +67,13 @@ $(document).ready(function(){
         placeholder: true,
         placeholderValue: 'Pilih dokter yang membaca',
     }) : null;
-
+    
+    dokter_citra_unggah_poli_perawat = new Choices(dokter_citra_unggah_poli_perawatElement,{
+        searchEnabled: true,
+        shouldSort: false,
+        placeholder: true,
+        placeholderValue: 'Pilih perawat yang bertugas',
+    });
     detail_penjelasan_citra_unggah_poli = initChoices('#detail_penjelasan_citra_unggah_poli', {
         placeholder: true,
         placeholderValue: 'Pilih detail penjelasan yang sesuai dengan kondisi pasien',
