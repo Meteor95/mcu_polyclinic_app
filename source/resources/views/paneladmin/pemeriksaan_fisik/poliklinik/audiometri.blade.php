@@ -126,7 +126,7 @@
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" integrity="sha512-JyCZjCOZoyeQZSd5+YEAcFgz2fowJ1F1hyJOXgtKu4llIa0KneLcidn5bwfutiehUTiOuK87A986BZJMko0eWQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/poliklinik/unggahan_citra.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/poliklinik/unggahan_citra.js') }}?v={{ filemtime(public_path('vendor/erayadigital/poliklinik/unggahan_citra.js')) }}"></script>
 <script>
   let title_poliklinik = "{{$data['title']}}"
   let jenis_poli = "{{$data['jenis_poli']}}"
