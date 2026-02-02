@@ -236,7 +236,7 @@
                 </div>
 
                 <!-- Step 5 -->
-                <div class="step" data-step="5">
+                <div class="step overlay-locked" data-step="5">
                   <h5>Formulir Penyakit Terdahulu</h5>
                   <div class="row">
                   @foreach ($data['penyakit_terdahulu'] as $index => $pt)
@@ -495,6 +495,35 @@
   .step {
     padding-bottom: 20px; /* Memberikan ruang untuk scroll */
   }
+}
+.overlay-locked {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Membuat efek blur pada isi row */
+.overlay-locked .row {
+    filter: blur(4px);
+    pointer-events: none; /* Mencegah klik/input */
+    user-select: none;    /* Mencegah teks di-copy */
+}
+
+/* Membuat Watermark di tengah */
+.overlay-locked::after {
+    content: "DIISI OLEH DOKTER";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    font-size: 2rem;
+    font-weight: bold;
+    color: rgba(255, 0, 0, 0.3); /* Merah transparan */
+    border: 4px solid rgba(255, 0, 0, 0.3);
+    padding: 10px 20px;
+    border-radius: 10px;
+    z-index: 10;
+    white-space: nowrap;
+    pointer-events: none;
 }
 </style>
 @endsection
