@@ -336,6 +336,28 @@
         </div>
     </div>
 </div>
+
+<div class="modal modal-xl fade" id="modalPembagianJPLaboratorium" tabindex="-1" role="dialog" aria-labelledby="modalPembagianJPLabelLaboratorium" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPembagianJPLabelLaboratorium">Pembagian Jasa Pelayanan Laboratorium</h5>
+                <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body" id="containerPembagianJPLaboratorium"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="fa fa-times"></i> Batal
+                </button>
+                <button type="submit" class="btn btn-primary" id="konfirmasi_jasa_pelayanan_laboratorium">
+                    <i class="fa fa-save"></i> Simpan Pembagian JP
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('css_load')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />

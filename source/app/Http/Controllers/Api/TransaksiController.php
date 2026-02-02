@@ -8,7 +8,8 @@ use App\Services\TransaksiServices;
 use Illuminate\Support\Facades\{Validator, Storage};
 use App\Helpers\ResponseHelper;
 use App\Models\Transaksi\{Transaksi, UnggahCitra};
-use App\Models\Laboratorium\Transaksi as TransaksiLab;
+use App\Models\Laboratorium\{Transaksi as TransaksiLab,TransaksiDetail};
+use App\Models\Masterdata\Jasalayanan;
 use App\Models\Masterdata\MemberMCU;
 use App\Models\EdsJasaPelayanan;
 use Illuminate\Support\Str;
@@ -227,12 +228,50 @@ class TransaksiController extends Controller
     public function pembagian_jasa_pelayanan(Request $request){
         try{
             $id_transaksi = $request->id_transaksi;
-            $informasi_transaksi = TransaksiLab::where('id', $id_transaksi)->first();
-            $data_penerima_jp = EdsJasaPelayanan::join('users_pegawai', 'users_pegawai.id', '=', 'jasa_pelayanan.pegawai_id')
-            ->where('id_mcu_peserta', $informasi_transaksi->no_mcu)
-            ->select('jasa_pelayanan.*', 'users_pegawai.nama_pegawai as nama_petugas')
-            ->orderBy('jasa_pelayanan.jenis_poli','ASC')
-            ->get();
+            $dari_laboratorium = $request->dari_laboratorium;
+            $data_penerima_jp = [];
+            if ($dari_laboratorium == 1) {
+                $no_mcu = $request->no_mcu;
+                $informasi_petugas = TransaksiDetail::join('transaksi', 'transaksi.id', '=', 'transaksi_detail.id_transaksi')->where('transaksi.no_mcu', $no_mcu)->where('transaksi_detail.kode_item', '1000001000001')->get();
+                $cek_apakah_ada_jp = EdsJasaPelayanan::where('id_mcu_peserta', $no_mcu)->where('jenis_poli', 'lab')->first();
+                $layanan = Jasalayanan::whereIn('kode_jasa_pelayanan', ['JS_PAKET_LAB_DOKTER', 'JS_PAKET_LAB_PETUGAS'])->get();
+                $layananMap = $layanan->keyBy('kode_jasa_pelayanan');
+                if ($cek_apakah_ada_jp == null) {
+                    EdsJasaPelayanan::create([
+                        'id_mcu_peserta' => $no_mcu,
+                        'jenis_poli' => 'lab',
+                        'role' => 'dokter',
+                        'pegawai_id' => $informasi_petugas[0]->id_dokter,
+                        'nominal' => $layananMap['JS_PAKET_LAB_DOKTER']->nominal_layanan ?? 0,
+                    ]);
+                    EdsJasaPelayanan::create([
+                        'id_mcu_peserta' => $no_mcu,
+                        'jenis_poli' => 'lab',
+                        'role' => 'laboratorium',
+                        'pegawai_id' => $informasi_petugas[0]->id_pj,
+                        'nominal' => $layananMap['JS_PAKET_LAB_PETUGAS']->nominal_layanan ?? 0,
+                    ]);
+                }else{
+                    EdsJasaPelayanan::where('id_mcu_peserta', $no_mcu)
+                        ->where('jenis_poli', 'lab')
+                        ->where('role', 'dokter')
+                        ->update([
+                            'pegawai_id' => $informasi_petugas[0]->id_dokter,
+                            'nominal'    => DB::raw("CASE WHEN nominal = 0 THEN 0 ELSE nominal END")
+                        ]);
+                    EdsJasaPelayanan::where('id_mcu_peserta', $no_mcu)
+                        ->where('jenis_poli', 'lab')
+                        ->where('role', 'laboratorium')
+                        ->update([
+                            'pegawai_id' => $informasi_petugas[0]->id_pj,
+                            'nominal'    => DB::raw("CASE WHEN nominal = 0 THEN 0 ELSE nominal END")
+                        ]);
+                }
+                $data_penerima_jp = EdsJasaPelayanan::join('users_pegawai', 'users_pegawai.id', '=', 'jasa_pelayanan.pegawai_id')->where('id_mcu_peserta', $no_mcu)->where('jenis_poli', 'lab')->select('jasa_pelayanan.*', 'users_pegawai.nama_pegawai as nama_petugas')->orderBy('jasa_pelayanan.jenis_poli','ASC')->get();
+            }else{
+                $informasi_transaksi = TransaksiLab::where('id', $id_transaksi)->first();
+                $data_penerima_jp = EdsJasaPelayanan::join('users_pegawai', 'users_pegawai.id', '=', 'jasa_pelayanan.pegawai_id')->where('id_mcu_peserta', $informasi_transaksi->no_mcu)->select('jasa_pelayanan.*', 'users_pegawai.nama_pegawai as nama_petugas')->orderBy('jasa_pelayanan.jenis_poli','ASC')->get();
+            }
             $dynamicAttributes = ['data' => $data_penerima_jp];
             return ResponseHelper::data(__('common.data_ready', ['namadata' => 'Daftar Penerima Jasa Pelayanan']), $dynamicAttributes);
         } catch (\Throwable $th) {

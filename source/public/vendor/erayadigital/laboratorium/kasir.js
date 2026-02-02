@@ -586,8 +586,13 @@ function initAutoNumericNominal(container) {
         }
     });
 }
-function renderPembagianJP(response) {
-    const container = document.getElementById('containerPembagianJP');
+function renderPembagianJP(response, jenis_pelayanan) {
+    let container = '';
+    if (jenis_pelayanan == "jp") {
+        container = document.getElementById('containerPembagianJP');
+    } else {
+        container = document.getElementById('containerPembagianJPLaboratorium');
+    }
     container.innerHTML = '';
     const grouped = response.data.reduce((acc, item) => {
         if (!acc[item.jenis_poli]) acc[item.jenis_poli] = [];
@@ -637,6 +642,7 @@ function renderPembagianJP(response) {
             ordering: false,
             responsive: false, 
             autoWidth: false,
+            destroy: true,
             columnDefs: [
                 { visible: false, targets: 1 }
             ]
@@ -676,7 +682,7 @@ function pembagian_jasa_pelayan(id_transaksi){
                 if (!response.success) {
                     return createToast('Kesalahan Mengambil Data Jasa Pelayanan', 'top-right', response.message, 'error', 3000);
                 }
-                renderPembagianJP(response);
+                renderPembagianJP(response, "jp");
                 return createToast('Pembagian Jasa Pelayanan', 'top-right', response.message, 'success', 3000);
             },
             complete: function() {
@@ -689,10 +695,37 @@ function pembagian_jasa_pelayan(id_transaksi){
     });
 }
 function pembagian_jasa_pelayan_lab(user_id, no_mcu, nomor_identitas, nama_peserta){
-    detail_transaksi_code = encodeURIComponent(btoa(user_id+'|'+no_mcu+'|'+nomor_identitas+'|'+nama_peserta));
-    window.open(`/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}`,'_blank');
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/transaksi/pembagian_jasa_pelayanan',
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+            data: {
+                _token:response.csrf_token,
+                no_mcu:no_mcu,
+                dari_laboratorium:1,
+            },
+            success: function(response) {
+                if (!response.success) {
+                    return createToast('Kesalahan Mengambil Data Jasa Pelayanan Laboratorium', 'top-right', response.message, 'error', 3000);
+                }
+                if (response.data > 1) {
+                    detail_transaksi_code = encodeURIComponent(btoa(user_id+'|'+no_mcu+'|'+nomor_identitas+'|'+nama_peserta));
+                    window.open(`/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}`,'_blank');
+                }
+                renderPembagianJP(response, "jplab");
+                return createToast('Pembagian Jasa Pelayanan Laboratorium', 'top-right', response.message, 'success', 3000);
+            },
+            complete: function() {
+                $('#modalPembagianJPLaboratorium').modal('show');
+            },
+            error: function(xhr, status, error) {
+                return createToast('Kesalahan', 'top-right', 'Terjadi kesalahan saat memproses pengambilan data jasa pelayanan: ' + error, 'error', 3000);
+            },
+        });
+    });
 }
-$("#konfirmasi_jasa_pelayanan").on('click', function() {
+$("#konfirmasi_jasa_pelayanan, #konfirmasi_jasa_pelayanan_laboratorium").on('click', function() {
     const payload = [];
     document.querySelectorAll('.input-nominal').forEach(input => {
         const an = AutoNumeric.getAutoNumericElement(input);
