@@ -81,6 +81,7 @@
   </div>
 </div>
 @endif
+@if ($hasAccessInputKesimpulan)
 <div class="row mt-2">
   <div class="col-md-12">
     <h3>Formulir informasi {{ucwords(str_replace('_', ' ', $data['title']))}}</h3>
@@ -150,6 +151,7 @@
     <label>Catatan Kaki {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
     <textarea class="form-control" id="catatan_kaki_citra_unggah_poli" placeholder="Isikan catatan kaki pada laporan {{$data['title']}} jika memungkinkan">{{$data['catatan_kaki']}}</textarea>
   </div>
+@endif
 </div>
 </div>
 <div class="row">

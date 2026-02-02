@@ -61,6 +61,7 @@ class CheckPermission
             'hasAccessRontgenLumbosacral' => 'akses_rontgen_lumbosacral',
             'hasAccessUSGUbdomain' => 'akses_usg_ubdomain',
             'hasAccessFarminghamScore' => 'akses_farmingham_score',
+            'hasAccessInputKesimpulan' => 'akses_input_kesimpulan',
             /* Laboratorium */
             'hasAccessTarifLaboratorium' => 'akses_tarif_laboratorium',
             'hasAccessKategoriLaboratorium' => 'akses_kategori_laboratorium',
