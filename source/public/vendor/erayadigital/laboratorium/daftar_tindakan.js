@@ -376,6 +376,9 @@ $("#data_ditampilkan, #status_pembayaran, #jenis_layanan").change(function(){
     $("#daftar_table_tindakan").DataTable().page.len($(this).val()).draw();
     $("#daftar_table_tindakan").DataTable().ajax.reload();
 });
+$("#btn_cari_data").click(function(){
+    $("#daftar_table_tindakan").DataTable().ajax.reload();
+});
 $("#kotak_pencarian").keyup(debounce(function(){
     $("#daftar_table_tindakan").DataTable().ajax.reload();
 }, 300));

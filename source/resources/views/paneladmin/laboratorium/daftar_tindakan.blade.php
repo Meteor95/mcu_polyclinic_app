@@ -61,6 +61,9 @@
                   <label for="kotak_pencarian">Cari Data</label>
                     <input type="text" class="form-control" id="kotak_pencarian" placeholder="Cari data berdasarkan No MCU, Nama Penanggung Jawab, Nama Pasien atau Nama Dokter">
                 </div>
+                <div class="col-md-12 mt-2">
+                    <button type="button" class="btn btn-success w-100" id="btn_cari_data"><i class="fa fa-search"></i> Tampilkan Data</button>
+                </div>
             </div>
             <hr>
             <div class="row">
