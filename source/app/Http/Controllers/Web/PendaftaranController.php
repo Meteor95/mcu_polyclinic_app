@@ -153,7 +153,7 @@ class PendaftaranController extends Controller
             'Beranda' => route('admin.beranda'),
             'Penyakit Terdahulu Peserta MCU' => route('admin.pendaftaran.penyakit_terdahulu'),
         ]);
-        $data['dataNavigasi'] = $this->getNavigasi('Kebiasaan Hidup',route('admin.pendaftaran.kebiasaan_hidup', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Penyakit Keluarga', route('admin.pendaftaran.penyakit_keluarga', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), true, true);
+        $data['dataNavigasi'] = $this->getNavigasi('Tingkat Kesadaran',route('admin.pemeriksaan_fisik.tingkat_kesadaran', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Penglihatan', route('admin.pemeriksaan_fisik.penglihatan', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), true, true);
         $data['nomor_identitas'] = $req->nomor_identitas;
         $data['nama_peserta'] = $req->nama_peserta;
         $data['penyakit_terdahulu'] = PenyakitTerdahulu::where('status', 1)->get();

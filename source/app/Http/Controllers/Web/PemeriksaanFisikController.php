@@ -22,7 +22,7 @@ class PemeriksaanFisikController extends Controller
             'Beranda' => route('admin.beranda'),
             'Tingkat Kesadaran' => route('admin.pemeriksaan_fisik.tingkat_kesadaran'),
         ]);
-        $data['dataNavigasi'] = $this->getNavigasi('','', 'Penglihatan', route('admin.pemeriksaan_fisik.penglihatan', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), false, true);
+        $data['dataNavigasi'] = $this->getNavigasi('','', 'Penyakit Terdahulu', route('admin.pendaftaran.penyakit_terdahulu', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), false, true);
         $data['nomor_identitas'] = $req->nomor_identitas;
         $data['nama_peserta'] = $req->nama_peserta;
         $data['tingkat_kesadaran'] = TingkatKesadaran::where('status', 1)->get();
@@ -44,7 +44,7 @@ class PemeriksaanFisikController extends Controller
             'Beranda' => route('admin.beranda'),
             'Penglihatan' => route('admin.pemeriksaan_fisik.penglihatan'),
         ]);
-        $data['dataNavigasi'] = $this->getNavigasi('Tingkat Kesadaran', route('admin.pemeriksaan_fisik.tingkat_kesadaran', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Kepala', url('/pemeriksaan_fisik/kondisi_fisik/kepala?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
+        $data['dataNavigasi'] = $this->getNavigasi('Penyakit Terdahulu', route('admin.pendaftaran.penyakit_terdahulu', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Kepala', url('/pemeriksaan_fisik/kondisi_fisik/kepala?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
         $data['nomor_identitas'] = $req->nomor_identitas;
         $data['nama_peserta'] = $req->nama_peserta;
         return view('paneladmin.pemeriksaan_fisik.penglihatan', ['data' => $data]);

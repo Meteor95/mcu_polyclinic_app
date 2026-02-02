@@ -69,9 +69,9 @@
                     </div>
                 </div>
             </div>
-            @if(isset($data['dataNavigasi']))
+            <!-- @if(isset($data['dataNavigasi']))
                 @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
-            @endif
+            @endif -->
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Pemeriksaan Tanda Vital</h1>
