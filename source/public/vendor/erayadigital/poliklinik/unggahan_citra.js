@@ -39,52 +39,50 @@ $(document).ready(function(){
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onloadcropperjs();
     onloaddatatables();
-    kesimpulan_citra_unggah_poli = new Choices('#kesimpulan_citra_unggah_poli',{
+    // --- Inisialisasi Choices ---
+    kesimpulan_citra_unggah_poli = initChoices('#kesimpulan_citra_unggah_poli', {
         placeholder: true,
         placeholderValue: 'Pilih kesimpulan yang sesuai dengan kondisi pasien',
     });
+
     if (elKesimpulan) {
-        kesimpulan_citra_unggah_poli2 = new Choices('#kesimpulan_citra_unggah_poli2',{
+        kesimpulan_citra_unggah_poli2 = initChoices('#kesimpulan_citra_unggah_poli2', {
             placeholder: true,
             placeholderValue: 'Pilih kesimpulan yang sesuai dengan kondisi pasien',
         });
     }
-    dokter_citra_unggah_poli = new Choices(dokter_citra_unggah_poliElement,{
+
+    // Untuk variabel yang menggunakan Element Object (bukan string ID)
+    dokter_citra_unggah_poli = dokter_citra_unggah_poliElement ? new Choices(dokter_citra_unggah_poliElement, {
         searchEnabled: true,
         shouldSort: false,
         placeholder: true,
         placeholderValue: 'Pilih dokter yang bertugas',
-    });
-    dokter_citra_unggah_poli_pembaca = new Choices(dokter_citra_unggah_poli_pembacaElement,{
+    }) : null;
+
+    // Ulangi pola yang sama untuk dokter_pembaca dan perawat...
+    dokter_citra_unggah_poli_pembaca = dokter_citra_unggah_poli_pembacaElement ? new Choices(dokter_citra_unggah_poli_pembacaElement, {
         searchEnabled: true,
         shouldSort: false,
         placeholder: true,
         placeholderValue: 'Pilih dokter yang membaca',
-    });
-    dokter_citra_unggah_poli_perawat = new Choices(dokter_citra_unggah_poli_perawatElement,{
-        searchEnabled: true,
-        shouldSort: false,
-        placeholder: true,
-        placeholderValue: 'Pilih perawat yang bertugas',
-    });
-    detail_penjelasan_citra_unggah_poli = new Choices('#detail_penjelasan_citra_unggah_poli',{
+    }) : null;
+
+    detail_penjelasan_citra_unggah_poli = initChoices('#detail_penjelasan_citra_unggah_poli', {
         placeholder: true,
         placeholderValue: 'Pilih detail penjelasan yang sesuai dengan kondisi pasien',
     });
-    quill = new Quill('#editor_poliklinik', {
+
+    // --- Inisialisasi Quill ---
+    quill = initQuill('#editor_poliklinik', {
         placeholder: 'Berikan keterangan secara jelas mengenai hasil scan citra pada poliklinik ini',
-        modules: {
-            toolbar: {
-              container: toolbarOptions,
-            }
-        },
+        modules: { toolbar: { container: toolbarOptions } },
         theme: 'snow'
     });
-    quill_informasi = new Quill('#detail_kesimpulan_informasi', {
+
+    quill_informasi = initQuill('#detail_kesimpulan_informasi', {
         placeholder: 'Ketikkan Kesimpulan atas tindakan pada poliklinik ini',
-        modules: {
-            "toolbar": false
-        },
+        modules: { "toolbar": false },
         theme: 'snow'
     });
     const queryString = window.location.search;
@@ -94,6 +92,17 @@ $(document).ready(function(){
     onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
 
 });
+// Fungsi untuk inisialisasi Choices jika elemen ada
+const initChoices = (selector, options) => {
+    const el = typeof selector === 'string' ? document.querySelector(selector) : selector;
+    return el ? new Choices(el, options) : null;
+};
+
+// Fungsi untuk inisialisasi Quill jika elemen ada
+const initQuill = (selector, options) => {
+    const el = document.querySelector(selector);
+    return el ? new Quill(el, options) : null;
+};
 $('#detail_penjelasan_citra_unggah_poli').on('change', function () {
     const selectedText = $(this).find('option:selected').text();
     quill.insertText(quill.getLength(), `${selectedText}\n`, 'list', 'ordered');
@@ -322,12 +331,16 @@ $("#simpan_foto_perserta").on('click', async function() {
     }).then(async (result) => {
         if (result.isConfirmed) {
             const formData = new FormData();
-            const quillContent = quill.getContents();
             let detail_kesimpulan;
-            if (quillContent.ops.length === 1 && quillContent.ops[0].insert === '\n') {
-                detail_kesimpulan = JSON.stringify([{ insert: "Tidak Ada Keterangan Riwayat Kecelakaan Kerja" }]);
+            if (quill) {
+                const quillContent = quill.getContents();
+                if (quillContent.ops.length === 1 && quillContent.ops[0].insert === '\n') {
+                    detail_kesimpulan = JSON.stringify([{ insert: "Tidak Ada Keterangan Riwayat Kecelakaan Kerja" }]);
+                } else {
+                    detail_kesimpulan = JSON.stringify(quillContent.ops);
+                }
             } else {
-                detail_kesimpulan = JSON.stringify(quillContent.ops);
+                detail_kesimpulan = JSON.stringify([{ insert: "Tidak Ada Keterangan Riwayat Kecelakaan Kerja" }]);
             }
             formData.append('isedit', isedit);
             formData.append('pegawai_id', $("#dokter_citra_unggah_poli").val());
@@ -416,7 +429,7 @@ function clear_form(){
     $("#kesimpulan_citra_unggah_poli").val(null).trigger('change');
     $("#kesimpulan_citra_unggah_poli2").val(null).trigger('change');
     $("#detail_penjelasan_citra_unggah_poli").val(null).trigger('change');
-    quill.setContents([]);
+    quill?.setContents([]);
     $("#preview-list").empty();
     $("#pdf_file").val('');
     croppedImages = []; 
