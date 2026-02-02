@@ -106,7 +106,6 @@
                       ['condition' => $hasAccessPendaftaranLingkunganKerja, 'url' => 'pendaftaran/lingkungan_kerja', 'label' => 'Lingkungan Kerja'],
                       ['condition' => $hasAccessPendaftaranKecelakaanKerja, 'url' => 'pendaftaran/kecelakaan_kerja', 'label' => 'Kecelakaan Kerja'],
                       ['condition' => $hasAccessPendaftaranKebiasaanHidup, 'url' => 'pendaftaran/kebiasaan_hidup', 'label' => 'Kebiasaan Hidup'],
-                      ['condition' => $hasAccessPendaftaranPenyakitTerdahulu, 'url' => 'pendaftaran/penyakit_terdahulu', 'label' => 'Penyakit Terdahulu'],
                       ['condition' => $hasAccessPendaftaranPenyakitKeluarga, 'url' => 'pendaftaran/penyakit_keluarga', 'label' => 'Penyakit Keluarga'],
                       ['condition' => $hasAccessPendaftaranImunisasi, 'url' => 'pendaftaran/imunisasi', 'label' => 'Imunisasi']
                   ] as $menuItem)
@@ -129,6 +128,7 @@
             <ul class="sidebar-submenu">
               @foreach([
                 ['condition' => $hasAccessTingkatKesadaran, 'url' => 'pemeriksaan_fisik/tingkat_kesadaran', 'label' => 'Tingkat Kesadaran'],
+                ['condition' => $hasAccessPendaftaranPenyakitTerdahulu, 'url' => 'pendaftaran/penyakit_terdahulu', 'label' => 'Penyakit Terdahulu'],
                 ['condition' => $hasAccessPenglihatan, 'url' => 'pemeriksaan_fisik/penglihatan', 'label' => 'Penglihatan']
               ] as $menuItem)
                 @if ($menuItem['condition'])
