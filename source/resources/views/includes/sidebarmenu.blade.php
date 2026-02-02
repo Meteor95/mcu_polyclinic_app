@@ -394,7 +394,6 @@
               <h6>BERKAS PERUSAHAAN</h6>
             </div>
           </li>
-          @endif
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -414,6 +413,7 @@
               @endforeach
             </ul>
           </li>
+          @endif
           @if ($hasAccessRekapPemeriksaanFisikPerusahaan || $hasAccessRekapVitalPerusahaan || $hasAccessRekapSpirometriPerusahaan || $hasAccessRekapAudiometriPerusahaan || $hasAccessRekapEKGPerusahaan || $hasAccessRekapThreadmillPerusahaan || $hasAccessRekapRontgenThoraxPerusahaan || $hasAccessRekapRontgenLumbosacralPerusahaan || $hasAccessRekapUSGUbdomainPerusahaan || $hasAccessRekapFarminghamScorePerusahaan)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
