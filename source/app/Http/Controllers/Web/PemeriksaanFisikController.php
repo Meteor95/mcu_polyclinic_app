@@ -113,7 +113,7 @@ class PemeriksaanFisikController extends Controller
         }
         $data['nomor_identitas'] = $req->nomor_identitas;
         $data['nama_peserta'] = $req->nama_peserta;
-        $data['kondisi_fisik'] = KondisiFisik::where('status', 1)->where('nama_atribut_fisik', ucwords(str_replace("_", " & ", $lokasi_fisik)))->get();
+        $data['kondisi_fisik'] = KondisiFisik::where('status', 1)->where('nama_atribut_fisik', ucwords(str_replace("_", " & ", $lokasi_fisik)))->orderBy('kategori_lokasi_fisik', 'asc')->orderByRaw("CASE WHEN jenis_pemeriksaan = 'Lainnya' THEN 1 ELSE 0 END ASC")->orderBy('jenis_pemeriksaan', 'asc')->get();
         $data['lokasi_fisik'] = ucwords($lokasi_fisik);
         return view('paneladmin.pemeriksaan_fisik.kondisi_fisik.'.strtolower($lokasi_fisik), ['data' => $data]);
     }

@@ -1,6 +1,5 @@
 let status_atribut_pemeriksaan = 0,tables,isedit;
 $(document).ready(function(){
-    $('.normal-checkbox').prop('checked', true);
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onload_datatables();
     onload_kondisi_fisik();
@@ -28,9 +27,7 @@ function onload_datatables(){
     rowGroup: {
         dataSrc: 1,
         startRender: function (rows, group) {
-            return $('<tr style="background-color: #f0f0f0; font-weight: bold;font-size: 16px;">')
-                .append("<td colspan='6'>Kategori Lokasi Fisik : " + group.toUpperCase() + "</td>")
-                .append('</tr>');
+            return $('<tr style="background-color: #f0f0f0; font-weight: bold;font-size: 16px;">').append("<td colspan='6'>Kategori Lokasi Fisik : " + group.toUpperCase() + "</td>").append('</tr>');
         },
     },
     }).on('key-focus', function(e, datatable, cell, originalEvent) {
@@ -46,17 +43,34 @@ function onload_datatables(){
             }
         });
     });
+    table.rows().every(function() {
+        let data = this.data();
+        let rowNode = this.node();
+        let jenisPemeriksaan = data[2].toLowerCase();
+        if (jenisPemeriksaan.includes("lainnya")) {
+            $(rowNode).find('.normal-checkbox').prop('checked', false);
+            $(rowNode).find('.abnormal-checkbox').prop('checked', true);
+        } else {
+            $(rowNode).find('.normal-checkbox').prop('checked', true);
+        }
+    });
 }
 
-function cek_ab_normal(id,kondisi) {
-    if (kondisi == 0) {
-        status_atribut_pemeriksaan = 0;
-        $('#ab_normal_' + id).prop('checked', true);
-        $('#normal_' + id).prop('checked', false);
-    } else if (kondisi == 1) {
-        status_atribut_pemeriksaan = 1;
-        $('#ab_normal_' + id).prop('checked', false);
-        $('#normal_' + id).prop('checked', true);
+function cek_ab_normal(id,kondisi,jenis_pemeriksaan) {
+    if (jenis_pemeriksaan.toLowerCase() === "lainnya") {
+            status_atribut_pemeriksaan = 2;
+            $('#ab_normal_' + id).prop('checked', false);
+            $('#normal_' + id).prop('checked', false);
+    }else{
+        if (kondisi == 0) {
+            status_atribut_pemeriksaan = 0;
+            $('#ab_normal_' + id).prop('checked', true);
+            $('#normal_' + id).prop('checked', false);
+        } else if (kondisi == 1) {
+            status_atribut_pemeriksaan = 1;
+            $('#ab_normal_' + id).prop('checked', false);
+            $('#normal_' + id).prop('checked', true);
+        }
     }
 }
 function onload_kondisi_fisik(){
@@ -191,6 +205,8 @@ $("#simpan_kondisi_fisik").click(function(){
                         status_atribut_pemeriksaan = 'abnormal';
                     }else if($('#normal_'+rowId).is(':checked')){
                         status_atribut_pemeriksaan = 'normal';
+                    }else{
+                        status_atribut_pemeriksaan = '-';
                     }
                     let rowData = {
                         _token: response.csrf_token,

@@ -31,13 +31,13 @@
                                     <td>{{ $item->jenis_pemeriksaan }}</td>
                                     <td>
                                         <div class="form-check checkbox checkbox-primary mb-0">
-                                            <input class="form-check-input ab-normal-checkbox" onclick="cek_ab_normal({{ $item->id }},0)" id="ab_normal_{{ $item->id }}" type="checkbox">
+                                            <input class="form-check-input ab-normal-checkbox" onclick="cek_ab_normal({{ $item->id }},0,'{{ $item->jenis_pemeriksaan }}')" id="ab_normal_{{ $item->id }}" type="checkbox">
                                             <label class="form-check-label" for="ab_normal_{{ $item->id }}">Ab-Normal</label>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-check checkbox checkbox-primary mb-0">
-                                            <input class="form-check-input normal-checkbox" onclick="cek_ab_normal({{ $item->id }},1)" id="normal_{{ $item->id }}" type="checkbox">
+                                            <input class="form-check-input normal-checkbox" onclick="cek_ab_normal({{ $item->id }},1,'{{ $item->jenis_pemeriksaan }}')" id="normal_{{ $item->id }}" type="checkbox">
                                             <label class="form-check-label" for="normal_{{ $item->id }}">Normal</label>
                                         </div>
                                     </td>
@@ -118,7 +118,7 @@ table.dataTable tbody td.focus {
 <script> let lokasi_fisik_let = "{{$data['lokasi_fisik']}}"; </script>
 <script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/kondisifisik/kondisi_fisik.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/kondisifisik/kondisi_fisik.js') }}?v={{ filemtime(public_path('vendor/erayadigital/kondisifisik/kondisi_fisik.js')) }}"></script>
 <script>
   let param_nomor_identitas = '{{$data['nomor_identitas']}}'
   let param_nama_peserta = '{{$data['nama_peserta']}}'
