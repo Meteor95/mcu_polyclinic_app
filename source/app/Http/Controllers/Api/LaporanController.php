@@ -219,6 +219,7 @@ class LaporanController extends Controller
             if ($req->kondisi == 'kp' || $req->kondisi == 'tlg' || $req->kondisi == 'mt' || $req->kondisi == 'tng' || $req->kondisi == 'mlt' || $req->kondisi == 'gg' || $req->kondisi == 'lhr' || $req->kondisi == 'thx' || $req->kondisi == 'anu' || $req->kondisi == 'ang' || $req->kondisi == 'etm' || $req->kondisi == 'nu') {
                 $table = "";
                 $jenis_poli_data = "";
+                $nama_folder = "";
                 if ($req->kondisi == 'kp') {
                     $table = $this->determineTableNamePemeriksaanFisik('kepala');
                 }
@@ -262,39 +263,47 @@ class LaporanController extends Controller
                 if ($req->kondisi == 'sp') {
                     $table = $this->determineTableNamePoliklinik('spirometri');
                     $jenis_poli_data = 'poli_spirometri';
+                    $nama_folder = 'spirometri';
                 }
                 if ($req->kondisi == 'ekg') {
                     $table = $this->determineTableNamePoliklinik('ekg');
                     $jenis_poli_data = 'poli_ekg';
+                    $nama_folder = 'ekg';
                 }
                 if ($req->kondisi == 'tm') {
                     $table = $this->determineTableNamePoliklinik('threadmill');
                     $jenis_poli_data = 'poli_threadmill';
+                    $nama_folder = 'threadmill';
                 }
                 if ($req->kondisi == 'rsn_thorax') {
                     $table = $this->determineTableNamePoliklinik('rontgen_thorax');
                     $jenis_poli_data = 'poli_rontgen_thorax';
+                    $nama_folder = 'rontgen_thorax';
                 }
                 if ($req->kondisi == 'rsn_lumbosacral') {
                     $table = $this->determineTableNamePoliklinik('rontgen_lumbosacral');
                     $jenis_poli_data = 'poli_rontgen_lumbosacral';
+                    $nama_folder = 'rontgen_lumbosacral';
                 }
                 if ($req->kondisi == 'usg_ubdomain') {
                     $table = $this->determineTableNamePoliklinik('usg_ubdomain');
                     $jenis_poli_data = 'poli_usg_ubdomain';
+                    $nama_folder = 'usg_ubdomain';
                 }
                 if ($req->kondisi == 'farmingham_score') {
                     $table = $this->determineTableNamePoliklinik('farmingham_score');
                     $jenis_poli_data = 'poli_farmingham_score';
+                    $nama_folder = 'farmingham_score';
                 }
                 if ($req->kondisi == 'au') {
                     $table = $this->determineTableNamePoliklinik('audiometri');
                     $jenis_poli_data = 'poli_audiometri';
+                    $nama_folder = 'audiometri';
                 }
                 $informasi_mcu = DB::table($table)->where('transaksi_id', $transaksi_id->transaksi_id)->first();
                 $ambil_gambar_masing_masing_poli = UnggahanCitra::where('id_trx_poli', $informasi_mcu->id)->where('jenis_poli', $jenis_poli_data)->get();
                 $lampiran_poliklinik = $ambil_gambar_masing_masing_poli->map(function ($item) {
-                    $item->data_foto = url(env('APP_VERSI_API') . "/file/unduh_citra_poliklinik?jenis_poli=".$jenis_poli_data ."&file_name=" . $item->nama_file);
+                    $item->data_foto = url(env('APP_VERSI_API') . "/file/unduh_citra_poliklinik?jenis_poli=".$nama_folder ."&file_name=" . $item->nama_file);
                     return $item;
                 });
             }
