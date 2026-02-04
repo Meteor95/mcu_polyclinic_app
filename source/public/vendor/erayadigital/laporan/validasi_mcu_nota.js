@@ -441,9 +441,9 @@ function aksesmodal(response,modal,lokasi_fisik = null){
     }
     if (modal == 'modalPoliklinik') {
         const carouselContent = document.getElementById("carouselContent");
+        carouselContent.innerHTML = "";
         response.lampiran_poliklinik.forEach((item, index) => {
         const isActive = index === 0 ? "active" : "";
-        carouselContent.innerHTML = "";
         carouselContent.innerHTML += `
             <div class="carousel-item ${isActive}">
             <img 
