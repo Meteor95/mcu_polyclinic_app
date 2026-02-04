@@ -443,7 +443,7 @@ function aksesmodal(response,modal,lokasi_fisik = null){
         const carouselContent = document.getElementById("carouselContent");
         response.lampiran_poliklinik.forEach((item, index) => {
         const isActive = index === 0 ? "active" : "";
-        console.log(item.data_foto)
+        carouselContent.innerHTML = "";
         carouselContent.innerHTML += `
             <div class="carousel-item ${isActive}">
             <img 
