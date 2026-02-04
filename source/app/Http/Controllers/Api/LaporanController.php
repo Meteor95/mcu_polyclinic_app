@@ -302,10 +302,17 @@ class LaporanController extends Controller
                 }
                 $informasi_mcu = DB::table($table)->where('transaksi_id', $transaksi_id->transaksi_id)->first();
                 $ambil_gambar_masing_masing_poli = UnggahanCitra::where('id_trx_poli', $informasi_mcu->id)->where('jenis_poli', $jenis_poli_data)->get();
-                $lampiran_poliklinik = $ambil_gambar_masing_masing_poli->map(function ($item) {
-                    $item->data_foto = url(env('APP_VERSI_API') . "/file/unduh_citra_poliklinik?jenis_poli=".$nama_folder ."&file_name=" . $item->nama_file);
+                $lampiran_poliklinik = $ambil_gambar_masing_masing_poli->map(function ($item) use ($nama_folder) {
+                    $item->data_foto = url(
+                        env('APP_VERSI_API') .
+                        "/file/unduh_citra_poliklinik?jenis_poli=" .
+                        $nama_folder .
+                        "&file_name=" .
+                        $item->nama_file
+                    );
                     return $item;
                 });
+
             }
             $dynamicAttributes = [
                 'informasi_mcu' => $informasi_mcu,
