@@ -219,7 +219,7 @@ function process_ajax(kondisi,modal,lokasi_fisik = null){
                 kondisi: kondisi,
             },
             success: function(response) {
-                if (response.informasi_mcu) aksesmodal(response,modal,lokasi_fisik);
+                if (response.informasi_mcu) return aksesmodal(response,modal,lokasi_fisik);
                 return createToast('Terjadi Kesalahan', 'top-right', 'Petugas belum menmasukan informasi pada pasien ini. Silahkan masukan informasi terlebih dahulu '+lokasi_fisik, 'error', 3000);;
             },
             error: function(xhr, status, error) {
