@@ -633,6 +633,9 @@
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 <style>
+.carousel-caption {
+    padding: 3px 8px;
+}
 .tooltip-inner {
   background-color: #ff5722 !important; 
   color: #ffffff !important; 
