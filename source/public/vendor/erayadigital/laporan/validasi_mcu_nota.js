@@ -452,6 +452,10 @@ function aksesmodal(response,modal,lokasi_fisik = null){
                 alt="${item.nama_file_asli}"
                 style="max-height:500px; object-fit:contain;"
             >
+            <div class="carousel-caption d-none d-md-block">
+                <h6>${item.jenis_poli}</h6>
+                <p>${item.nama_file_asli}</p>
+            </div>
             </div>
         `;
         });
