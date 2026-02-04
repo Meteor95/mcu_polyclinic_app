@@ -9,6 +9,7 @@ use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\{Transaksi as TransaksiLab, Kategori, TransaksiDetail, Kesimpulan as KesimpulanLabStatus};
 use App\Models\Transaksi\UnggahanCitraLab;
+use App\Models\Poliklinik\UnggahanCitra;
 use App\Models\Laporan\{Kesimpulan,Tagihan};
 use App\Models\EdsJasaPelayanan;
 use App\Models\Masterdata\Jasalayanan;
@@ -217,6 +218,7 @@ class LaporanController extends Controller
             }
             if ($req->kondisi == 'kp' || $req->kondisi == 'tlg' || $req->kondisi == 'mt' || $req->kondisi == 'tng' || $req->kondisi == 'mlt' || $req->kondisi == 'gg' || $req->kondisi == 'lhr' || $req->kondisi == 'thx' || $req->kondisi == 'anu' || $req->kondisi == 'ang' || $req->kondisi == 'etm' || $req->kondisi == 'nu') {
                 $table = "";
+                $jenis_poli_data = "";
                 if ($req->kondisi == 'kp') {
                     $table = $this->determineTableNamePemeriksaanFisik('kepala');
                 }
@@ -259,33 +261,47 @@ class LaporanController extends Controller
             if ($req->kondisi == 'sp' || $req->kondisi == 'ekg' || $req->kondisi == 'tm' || $req->kondisi == 'rsn_thorax' || $req->kondisi == 'rsn_lumbosacral' || $req->kondisi == 'usg_ubdomain' || $req->kondisi == 'farmingham_score' || $req->kondisi == 'au') {
                 if ($req->kondisi == 'sp') {
                     $table = $this->determineTableNamePoliklinik('spirometri');
+                    $jenis_poli_data = 'poli_spirometri';
                 }
                 if ($req->kondisi == 'ekg') {
                     $table = $this->determineTableNamePoliklinik('ekg');
+                    $jenis_poli_data = 'poli_ekg';
                 }
                 if ($req->kondisi == 'tm') {
                     $table = $this->determineTableNamePoliklinik('threadmill');
+                    $jenis_poli_data = 'poli_threadmill';
                 }
                 if ($req->kondisi == 'rsn_thorax') {
                     $table = $this->determineTableNamePoliklinik('rontgen_thorax');
+                    $jenis_poli_data = 'poli_rontgen_thorax';
                 }
                 if ($req->kondisi == 'rsn_lumbosacral') {
                     $table = $this->determineTableNamePoliklinik('rontgen_lumbosacral');
+                    $jenis_poli_data = 'poli_rontgen_lumbosacral';
                 }
                 if ($req->kondisi == 'usg_ubdomain') {
                     $table = $this->determineTableNamePoliklinik('usg_ubdomain');
+                    $jenis_poli_data = 'poli_usg_ubdomain';
                 }
                 if ($req->kondisi == 'farmingham_score') {
                     $table = $this->determineTableNamePoliklinik('farmingham_score');
+                    $jenis_poli_data = 'poli_farmingham_score';
                 }
                 if ($req->kondisi == 'au') {
                     $table = $this->determineTableNamePoliklinik('audiometri');
+                    $jenis_poli_data = 'poli_audiometri';
                 }
                 $informasi_mcu = DB::table($table)->where('transaksi_id', $transaksi_id->transaksi_id)->first();
+                $ambil_gambar_masing_masing_poli = UnggahanCitra::where('id_trx_poli', $informasi_mcu->id)->where('jenis_poli', $jenis_poli_data)->get();
+                $lampiran_poliklinik = $ambil_gambar_masing_masing_poli->map(function ($item) {
+                    $item->data_foto = url(env('APP_VERSI_API') . "/file/unduh_citra_poliklinik?file_name=" . $item->nama_file);
+                    return $item;
+                });
             }
             $dynamicAttributes = [
                 'informasi_mcu' => $informasi_mcu,
                 'informasi_user' => $transaksi_id,
+                'lampiran_poliklinik' => $lampiran_poliklinik,
             ];
             if ($req->kondisi == 'gg') {
                 $dynamicAttributes['informasi_mcu_gigi'] = $informasi_mcu_gigi;

@@ -71,5 +71,5 @@ body.dark-only .dtfc-fixed-right_header {
 @endsection
 @section('js_load')
 <script src="https://cdn.datatables.net/fixedcolumns/4.0.2/js/dataTables.fixedColumns.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/pendaftaran/peserta.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/pendaftaran/peserta.js') }}?v={{ filemtime(public_path('vendor/erayadigital/pendaftaran/peserta.js')) }}"></script>
 @endsection

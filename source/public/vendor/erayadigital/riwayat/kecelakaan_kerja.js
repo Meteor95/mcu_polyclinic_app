@@ -139,7 +139,7 @@ $("#btnSimpanRiwayatKecelakaanKerja").on('click', function() {
                 const quillContent = quill.getContents();
                 let informasiRiwayatKecelakaanKerja;
                 if (quillContent.ops.length === 1 && quillContent.ops[0].insert === '\n') {
-                    informasiRiwayatKecelakaanKerja = JSON.stringify([{ insert: "Tidak Ada Keterangan Riwayat Kecelakaan Kerja" }]);
+                    informasiRiwayatKecelakaanKerja = JSON.stringify([{ insert: "Tidak Ada Keterangan Riwayat Kecelakaan Kerja Pada Pasien" }]);
                 } else {
                     informasiRiwayatKecelakaanKerja = JSON.stringify(quillContent.ops);
                 }

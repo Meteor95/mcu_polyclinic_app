@@ -483,6 +483,18 @@
               <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
           </div>
           <div class="modal-body">
+            <div id="galeriPoli" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner" id="carouselContent">
+                <!-- item dari JS -->
+              </div>
+
+              <button class="carousel-control-prev" type="button" data-bs-target="#galeriPoli" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#galeriPoli" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+              </button>
+            </div>
             <table class="table table-bordered" id="table_informasi">
               <thead>
                 <tr>

@@ -440,6 +440,24 @@ function aksesmodal(response,modal,lokasi_fisik = null){
         }                    
     }
     if (modal == 'modalPoliklinik') {
+        const carouselContent = document.getElementById("carouselContent");
+        response.lampiran_poliklinik.forEach((item, index) => {
+        const isActive = index === 0 ? "active" : "";
+        carouselContent.innerHTML += `
+            <div class="carousel-item ${isActive}">
+            <img 
+                src="${item.data_foto}" 
+                class="d-block w-100"
+                alt="${item.nama_file_asli}"
+                style="max-height:500px; object-fit:contain;"
+            >
+            <div class="carousel-caption d-none d-md-block">
+                <h6>${item.jenis_poli}</h6>
+                <p>${item.nama_file_asli}</p>
+            </div>
+            </div>
+        `;
+        });
         $("#modal_poliklinik_nama").html(lokasi_fisik);
         $("#judul_laporan_informasi").html(response.informasi_mcu.judul_laporan);
         $("#kesimpulan_informasi").html(response.informasi_mcu.kesimpulan);

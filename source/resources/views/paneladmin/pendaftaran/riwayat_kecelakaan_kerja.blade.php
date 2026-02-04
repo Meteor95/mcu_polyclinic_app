@@ -58,7 +58,7 @@ table.dataTable tbody td.focus {
 @section('js_load')
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{{ asset('vendor/erayadigital/riwayat/kecelakaan_kerja.js') }}"></script>
+<script src="{{ asset('vendor/erayadigital/riwayat/kecelakaan_kerja.js') }}?v={{ filemtime(public_path('vendor/erayadigital/riwayat/kecelakaan_kerja.js')) }}"></script>
 <script>
   let param_nomor_identitas = '{{$data['nomor_identitas']}}'
   let param_nama_peserta = '{{$data['nama_peserta']}}'
