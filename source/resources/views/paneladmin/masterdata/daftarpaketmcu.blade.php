@@ -187,7 +187,7 @@
                             <td><input type="checkbox" class="form-check-input" id="poliklinik_rontgen_lumbosacral" name="poliklinik_rontgen_lumbosacral"></td>
                         </tr>
                         <tr>
-                            <td>USG Ubdomain</td>
+                            <td>USG Abdomain</td>
                             <td><input type="checkbox" class="form-check-input" id="poliklinik_usg_ubdomain" name="poliklinik_usg_ubdomain"></td>
                         </tr>
                         <tr>

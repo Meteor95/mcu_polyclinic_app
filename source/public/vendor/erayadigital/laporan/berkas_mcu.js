@@ -6,7 +6,7 @@ const pemeriksaanConfig = [
     { id: 'berkas_mcu_pemeriksaan_threadmill', placeholder: 'Tidak ada penjelasan mengenai Pemeriksaan Threadmill peserta ini' },
     { id: 'berkas_mcu_pemeriksaan_rontgen_thorax', placeholder: 'Tidak ada penjelasan mengenai Pemeriksaan Rontgen Thorax peserta ini' },
     { id: 'berkas_mcu_pemeriksaan_rontgen_lumbosacral', placeholder: 'Tidak ada penjelasan mengenai Pemeriksaan Rontgen Lumbosacral peserta ini' },
-    { id: 'berkas_mcu_pemeriksaan_usg_ubdomain', placeholder: 'Tidak ada penjelasan mengenai Pemeriksaan USG Ubdomain peserta ini' },
+    { id: 'berkas_mcu_pemeriksaan_usg_ubdomain', placeholder: 'Tidak ada penjelasan mengenai Pemeriksaan USG Abdomain peserta ini' },
     { id: 'berkas_mcu_pemeriksaan_farmingham_score', placeholder: 'Tidak ada penjelasan mengenai Pemeriksaan Farmingham Score peserta ini' },
     { id: 'berkas_mcu_pemeriksaan_ekg', placeholder: 'Tidak ada penjelasan mengenai Pemeriksaan EKG peserta ini' },
     { id: 'berkas_mcu_pemeriksaan_audiometri_kiri', placeholder: 'Tidak ada penjelasan mengenai Pemeriksaan Audiometri Kiri peserta ini' },

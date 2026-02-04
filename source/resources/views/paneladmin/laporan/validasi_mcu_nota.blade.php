@@ -45,7 +45,7 @@
               <td><span class="progress_tm" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Treadmill">TM</span></td>
               <td><span class="progress_rsn_thorax" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Rontgen Thorax">RSN</span></td>
               <td><span class="progress_rsn_lumbosacral" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Rontgen Lumbosacral">RSN</span></td>
-              <td><span class="progress_usg_ubdomain" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="USG Ubdomain">USG</span></td>
+              <td><span class="progress_usg_ubdomain" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="USG Abdomain">USG</span></td>
               <td><span class="progress_farmingham_score" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Farmingham Score">FS</span></td>
               <td><span class="progress_lab" data-container="body" data-bs-toggle="tooltip" data-bs-placement="top" title="Lab dan Pengobatan">LAB</span></td>
             </tr>
@@ -377,9 +377,9 @@
                       </tr>
                       <tr>
                         <td>28</td>
-                        <td>USG Ubdomain</td>
+                        <td>USG Abdomain</td>
                         <td><span class="progress_usg_ubdomain">USG</span></td>
-                        <td><button onclick="process_ajax('usg_ubdomain','modalPoliklinik','USG Ubdomain')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td><button onclick="process_ajax('usg_ubdomain','modalPoliklinik','USG Abdomain')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                       </tr>
                       <tr>
                         <td>29</td>
@@ -507,7 +507,7 @@
                         </th>
                     </tr>
                     <tr class="pemeriksaan_usg_ubdomain" style="display: none;">
-                        <th>USG Ubdomain</th>
+                        <th>USG Abdomain</th>
                         <th>
                             <div class="row">
                                 <div class="col-md-12">

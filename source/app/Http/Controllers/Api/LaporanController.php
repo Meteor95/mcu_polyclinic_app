@@ -171,6 +171,7 @@ class LaporanController extends Controller
     }
     public function validasi_mcu_modal(Request $req){
         try {
+            $lampiran_poliklinik = [];
             $validator = Validator::make($req->all(), [
                 'no_nota' => 'required',
                 'kondisi' => 'required',
@@ -301,7 +302,7 @@ class LaporanController extends Controller
                     $nama_folder = 'audiometri';
                 }
                 $informasi_mcu = DB::table($table)->where('transaksi_id', $transaksi_id->transaksi_id)->first();
-                $ambil_gambar_masing_masing_poli = UnggahanCitra::where('id_trx_poli', $informasi_mcu->id)->where('jenis_poli', $jenis_poli_data)->get();
+                $ambil_gambar_masing_masing_poli = UnggahanCitra::where('id_trx_poli', $informasi_mcu->id ?? "")->where('jenis_poli', $jenis_poli_data)->get();
                 $lampiran_poliklinik = $ambil_gambar_masing_masing_poli->map(function ($item) use ($nama_folder) {
                     $item->data_foto = url(
                         env('APP_VERSI_API') .

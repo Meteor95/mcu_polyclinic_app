@@ -5,7 +5,7 @@ const pemeriksaanConfig = [
     { id: 'pemeriksaan_threadmill', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Threadmill peserta ini' },
     { id: 'pemeriksaan_rontgen_thorax', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Rontgen Thorax peserta ini' },
     { id: 'pemeriksaan_rontgen_lumbosacral', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Rontgen Lumbosacral peserta ini' },
-    { id: 'pemeriksaan_usg_ubdomain', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan USG Ubdomain peserta ini' },
+    { id: 'pemeriksaan_usg_ubdomain', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan USG Abdomain peserta ini' },
     { id: 'pemeriksaan_farmingham_score', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Farmingham Score peserta ini' },
     { id: 'pemeriksaan_ekg', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan EKG peserta ini' },
     { id: 'pemeriksaan_audiometri_kiri', placeholder: 'Berikan penjelasan mengenai status kesimpulan dari Pemeriksaan Audiometri Kiri peserta ini' },
@@ -219,7 +219,8 @@ function process_ajax(kondisi,modal,lokasi_fisik = null){
                 kondisi: kondisi,
             },
             success: function(response) {
-                aksesmodal(response,modal,lokasi_fisik);
+                if (response.informasi_mcu) aksesmodal(response,modal,lokasi_fisik);
+                return createToast('Terjadi Kesalahan', 'top-right', 'Petugas belum menmasukan informasi pada pasien ini. Silahkan masukan informasi terlebih dahulu '+lokasi_fisik, 'error', 3000);;
             },
             error: function(xhr, status, error) {
                 createToast('Kesalahan Penghapusan Data', 'top-right', error, 'error', 3000);
@@ -392,7 +393,7 @@ function aksesmodal(response,modal,lokasi_fisik = null){
         $("#visus_od_tanpa_kacamata_dekat_modal").text(response.informasi_mcu[0].visus_od_tanpa_kacamata_dekat);
         $("#visus_os_kacamata_dekat_modal_modal").text(response.informasi_mcu[0].visus_os_kacamata_dekat);
         $("#visus_od_kacamata_dekat_modal_modal").text(response.informasi_mcu[0].visus_od_kacamata_dekat);
-        $("#buta_warna_modal").text(response.informasi_mcu[0].buta_warna.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '));
+        $('#buta_warna_modal').text(response.informasi_mcu[0].buta_warna == 1 ? "Color Blind" : "Normal");
         $("#lapang_pandang_superior_os_modal").text(response.informasi_mcu[0].lapang_pandang_superior_os);
         $("#lapang_pandang_inferior_os_modal").text(response.informasi_mcu[0].lapang_pandang_inferior_os);
         $("#lapang_pandang_temporal_os_modal").text(response.informasi_mcu[0].lapang_pandang_temporal_os);

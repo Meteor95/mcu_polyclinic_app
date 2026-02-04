@@ -4,7 +4,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
-            @include('komponen.information_user', ['title_card' => "Foto USG Ubdomain", 'informasi_apa' => "informasi foto USG Ubdomain"])
+            @include('komponen.information_user', ['title_card' => "Foto USG Abdomain", 'informasi_apa' => "informasi foto USG Abdomain"])
         </div>
         <div class="card-body">
             @include('komponen.unggah_image_poli', ['unggahan_citra_aktif' => $data['unggahan_citra_aktif']])

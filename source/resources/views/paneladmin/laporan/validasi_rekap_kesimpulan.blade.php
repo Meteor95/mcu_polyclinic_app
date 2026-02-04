@@ -158,7 +158,7 @@
                         </th>
                     </tr>
                     <tr class="pemeriksaan_usg_ubdomain" style="display: none;">
-                        <th>USG Ubdomain</th>
+                        <th>USG Abdomain</th>
                         <th>
                             <div class="row">
                                 <div class="col-md-9 mb-1">

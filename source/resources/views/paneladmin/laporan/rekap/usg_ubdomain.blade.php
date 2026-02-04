@@ -4,7 +4,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4>Rekap Pemeriksaan USG Ubdomain Pada Perusahaan</h4><span>Pada tabel ini adalah rekap pemeriksaan USG Ubdomain pada perusahaan, silahkan pilih perusahaan dan periode untuk melihat rekap pemeriksaan tanda vital. Jadi nantinya tim AMC dapat melihat seberapa banyak perusahaan mengirimkan pegawainya untuk dicek kesehatannya di AMC ini</span>
+          <h4>Rekap Pemeriksaan USG Abdomain Pada Perusahaan</h4><span>Pada tabel ini adalah rekap pemeriksaan USG Abdomain pada perusahaan, silahkan pilih perusahaan dan periode untuk melihat rekap pemeriksaan tanda vital. Jadi nantinya tim AMC dapat melihat seberapa banyak perusahaan mengirimkan pegawainya untuk dicek kesehatannya di AMC ini</span>
         </div>
         <div class="card-body">
             <div class="row mb-2">
