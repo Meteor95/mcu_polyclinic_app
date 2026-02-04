@@ -48,6 +48,12 @@ let choice_pemeriksaan_kesimpulan_non_status_kesehatan_select = new Choices(peme
 });
 let choice_pemeriksaan_kesimpulan_tindakan_select = null;
 let quillInstances = {};
+const quill_detail = new Quill('#editor_riwayat_kecelakaan_kerja', {
+    theme: 'snow'
+});
+const quill_informasi = new Quill('#detail_kesimpulan_informasi', {
+    theme: 'snow'
+});
 $(document).ready(function() {
     pemeriksaanConfig.forEach(item => {
         quillInstances[item.id] = new Quill(`#${item.id}_quill`, {
@@ -403,3 +409,264 @@ $("#konfirmasi_validasi_rekap_kesimpulan").on('click', function() {
         }
     });
 });
+function process_ajax(kondisi,modal,lokasi_fisik = null){
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/laporan/validasi_mcu_modal',
+            type: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
+            },
+            data: {
+                _token: response.csrf_token,
+                no_nota: btoa(nomor_mcu_let),
+                kondisi: kondisi,
+            },
+            success: function(response) {
+                if (response.informasi_mcu) return aksesmodal(response,modal,lokasi_fisik);
+                return createToast('Terjadi Kesalahan', 'top-right', 'Petugas belum menmasukan informasi pada pasien ini. Silahkan masukan informasi terlebih dahulu '+lokasi_fisik, 'error', 3000);;
+            },
+            error: function(xhr, status, error) {
+                createToast('Kesalahan Penghapusan Data', 'top-right', error, 'error', 3000);
+            }
+        })
+    })
+}
+function aksesmodal(response,modal,lokasi_fisik = null){
+    if (modal == 'modalLihatFoto') {
+        $("#foto_lihat").attr('src', response.informasi_mcu.data_foto);
+        $("#nama_peserta_foto").text(response.informasi_mcu.lokasi_gambar);
+    }
+    if (modal == 'modalLingkunganKerja') {
+        if (response.informasi_mcu.length == 0) {
+            return createToast('Validasi Lingkungan Kerja', 'top-right', 'Peserta ini tidak memiliki data Lingkungan Kerja. Silahkan lakukan pengisian data Lingkungan Kerja pada menu yang disediakan sesuai dengan hak akses dan informasi yang dimiliki', 'error', 3000);
+        }
+        $('#datatables_riwayat_lingkungan_kerja_modal tbody').empty();
+        for (let i = 0; i < response.informasi_mcu.length; i++) {
+            let item = response.informasi_mcu[i];
+            let row = $('#datatables_riwayat_lingkungan_kerja_modal tbody tr').filter(function() {
+                return $(this).find('td:eq(0)').text() == item.id_atribut_lk;
+            });
+            if (row.length === 0) {
+                $('#datatables_riwayat_lingkungan_kerja_modal tbody').append(`
+                    <tr>
+                        <td>${item.nama_atribut_saat_ini}</td>
+                        <td>${item.status == 0 ? 'Tidak' : 'Ya'}</td>
+                        <td>${item.nilai_jam_per_hari}</td>
+                        <td>${item.nilai_selama_x_tahun}</td>
+                        <td>${item.keterangan ? item.keterangan : 'Tidak Ada Keterangan'}</td>
+                    </tr>
+                `);
+            }
+        }
+    }
+    if (modal == 'modalKecelakaanKerja') {
+        quill_detail.setContents(JSON.parse(response.informasi_mcu[0].riwayat_kecelakaan_kerja));
+    }
+    if (modal == 'modalKebiasaanHidup') {
+        $('#datatables_riwayat_kebiasaan_hidup_modal tbody').empty();
+        $('#datatables_riwayat_kebiasaan_hidup_perempuan_modal tbody').empty();
+        for (let i = 0; i < response.informasi_mcu.length; i++) {
+            let item = response.informasi_mcu[i];
+            let row = $('#datatables_riwayat_kebiasaan_hidup_modal tbody tr').filter(function() {
+                return $(this).find('td:eq(0)').text() == item.id_atribut_kb;
+            });
+            if (row.length === 0 && item.jenis_kebiasaan == 1) {
+                $('#datatables_riwayat_kebiasaan_hidup_modal tbody').append(`
+                    <tr>
+                        <td>${item.nama_kebiasaan}</td>
+                        <td>${item.status_kebiasaan == 0 ? 'Tidak' : 'Ya'}</td>
+                        <td>${item.nilai_kebiasaan}</td>
+                        <td>${item.satuan_kebiasaan}</td>
+                        <td>${item.keterangan ? item.keterangan : 'Tidak Ada Keterangan'}</td>
+                    </tr>
+                `);
+            }
+            if (row.length === 0 && item.jenis_kebiasaan == 2) {
+                $('#datatables_riwayat_kebiasaan_hidup_perempuan_modal tbody').append(`
+                    <tr>
+                        <td>${item.nama_kebiasaan}</td>
+                        <td>${item.status_kebiasaan == 0 ? 'Tidak' : 'Ya'}</td>
+                        <td>${moment(item.waktu_kebiasaan).format('DD-MM-YYYY HH:mm:ss')}</td>
+                        <td>${item.satuan_kebiasaan}</td>
+                        <td>${item.keterangan ? item.keterangan : 'Tidak Ada Keterangan'}</td>
+                    </tr>
+                `);
+            }
+        }    
+    }
+    if (modal == 'modalPenyakitTerdahulu') {
+        $('#datatables_penyakit_terdahulu_modal tbody').empty();
+        for (let i = 0; i < response.informasi_mcu.length; i++) {
+            let item = response.informasi_mcu[i];
+            let row = $('#datatables_penyakit_terdahulu_modal tbody tr').filter(function() {
+                return $(this).find('td:eq(0)').text() == item.id_atribut_pt;
+            });
+            if (row.length === 0) {
+                $('#datatables_penyakit_terdahulu_modal tbody').append(`
+                    <tr>
+                        <td>${item.nama_atribut_saat_ini}</td>
+                        <td>${item.status == 0 ? 'Tidak' : 'Ya'}</td>
+                        <td>${item.keterangan ? item.keterangan : 'Tidak Ada Keterangan'}</td>
+                    </tr>
+                `);
+            }
+        }   
+    }
+    if (modal == 'modalPenyakitKeluarga') {
+        $('#datatables_riwayat_penyakit_keluarga_modal tbody').empty();
+        for (let i = 0; i < response.informasi_mcu.length; i++) {
+            let item = response.informasi_mcu[i];
+            let row = $('#datatables_riwayat_penyakit_keluarga_modal tbody tr').filter(function() {
+                return $(this).find('td:eq(0)').text() == item.id_atribut_pk;
+            });
+            if (row.length === 0) {
+                $('#datatables_riwayat_penyakit_keluarga_modal tbody').append(`
+                    <tr>
+                        <td>${item.nama_atribut_saat_ini}</td>
+                        <td>${item.status == 0 ? 'Tidak' : 'Ya'}</td>
+                        <td>${item.keterangan ? item.keterangan : 'Tidak Ada Keterangan'}</td>
+                    </tr>
+                `);
+            }
+        }           
+    }
+    if (modal == 'modalImunisasi') {
+        $('#datatables_imunisasi_modal tbody').empty();
+        $("#modal_nama_peserta_parameter").text(response.informasi_mcu[0].nama_peserta);
+        for (let i = 0; i < response.informasi_mcu.length; i++) {
+            let item = response.informasi_mcu[i];
+            let row = $('#datatables_imunisasi_modal tbody tr').filter(function() {
+                return $(this).find('td:eq(0)').text() == item.id_atribut_im;
+            });
+            if (row.length === 0) {
+                $('#datatables_imunisasi_modal tbody').append(`
+                    <tr>
+                        <td>${item.nama_atribut_saat_ini}</td>
+                        <td>${item.status == 0 ? 'Tidak' : 'Ya'}</td>
+                        <td>${item.keterangan ? item.keterangan : 'Tidak Ada Keterangan'}</td>
+                    </tr>
+                `);
+            }
+        }     
+    }
+    if (modal == 'modalTingkatKesadaran') {
+        $("#modal_keadaan_umum_temp").text(response.informasi_mcu[0].nama_atribut_tingkat_kesadaran);
+        $("#modal_keterangan_keadaan_umum_temp").text(response.informasi_mcu[0].keterangan_tingkat_kesadaran);
+        $("#modal_status_kesadaran_temp").text(response.informasi_mcu[0].nama_atribut_status_tingkat_kesadaran);
+        $("#modal_keterangan_status_kesadaran_temp").text(response.informasi_mcu[0].keterangan_status_tingkat_kesadaran);
+        $("#modal_keluhan_temp").text(response.informasi_mcu[0].keluhan);
+    }
+    if (modal == 'modalTandaVital') {
+        $('#datatables_tanda_vital_modal_tanda_vital tbody').empty();
+        $('#datatables_tanda_vital_modal_tanda_gizi tbody').empty();
+        for (let i = 0; i < response.informasi_mcu.length; i++) {
+            let no = i + 1;
+            let item = response.informasi_mcu[i];
+            let row = $('#datatables_tanda_vital_modal_tanda_vital tbody tr').filter(function() {
+                return $(this).find('td:eq(0)').text() == item.id_atribut_lv;
+            });
+            if (row.length === 0 && item.jenis_tanda_vital === 'tanda_vital') {
+                $('#datatables_tanda_vital_modal_tanda_vital tbody').append(`
+                    <tr>
+                        <td>${no}</td>
+                        <td>${item.nama_atribut_saat_ini}</td>
+                        <td>${item.nilai_tanda_vital} ${item.satuan_tanda_vital}</td>
+                        <td>${item.keterangan_tanda_vital ? item.keterangan_tanda_vital : 'Tidak Ada Keterangan'}</td>
+                    </tr>
+                `);
+            }
+            if (row.length === 0 && item.jenis_tanda_vital === 'tanda_gizi') {
+                $('#datatables_tanda_vital_modal_tanda_gizi tbody').append(`
+                    <tr>
+                        <td>${no}</td>
+                        <td>${item.nama_atribut_saat_ini}</td>
+                        <td>${item.nilai_tanda_vital} ${item.satuan_tanda_vital}</td>
+                        <td>${item.keterangan_tanda_vital ? item.keterangan_tanda_vital : 'Tidak Ada Keterangan'}</td>
+                    </tr>
+                `);
+            }
+        } 
+    }
+    if (modal == 'modalPenglihatan') {
+        $("#visus_os_tanpa_kacamata_jauh_modal").text(response.informasi_mcu[0].visus_os_tanpa_kacamata_jauh);
+        $("#visus_od_tanpa_kacamata_jauh_modal").text(response.informasi_mcu[0].visus_od_tanpa_kacamata_jauh);
+        $("#visus_os_kacamata_jauh_modal").text(response.informasi_mcu[0].visus_os_kacamata_jauh);
+        $("#visus_od_kacamata_jauh_modal").text(response.informasi_mcu[0].visus_od_kacamata_jauh);
+        $("#visus_os_tanpa_kacamata_dekat_modal").text(response.informasi_mcu[0].visus_os_tanpa_kacamata_dekat);
+        $("#visus_od_tanpa_kacamata_dekat_modal").text(response.informasi_mcu[0].visus_od_tanpa_kacamata_dekat);
+        $("#visus_os_kacamata_dekat_modal_modal").text(response.informasi_mcu[0].visus_os_kacamata_dekat);
+        $("#visus_od_kacamata_dekat_modal_modal").text(response.informasi_mcu[0].visus_od_kacamata_dekat);
+        $('#buta_warna_modal').text(response.informasi_mcu[0].buta_warna == 1 ? "Color Blind" : "Normal");
+        $("#lapang_pandang_superior_os_modal").text(response.informasi_mcu[0].lapang_pandang_superior_os);
+        $("#lapang_pandang_inferior_os_modal").text(response.informasi_mcu[0].lapang_pandang_inferior_os);
+        $("#lapang_pandang_temporal_os_modal").text(response.informasi_mcu[0].lapang_pandang_temporal_os);
+        $("#lapang_pandang_nasal_os_modal").text(response.informasi_mcu[0].lapang_pandang_nasal_os);
+        $("#lapang_pandang_keterangan_os_modal").text(response.informasi_mcu[0].lapang_pandang_keterangan_os);
+        $("#lapang_pandang_superior_od_modal").text(response.informasi_mcu[0].lapang_pandang_superior_od);
+        $("#lapang_pandang_inferior_od_modal").text(response.informasi_mcu[0].lapang_pandang_inferior_od);
+        $("#lapang_pandang_temporal_od_modal").text(response.informasi_mcu[0].lapang_pandang_temporal_od);
+        $("#lapang_pandang_nasal_od_modal").text(response.informasi_mcu[0].lapang_pandang_nasal_od);
+        $("#lapang_pandang_keterangan_od_modal").text(response.informasi_mcu[0].lapang_pandang_keterangan_od);
+    }
+    if (modal == 'modalFisik') {
+        $('#datatables_kondisi_fisik_log_modal tbody').empty();
+        $("#modal_fisik_lokasi").text(lokasi_fisik.charAt(0).toUpperCase() + lokasi_fisik.slice(1));
+        if (lokasi_fisik === 'Gigi') {
+            const data = response.informasi_mcu_gigi[0];
+            ['atas', 'bawah'].forEach(posisi => {
+                ['kanan', 'kiri'].forEach(sisi => {
+                    for (let i = 1; i <= 8; i++) {
+                        const key = `${posisi}_${sisi}_${i}`;
+                        $(`#${key}_modal`).text(data[key]); 
+                    }
+                });
+            });
+            $('#modal_fisik_gigi').show();
+        }else{
+            $('#modal_fisik_gigi').hide();
+        }
+        for (let i = 0; i < response.informasi_mcu.length; i++) {
+            let item = response.informasi_mcu[i];
+            let row = $('#datatables_kondisi_fisik_log_modal tbody tr').filter(function() {
+                return $(this).find('td:eq(0)').text() == item.id_atribut_pt;
+            });
+            if (row.length === 0) {
+                $('#datatables_kondisi_fisik_log_modal tbody').append(`
+                    <tr>
+                        <td>${(i+1)}</td>
+                        <td>${item.jenis_atribut}</td>
+                        <td style="text-align: center;">${item.status_atribut === 'abnormal' ? '✅' : '❌'}</td>
+                        <td style="text-align: center;">${item.status_atribut === 'normal' ? '✅' : '❌'}</td>
+                        <td>${item.keterangan_atribut ? item.keterangan_atribut : 'Tidak Ada Keterangan'}</td>
+                    </tr>
+                `);
+            }
+        }                    
+    }
+    if (modal == 'modalPoliklinik') {
+        const carouselContent = document.getElementById("carouselContent");
+        carouselContent.innerHTML = "";
+        response.lampiran_poliklinik.forEach((item, index) => {
+        const isActive = index === 0 ? "active" : "";
+        carouselContent.innerHTML += `
+            <div class="carousel-item ${isActive}">
+            <img 
+                src="${item.data_foto}" 
+                class="d-block w-100"
+                alt="${item.nama_file_asli}"
+                style="max-height:500px; object-fit:contain;"
+            >
+            </div>
+        `;
+        });
+        $("#modal_poliklinik_nama").html(lokasi_fisik);
+        $("#judul_laporan_informasi").html(response.informasi_mcu.judul_laporan);
+        $("#kesimpulan_informasi").html(response.informasi_mcu.kesimpulan);
+        quill_informasi.setContents(JSON.parse(response.informasi_mcu.detail_kesimpulan));
+    }
+    if (modal == 'modalLab') {
+        
+    }
+    $("#"+modal).modal('show');
+}
