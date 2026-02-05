@@ -10,7 +10,7 @@ use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, Riwaya
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\{Kesimpulan as KesimpulanLabStatus, Transaksi as TransaksiLab, Kategori, TransaksiDetail};
-use App\Models\Laporan\Kesimpulan;
+use App\Models\Laporan\{Kesimpulan,EdsStatusCekKesimpulan};
 use App\Helpers\QuillHelper;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Helpers\GlobalHelper;
@@ -44,6 +44,7 @@ class LaporanController extends Controller
             'Validasi Tindakan Pasien' => route('admin.laporan.validasi_mcu_nota', ['no_nota' => urlencode($no_nota)]),
         ]);
         $data['no_nota'] = $no_nota;
+        $data['status_validasi'] = EdsStatusCekKesimpulan::where('no_mcu', base64_decode($no_nota))->first();
         return view('paneladmin.laporan.validasi_mcu_nota', ['data' => $data]);
     }
     public function validasi_rekap_kesimpulan(Request $req){

@@ -210,194 +210,301 @@
                       </tr>
                     </thead>
                     <tbody>
+                      @php
+                        $sv = $data['status_validasi'];
+                        if (!function_exists('renderBtnValidasi')) {
+                            function renderBtnValidasi($dataStatus, $kolom, $id, $kode) {
+                                $status = (optional($dataStatus)->$kolom == 1) ? 1 : 0;
+                                $class = ($status == 1) ? 'btn-success' : 'btn-danger';
+                                $icon = ($status == 1) ? 'fa-check' : 'fa-times';
+                                $text = ($status == 1) ? 'Valid' : 'Tidak Valid';
+                                return "<button onclick=\"process_ajax_validasi('$kode','$kolom','$id')\" class=\"btn $class ml-2\" id=\"$id\"><i class=\"fa $icon\"></i> $text</button>";
+                            }
+                        }
+                      @endphp
+
                       <tr>
                         <td>1</td>
                         <td rowspan="7" style="background-color:rgb(224, 99, 3);color:white;">Riwayat Informasi</td>
                         <td>Foto Data Diri</td>
                         <td><span class="progress_fdd">FDD</span></td>
-                        <td><button onclick="process_ajax('fdd','modalLihatFoto')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                            <button onclick="process_ajax('fdd','modalLihatFoto')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                            {!! renderBtnValidasi($sv, 'foto_data_diri', 'btn_fdd_validasi', 'fdd') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>2</td>
                         <td>Lingkungan Kerja</td>
                         <td><span class="progress_lk">LK</span></td>
-                        <td><button onclick="process_ajax('lk','modalLingkunganKerja')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('lk','modalLingkunganKerja')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'lingkungan_kerja', 'btn_lk_validasi', 'lk') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>3</td>
                         <td>Kecelakaan Kerja</td>
                         <td><span class="progress_kk">KK</span></td>
-                        <td><button onclick="process_ajax('kk','modalKecelakaanKerja')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('kk','modalKecelakaanKerja')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'kecelakaan_kerja', 'btn_kk_validasi', 'kk') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>4</td>
                         <td>Kebiasaan Hidup</td>
                         <td><span class="progress_kh">KH</span></td>
-                        <td><button onclick="process_ajax('kh','modalKebiasaanHidup')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('kh','modalKebiasaanHidup')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'kebiasaan_hidup', 'btn_kh_validasi', 'kh') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>5</td>
                         <td>Penyakit Terdahulu</td>
                         <td><span class="progress_pt">PT</span></td>
-                        <td><button onclick="process_ajax('pt','modalPenyakitTerdahulu')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('pt','modalPenyakitTerdahulu')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'penyakit_terdahulu', 'btn_pt_validasi', 'pt') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>6</td>
                         <td>Penyakit Keluarga</td>
                         <td><span class="progress_pk">PK</span></td>
-                        <td><button onclick="process_ajax('pk','modalPenyakitKeluarga')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('pk','modalPenyakitKeluarga')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'penyakit_keluarga', 'btn_pk_validasi', 'pk') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>7</td>
                         <td>Imunisasi</td>
                         <td><span class="progress_im">IM</span></td>
-                        <td><button onclick="process_ajax('im','modalImunisasi')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('im','modalImunisasi')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'imunisasi', 'btn_im_validasi', 'im') !!}
+                        </td>
                       </tr>
+
                       <tr>
                         <td>8</td>
                         <td rowspan="15" style="background-color:rgb(68, 227, 54);color:black;">Pemeriksaan Fisik</td>
-                        <td>Tingkat Kesadaran</td >
+                        <td>Tingkat Kesadaran</td>
                         <td><span class="progress_tk">TK</span></td>
-                        <td><button onclick="process_ajax('tk','modalTingkatKesadaran')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('tk','modalTingkatKesadaran')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'tingkat_kesadaran', 'btn_tk_validasi', 'tk') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>9</td>
                         <td>Tanda Vital</td>
                         <td><span class="progress_tv">TV</span></td>
-                        <td><button onclick="process_ajax('tv','modalTandaVital')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('tv','modalTandaVital')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'tanda_vital', 'btn_tv_validasi', 'tv') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>10</td>
                         <td>Penglihatan</td>
                         <td><span class="progress_eye">EYE</span></td>
-                        <td><button onclick="process_ajax('eye','modalPenglihatan')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('eye','modalPenglihatan')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'penglihatan', 'btn_eye_validasi', 'eye') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>11</td>
                         <td>Kepala</td>
                         <td><span class="progress_kp">KP</span></td>
-                        <td><button onclick="process_ajax('kp','modalFisik','Kepala')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('kp','modalFisik','Kepala')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'kepala', 'btn_kp_validasi', 'kp') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>12</td>
                         <td>Telinga</td>
                         <td><span class="progress_tlg">TLG</span></td>
-                        <td><button onclick="process_ajax('tlg','modalFisik','Telinga')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('tlg','modalFisik','Telinga')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'telinga', 'btn_tlg_validasi', 'tlg') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>13</td>
                         <td>Mata</td>
                         <td><span class="progress_mt">MT</span></td>
-                        <td><button onclick="process_ajax('mt','modalFisik','Mata')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('mt','modalFisik','Mata')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'mata', 'btn_mt_validasi', 'mt') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>14</td>
                         <td>Tenggorokan</td>
                         <td><span class="progress_tng">TNG</span></td>
-                        <td><button onclick="process_ajax('tng','modalFisik','Tenggorokan')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('tng','modalFisik','Tenggorokan')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'tenggorokan', 'btn_tng_validasi', 'tng') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>15</td>
                         <td>Mulut</td>
                         <td><span class="progress_mlt">MLT</span></td>
-                        <td><button onclick="process_ajax('mlt','modalFisik','Mulut')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('mlt','modalFisik','Mulut')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'mulut', 'btn_mlt_validasi', 'mlt') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>16</td>
                         <td>Gigi</td>
                         <td><span class="progress_gg">GG</span></td>
-                        <td><button onclick="process_ajax('gg','modalFisik','Gigi')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('gg','modalFisik','Gigi')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'gigi', 'btn_gg_validasi', 'gg') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>17</td>
                         <td>Leher</td>
                         <td><span class="progress_lhr">LHR</span></td>
-                        <td><button onclick="process_ajax('lhr','modalFisik','Leher')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('lhr','modalFisik','Leher')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'leher', 'btn_lhr_validasi', 'lhr') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>18</td>
                         <td>Thorax</td>
                         <td><span class="progress_thx">THX</span></td>
-                        <td><button onclick="process_ajax('thx','modalFisik','Thorax')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('thx','modalFisik','Thorax')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'thorax_fisik', 'btn_thx_validasi', 'thx') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>19</td>
                         <td>Abdomen Urogenital</td>
                         <td><span class="progress_anu">AnU</span></td>
-                        <td><button onclick="process_ajax('anu','modalFisik','Abdomen Urogenital')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('anu','modalFisik','Abdomen Urogenital')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'abdomen_urogenital', 'btn_anu_validasi', 'anu') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>20</td>
                         <td>Anorectal Genital</td>
                         <td><span class="progress_ang">AnG</span></td>
-                        <td><button onclick="process_ajax('ang','modalFisik','Anorectal Genital')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('ang','modalFisik','Anorectal Genital')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'anorectal_genital', 'btn_ang_validasi', 'ang') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>21</td>
                         <td>Ekstremitas</td>
                         <td><span class="progress_etm">ETM</span></td>
-                        <td><button onclick="process_ajax('etm','modalFisik','Ekstremitas')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('etm','modalFisik','Ekstremitas')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'ekstremitas', 'btn_etm_validasi', 'etm') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>22</td>
                         <td>Neurologis</td>
                         <td><span class="progress_nu">NU</span></td>
-                        <td><button onclick="process_ajax('nu','modalFisik','Neurologis')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('nu','modalFisik','Neurologis')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'neurologis', 'btn_nu_validasi', 'nu') !!}
+                        </td>
                       </tr>
+
                       <tr>
                         <td>23</td>
                         <td rowspan="8" style="background-color:rgb(1, 54, 171);color:white;">Poliklinik</td>
                         <td>Spirometri</td>
                         <td><span class="progress_sp">SP</span></td>
-                        <td><button onclick="process_ajax('sp','modalPoliklinik','Spirometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('sp','modalPoliklinik','Spirometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'spirometri', 'btn_sp_validasi', 'sp') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>24</td>
                         <td>EKG</td>
                         <td><span class="progress_ekg">EKG</span></td>
-                        <td><button onclick="process_ajax('ekg','modalPoliklinik','EKG')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('ekg','modalPoliklinik','EKG')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'ekg', 'btn_ekg_validasi', 'ekg') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>25</td>
                         <td>Treadmill</td>
                         <td><span class="progress_tm">TM</span></td>
-                        <td><button onclick="process_ajax('tm','modalPoliklinik','Threadmill')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('tm','modalPoliklinik','Threadmill')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'treadmill', 'btn_tm_validasi', 'tm') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>26</td>
                         <td>Rontgen Thorax</td>
                         <td><span class="progress_rsn_thorax">RSN</span></td>
-                        <td><button onclick="process_ajax('rsn_thorax','modalPoliklinik','Rontgen Thorax')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('rsn_thorax','modalPoliklinik','Rontgen Thorax')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'rontgen_thorax', 'btn_rsn_thorax_validasi', 'rsn_thorax') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>27</td>
                         <td>Rontgen Lumbosacral</td>
                         <td><span class="progress_rsn_lumbosacral">LBS</span></td>
-                        <td><button onclick="process_ajax('rsn_lumbosacral','modalPoliklinik','Rontgen Lumbosacral')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('rsn_lumbosacral','modalPoliklinik','Rontgen Lumbosacral')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'rontgen_lumbosacral', 'btn_rsn_lumbosacral', 'rsn_lumbosacral') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>28</td>
                         <td>USG Abdomain</td>
                         <td><span class="progress_usg_ubdomain">USG</span></td>
-                        <td><button onclick="process_ajax('usg_ubdomain','modalPoliklinik','USG Abdomain')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('usg_ubdomain','modalPoliklinik','USG Abdomain')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'usg_abdomen', 'btn_usg_ubdomain', 'usg_ubdomain') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>29</td>
-                        <td>Farmingham Score</td>
+                        <td>Framingham Score</td>
                         <td><span class="progress_farmingham_score">FS</span></td>
-                        <td><button onclick="process_ajax('farmingham_score','modalPoliklinik','Farmingham Score')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('farmingham_score','modalPoliklinik','Farmingham Score')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'framingham_score', 'btn_farmingham_score', 'farmingham_score') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>30</td>
                         <td>Audiometri</td>
                         <td><span class="progress_au">AU</span></td>
-                        <td><button onclick="process_ajax('au','modalPoliklinik','Audiometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        <td>
+                          <button onclick="process_ajax('au','modalPoliklinik','Audiometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button>
+                          {!! renderBtnValidasi($sv, 'audiometri', 'btn_au', 'au') !!}
+                        </td>
                       </tr>
                       <tr>
                         <td>31</td>
                         <td>Lab dan Tindakan</td>
                         <td colspan="2">Laboratorium dan Pengobatan</td>
-                        <td><span class="progress_lab_bawah">LAB</span></td>
+                        <td>
+                          <span class="progress_lab_bawah">LAB</span>
+                        </td>
                       </tr>
                     </tbody>
                   </table>

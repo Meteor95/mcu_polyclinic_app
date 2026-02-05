@@ -205,6 +205,42 @@ function validasi_rekap_kesimpulan_nota(no_mcu_js) {
         });
     });
 }
+function process_ajax_validasi(kondisi,nama_kolom,button_id){
+    let btn = $('#' + button_id);
+    let originalContent = btn.html();
+    btn.prop('disabled', true);
+    btn.html('<i class="fa fa-spinner fa-spin"></i> Loading...');
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/laporan/validasi_mcu_status',
+            type: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
+            },
+            data: {
+                _token: response.csrf_token,
+                no_mcu: no_mcu_js,
+                kondisi: kondisi,
+                nama_kolom: nama_kolom,
+            },
+            success: function(response) {
+                if (response.status_baru == 1) {
+                    btn.removeClass('btn-danger').addClass('btn-success');
+                    btn.html('<i class="fa fa-check"></i> Valid');
+                } else {
+                    btn.removeClass('btn-success').addClass('btn-danger');
+                    btn.html('<i class="fa fa-times"></i> Tidak Valid');
+                }
+                btn.prop('disabled', false);
+            },
+            error: function(xhr, status, error) {
+                createToast('Kesalahan Penghapusan Data', 'top-right', error, 'error', 3000);
+                btn.prop('disabled', false);
+                btn.html(originalContent);
+            }
+        })
+    })
+}
 function process_ajax(kondisi,modal,lokasi_fisik = null){
     $.get('/generate-csrf-token', function(response) {
         $.ajax({

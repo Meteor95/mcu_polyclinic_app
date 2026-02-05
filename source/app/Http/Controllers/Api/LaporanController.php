@@ -10,7 +10,7 @@ use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\{Transaksi as TransaksiLab, Kategori, TransaksiDetail, Kesimpulan as KesimpulanLabStatus};
 use App\Models\Transaksi\UnggahanCitraLab;
 use App\Models\Poliklinik\UnggahanCitra;
-use App\Models\Laporan\{Kesimpulan,Tagihan};
+use App\Models\Laporan\{Kesimpulan,Tagihan,EdsStatusCekKesimpulan};
 use App\Models\EdsJasaPelayanan;
 use App\Models\Masterdata\Jasalayanan;
 use Illuminate\Support\Facades\Validator;
@@ -326,6 +326,72 @@ class LaporanController extends Controller
             
             
             return ResponseHelper::data('Informasi Transaksi Tindakan', $dynamicAttributes);
+        } catch (\Throwable $th) {
+            return ResponseHelper::error($th);
+        }
+    }
+    public function validasi_mcu_status(Request $req){
+        try {
+            $validator = Validator::make($req->all(), [
+                'no_mcu' => 'required',
+                'kondisi' => 'required',
+                'nama_kolom' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $dynamicAttributes = ['errors' => $validator->errors()];
+                return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
+            }
+            $no_mcu = base64_decode($req->no_mcu);
+            $kondisi = $req->kondisi;
+            $nama_kolom = $req->nama_kolom;
+            $informasi_mcu = EdsStatusCekKesimpulan::where('no_mcu', $no_mcu)->first();
+            if (!$informasi_mcu) {
+                 $data_status[] = [
+                    'no_mcu' => $no_mcu,
+                    'foto_data_diri' => 0,
+                    'lingkungan_kerja' => 0,
+                    'kecelakaan_kerja' => 0,
+                    'kebiasaan_hidup' => 0,
+                    'penyakit_terdahulu' => 0,
+                    'penyakit_keluarga' => 0,
+                    'imunisasi' => 0,
+                    'tingkat_kesadaran' => 0,
+                    'tanda_vital' => 0,
+                    'penglihatan' => 0,
+                    'kepala' => 0,
+                    'telinga' => 0,
+                    'mata' => 0,
+                    'tenggorokan' => 0,
+                    'mulut' => 0,
+                    'gigi' => 0,
+                    'leher' => 0,
+                    'thorax_fisik' => 0,
+                    'abdomen_urogenital' => 0,
+                    'anorectal_genital' => 0,
+                    'ekstremitas' => 0,
+                    'neurologis' => 0,
+                    'spirometri' => 0,
+                    'ekg' => 0,
+                    'treadmill' => 0,
+                    'rontgen_thorax'  => 0,
+                    'rontgen_lumbosacral' => 0,
+                    'usg_abdomen' => 0,
+                    'framingham_score' => 0,
+                    'audiometri' => 0,
+                    'laboratorium_dan_pengobatan' => 0,
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                ];
+                EdsStatusCekKesimpulan::insert($data_status);
+            }else{
+                $currentValue = $informasi_mcu->$nama_kolom;
+                $newValue = ($currentValue == 1) ? 0 : 1;
+                EdsStatusCekKesimpulan::where('no_mcu', $no_mcu)->update([$nama_kolom => $newValue,'updated_at' => Carbon::now()]);
+            }
+            return response()->json([
+                'status' => 'success',
+                'status_baru' => $newValue
+            ]);
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
         }
