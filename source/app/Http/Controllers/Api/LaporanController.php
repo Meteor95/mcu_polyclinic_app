@@ -344,6 +344,7 @@ class LaporanController extends Controller
             $no_mcu = base64_decode($req->no_mcu);
             $kondisi = $req->kondisi;
             $nama_kolom = $req->nama_kolom;
+            $newValue = 0;
             $informasi_mcu = EdsStatusCekKesimpulan::where('no_mcu', $no_mcu)->first();
             if (!$informasi_mcu) {
                  $data_status[] = [
@@ -383,6 +384,7 @@ class LaporanController extends Controller
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 ];
                 EdsStatusCekKesimpulan::insert($data_status);
+                $newValue = 1;
             }else{
                 $currentValue = $informasi_mcu->$nama_kolom;
                 $newValue = ($currentValue == 1) ? 0 : 1;
