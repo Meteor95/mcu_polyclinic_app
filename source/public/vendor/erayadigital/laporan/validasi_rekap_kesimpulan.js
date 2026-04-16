@@ -48,7 +48,7 @@ let choice_pemeriksaan_kesimpulan_non_status_kesehatan_select = new Choices(peme
     placeholder: true,
     placeholderValue: 'Pilih Kesimpulan Kesehatan',
 });
-let choice_pemeriksaan_kesimpulan_tanda_vital_dan_gizi = new Choices(pemeriksaan_kesimpulan_tanda_vital_dan_gizi_id, {
+let choice_pemeriksaan_kesimpulan_tanda_vital_dan_gizi_select = new Choices(pemeriksaan_kesimpulan_tanda_vital_dan_gizi_id, {
     searchEnabled: true,
     shouldSort: false,
     placeholder: true,
@@ -356,6 +356,7 @@ function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
                         choice_pemeriksaan_kesimpulan_tindakan_select.setChoiceByValue(response.data.kesimpulan_keseluruhan.toString());
                     }, 100);
                     choice_pemeriksaan_kesimpulan_non_status_kesehatan_select.setChoiceByValue(response.data.kesimpulan_hasil_medical_checkup);
+                    choice_pemeriksaan_kesimpulan_tanda_vital_dan_gizi_select.setChoiceByValue(response.data.kesimpulan_pemeriksaan_tanda_vital_dan_gizi);
                     quillInstances['pemeriksaan_tindakan_saran'].setContents(JSON.parse(response.data.saran_keseluruhan));
                 }
                 $("#modal_validasi_rekap_kesimpulan_text").html('Validasi Kesimpulan Nama: '+nama_peserta+"<br>Nomor MCU: "+no_transaksi);

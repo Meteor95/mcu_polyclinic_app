@@ -294,6 +294,7 @@ class LaporanController extends Controller
             'quill_pemeriksaan_threadmill' => QuillHelper::quillToHtml($kesimpulan_tindakan->kesimpulan_pemeriksaan_threadmill),
             'quill_kesimpulan_tindakan' => $kesimpulan_tindakan->status." ".$kesimpulan_tindakan->kategori." [".$kesimpulan_tindakan->catatan."]",
             'quill_tindakan_saran' => QuillHelper::quillToHtml($kesimpulan_tindakan->saran_keseluruhan),
+            'quill_pemeriksaan_tanda_vital_dan_gizi' => $kesimpulan_tindakan->kesimpulan_pemeriksaan_tanda_vital_dan_gizi,
             'status_kesimpulan_lab' => $groupedData,
             'riwayat_penyakit_terdahulu' => $riwayat_penyakit_terdahulu,
             'riwayat_penyakit_keluarga' => $riwayat_penyakit_keluarga,
@@ -1734,20 +1735,40 @@ class LaporanController extends Controller
                     $BMI = $BB / ($TB * $TB);
                     $BMI_formatted = number_format(ceil($BMI * 100) / 100, 2);
                     
-                    if ($BMI < 18.5) {
-                        $status_gizi = "KEKURANGAN BERAT BADAN";
-                        $rgbColor = [255, 140, 0]; // Orange
-                    } elseif ($BMI >= 18.5 && $BMI <= 24.9) {
-                        $status_gizi = "NORMAL";
-                        $rgbColor = [0, 128, 0]; // Hijau
-                    } elseif ($BMI >= 25 && $BMI <= 29.9) {
-                        $status_gizi = "KELEBIHAN BERAT BADAN";
-                        $rgbColor = [255, 0, 0]; // Merah
-                    } else {
-                        $status_gizi = "OBESITAS";
-                        $rgbColor = [139, 0, 0]; // Merah Tua
+                    // if ($BMI < 18.5) {
+                    //     $status_gizi = "KEKURANGAN BERAT BADAN";
+                    //     $rgbColor = [255, 140, 0]; // Orange
+                    // } elseif ($BMI >= 18.5 && $BMI <= 24.9) {
+                    //     $status_gizi = "NORMAL";
+                    //     $rgbColor = [0, 128, 0]; // Hijau
+                    // } elseif ($BMI >= 25 && $BMI <= 29.9) {
+                    //     $status_gizi = "KELEBIHAN BERAT BADAN";
+                    //     $rgbColor = [255, 0, 0]; // Merah
+                    // } else {
+                    //     $status_gizi = "OBESITAS";
+                    //     $rgbColor = [139, 0, 0]; // Merah Tua
+                    // }
+                    $status_gizi = strtoupper($this->data['quill_pemeriksaan_tanda_vital_dan_gizi']);
+                    switch($status_gizi) {
+                        case 'underweight':
+                            $rgbColor = [52, 152, 219]; 
+                            break;
+                        case 'normal':
+                            $rgbColor = [46, 204, 113]; 
+                            break;
+                        case 'overweight':
+                            $rgbColor = [241, 196, 15]; 
+                            break;
+                        case 'obesitas_1':
+                            $rgbColor = [230, 126, 34]; 
+                            break;
+                        case 'obesitas_2':
+                            $rgbColor = [231, 76, 60]; 
+                            break;
+                        default:
+                            $rgbColor = [255, 140, 0]; 
+                            break;
                     }
-
                     // Tambahkan BMI ke list
                     $items->push((object)[
                         'nama_atribut_saat_ini' => 'BMI',
