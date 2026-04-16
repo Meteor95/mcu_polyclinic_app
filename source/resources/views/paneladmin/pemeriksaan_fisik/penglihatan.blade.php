@@ -44,10 +44,10 @@
                                     </td>
                                     <td rowspan="2" style="vertical-align: middle;text-align: center;">
                                         <div class="card-wrapper border rounded-3 h-100 checkbox-checked" style="text-align: left;">
-                                            <div class="form-check checkbox checkbox-secondary">
+                                            <!-- <div class="form-check checkbox checkbox-secondary">
                                                 <input class="form-check-input" id="buta_warna_partial_red_green" type="checkbox" name="buta_warna_partial_red_green">
                                                 <label class="form-check-label" for="buta_warna_partial_red_green">Red Green </label>
-                                            </div>
+                                            </div> -->
                                             <div class="form-check checkbox checkbox-warning">
                                                 <input class="form-check-input" id="buta_warna_total" type="checkbox" name="buta_warna_total">
                                                 <label class="form-check-label" for="buta_warna_total">Color Blind</label>

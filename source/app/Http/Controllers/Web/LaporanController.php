@@ -1921,8 +1921,8 @@ class LaporanController extends Controller
 
                 // Header Baris 2 (Sub-kolom)
                 $this->SetX(40); // Pastikan posisi X sesuai dengan lebar kolom 'Pemeriksaan'
-                $this->Cell(40, 6, 'Red Green', 1, 0, 'C', true);
-                $this->Cell(40, 6, 'Colour Blind', 1, 1, 'C', true); // ln diset ke 1 untuk pindah baris
+                $this->Cell(40, 6, 'Normal', 1, 0, 'C', true);
+                $this->Cell(40, 6, 'Buta Warna', 1, 1, 'C', true); // ln diset ke 1 untuk pindah baris
 
                 // Isi Data
                 $this->SetTextColor(0);
@@ -1934,7 +1934,7 @@ class LaporanController extends Controller
                 $isbuta_warna_red_green = ($buta_warna_red_green == 1) ? 'Ya' : 'Tidak';
 
                 $this->Cell(30, 8, 'Hasil Tes', 1, 0, 'L');       // Kolom Pemeriksaan
-                $this->Cell(40, 8, $isbuta_warna_red_green, 1, 0, 'C');        // Kolom Red-Green
+                $this->Cell(40, 8, $isbuta_warna, 1, 0, 'C');        // Kolom Red-Green
                 $this->Cell(40, 8, $isbuta_warna, 1, 0, 'C');          // Kolom Colour Blind
                 // Kolom Normal dihapus di sini
                 $this->Cell(80, 8, $p->buta_warna_keterangan ?? '-', 1, 1, 'C'); // Kolom Keterangan
