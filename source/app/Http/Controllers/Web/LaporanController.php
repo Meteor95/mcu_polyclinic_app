@@ -103,8 +103,7 @@ class LaporanController extends Controller
             return $this->formatKategori($kategori, $id_transaksi);
         });
     }
-    private function formatItem($detail, $id_transaksi)
-    {
+    private function formatItem($detail, $id_transaksi){
         return [
             'id' => $detail->id,
             'nama_item' => $detail->nama_item,
@@ -792,19 +791,29 @@ class LaporanController extends Controller
                 $this->Cell($wLabel2, $h, 'Dokter', 0, 0);
                 $this->Cell($wValue2, $h, ': dr. Muhammad Taufiq Amrullah, S.Ked' , 0, 1);
             }
+            function Close() {
+                // Logika pengurangan halaman
+                $total_asli = $this->page; 
+                $total_baru = ($total_asli > 1) ? ($total_asli - 1) : 1;
+
+                for ($n = 1; $n <= $total_asli; $n++) {
+                    // Mengganti placeholder {total_hal} dengan angka yang sudah dikurangi
+                    $this->pages[$n] = str_replace('{total_hal}', $total_baru, $this->pages[$n]);
+                }
+                
+                parent::Close(); // Melanjutkan proses internal FPDF
+            }
             function Footer() {
                 if ($this->PageNo() == 1) return;
 
                 $this->SetAlpha(0.5);
                 $this->Image(public_path('mofi/assets/images/logo/border_hasil_mcu_bawah.png'), 0, 256, 210);
-                $this->SetAlpha(0.1);
-                $this->Image(public_path('mofi/assets/images/logo/confidential_wlogo.png'), 50, 120, 110);
                 $this->SetAlpha(1);
 
                 $this->SetXY(0, 280);
                 $this->SetFont('Times', '', 12);
                 $hal_sekarang = $this->PageNo() - 1;
-                $teks = 'Halaman ' . $hal_sekarang . ' Dari {total_hal - 1}';
+                $teks = $hal_sekarang . ' of {total_hal}';
                 $this->SetX(150); 
                 $this->Cell(50, 10, $teks, 0, 0, 'R');
                 
@@ -815,6 +824,9 @@ class LaporanController extends Controller
             }
             /*section 1*/
             public function renderProfilPeserta() {
+                $this->SetAlpha(0.1);
+                $this->Image(public_path('mofi/assets/images/logo/confidential_wlogo.png'), 50, 120, 110);
+                $this->SetAlpha(1);
                 // 1. Judul Tengah
                 $this->SetFont('Times', 'B', 14);
                 $this->Ln(10);
@@ -878,6 +890,9 @@ class LaporanController extends Controller
             }
             /*section 2*/
             public function renderLaporanKesimpulan() {
+                $this->SetAlpha(0.1);
+                $this->Image(public_path('mofi/assets/images/logo/confidential_wlogo.png'), 50, 120, 110);
+                $this->SetAlpha(1);
                 $this->drawHeaderMcuTable();
                 $this->Line(10, $this->GetY(), 200, $this->GetY());
                 $this->ln(5);
@@ -1044,16 +1059,26 @@ class LaporanController extends Controller
                     $this->bulletRow('TREADMILL', $treadmillData);
                 }
                 $this->Ln(5);
-                $this->SetFont('Times', 'B', 12);
-                $this->Cell(0, 7, 'KESIMPULAN HASIL MEDICAL CHECKUP', 0, 1, 'L');
-                
-                $this->SetFont('Times', 'B', 14);
-                $textKesimpulan = strtoupper(str_replace("_", " ", $this->data['kesimpulan_hasil_medical_checkup']));
-                $width = $this->GetStringWidth($textKesimpulan) + 55;
-                $this->SetX(11);
-                $this->SetLineWidth(1.0); 
-                $this->Cell($width, 13, $textKesimpulan, 1, 1, 'C');
+                $judul = "KESIMPULAN HASIL MEDICAL CHECKUP";
+                $status = strtoupper(str_replace("_", " ", $this->data['kesimpulan_hasil_medical_checkup']));
+                $startX = 11;
+                $startY = $this->GetY();
+                $width = 95;
+                $height = 15;
+                $this->SetLineWidth(1.0);
+                $this->Rect($startX, $startY, $width, $height);
+                // 4. Isi Teks Baris Pertama (Judul)
+                $this->SetY($startY + 2); // Beri sedikit margin atas di dalam kotak
+                $this->SetX($startX);
+                $this->SetFont('Times', 'B', 12); // Font judul ukuran 14
+                $this->Cell($width, 7, $judul, 0, 1, 'C'); // Border 0 karena sudah ada Rect
+                // 5. Isi Teks Baris Kedua (Status/Hasil)
+                $this->SetX($startX - 1);
+                $this->SetFont('Times', 'B', 14); // Anda bisa buat status lebih besar lagi, misal 16
+                $this->Cell($width, 3, $status, 0, 1, 'C');
+                // 6. Kembalikan pengaturan ke standar
                 $this->SetLineWidth(0.2);
+                $this->SetY($startY + $height + 2); // Pindahkan kursor ke bawah kotak untuk konten berikutnya
                 $this->SetFont('Times', 'B', 12);
                 $this->Ln(2);
                 $this->Cell(0, 7, 'SARAN HASIL MEDICAL CHECKUP', 0, 1, 'L');
@@ -1079,8 +1104,16 @@ class LaporanController extends Controller
                     $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY(), 25, 25, 'PNG');
                 }
                 $this->SetXY(110, 265);
+                
+                // Nama Dokter (Gunakan posisi absolut agar tidak terdorong tinggi QR yang dinamis)
                 $this->SetFont('Arial', 'BU', 10);
-                $this->MultiCell(90, 5, 'dr. Muhammad Taufiq Amrullah, S.Ked\n440.007.2/127/SIP-DINKES/XI/2023', 0, 'C');
+                $this->SetXY(110, $ySkg + 35); // Letakkan tepat di bawah QR TTD (25 + margin 2)
+                $this->MultiCell(90, 4, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 'C');
+
+                // SIP Dokter (Tanpa Bold/Underline)
+                $this->SetFont('Arial', 'B', 10);
+                $this->SetX(110); 
+                $this->MultiCell(90, 4, '440.007.2/127/SIP-DINKES/XI/2023', 0, 'C');
             }
             /*section 3*/
             public function statusKesehatan(){
@@ -1615,19 +1648,18 @@ class LaporanController extends Controller
                 // Kanan: QR & Pengesahan
                 $this->SetXY(110, $yFooter);
                 $this->SetFont('Arial', '', 10);
-                $this->MultiCell(90, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                $this->MultiCell(90, 5, "MENYETUJUI\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
 
                 if($this->data['qrcode']) {
-                    // Posisi QR di tengah kolom kanan
                     $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY() + 2, 25, 25, 'PNG');
                 }
-
+                $d1 = $this->data['informasi_data_diri'];
                 $this->SetXY(110, $yFooter + 40);
                 $this->SetFont('Arial', 'BU', 10);
-                $this->Cell(90, 5, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 1, 'C');
+                $this->Cell(90, 5, $d1['nama_peserta'], 0, 1, 'C');
                 $this->SetX(110);
                 $this->SetFont('Arial', 'B', 10);
-                $this->Cell(90, 5, '440.007.2/127/SIP-DINKES/XI/2023', 0, 1, 'C');
+                $this->Cell(90, 5, $d1['nomor_identitas'], 0, 1, 'C');
             }
             /*section 5*/
             public function cetakPemeriksaanKondisiFisik() {
@@ -1886,7 +1918,7 @@ class LaporanController extends Controller
                 // Kolom Normal dihapus di sini
                 $this->Cell(80, 8, $p->buta_warna_keterangan ?? '-', 1, 1, 'C'); // Kolom Keterangan
                 
-               $this->SetTextColor(255);
+                $this->SetTextColor(255);
                 $this->SetFont('Times', 'B', 9);
 
                 // --- BARIS 1 ---
@@ -2030,8 +2062,15 @@ class LaporanController extends Controller
                     $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY(), 25, 25, 'PNG');
                 }
                 $this->SetXY(110, 265);
+                // Nama Dokter (Gunakan posisi absolut agar tidak terdorong tinggi QR yang dinamis)
                 $this->SetFont('Arial', 'BU', 10);
-                $this->MultiCell(90, 5, 'dr. Muhammad Taufiq Amrullah, S.Ked\n440.007.2/127/SIP-DINKES/XI/2023', 0, 'C');
+                $this->SetXY(110, $ySkg + 35); // Letakkan tepat di bawah QR TTD (25 + margin 2)
+                $this->MultiCell(90, 4, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 'C');
+
+                // SIP Dokter (Tanpa Bold/Underline)
+                $this->SetFont('Arial', 'B', 10);
+                $this->SetX(110); 
+                $this->MultiCell(90, 4, '440.007.2/127/SIP-DINKES/XI/2023', 0, 'C');
             }
             public function cetakLaboratorium() {
                 $this->drawHeaderMcuTable();

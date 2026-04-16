@@ -59,6 +59,7 @@
                                             <option value="Normal">Normal</option>
                                             <option value="Partial">Partial</option>
                                             <option value="Total">Total</option>
+                                            <option value="Kelainan Kongenital">Kelainan Kongenital</option>
                                         </select>
                                     </td>
                                 </tr>
