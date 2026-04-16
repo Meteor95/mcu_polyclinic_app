@@ -1567,12 +1567,18 @@ class LaporanController extends Controller
                 }
 
                 //RIWAYAT PAPARAN KERJA
+                if ($this->GetY() > 250) { 
+                    $this->AddPage();
+                    $this->drawHeaderMcuTable(); // Cetak logo klinik lagi di halaman baru
+                    $this->Line(10, $this->GetY(), 200, $this->GetY());
+                    $this->ln(5);
+                }
                 $widthsPaparan = [60, 25, 35, 30, 40];
                 $totalWidthPaparan = array_sum($widthsPaparan);
                 $headerTitles = ['PERTANYAAN', 'STATUS', 'JAM / HARI', 'X TAHUN', 'KETERANGAN'];
-
+                
                 $this->SetFillColor(255, 87, 34); 
-                $this->SetTextColor(255, 255, 255);
+                $this->SetTextColor(0, 0, 0);
                 $this->SetFont('Times', 'B', 12);
 
                 $xPos = $this->GetX();
@@ -1581,6 +1587,7 @@ class LaporanController extends Controller
                 $w = $this->GetStringWidth($text) + 10; 
                 $h = 8; 
                 $this->RoundedRect($xPos, $yPos, $w, $h, 3.5, 'F'); 
+                $this->SetTextColor(255, 255, 255);
                 $this->Cell($w, $h, $text, 0, 1, 'L'); 
                 $this->Ln(2); 
                 $this->SetTextColor(0, 0, 0);
@@ -1930,11 +1937,12 @@ class LaporanController extends Controller
 
                 $buta_warna = strtolower($p->buta_warna ?? '');
                 $buta_warna_red_green = strtolower($p->buta_warna_red_green ?? '');
+                $isnormal = ($buta_warna == 0) ? 'Ya' : 'Tidak';
                 $isbuta_warna = ($buta_warna == 1) ? 'Ya' : 'Tidak';
                 $isbuta_warna_red_green = ($buta_warna_red_green == 1) ? 'Ya' : 'Tidak';
 
                 $this->Cell(30, 8, 'Hasil Tes', 1, 0, 'L');       // Kolom Pemeriksaan
-                $this->Cell(40, 8, $isbuta_warna, 1, 0, 'C');        // Kolom Red-Green
+                $this->Cell(40, 8, $isnormal, 1, 0, 'C');        // Kolom Red-Green
                 $this->Cell(40, 8, $isbuta_warna, 1, 0, 'C');          // Kolom Colour Blind
                 // Kolom Normal dihapus di sini
                 $this->Cell(80, 8, $p->buta_warna_keterangan ?? '-', 1, 1, 'C'); // Kolom Keterangan
