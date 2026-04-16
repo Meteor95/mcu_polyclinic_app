@@ -27,5 +27,6 @@ class Kesimpulan extends Model
         'kesimpulan_hasil_medical_checkup',
         'saran_keseluruhan',
         'kesimpulan_warna',
+        'kesimpulan_pemeriksaan_tanda_vital_dan_gizi',
     ];
 }

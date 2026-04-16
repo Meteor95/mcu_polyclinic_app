@@ -34,6 +34,8 @@ let id_mcu_let = '', nomor_mcu_let = '';
 let pemeriksaan_laboratorium_kondisi_select_id = document.getElementById('pemeriksaan_laboratorium_kondisi_select');
 let pemeriksaan_kesimpulan_non_status_kesehatan_select_id = document.getElementById('pemeriksaan_kesimpulan_non_status_kesehatan_select');
 let pemeriksaan_kesimpulan_tindakan_select_id = document.getElementById('pemeriksaan_kesimpulan_tindakan_select');
+let pemeriksaan_kesimpulan_tanda_vital_dan_gizi_id = document.getElementById('pemeriksaan_tanda_vital_dan_gizi_select');
+
 let choice_pemeriksaan_laboratorium_kondisi_select = new Choices(pemeriksaan_laboratorium_kondisi_select_id, {
     searchEnabled: true,
     shouldSort: false,
@@ -45,6 +47,12 @@ let choice_pemeriksaan_kesimpulan_non_status_kesehatan_select = new Choices(peme
     shouldSort: false,
     placeholder: true,
     placeholderValue: 'Pilih Kesimpulan Kesehatan',
+});
+let choice_pemeriksaan_kesimpulan_tanda_vital_dan_gizi = new Choices(pemeriksaan_kesimpulan_tanda_vital_dan_gizi_id, {
+    searchEnabled: true,
+    shouldSort: false,
+    placeholder: true,
+    placeholderValue: 'Pilih Kesimpulan Tanda Vital dan Gizi',
 });
 let choice_pemeriksaan_kesimpulan_tindakan_select = null;
 let quillInstances = {};
@@ -396,6 +404,7 @@ $("#konfirmasi_validasi_rekap_kesimpulan").on('click', function() {
                         kesimpulan_hasil_medical_checkup: $("#pemeriksaan_kesimpulan_non_status_kesehatan_select").val(),
                         hasil_kesimpulan_pemeriksaan_tindakan_saran: JSON.stringify(quillInstances['pemeriksaan_tindakan_saran'].getContents().ops),
                         kesimpulan_warna: $("#favcolor").val(),
+                        hasil_kesimpulan_pemeriksaan_tanda_vital_dan_gizi: $("#pemeriksaan_tanda_vital_dan_gizi_select").val(),
                     },
                     success: function(response) {
                         createToast('Berhasil Validasi Kesimpulan', 'top-right', response.message, 'success', 3000);

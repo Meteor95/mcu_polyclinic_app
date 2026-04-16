@@ -71,6 +71,20 @@
                             </th>
                         </tr>
                         <tr>
+                            <th>Tanda Vital dan Gizi</th>
+                            <th>
+                                <div class="col-md-12 mb-1">
+                                    <select class="form-control" id="pemeriksaan_tanda_vital_dan_gizi_select">
+                                        <option value="underweight">Underweight</option>
+                                        <option value="normal">Normal</option>
+                                        <option value="overweight">Overweight</option>
+                                        <option value="obesitas_1">Obesitas 1</option>
+                                        <option value="obesitas_2">Obesitas 2</option>
+                                    </select>
+                                </div>
+                            </th>
+                        </tr>
+                        <tr>
                             <th>Laboratorium</th>
                             <th>
                                 <div class="row">
