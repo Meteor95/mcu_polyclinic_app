@@ -361,7 +361,7 @@ class PemeriksaanFisikController extends Controller
                     'nama_atribut' => $kondisi['nama_atribut'],
                     'kategori_atribut' => $kondisi['kategori_atribut'],
                     'jenis_atribut' => $kondisi['jenis_atribut'],
-                    'status_atribut' => $kondisi['status_atribut'] === 'abnormal' ? "abnormal" : "normal",
+                    'status_atribut' => $kondisi['status_atribut'] === 'abnormal' ? 'abnormal' : ($kondisi['status_atribut'] === '-' ? '-' : 'normal'),
                     'keterangan_atribut' => $kondisi['keterangan_atribut'],
                     'created_at' => now(),
                     'updated_at' => now(),

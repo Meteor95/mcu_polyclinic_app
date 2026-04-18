@@ -201,12 +201,12 @@ $("#simpan_kondisi_fisik").click(function(){
                     let kategori_atribut = row[1];
                     let jenis_atribut = row[2];
                     let keterangan_atribut = $('#keterangan_'+rowId).val();
+                    let status_atribut_pemeriksaan = '-';
                     if($('#ab_normal_'+rowId).is(':checked')){
                         status_atribut_pemeriksaan = 'abnormal';
-                    }else if($('#normal_'+rowId).is(':checked')){
+                    }
+                    if($('#normal_'+rowId).is(':checked')){
                         status_atribut_pemeriksaan = 'normal';
-                    }else{
-                        status_atribut_pemeriksaan = '-';
                     }
                     let rowData = {
                         _token: response.csrf_token,
