@@ -807,9 +807,9 @@ class LaporanController extends Controller
             function Footer() {
                 if ($this->PageNo() == 1) return;
 
-                $this->SetAlpha(0.5);
-                $this->Image(public_path('mofi/assets/images/logo/border_hasil_mcu_bawah.png'), 0, 256, 210);
-                $this->SetAlpha(1);
+                // $this->SetAlpha(0.5);
+                // $this->Image(public_path('mofi/assets/images/logo/border_hasil_mcu_bawah.png'), 0, 256, 210);
+                // $this->SetAlpha(1);
 
                 $this->SetXY(0, 280);
                 $this->SetFont('Times', '', 12);
@@ -1253,7 +1253,7 @@ class LaporanController extends Controller
                 $this->Cell(90, 4, "1. dr. Muhammad Taufiq Amrullah, S.Ked", 0, 1, 'L');
                 $this->Cell(90, 4, "2. dr. Khadijah Amir, S.Ked", 0, 1, 'L');
                 $this->Cell(90, 4, "3. dr. Devi Grania Amelia Selekede, Sp.P.", 0, 1, 'L');
-                $this->Cell(90, 4, "4. dr. Muhammad Asrul. M.Kes Sp.JP(K)", 0, 1, 'L');
+                $this->Cell(90, 4, "4. dr. Zainal Fathurohim, Sp. JP", 0, 1, 'L');
                 $this->Cell(90, 4, "5. dr. Amir. Sp.Rad", 0, 1, 'L');
 
                 // Kanan: QR & Pengesahan
@@ -1643,15 +1643,15 @@ class LaporanController extends Controller
                 $this->Ln(5);
                 $yFooter = $this->GetY();
                 // Kiri: Tim Dokter
-                $this->SetFont('Times', 'B', 10);
-                $this->SetXY(10, $yFooter);
-                $this->Cell(90, 5, "Tim Dokter Medical Check Up:", 0, 1, 'L');
-                $this->SetFont('Times', '', 9);
-                $this->Cell(90, 4, "1. dr. Muhammad Taufiq Amrullah, S.Ked", 0, 1, 'L');
-                $this->Cell(90, 4, "2. dr. Khadijah Amir, S.Ked", 0, 1, 'L');
-                $this->Cell(90, 4, "3. dr. Devi Grania Amelia Selekede, Sp.P.", 0, 1, 'L');
-                $this->Cell(90, 4, "4. dr. Muhammad Asrul. M.Kes Sp.JP(K)", 0, 1, 'L');
-                $this->Cell(90, 4, "5. dr. Amir. Sp.Rad", 0, 1, 'L');
+                // $this->SetFont('Times', 'B', 10);
+                // $this->SetXY(10, $yFooter);
+                // $this->Cell(90, 5, "Tim Dokter Medical Check Up:", 0, 1, 'L');
+                // $this->SetFont('Times', '', 9);
+                // $this->Cell(90, 4, "1. dr. Muhammad Taufiq Amrullah, S.Ked", 0, 1, 'L');
+                // $this->Cell(90, 4, "2. dr. Khadijah Amir, S.Ked", 0, 1, 'L');
+                // $this->Cell(90, 4, "3. dr. Devi Grania Amelia Selekede, Sp.P.", 0, 1, 'L');
+                // $this->Cell(90, 4, "4. dr. Muhammad Asrul. M.Kes Sp.JP(K)", 0, 1, 'L');
+                // $this->Cell(90, 4, "5. dr. Amir. Sp.Rad", 0, 1, 'L');
 
                 // Kanan: QR & Pengesahan
                 $this->SetXY(110, $yFooter);
@@ -2228,15 +2228,16 @@ class LaporanController extends Controller
                         $html = preg_replace('/<body[^>]*>/i', '', $html);
                         $html = preg_replace('/<\/body>/i', '', $html);
                         $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
-                        $this->WriteHTML($html);
-                        $this->ln(5);
-
+                        $html = preg_replace('/^(\s*<br\s*\/?>|\s*<p>)+/i', '', trim($html));
+                        $html = html_entity_decode($html);
                         $fields = [
-                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
-                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
+                            //'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            //'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            //'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            //'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            'Resume'                 => $this->WriteHTML($html) ?? '-',
+                            'Kesimpulan'             => $firstItem->kesimpulan ?? '-',
+                            //'Saran'                => $firstItem->saran ?? '-',
                         ];
 
                         foreach ($fields as $label => $value) {
@@ -2328,10 +2329,10 @@ class LaporanController extends Controller
                         $this->ln(5);
 
                         $fields = [
-                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            //'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            //'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            //'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            //'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
                             'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
                         ];
 
