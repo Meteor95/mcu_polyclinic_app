@@ -8,12 +8,12 @@
         </div>
         <div class="card-body">
             <div class="row formulir_group">
-            <h1 class="mb-2 text-center">Formulir Riwayat Penyakit Keluarga</h1>
+            <h1 class="mb-2 text-center">Formulir Riwayat Imunisasi Pasien</h1>
             <table class="table display" id="datatables_imunisasi">
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Riwayat Penyakit Keluarga</th>
+                  <th>Riwayat Imunisasi Pasien</th>
                   <th>Status</th>
                   <th>Keterangan</th>
                 </tr>
