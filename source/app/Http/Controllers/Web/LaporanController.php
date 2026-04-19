@@ -2216,7 +2216,7 @@ class LaporanController extends Controller
 
                         $this->SetTextColor(255, 255, 255);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->Cell(0, 10, 'FOTO RONTGEN THORAX', 0, 1, 'L');
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
@@ -2246,47 +2246,77 @@ class LaporanController extends Controller
                         $this->drawHeaderMcuTable();
                         $this->Line(10, $this->GetY(), 200, $this->GetY());
                         $this->ln(2);
+
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
-                        // Tabel Interpretasi
-                        $this->SetFont('Times', '', 11);
-                        $html = $firstItem->kesimpulan_citra_spirometri;
-                        $html = preg_replace('/<body[^>]*>/i', '', $html);
-                        $html = preg_replace('/<\/body>/i', '', $html);
-                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
-                        $html = preg_replace('/^(\s*<br\s*\/?>|\s*<p>)+/i', '', trim($html));
-                        $html = html_entity_decode($html);
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL RONTGEN THORAX', 0, 1, 'C');
+                        $this->Ln(4);
+
+                        // 1. Ambil data mentah
+                        $htmlRaw = $firstItem->kesimpulan_citra_spirometri;
+                        // 2. Bersihkan spasi dan tag "pembuka" hanya di awal string (^)
+                        // Ini menghapus spasi, &nbsp;, <br>, <p>, dan <div> yang muncul di depan
+                        $htmlClean = preg_replace('/^(\s|&nbsp;|<br\s*\/?>|<p[^>]*>|<div>)+/i', '', trim($htmlRaw));
+                        // 3. Bersihkan tag "penutup" yang menggantung di akhir string ($)
+                        // Agar tidak menyisakan ruang kosong di bawah tabel
+                        $htmlClean = preg_replace('/(<\/p>|<\/div>|<br\s*\/?>|\s)+$/i', '', $htmlClean);
+                        // 4. Decode entitas HTML (seperti &amp; menjadi &)
+                        $htmlClean = html_entity_decode($htmlClean);
+
                         $fields = [
-                            //'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            //'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            //'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            //'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
-                            'Resume'                 => $this->WriteHTML($html) ?? '-',
-                            'Kesimpulan'             => $firstItem->kesimpulan ?? '-',
-                            //'Saran'                => $firstItem->saran ?? '-',
-                        ];
+                            'Resume'     => 'USE_HTML_CONTENT', 
+                            'Kesan'      => $firstItem->catatan_kaki ?? '-',
+                        ];                     
+                        $originalMargin = $this->lMargin;
 
                         foreach ($fields as $label => $value) {
-                            $this->Cell(60, 4, $label, 0, 0);
-                            $this->Cell(5, 4, ':', 0, 0);
-                            $this->MultiCell(0, 4, $value, 0, 'L');
-                        }
+                            $startY = $this->GetY();
+                            
+                            // 1. Cetak Label & Titik Dua
+                            $this->SetFont('Times', 'B', 11);
+                            $this->Cell(60, 5, $label, 0, 0);
+                            $this->Cell(5, 5, ':', 0, 0);
+                            
+                            // Koordinat X setelah titik dua
+                            $xKolom3 = $this->GetX();
+                            $this->SetFont('Times', '', 11);
 
+                            // --- KUNCI AGAR LURUS (INDENTASI) ---
+                            // Atur margin kiri tepat di posisi kolom 3
+                            $this->SetLeftMargin($xKolom3); 
+                            // Kembalikan posisi Y ke baris yang sama dengan label
+                            $this->SetY($startY); 
+
+                            if ($value === 'USE_HTML_CONTENT') {
+                                // Sekarang baris 2, 3, dst akan otomatis lurus dengan baris 1
+                                $this->WriteHTML($htmlClean);
+                                $this->Ln(2); 
+                            } else {
+                                // MultiCell juga akan mengikuti margin baru ini
+                                $this->MultiCell(0, 5, $value, 0, 'L');
+                            }
+
+                            // --- KEMBALIKAN MARGIN ---
+                            $this->SetLeftMargin($originalMargin);
+                            
+                            // Pastikan Y baris berikutnya di bawah konten paling panjang
+                            $this->SetY(max($this->GetY(), $startY + 5)); 
+                            $this->SetX($originalMargin); 
+                        }
                         // 3. TANDA TANGAN (Posisi Absolute Bawah)
                         $this->SetY(-80); // Set posisi dari bawah kertas
                         $yTtd = $this->GetY();
                         
-                        // QR Code dan Nama Petugas (Kiri)
-                        $this->SetXY(10, $yTtd);
-                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
-                        $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
-                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
-                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+                        // // QR Code dan Nama Petugas (Kiri)
+                        // $this->SetXY(10, $yTtd);
+                        // $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        // $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        // $this->SetY($this->GetY() + 28);
+                        // $this->SetFont('Arial', 'BU', 11);
+                        // $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        // $this->SetFont('Arial', 'B', 11);
+                        // $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
 
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
@@ -2414,7 +2444,8 @@ class LaporanController extends Controller
 
                         $this->SetTextColor(255, 255, 255);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        //strtoupper(str_replace('_', ' ', $jenis_poli))
+                        $this->Cell(0, 10, 'HASIL ELEKTROKARDIOGRAFI', 0, 1, 'L');
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
@@ -2447,21 +2478,17 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
-                        // Tabel Interpretasi
-                        $this->SetFont('Times', '', 11);
-                        $html = $firstItem->kesimpulan_citra_spirometri;
-                        $html = preg_replace('/<body[^>]*>/i', '', $html);
-                        $html = preg_replace('/<\/body>/i', '', $html);
-                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
-                        $this->WriteHTML($html);
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL ELEKTROKARDIOGRAFI', 0, 1, 'C');
+                        // // Tabel Interpretasi
+                        // $this->SetFont('Times', '', 11);
+                        // $html = $firstItem->kesimpulan_citra_spirometri;
+                        // $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        // $html = preg_replace('/<\/body>/i', '', $html);
+                        // $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        // $this->WriteHTML($html);
                         $this->ln(5);
-
+                        $this->SetFont('Times', '', 11);
                         $fields = [
-                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
                             'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
                         ];
 
@@ -2476,14 +2503,14 @@ class LaporanController extends Controller
                         $yTtd = $this->GetY();
                         
                         // QR Code dan Nama Petugas (Kiri)
-                        $this->SetXY(10, $yTtd);
-                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
-                        $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
-                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
-                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+                        // $this->SetXY(10, $yTtd);
+                        // $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        // $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        // $this->SetY($this->GetY() + 28);
+                        // $this->SetFont('Arial', 'BU', 11);
+                        // $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        // $this->SetFont('Arial', 'B', 11);
+                        // $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
 
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
@@ -2515,7 +2542,7 @@ class LaporanController extends Controller
 
                         $this->SetTextColor(255, 255, 255);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->Cell(0, 10, 'HASIL AUDIOMETRI', 0, 1, 'L');
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
@@ -2548,27 +2575,21 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL AUDIOMETRI', 0, 1, 'C');
                         // Tabel Interpretasi
-                        $this->SetFont('Times', '', 11);
-                        $html = $firstItem->kesimpulan_citra_spirometri;
-                        $html = preg_replace('/<body[^>]*>/i', '', $html);
-                        $html = preg_replace('/<\/body>/i', '', $html);
-                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
-                        $this->WriteHTML($html);
                         $this->ln(5);
-
+                        $this->SetFont('Times', '', 11);
                         $fields = [
-                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
-                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
+                            // 'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            // 'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            // 'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            // 'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            'Kesimpulan' => "Kanan : " . ($firstItem->kesimpulan ?? '-') . "\nKiri : " . ($firstItem->kesimpulan2 ?? '-'),
                         ];
 
                         foreach ($fields as $label => $value) {
                             $this->Cell(60, 4, $label, 0, 0);
-                            $this->Cell(5, 4, ':', 0, 0);
+                            $this->Cell(5, 4, '', 0, 0);
                             $this->MultiCell(0, 4, $value, 0, 'L');
                         }
 
@@ -2577,14 +2598,14 @@ class LaporanController extends Controller
                         $yTtd = $this->GetY();
                         
                         // QR Code dan Nama Petugas (Kiri)
-                        $this->SetXY(10, $yTtd);
-                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
-                        $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
-                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
-                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+                        // $this->SetXY(10, $yTtd);
+                        // $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        // $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        // $this->SetY($this->GetY() + 28);
+                        // $this->SetFont('Arial', 'BU', 11);
+                        // $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        // $this->SetFont('Arial', 'B', 11);
+                        // $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
 
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
@@ -2616,7 +2637,7 @@ class LaporanController extends Controller
 
                         $this->SetTextColor(255, 255, 255);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->Cell(0, 10, 'HASIL SPIROMETRI', 0, 1, 'L');
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
@@ -2649,21 +2670,21 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL SPIROMETRI', 0, 1, 'C');
                         // Tabel Interpretasi
-                        $this->SetFont('Times', '', 11);
-                        $html = $firstItem->kesimpulan_citra_spirometri;
-                        $html = preg_replace('/<body[^>]*>/i', '', $html);
-                        $html = preg_replace('/<\/body>/i', '', $html);
-                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
-                        $this->WriteHTML($html);
+                        // $this->SetFont('Times', '', 11);
+                        // $html = $firstItem->kesimpulan_citra_spirometri;
+                        // $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        // $html = preg_replace('/<\/body>/i', '', $html);
+                        // $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        // $this->WriteHTML($html);
                         $this->ln(5);
-
+                         $this->SetFont('Times', '', 11);
                         $fields = [
-                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
+                            // 'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
+                            // 'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
+                            // 'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
+                            // 'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
                             'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
                         ];
 
@@ -2677,15 +2698,15 @@ class LaporanController extends Controller
                         $this->SetY(-80); // Set posisi dari bawah kertas
                         $yTtd = $this->GetY();
                         
-                        // QR Code dan Nama Petugas (Kiri)
-                        $this->SetXY(10, $yTtd);
-                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
-                        $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
-                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
-                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+                        // // QR Code dan Nama Petugas (Kiri)
+                        // $this->SetXY(10, $yTtd);
+                        // $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        // $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        // $this->SetY($this->GetY() + 28);
+                        // $this->SetFont('Arial', 'BU', 11);
+                        // $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        // $this->SetFont('Arial', 'B', 11);
+                        // $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
 
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
@@ -2705,6 +2726,102 @@ class LaporanController extends Controller
                 foreach ($this->data['all_citra_data']->groupBy('jenis_poli') as $jenis_poli => $dataPoli) {
                     $cek_poli = strtoupper(str_replace(' ', '', trim($jenis_poli)));
                     if ($cek_poli === "POLI_THREADMILL") {
+                        // 2. HALAMAN INTERPRETASI
+                        $this->AddPage();
+                        $this->drawHeaderMcuTable();
+                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $this->ln(2);
+                        $firstItem = $dataPoli->first();
+                        $this->SetTextColor(0, 0, 0);
+                        $this->SetFont('Times', 'B', 14);
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        // Tabel Interpretasi
+                        $this->SetFont('Times', '', 11);
+                        // $html = $firstItem->kesimpulan_citra_spirometri;
+                        // $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        // $html = preg_replace('/<\/body>/i', '', $html);
+                        // $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        // $this->WriteHTML($html);
+                        $this->ln(5);
+                        // 1. Ambil data mentah
+                        $htmlRaw = $firstItem->kesimpulan_citra_spirometri;
+                        // 2. Bersihkan spasi dan tag "pembuka" hanya di awal string (^)
+                        // Ini menghapus spasi, &nbsp;, <br>, <p>, dan <div> yang muncul di depan
+                        $htmlClean = preg_replace('/^(\s|&nbsp;|<br\s*\/?>|<p[^>]*>|<div>)+/i', '', trim($htmlRaw));
+                        // 3. Bersihkan tag "penutup" yang menggantung di akhir string ($)
+                        // Agar tidak menyisakan ruang kosong di bawah tabel
+                        $htmlClean = preg_replace('/(<\/p>|<\/div>|<br\s*\/?>|\s)+$/i', '', $htmlClean);
+                        // 4. Decode entitas HTML (seperti &amp; menjadi &)
+                        $htmlClean = html_entity_decode($htmlClean);
+
+                        $fields = [
+                            'Resume'     => 'USE_HTML_CONTENT', 
+                            'Kesimpulan' => $firstItem->kesimpulan ?? '-',
+                            'Saran'      => $firstItem->catatan_kaki ?? '-',
+                        ];                     
+                        $originalMargin = $this->lMargin;
+
+                        foreach ($fields as $label => $value) {
+                            $startY = $this->GetY();
+                            
+                            // 1. Cetak Label & Titik Dua
+                            $this->SetFont('Times', 'B', 11);
+                            $this->Cell(60, 5, $label, 0, 0);
+                            $this->Cell(5, 5, ':', 0, 0);
+                            
+                            // Koordinat X setelah titik dua
+                            $xKolom3 = $this->GetX();
+                            $this->SetFont('Times', '', 11);
+
+                            // --- KUNCI AGAR LURUS (INDENTASI) ---
+                            // Atur margin kiri tepat di posisi kolom 3
+                            $this->SetLeftMargin($xKolom3); 
+                            // Kembalikan posisi Y ke baris yang sama dengan label
+                            $this->SetY($startY); 
+
+                            if ($value === 'USE_HTML_CONTENT') {
+                                // Sekarang baris 2, 3, dst akan otomatis lurus dengan baris 1
+                                $this->WriteHTML($htmlClean);
+                                $this->Ln(2); 
+                            } else {
+                                // MultiCell juga akan mengikuti margin baru ini
+                                $this->MultiCell(0, 5, $value, 0, 'L');
+                            }
+
+                            // --- KEMBALIKAN MARGIN ---
+                            $this->SetLeftMargin($originalMargin);
+                            
+                            // Pastikan Y baris berikutnya di bawah konten paling panjang
+                            $this->SetY(max($this->GetY(), $startY + 5)); 
+                            $this->SetX($originalMargin); 
+                        }
+
+                        // 3. TANDA TANGAN (Posisi Absolute Bawah)
+                        $this->SetY(-80); // Set posisi dari bawah kertas
+                        $yTtd = $this->GetY();
+                        
+                        // QR Code dan Nama Petugas (Kiri)
+                        // $this->SetXY(10, $yTtd);
+                        // $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        // $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        // $this->SetY($this->GetY() + 28);
+                        // $this->SetFont('Arial', 'BU', 11);
+                        // $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        // $this->SetFont('Arial', 'B', 11);
+                        // $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+
+                        // QR Code dan Nama Dokter (Kanan)
+                        $this->SetXY(105, $yTtd);
+                        $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $this->SetY($this->GetY() + 28);
+                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
+                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetX(105);
+                        $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
+
                         $this->AddPage('L', 'A4');
                         $this->drawHeaderMcuTable();
                         $pageWidth = $this->GetPageWidth();
@@ -2715,10 +2832,9 @@ class LaporanController extends Controller
                         $this->RoundedRect(10, $y_awal, 100, 10, 5, 'CN', '23'); 
                         $this->Image(public_path('mofi/assets/images/logo/gradient_bg_title.png'), 10, $y_awal, 100, 10);
                         $this->_out('Q');
-
                         $this->SetTextColor(255, 255, 255);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->Cell(0, 10, 'HASIL THREADMILL TEST', 0, 1, 'L');
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         $totalLampiran = count($dataPoli);
@@ -2750,63 +2866,6 @@ class LaporanController extends Controller
                                $this->AddPage('L', 'A4');
                             }
                         }
-                        // 2. HALAMAN INTERPRETASI
-                        $this->AddPage();
-                        $this->drawHeaderMcuTable();
-                        $this->Line(10, $this->GetY(), 200, $this->GetY());
-                        $this->ln(2);
-                        $firstItem = $dataPoli->first();
-                        $this->SetTextColor(0, 0, 0);
-                        $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
-                        // Tabel Interpretasi
-                        $this->SetFont('Times', '', 11);
-                        $html = $firstItem->kesimpulan_citra_spirometri;
-                        $html = preg_replace('/<body[^>]*>/i', '', $html);
-                        $html = preg_replace('/<\/body>/i', '', $html);
-                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
-                        $this->WriteHTML($html);
-                        $this->ln(5);
-
-                        $fields = [
-                            'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
-                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
-                        ];
-
-                        foreach ($fields as $label => $value) {
-                            $this->Cell(60, 4, $label, 0, 0);
-                            $this->Cell(5, 4, ':', 0, 0);
-                            $this->MultiCell(0, 4, $value, 0, 'L');
-                        }
-
-                        // 3. TANDA TANGAN (Posisi Absolute Bawah)
-                        $this->SetY(-80); // Set posisi dari bawah kertas
-                        $yTtd = $this->GetY();
-                        
-                        // QR Code dan Nama Petugas (Kiri)
-                        $this->SetXY(10, $yTtd);
-                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
-                        $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
-                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
-                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
-
-                        // QR Code dan Nama Dokter (Kanan)
-                        $this->SetXY(105, $yTtd);
-                        $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
-                        $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
-                        $this->SetX(105);
-                        $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
-                        $this->SetX(105);
-                        $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
                     }
                 }
             }

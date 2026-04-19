@@ -148,8 +148,8 @@
       </div>
     </div>
     <div class="col-md-12">
-      <label>Catatan Kaki {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
-      <textarea class="form-control" id="catatan_kaki_citra_unggah_poli" placeholder="Isikan catatan kaki pada laporan {{$data['title']}} jika memungkinkan">{{$data['catatan_kaki']}}</textarea>
+      <label>Saran / Kesan Untuk Pasien {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
+      <textarea class="form-control" id="catatan_kaki_citra_unggah_poli" placeholder="Isikan saran / kesan untuk pasien pada laporan {{$data['title']}} jika memungkinkan">{{$data['catatan_kaki']}}</textarea>
     </div>
 @endif
 </div>
