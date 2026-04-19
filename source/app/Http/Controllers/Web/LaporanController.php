@@ -294,6 +294,7 @@ class LaporanController extends Controller
             'total_tindakan' => $total_tindakan ,
             'tanggal_cetak' => $tanggal_cetak,
             'qrcode' => $qrcode,
+            'pegawai_map' => $pegawaiMap,
             'riwayat_informasi_foto' => $riwayat_informasi_foto,
             'informasi_data_diri' => $informasi_data_diri,
             'kesimpulan_tindakan' => $kesimpulan_tindakan,
@@ -2875,24 +2876,17 @@ class LaporanController extends Controller
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
                         $nikPetugas = $firstItem->nik_petugas;
                         $infoDokter = $this->data['pegawai_map'][$nikPetugas] ?? null;
-
                         $posX = 140; 
                         $posY = $this->GetY();
 
-                        // 1. Cek dulu apakah data dokter ditemukan
                         if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
-                            
                             $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
-                            
-                            // 2. Cek apakah file fisiknya benar-benar ada di folder
                             if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
                                 $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
                             } else {
-                                // Jika data ada di DB tapi file di folder hilang
                                 $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
                                 $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
                             }
-
                         } else {
                             $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
                             if (file_exists($logoPath)) {
