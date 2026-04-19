@@ -2942,6 +2942,7 @@ class LaporanController extends Controller
         $fpdf->gantiPath($vendorFontPath);
         $fpdf->SetFont('Times', '', 11);
         $fpdf->SetTextColor(0, 0, 0);
+        $fpdf->SetDrawColor(0, 0, 0);
         // 2. Halaman Profil (Section yang barusan kamu berikan)
         $fpdf->AddPage('P');
         $fpdf->renderProfilPeserta();
