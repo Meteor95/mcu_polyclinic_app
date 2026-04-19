@@ -233,6 +233,7 @@ class LaporanController extends Controller
             $subquery = DB::table($this->determineTableNamePemeriksaanFisik($kategori))
                 ->select([
                     DB::raw("'$kategori' AS kategori"),
+                    'kategori_atribut',
                     'jenis_atribut',
                     'status_atribut',
                     'keterangan_atribut',
@@ -246,7 +247,21 @@ class LaporanController extends Controller
                 $query_kondisi_fisik = $subquery;
             }
         }
-        $data_kondisi_fisik = $query_kondisi_fisik ? $query_kondisi_fisik->get() : collect([]);
+        $orderString = "'" . implode("','", $kategori_pemeriksaan) . "'";
+        $data_kondisi_fisik = $query_kondisi_fisik
+            ? $query_kondisi_fisik
+                ->orderByRaw("FIELD(kategori, $orderString)")
+                ->orderBy('kategori_atribut')
+                ->orderByRaw("
+                    CASE 
+                        WHEN jenis_atribut = 'Lainnya' THEN 1
+                        ELSE 0
+                    END
+                ")
+                ->orderBy('jenis_atribut')
+                ->get()
+            : collect([]);
+
         $data_kondisi_fisik = $data_kondisi_fisik->toArray();
         $laboratorium = $this->getHasilLaboratorium($id_mcu);
         $model = new Poliklinik();
@@ -2002,7 +2017,7 @@ class LaporanController extends Controller
                 $this->Ln(2);
                 $groupedData = [];
                 foreach ($this->data['kondisi_fisik'] as $item) {
-                    $groupedData[$item->kategori][] = $item;
+                    $groupedData[$item->kategori][$item->kategori_atribut][] = $item;
                 }
                 $this->SetFillColor(44, 148, 42); // Warna Hijau
                 $this->SetTextColor(255);
@@ -2025,51 +2040,64 @@ class LaporanController extends Controller
                 $this->Ln();
                 $this->SetTextColor(0);
 
-                foreach ($groupedData as $kategori => $items) {
-                    $totalRows = count($items);
-                    foreach ($items as $index => $item) {
-                        // Panggil fungsi pengecekan halaman
-                        $this->CheckPageBreakWithHeader($widths, $headers, $totalWidth, $yHeaderRef);
+                foreach ($groupedData as $kategori => $groupAtribut) {
+                    $isFirstKategoriRow = true;
+
+                    foreach ($groupAtribut as $namaAtribut => $items) {
+                        $hRow = 6;
                         
-                        $startX = $this->GetX();
-                        $startY = $this->GetY();
-                        $hRow = 7;
+                        // 1. Pengecekan Lowercase: Jika sama, jangan tampilkan judul atributnya
+                        // Kita bandingkan kategori_atribut (namaAtribut) dengan nama_atribut (dari item pertama)
+                        $firstItem = $items[0];
+                        $isSame = strtolower(trim($namaAtribut)) === strtolower(trim($firstItem->nama_atribut));
 
-                        // Kolom PEMERIKSAAN (Kategori)
-                        if ($index === 0) {
-                            $txtKategori = strtoupper(str_replace('_', ' ', $kategori));
-                            $this->SetFont('Times', 'B', 10);
-                            $this->Cell($widths[0], $hRow, " " . $txtKategori, 'LR', 0, 'C');
-                        } else {
-                            // Garis samping tetap ada agar kategori terlihat menyatu
-                            $this->Cell($widths[0], $hRow, "", 'LR', 0, 'C');
+                        if (!$isSame) {
+                            // JIKA TIDAK SAMA: Tampilkan judul kategori_atribut (misal: "ginjal")
+                            $this->CheckPageBreakWithHeader($widths, $headers, $totalWidth, $yHeaderRef);
+                            
+                            // Kolom 1: Kategori Utama
+                            $this->SetFont('Times', '', 11);
+                            $this->Cell($widths[0], $hRow, ($isFirstKategoriRow ? " " . strtoupper(str_replace('_', ' ', $kategori)) : ""), 'LR', 0, 'C');
+                            $isFirstKategoriRow = false;
+
+                            // Kolom 2: Judul Atribut (Garis bawah dihilangkan dengan 'LR' atau 'LRT')
+                            $this->SetFont('Times', '', 11);
+                            $this->Cell($widths[1], $hRow, " " . ucwords(str_replace('_', ' ', $namaAtribut)), 'LR', 0, 'L');
+
+                            // Kolom lainnya kosong
+                            $this->Cell($widths[2], $hRow, "", 'LR', 0, 'C');
+                            $this->Cell($widths[3], $hRow, "", 'LR', 0, 'C');
+                            $this->Cell($widths[4], $hRow, "", 'LR', 1, 'L');
                         }
 
-                        // Kolom JENIS PEMERIKSAAN
-                        $this->SetXY($startX + $widths[0], $startY);
+                        // 2. Tampilkan Detail Jenis Atribut
                         $this->SetFont('Times', '', 11);
-                        // Tentukan border berdasarkan posisi baris dalam kategori
-                        if ($index === 0) {
-                            // Baris pertama: garis Atas, Kiri, Kanan
-                            $borderJenis = 'TLR'; 
-                        } else if ($index === $totalRows - 1) {
-                            // Baris terakhir: garis Bawah, Kiri, Kanan
-                            $borderJenis = 'BLR'; 
-                        } else {
-                            // Baris tengah: HANYA Kiri dan Kanan (Garis tengah hilang)
-                            $borderJenis = 'LR'; 
+                        foreach ($items as $item) {
+                            $this->CheckPageBreakWithHeader($widths, $headers, $totalWidth, $yHeaderRef);
+                            
+                            // Kolom 1
+                            $this->Cell($widths[0], $hRow, ($isFirstKategoriRow ? " " . strtoupper($kategori) : ""), 'LR', 0, 'C');
+                            $isFirstKategoriRow = false;
+
+                            // Kolom 2: Isi Detail
+                            // Hilangkan garis atas agar menyatu dengan judul di atasnya
+                            $borderDetail = 'LR'; 
+                            if ($isSame) {
+                                $this->Cell($widths[1], $hRow, " " . $item->jenis_atribut, $borderDetail, 0, 'L');
+                            }else{
+                                $this->Cell($widths[1], $hRow, "   - " . $item->jenis_atribut, $borderDetail, 0, 'L');
+                            }
+
+                            // Kolom 3 & 4: Checkbox
+                            $this->drawCheckbox($this->GetX(), $this->GetY(), $hRow, $widths[2], ($item->status_atribut === 'abnormal'), $borderDetail);
+                            $this->drawCheckbox($this->GetX(), $this->GetY(), $hRow, $widths[3], ($item->status_atribut === 'normal'), $borderDetail);
+
+                            // Kolom 5: Keterangan
+                            $ket = $item->keterangan_atribut ?: 'Normal';
+                            $this->Cell($widths[4], $hRow, " " . $ket, $borderDetail, 1, 'L');
                         }
-                        $this->Cell($widths[1], $hRow, "  " . $item->jenis_atribut, $borderJenis, 0, 'L');
-
-                        // Kolom AB & N (Checkbox)
-                        $this->drawCheckbox($this->GetX(), $startY, $hRow, $widths[2], ($item->status_atribut === 'abnormal'), $borderJenis);
-                        $this->drawCheckbox($this->GetX(), $startY, $hRow, $widths[3], ($item->status_atribut === 'normal'), $borderJenis);
-
-                        // Kolom KETERANGAN
-                        $ket = $item->keterangan_atribut ?: 'Normal';
-                        $this->Cell($widths[4], $hRow, "  " . $ket, $borderJenis, 1, 'L');
                     }
-                    // Garis penutup antar kategori
+                    // Garis horizontal HANYA muncul saat ganti Kategori Utama (misal dari Abdomen ke Jantung)
                     $this->Line(10, $this->GetY(), 10 + $totalWidth, $this->GetY());
                 }
                 // 5. Tanda Tangan (Footer Page)
