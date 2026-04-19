@@ -1690,7 +1690,7 @@ class LaporanController extends Controller
                 if ($fotoUrlSignature && @get_headers($fotoUrlSignature)[0] == 'HTTP/1.1 404 Not Found') {
                     $fotoUrlSignature = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
                 }
-                $this->Image($fotoUrlSignature, 142, $this->GetY() + 2, 25, 25, 'PNG'); 
+                $this->Image($fotoUrlSignature, 130, $this->GetY() + 2, 50, 25, 'PNG'); 
                 $d1 = $this->data['informasi_data_diri'];
                 $this->SetXY(110, $yFooter + 40);
                 $this->SetFont('Arial', 'BU', 10);
