@@ -325,13 +325,15 @@ class LaporanController extends Controller
             'all_citra_data' => $all_citra_data,
             'lampiran_berkas_pdf' => $lampiran_berkas_pdf
         ];
-        // Membuat instance FPDF dengan Anonymous Class agar bisa custom Header/Footer
+        $vendorFontPath = base_path('vendor/codedge/laravel-fpdf/src/Fpdf/font/');
+        $customFontPath = storage_path('app/public/fonts/');
         $fpdf = new class($data) extends \Codedge\Fpdf\Fpdf\Fpdf {
             protected $data;
             public function __construct($data) {
                 parent::__construct('P', 'mm', 'A4'); 
                 $this->data = $data;
             }
+            public function gantiPath($path) { $this->fontpath = $path;}
             protected $extgstates = array();
             function SetAlpha($alpha, $bm='Normal'){
                 $gs = $this->AddExtGState(array('ca'=>$alpha, 'CA'=>$alpha, 'BM'=>'/'.$bm));
@@ -573,6 +575,16 @@ class LaporanController extends Controller
 
                 // Kembalikan kursor ke posisi setelah kolom
                 $this->SetXY($x + $wCol, $y);
+            }
+            public function SetTextOutline($width) {
+                // Set ketebalan garis (stroke)
+                $this->SetLineWidth($width);
+                // Mode 2 = Fill then Stroke
+                $this->_out(sprintf('2 Tr %.2F w', $width * $this->k));
+            }
+            public function ResetTextOutline() {
+                // Mode 0 = Fill saja (Normal)
+                $this->_out('0 Tr');
             }
             //variables of html parser
             protected $B;
@@ -2580,17 +2592,59 @@ class LaporanController extends Controller
                         $this->ln(5);
                         $this->SetFont('Times', '', 11);
                         $fields = [
-                            // 'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            // 'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            // 'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            // 'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
-                            'Kesimpulan' => "Kanan : " . ($firstItem->kesimpulan ?? '-') . "\nKiri : " . ($firstItem->kesimpulan2 ?? '-'),
+                            'Kesimpulan' => [
+                                'Kanan' => $firstItem->kesimpulan ?? '-',
+                                'Kiri'  => $firstItem->kesimpulan2 ?? '-',
+                            ],
                         ];
 
-                        foreach ($fields as $label => $value) {
-                            $this->Cell(60, 4, $label, 0, 0);
-                            $this->Cell(5, 4, '', 0, 0);
-                            $this->MultiCell(0, 4, $value, 0, 'L');
+                        foreach ($fields as $label => $subValues) {
+                            $startY = $this->GetY();
+                            $originalMargin = $this->lMargin;
+
+                            // 1. Cetak Label Utama (Kesimpulan)
+                            $this->SetFont('Times', 'B', 11);
+                            $this->Cell(30, 5, $label, 0, 0); 
+                            
+                            // Simpan posisi X setelah kolom "Kesimpulan" untuk baris-baris sub-nilai
+                            $xSubLabel = $this->GetX(); 
+
+                            if (is_array($subValues)) {
+                                $isFirst = true;
+                                foreach ($subValues as $subLabel => $text) {
+                                    if (!$isFirst) {
+                                        // Beri jarak sedikit untuk baris kedua (Kiri)
+                                        $this->SetX($xSubLabel); 
+                                    }
+
+                                    // 2. Cetak Sub-Label (Kanan / Kiri)
+                                    $this->SetFont('Times', '', 11);
+                                    $this->Cell(20, 5, $subLabel, 0, 0); // Lebar 20mm cukup untuk kata "Kanan"
+                                    
+                                    // 3. Cetak Titik Dua
+                                    $this->Cell(5, 5, ':', 0, 0);
+                                    
+                                    // 4. Cetak Isinya (Normal / dsb)
+                                    $xValue = $this->GetX();
+                                    
+                                    // Set margin kiri sementara agar jika teks "Normal" sangat panjang, dia ngetab lurus
+                                    $this->SetLeftMargin($xValue);
+                                    $this->SetY($this->GetY()); 
+                                    
+                                    $this->MultiCell(0, 5, $text, 0, 'L');
+                                    
+                                    // Kembalikan margin ke posisi kolom sub-label untuk baris berikutnya
+                                    $this->SetLeftMargin($originalMargin);
+                                    $isFirst = false;
+                                }
+                            } else {
+                                // Jika teks biasa (bukan array Kanan/Kiri)
+                                $this->Cell(5, 5, ':', 0, 0);
+                                $this->MultiCell(0, 5, $subValues, 0, 'L');
+                            }
+
+                            $this->Ln(2);
+                            $this->SetX($originalMargin);
                         }
 
                         // 3. TANDA TANGAN (Posisi Absolute Bawah)
@@ -2874,9 +2928,20 @@ class LaporanController extends Controller
         $fpdf->AliasNbPages();
         // 1. Halaman Cover
         $fpdf->AddPage('P');
-        $fpdf->SetFont('Arial','B',16);
-        $fpdf->SetXY(0, 0);
         $fpdf->Image(public_path('mofi/assets/images/logo/compress_cover.jpg'), 0, 0, 210, 297);
+        $fpdf->gantiPath($customFontPath);
+        $fpdf->AddFont('SquadaOne', '', 'SquadaOne.php');
+        $fpdf->SetFont('SquadaOne', '', 80);
+        $fpdf->SetDrawColor(255, 255, 0);       
+        $fpdf->SetTextColor(255, 87, 34);   
+        $fpdf->SetTextOutline(0.8);         
+        $fpdf->SetTextColor(255, 87, 34);
+        $tahunSekarang = date('Y');
+        $fpdf->SetXY(15, 20);
+        $fpdf->Cell(50, 20, $tahunSekarang, 0, 0, 'L');
+        $fpdf->gantiPath($vendorFontPath);
+        $fpdf->SetFont('Times', '', 11);
+        $fpdf->SetTextColor(0, 0, 0);
         // 2. Halaman Profil (Section yang barusan kamu berikan)
         $fpdf->AddPage('P');
         $fpdf->renderProfilPeserta();
