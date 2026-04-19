@@ -1365,7 +1365,7 @@ class LaporanController extends Controller
                             ($item->keterangan ?: "-")
                         ];
                         
-                        $this->GenerateRow($widths, $row, 0, $isGrey);
+                        $this->GenerateRow($widths, $row, 7, $isGrey);
                         $isGrey = !$isGrey; 
                     }
 
@@ -1453,7 +1453,7 @@ class LaporanController extends Controller
                             $item->satuan_kebiasaan,
                             ($item->keterangan ?: '-')
                         ];
-                        $this->GenerateRow($widthsKebiasaan, $row, 5, $isGrey);
+                        $this->GenerateRow($widthsKebiasaan, $row, 7, $isGrey);
                         $isGrey = !$isGrey;
                     }
                 }
@@ -1520,7 +1520,7 @@ class LaporanController extends Controller
                                 $waktu,
                                 ($item->keterangan ?: '-')
                             ];
-                            $this->GenerateRow($widthsWanita, $row, 5, $isGrey);
+                            $this->GenerateRow($widthsWanita, $row, 7, $isGrey);
                             $isGrey = !$isGrey;
                         }
                     }
@@ -1568,7 +1568,7 @@ class LaporanController extends Controller
                             ($item->status == "1" ? "Ya" : "Tidak"),
                             ($item->keterangan ?: "-")
                         ];
-                        $this->GenerateRow($widths, $row, 5, $isGrey);
+                        $this->GenerateRow($widths, $row, 7, $isGrey);
                         $isGrey = !$isGrey; 
                     }
 
@@ -1634,7 +1634,7 @@ class LaporanController extends Controller
                         ($item->keterangan ?: "-")
                     ];
 
-                    $this->GenerateRow($widthsPaparan, $row, 5, $isGrey);
+                    $this->GenerateRow($widthsPaparan, $row, 7, $isGrey);
                     $isGrey = !$isGrey;
                 }
                 $this->Rect(10, $yHeaderPaparan, $totalWidthPaparan, $this->GetY() - $yHeaderPaparan, 'D'); 
