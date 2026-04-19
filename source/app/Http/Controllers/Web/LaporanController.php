@@ -208,6 +208,7 @@ class LaporanController extends Controller
             ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
             ->where('mcu_transaksi_peserta.id', $id_mcu)->first();
         $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
+        $riwayat_informasi_foto->data_signature = url(env('APP_VERSI_API')."/file/unduh_foto_signature?file_name=" . $riwayat_informasi_foto->signature);
         $logoPath = public_path('mofi/assets/images/logo/Logo_AMC_Full.png');
         $qrcode = base64_encode(QrCode::format('png')
                     ->size(200)
@@ -1685,9 +1686,11 @@ class LaporanController extends Controller
                 $this->SetFont('Arial', '', 10);
                 $this->MultiCell(90, 5, "MENYETUJUI\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
 
-                if($this->data['qrcode']) {
-                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY() + 2, 25, 25, 'PNG');
+                $fotoUrlSignature = $this->data['riwayat_informasi_foto']['data_signature']?? null;
+                if ($fotoUrlSignature && @get_headers($fotoUrlSignature)[0] == 'HTTP/1.1 404 Not Found') {
+                    $fotoUrlSignature = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
                 }
+                $this->Image($fotoUrlSignature, 142, $this->GetY() + 2, 25, 25, 'PNG'); 
                 $d1 = $this->data['informasi_data_diri'];
                 $this->SetXY(110, $yFooter + 40);
                 $this->SetFont('Arial', 'BU', 10);
