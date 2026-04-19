@@ -179,9 +179,9 @@ class LaporanController extends Controller
                 'mcu_poli_citra.id as id_each_citra',
                 'users_pegawai.nama_pegawai',
                 'users_pegawai.departemen',
+                'users_pegawai.nik as nik_petugas',
                 'petugas.nama_pegawai as nama_petugas',
                 'petugas.departemen as departemen_petugas',
-                'petugas.nik as nik_petugas'
             )
             ->where($tableName.'.transaksi_id', $id_mcu)
             ->where('mcu_poli_citra.jenis_poli', 'poli_'.$jenis_poli)
