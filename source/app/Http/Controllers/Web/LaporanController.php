@@ -180,7 +180,8 @@ class LaporanController extends Controller
                 'users_pegawai.nama_pegawai',
                 'users_pegawai.departemen',
                 'petugas.nama_pegawai as nama_petugas',
-                'petugas.departemen as departemen_petugas'
+                'petugas.departemen as departemen_petugas',
+                'petugas.nik as nik_petugas'
             )
             ->where($tableName.'.transaksi_id', $id_mcu)
             ->where('mcu_poli_citra.jenis_poli', 'poli_'.$jenis_poli)
@@ -201,6 +202,8 @@ class LaporanController extends Controller
         $riwayat_informasi_foto = UnggahCitra::where('transaksi_id', $id_mcu)->first();
         $status_kesimpulan_lab = KesimpulanLabStatus::all();
         $groupedData = $status_kesimpulan_lab->groupBy('status');
+        $informasi_data_pegawai = Pegawai::all();
+        $pegawaiMap = $informasi_data_pegawai->keyBy('nik')->toArray();
         $informasi_data_diri = Transaksi::join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
             ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
@@ -713,7 +716,7 @@ class LaporanController extends Controller
                         $this->SetTextColor(0);
                     }
                     if ($this->issetfont) {
-                        $this->SetFont('arial');
+                        $this->SetFont('Times');
                         $this->issetfont=false;
                     }
                 }
@@ -875,7 +878,7 @@ class LaporanController extends Controller
                 $this->Ln(70); // Kasih jarak setelah foto
 
                 // 3. Tabel Identitas (Sesuai table width: 80%)
-                $this->SetFont('Arial', 'B', 12);
+                $this->SetFont('Times', 'B', 12);
                 $leftMargin = 25; // Agar terlihat center (width 80%)
                 $this->SetX($leftMargin);
                 
@@ -1135,12 +1138,12 @@ class LaporanController extends Controller
                 $this->SetXY(110, 265);
                 
                 // Nama Dokter (Gunakan posisi absolut agar tidak terdorong tinggi QR yang dinamis)
-                $this->SetFont('Arial', 'BU', 10);
+                $this->SetFont('Times', 'BU', 10);
                 $this->SetXY(110, $ySkg + 35); // Letakkan tepat di bawah QR TTD (25 + margin 2)
                 $this->MultiCell(90, 4, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 'C');
 
                 // SIP Dokter (Tanpa Bold/Underline)
-                $this->SetFont('Arial', 'B', 10);
+                $this->SetFont('Times', 'B', 10);
                 $this->SetX(110); 
                 $this->MultiCell(90, 4, '440.007.2/127/SIP-DINKES/XI/2023', 0, 'C');
             }
@@ -1286,7 +1289,7 @@ class LaporanController extends Controller
 
                 // Kanan: QR & Pengesahan
                 $this->SetXY(110, $yFooter);
-                $this->SetFont('Arial', '', 10);
+                $this->SetFont('Times', '', 10);
                 $this->MultiCell(90, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
 
                 if($this->data['qrcode']) {
@@ -1295,10 +1298,10 @@ class LaporanController extends Controller
                 }
 
                 $this->SetXY(110, $yFooter + 40);
-                $this->SetFont('Arial', 'BU', 10);
+                $this->SetFont('Times', 'BU', 10);
                 $this->Cell(90, 5, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 1, 'C');
                 $this->SetX(110);
-                $this->SetFont('Arial', 'B', 10);
+                $this->SetFont('Times', 'B', 10);
                 $this->Cell(90, 5, '440.007.2/127/SIP-DINKES/XI/2023', 0, 1, 'C');
             }
             /*section 4*/
@@ -1683,7 +1686,7 @@ class LaporanController extends Controller
 
                 // Kanan: QR & Pengesahan
                 $this->SetXY(110, $yFooter);
-                $this->SetFont('Arial', '', 10);
+                $this->SetFont('Times', '', 10);
                 $this->MultiCell(90, 5, "MENYETUJUI\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
 
                 $fotoUrlSignature = $this->data['riwayat_informasi_foto']['data_signature']?? null;
@@ -1693,10 +1696,10 @@ class LaporanController extends Controller
                 $this->Image($fotoUrlSignature, 130, $this->GetY() + 2, 50, 25, 'PNG'); 
                 $d1 = $this->data['informasi_data_diri'];
                 $this->SetXY(110, $yFooter + 40);
-                $this->SetFont('Arial', 'BU', 10);
+                $this->SetFont('Times', 'BU', 10);
                 $this->Cell(90, 5, $d1['nama_peserta'], 0, 1, 'C');
                 $this->SetX(110);
-                $this->SetFont('Arial', 'B', 10);
+                $this->SetFont('Times', 'B', 10);
                 $this->Cell(90, 5, $d1['nomor_identitas'], 0, 1, 'C');
             }
             /*section 5*/
@@ -2135,12 +2138,12 @@ class LaporanController extends Controller
                 }
                 $this->SetXY(110, 265);
                 // Nama Dokter (Gunakan posisi absolut agar tidak terdorong tinggi QR yang dinamis)
-                $this->SetFont('Arial', 'BU', 10);
+                $this->SetFont('Times', 'BU', 10);
                 $this->SetXY(110, $ySkg + 35); // Letakkan tepat di bawah QR TTD (25 + margin 2)
                 $this->MultiCell(90, 4, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 'C');
 
                 // SIP Dokter (Tanpa Bold/Underline)
-                $this->SetFont('Arial', 'B', 10);
+                $this->SetFont('Times', 'B', 10);
                 $this->SetX(110); 
                 $this->MultiCell(90, 4, '440.007.2/127/SIP-DINKES/XI/2023', 0, 'C');
             }
@@ -2162,7 +2165,7 @@ class LaporanController extends Controller
                
                     // --- HEADER TABEL ---
                     $this->SetFillColor(44, 148, 42); // Hijau (#2c942a)
-                    $this->SetFont('Arial', 'B', 10);
+                    $this->SetFont('Times', 'B', 10);
                     $widths = [50, 35, 45, 30, 30]; // Sesuaikan total 190mm (A4)
                     $headers = ['PARAMETER', 'HASIL', 'NILAI RUJUKAN', 'SATUAN', 'STATUS'];
                     foreach ($headers as $i => $head) {
@@ -2171,7 +2174,7 @@ class LaporanController extends Controller
                     $this->Ln();
                     // --- ISI TABEL (Render Kategori) ---
                     $this->SetTextColor(0, 0, 0);
-                    $this->SetFont('Arial', '', 9);
+                    $this->SetFont('Times', '', 9);
                     foreach ($this->data['laboratorium'] as $kategori) {
                         $this->renderKategoriFPDF($kategori, $widths);
                     }
@@ -2338,10 +2341,10 @@ class LaporanController extends Controller
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
                         $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
                         $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetFont('Times', 'B', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
                     }
@@ -2424,9 +2427,9 @@ class LaporanController extends Controller
                         $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
                         $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
                         $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetFont('Times', 'BU', 11);
                         $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetFont('Times', 'B', 11);
                         $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
 
                         // QR Code dan Nama Dokter (Kanan)
@@ -2434,10 +2437,10 @@ class LaporanController extends Controller
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
                         $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
                         $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetFont('Times', 'B', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
                     }
@@ -2532,10 +2535,10 @@ class LaporanController extends Controller
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
                         $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
                         $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetFont('Times', 'B', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
                     }
@@ -2669,10 +2672,10 @@ class LaporanController extends Controller
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
                         $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
                         $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetFont('Times', 'B', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
                     }
@@ -2736,7 +2739,7 @@ class LaporanController extends Controller
                         // $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
                         // $this->WriteHTML($html);
                         $this->ln(5);
-                         $this->SetFont('Times', '', 11);
+                        $this->SetFont('Times', '', 11);
                         $fields = [
                             // 'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
                             // 'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
@@ -2770,10 +2773,10 @@ class LaporanController extends Controller
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
                         $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
                         $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetFont('Times', 'B', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
                     }
@@ -2870,12 +2873,37 @@ class LaporanController extends Controller
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $nikPetugas = $firstItem->nik_petugas;
+                        $infoDokter = $this->data['pegawai_map'][$nikPetugas] ?? null;
+
+                        $posX = 140; 
+                        $posY = $this->GetY();
+
+                        // 1. Cek dulu apakah data dokter ditemukan
+                        if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
+                            
+                            $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
+                            
+                            // 2. Cek apakah file fisiknya benar-benar ada di folder
+                            if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
+                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                            } else {
+                                // Jika data ada di DB tapi file di folder hilang
+                                $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+
+                        } else {
+                            $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                            if (file_exists($logoPath)) {
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        }
                         $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Arial', 'BU', 11);
+                        $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->nama_pegawai, 0, 1, 'C');
-                        $this->SetFont('Arial', 'B', 11);
+                        $this->SetFont('Times', 'B', 11);
                         $this->SetX(105);
                         $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
 
@@ -2970,7 +2998,7 @@ class LaporanController extends Controller
         $fpdf->poliThreadmill();
         // 7. Penutup Cover
         $fpdf->AddPage('P');
-        $fpdf->SetFont('Arial','B',16);
+        $fpdf->SetFont('Times','B',16);
         $fpdf->SetXY(0, 0);
         $fpdf->Image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, 210, 297);
         $nomor_mcu = $data['nomor_mcu'];
