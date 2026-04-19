@@ -13,6 +13,7 @@ class UnggahCitra extends Model
         'user_id',
         'transaksi_id',
         'lokasi_gambar',
+        'signature',
     ];
     public static function listPasienUnggahCitra($request, $perHalaman, $offset){
         $parameterpencarian = $request->parameter_pencarian;

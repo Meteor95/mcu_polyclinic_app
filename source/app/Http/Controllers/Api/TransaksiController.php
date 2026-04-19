@@ -133,8 +133,13 @@ class TransaksiController extends Controller
                 $item->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $item->lokasi_gambar);
                 return $item;
             });
+            $dataWithFotoSignature = collect($data['data'])->map(function ($item) {
+                $item->data_signature = url(env('APP_VERSI_API')."/file/unduh_foto_signature?file_name=" . $item->signature);
+                return $item;
+            });
             $dynamicAttributes = [
                 'data' => $dataWithFoto,
+                'data_signature' => $dataWithFotoSignature,
                 'recordsFiltered' => $jumlahdata,
                 'pages' => [
                     'limit' => $perHalaman,
@@ -153,6 +158,7 @@ class TransaksiController extends Controller
                 'nomor_identitas' => 'required',
                 'informasimember' => 'required',
                 'id_transaksi' => 'required',
+                'signature' => 'required|image|mimes:png|max:2048',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];
@@ -174,10 +180,20 @@ class TransaksiController extends Controller
             $filePath = storage_path('app/public/mcu/foto_peserta/' . $filename);
             imagepng($image, $filePath, $compressionQuality);
             imagedestroy($image);
+            
+            $signature = $request->file('signature');
+            $filenameSig = $uuid . '_signature_' . $timestamp . '.png';
+            $imageSig = imagecreatefrompng($signature->getPathname());
+            imagealphablending($imageSig, false);
+            imagesavealpha($imageSig, true);
+            $filePathSig = storage_path('app/public/mcu/signature/' . $filenameSig);
+            imagepng($imageSig, $filePathSig, $compressionQuality);
+            imagedestroy($imageSig);
             UnggahCitra::create([
                 'user_id' => $user_id->id,
                 'lokasi_gambar' => $filename,
                 'transaksi_id' => $request->input('id_transaksi'),
+                'signature' => $filenameSig,
             ]);
             return ResponseHelper::success('Foto berhasil disimpan untuk peserta: ' . $request->input('informasimember'));
         } catch (\Throwable $th) {

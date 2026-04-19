@@ -28,6 +28,7 @@ Route::prefix('v1')->group(function () {
     });
     Route::prefix('file')->group(function () {
         Route::get('unduh_foto', [FileController::class, "download_foto"]);
+        Route::get('unduh_foto_signature', [FileController::class, "download_foto_signature"]);
         Route::get('unduh_citra_poliklinik', [FileController::class, "downlad_citra_poliklinik"]);
         Route::get('unduh_surat_pengantar', [FileController::class, "download_surat_pengantar"]);
         Route::get('unduh_berkas_apotek', [FileController::class, "download_berkas_apotek"]);

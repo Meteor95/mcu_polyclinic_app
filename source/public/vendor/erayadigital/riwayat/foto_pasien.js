@@ -15,6 +15,11 @@ $(document).ready(function(){
     onloadfromnavigation(param_nomor_identitas, param_nama_peserta);
     onloaddatatables();
 });
+const canvas = document.getElementById('signature-pad');
+const signaturePad = new SignaturePad(canvas);
+document.getElementById('clear').addEventListener('click', function () {
+    signaturePad.clear();
+});
 function defaultimage(){
     image.src = '/mofi/assets/images/logo/doc_not_found.jpg';
     image.style.display = 'block';
@@ -86,7 +91,17 @@ function onloaddatatables(){
                     className: "text-center",
                     render: function(data, type, row, meta) {
                         if (type === 'display') {
-                            return `<img onclick="lihatFoto('${row.data_foto}','${row.nama_peserta}')" class="rounded img-thumbnail" src="${row.data_foto}" style="width: 100px; height: auto; aspect-ratio: 3 / 4; object-fit: cover;border-radius: 25%;cursor: pointer;">`;
+                            return `<img onclick="lihatFoto('${row.data_foto}','${row.nama_peserta}','Foto ')" class="rounded img-thumbnail" src="${row.data_foto}" style="width: 100px; height: auto; aspect-ratio: 3 / 4; object-fit: cover;border-radius: 25%;cursor: pointer;">`;
+                        }
+                        return data;
+                    }
+                },
+                {
+                    title: "TTD Peserta MCU",
+                    className: "text-center",
+                    render: function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `<img onclick="lihatFoto('${row.data_signature}','${row.nama_peserta}','TTD ')" class="rounded img-thumbnail" src="${row.data_signature}" style="width: 100px; height: auto; aspect-ratio: 3 / 4; object-fit: cover;border-radius: 25%;cursor: pointer;">`;
                         }
                         return data;
                     }
@@ -223,14 +238,16 @@ function isCanvasEmpty(canvas) {
     return true;
 }
 $("#simpan_foto_perserta").on('click', function() {
-    if ($("#pencarian_member_mcu").val() == null){
-        return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
+    if ($("#pencarian_member_mcu").val() == null) {
+        return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu', 'error', 3000);
     }
-    if (isCanvasEmpty(previewCanvas[0])){
-        //return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan unggahan citra terlebih dahulu untuk dijadikan laporan MCU atas Nama Peserta : '+$("#nama_peserta_temp_1").text()+' dengan Nomor Identitas : '+$("#nomor_identitas_temp").text(), 'error', 3000);
+    
+    if (signaturePad.isEmpty()) {
+        return createToast('TTD Kosong', 'top-right', 'Silahkan buat tanda tangan digital terlebih dahulu agar dapat melanjutkan proses', 'error', 3000);
     }
+
     Swal.fire({
-        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penyimpanan Data Member MCU</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menyimpan informasi member MCU <strong>'+$("#nama_peserta_temp_1").text()+'</strong> ?. Jika sudah silahkan tentukan paket MCU',
+        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Penyimpanan Data Member MCU</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menyimpan informasi member MCU <strong>'+$("#nama_peserta_temp_1").text()+'</strong> ?',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: 'orange',
@@ -238,30 +255,34 @@ $("#simpan_foto_perserta").on('click', function() {
         cancelButtonText: 'Nanti Dulu!!',
     }).then((result) => {
         if (result.isConfirmed) {
-            if (isDefaultImage) {
-                fetch('/mofi/assets/images/logo/error_gambar.png')
-                    .then(res => res.blob())
-                    .then(blob => {
-                        uploadBlob(blob, 'default_image');
-                    });
-            } else {
-                const croppedCanvas = cropper.getCroppedCanvas();
-                if (!croppedCanvas) {
-                    return createToast('Silakan pilih area crop terlebih dahulu', 'top-right', '', 'error', 3000);
+            signaturePad.canvas.toBlob((signatureBlob) => {
+                if (isDefaultImage) {
+                    fetch('/mofi/assets/images/logo/error_gambar.png')
+                        .then(res => res.blob())
+                        .then(fotoBlob => {
+                            uploadBlob(fotoBlob, signatureBlob, 'default_image');
+                        });
+                } else {
+                    const croppedCanvas = cropper.getCroppedCanvas();
+                    if (!croppedCanvas) {
+                        return createToast('Silakan pilih area crop terlebih dahulu', 'top-right', '', 'error', 3000);
+                    }
+                    croppedCanvas.toBlob((fotoBlob) => {
+                        uploadBlob(fotoBlob, signatureBlob, 'cropped_image');
+                    }, 'image/png');
                 }
-                croppedCanvas.toBlob((blob) => {
-                    uploadBlob(blob, 'cropped_image');
-                }, 'image/png');
-            }
+            }, 'image/png');
         }
     });
 });
-function uploadBlob(blob, prefix) {
+
+function uploadBlob(fotoBlob, signatureBlob, prefix) {
     const formData = new FormData();
     const timestamp = Date.now();
-    const generatedName = `${prefix}_${timestamp}.png`;
 
-    formData.append('foto', blob, generatedName);
+    formData.append('foto', fotoBlob, `${prefix}_${timestamp}.png`);
+    formData.append('signature', signatureBlob, `signature_${timestamp}.png`);
+    
     formData.append('nomor_identitas', $("#pencarian_member_mcu").val());
     formData.append('informasimember', $("#pencarian_member_mcu").text());
     formData.append('id_transaksi', $("#id_transaksi_mcu").text());
@@ -274,9 +295,10 @@ function uploadBlob(blob, prefix) {
         processData: false,
         contentType: false,
         success: function(response) {
-            if (!response.success){
-                return createToast('Data Conflict '+response.rc, 'top-right', response.message, 'error', 3000);
+            if (!response.success) {
+                return createToast('Data Conflict ' + response.rc, 'top-right', response.message, 'error', 3000);
             }
+            signaturePad.clear();
             clear_form();
             $("#datatables_daftarpeserta_unggah_citra").DataTable().ajax.reload();
             createToast('Sukses Unggah Citra', 'top-right', response.message, 'success', 3000);
@@ -343,8 +365,9 @@ function hapusunduhanFoto(id,nama_peserta,nomor_mcu){
         }
     });
 }
-function lihatFoto(lokasi_gambar,nama_peserta){
+function lihatFoto(lokasi_gambar,nama_peserta,jenisdata){
     $("#foto_lihat").attr('src', lokasi_gambar);
     $("#nama_peserta_foto").text(nama_peserta);
+    $("#modalTambahPenggunaLabel").text(jenisdata + ' Pasien MCU Artha Medica Clinic');
     $("#modalLihatFoto").modal('show');
 }

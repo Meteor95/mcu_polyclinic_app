@@ -28,6 +28,19 @@
               </div>
             </div>
           </div>
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;" class="mt-2">
+             <div style="width: 400px;">
+                <h5><i class="fa fa-arrow-down"></i> Tanda Tangan Digital Untuk Surat Pernyataan<i class="fa fa-arrow-down"></i></h5>
+            </div>
+            <div class="signature-wrapper" style="border: 1px solid #ccc; width: 400px; height: 200px; background-color: #fff;">
+                <canvas id="signature-pad" width="400" height="200"></canvas>
+            </div>
+            <div style="width: 400px;">
+                <button id="clear" class="btn w-100 btn-danger mt-2">
+                    <i class="fa fa-refresh"></i> Ulangi TTD Digital
+                </button>
+            </div>
+          </div>
           <button class="btn w-100 btn-primary mt-3 formulir_group formulir_group_button" id="simpan_foto_perserta"><i class="fa fa-save"></i> Simpan Foto</button>
           @if (isset($data['dataNavigasi']))
             @include('komponen.navigasi_riwayat_informasi', $data['dataNavigasi'])
@@ -93,6 +106,7 @@
 @section('js_load')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" integrity="sha512-JyCZjCOZoyeQZSd5+YEAcFgz2fowJ1F1hyJOXgtKu4llIa0KneLcidn5bwfutiehUTiOuK87A986BZJMko0eWQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script src="{{ asset('vendor/erayadigital/riwayat/foto_pasien.js') }}?v={{ filemtime(public_path('vendor/erayadigital/riwayat/foto_pasien.js')) }}"></script>
 <script>
   let param_nomor_identitas = '{{$data['nomor_identitas']}}'
