@@ -334,12 +334,21 @@ class LaporanController extends Controller
         $customFontPath = storage_path('app/public/fonts/');
         $fpdf = new class($data) extends \Codedge\Fpdf\Fpdf\Fpdf {
             protected $data;
+            protected $B;
+            protected $I;
+            protected $U;
+            protected $HREF;
+            protected $fontlist;
+            protected $issetfont;
+            protected $issetcolor;
+            protected $is_list;
+            protected $list_count;
+            protected $extgstates = array();
             public function __construct($data) {
                 parent::__construct('P', 'mm', 'A4'); 
                 $this->data = $data;
             }
             public function gantiPath($path) { $this->fontpath = $path;}
-            protected $extgstates = array();
             function SetAlpha($alpha, $bm='Normal'){
                 $gs = $this->AddExtGState(array('ca'=>$alpha, 'CA'=>$alpha, 'BM'=>'/'.$bm));
                 $this->SetExtGState($gs);
@@ -382,14 +391,13 @@ class LaporanController extends Controller
                 $this->_putextgstates();
                 parent::_putresources();
             }
-            function AliasNbPages($alias = '{total_hal}') {
-                parent::AliasNbPages($alias);
-            }
             function _putpages() {
-                $nb = $this->page;
+                $nb = $this->page; 
                 $nb_tampilan = $nb - 2; 
-                for($n=1;$n<=$nb;$n++) {
-                    $this->pages[$n] = str_replace('{total_hal}', $nb_tampilan, $this->pages[$n]);
+                for($n = 1; $n <= $nb; $n++) {
+                    if (isset($this->pages[$n])) {
+                        $this->pages[$n] = str_replace('{total_hal}', (string)$nb_tampilan, $this->pages[$n]);
+                    }
                 }
                 parent::_putpages();
             }
@@ -592,16 +600,6 @@ class LaporanController extends Controller
                 // Mode 0 = Fill saja (Normal)
                 $this->_out('0 Tr');
             }
-            //variables of html parser
-            protected $B;
-            protected $I;
-            protected $U;
-            protected $HREF;
-            protected $fontlist;
-            protected $issetfont;
-            protected $issetcolor;
-            protected $is_list;
-            protected $list_count;
             function txtentities($html){
                 $trans = get_html_translation_table(HTML_ENTITIES);
                 $trans = array_flip($trans);
@@ -748,7 +746,6 @@ class LaporanController extends Controller
                 $this->SetStyle('U',false);
                 $this->SetTextColor(0);
             }
-
             function Header() {
                 if ($this->PageNo() == 1) return;
 
@@ -824,35 +821,29 @@ class LaporanController extends Controller
                 $this->Cell($wLabel2, $h, 'Dokter', 0, 0);
                 $this->Cell($wValue2, $h, ': dr. Muhammad Taufiq Amrullah, S.Ked' , 0, 1);
             }
-            function Close() {
-                // Logika pengurangan halaman
-                $total_asli = $this->page; 
-                $total_baru = ($total_asli > 1) ? ($total_asli - 1) : 1;
+            // function Close() {
+            //     // Logika pengurangan halaman
+            //     $total_asli = $this->page; 
+            //     $total_baru = ($total_asli > 1) ? ($total_asli - 1) : 1;
 
-                for ($n = 1; $n <= $total_asli; $n++) {
-                    // Mengganti placeholder {total_hal} dengan angka yang sudah dikurangi
-                    $this->pages[$n] = str_replace('{total_hal}', $total_baru, $this->pages[$n]);
-                }
+            //     for ($n = 1; $n <= $total_asli; $n++) {
+            //         // Mengganti placeholder {total_hal} dengan angka yang sudah dikurangi
+            //         $this->pages[$n] = str_replace('{total_hal}', $total_baru, $this->pages[$n]);
+            //     }
                 
-                parent::Close(); // Melanjutkan proses internal FPDF
-            }
+            //     parent::Close(); // Melanjutkan proses internal FPDF
+            // }
             public $isLastPage = false;
             function Footer() {
                 if ($this->PageNo() == 1 || $this->isLastPage) return;
-
-                // Ambil tinggi halaman saat ini (297 jika Potrait, 210 jika Landscape)
                 $hHalaman = $this->GetPageHeight();
-
                 // Letakkan footer sekitar 17mm dari bawah kertas
                 $posisiYFooter = $hHalaman - 17; 
                 $posisiYLogo = $hHalaman - 22; // Logo sedikit lebih naik
-
                 $this->SetXY(0, $posisiYFooter);
                 $this->SetFont('Times', '', 12);
-
                 $hal_sekarang = $this->PageNo() - 1;
-                
-                $teks = $hal_sekarang . ' of {total_hal}';
+                $teks = $hal_sekarang.' of {total_hal}';
 
                 // Ambil lebar halaman agar posisi 'R' (Right) benar di Landscape maupun Potrait
                 $lebarHalaman = $this->GetPageWidth();
@@ -3047,9 +3038,7 @@ class LaporanController extends Controller
                     }
                 }
             }
-
         };
-        $fpdf->AliasNbPages('{total_hal}');
         // 1. Halaman Cover
         $fpdf->AddPage('P');
         $fpdf->Image(public_path('mofi/assets/images/logo/compress_cover.jpg'), 0, 0, 210, 297);
