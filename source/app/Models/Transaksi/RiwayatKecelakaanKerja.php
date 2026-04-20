@@ -22,7 +22,8 @@ class RiwayatKecelakaanKerja extends Model
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
             ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
             ->select('company.*','departemen_peserta.*','mcu_riwayat_kecelakaan_kerja.*','mcu_riwayat_kecelakaan_kerja.id as id_riwayat_kecelakaan_kerja', 'users_member.*', 'users_member.nama_peserta', 'mcu_transaksi_peserta.*')
-            ->selectRaw('COUNT(*) as jumlah_data, TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur, DATE_FORMAT(tanggal_transaksi, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi');
+            ->selectRaw('COUNT(*) as jumlah_data, TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur, DATE_FORMAT(tanggal_transaksi, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi')
+            ->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai');
         if (!empty($parameterpencarian)) {
             $query->where('users_member.nama_peserta', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('mcu_transaksi_peserta.no_transaksi', 'LIKE', '%' . $parameterpencarian . '%');

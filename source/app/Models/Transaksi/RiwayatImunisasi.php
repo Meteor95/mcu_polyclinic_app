@@ -25,7 +25,8 @@ class RiwayatImunisasi extends Model
             ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
             ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
             ->select('company.*','departemen_peserta.*','mcu_riwayat_imunisasi.*','mcu_riwayat_imunisasi.id as id_riwayat_imunisasi', 'users_member.*', 'users_member.nama_peserta', 'mcu_transaksi_peserta.*')
-            ->selectRaw('DATE_FORMAT('.$tablePrefix.'mcu_riwayat_imunisasi.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_imunisasi, TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur');
+            ->selectRaw('DATE_FORMAT('.$tablePrefix.'mcu_riwayat_imunisasi.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_imunisasi, TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
+            ->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai');
         if (!empty($parameterpencarian)) {
             $query->where('users_member.nama_peserta', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('mcu_transaksi_peserta.no_transaksi', 'LIKE', '%' . $parameterpencarian . '%');
