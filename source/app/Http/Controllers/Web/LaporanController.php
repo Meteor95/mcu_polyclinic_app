@@ -3110,8 +3110,10 @@ class LaporanController extends Controller
         // 5. PEMERIKSAAN KONDISI FISIK
         $fpdf->AddPage('P');
         $fpdf->cetakPemeriksaanKondisiFisik();
-        $fpdf->AddPage('P');
-        $fpdf->cetakLaboratorium();
+        if ($data['ada_lampiran_laboratorium_pdf'] == 0 && $data['total_tindakan'] > 0) {
+            $fpdf->AddPage('P');
+            $fpdf->cetakLaboratorium();
+        }
         $fpdf->poliRontgenThorax();
         $fpdf->poliEkg();
         $fpdf->poliAudiometri();
