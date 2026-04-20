@@ -83,7 +83,7 @@ class KondisiFisik extends Model
                 'DATE_FORMAT(' . $tablePrefix . $lokasiFisik . '.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_lokasi_fisik, ' .
                 'DATE_FORMAT(' . $tablePrefix . 'mcu_transaksi_peserta.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_mcu, ' .
                 'TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur'
-            );
+            )->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai');
 
         if (!empty($parameterPencarian)) {
             $query->where(function ($query) use ($parameterPencarian) {

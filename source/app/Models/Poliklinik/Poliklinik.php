@@ -86,7 +86,7 @@ class Poliklinik extends Model
                 'DATE_FORMAT(' . $tablePrefix . $jenis_poli . '.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_poliklinik, ' .
                 'DATE_FORMAT(' . $tablePrefix . 'mcu_transaksi_peserta.created_at, "%d-%m-%Y %H:%i:%s") as tanggal_transaksi_mcu, ' .
                 'TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur'
-            );
+            )->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai');
         if ($jenis_poli != "mcu_poli_farmingham_score") {
             $query->where('mcu_poli_citra.jenis_poli', str_replace("mcu_", "", $jenis_poli));
         }
