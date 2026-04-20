@@ -2284,7 +2284,7 @@ class LaporanController extends Controller
                         $htmlClean = html_entity_decode($htmlClean);
 
                         $fields = [
-                            'Resume'     => 'USE_HTML_CONTENT', 
+                            'Foto Thorax'     => 'USE_HTML_CONTENT', 
                             'Kesan'      => $firstItem->catatan_kaki ?? '-',
                         ];                     
                         $originalMargin = $this->lMargin;
