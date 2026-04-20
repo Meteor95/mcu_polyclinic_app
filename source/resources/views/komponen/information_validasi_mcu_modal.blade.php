@@ -210,6 +210,8 @@
               <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
           </div>
           <div class="modal-body">
+            <h5 id="bmi_informasi">0</h5>
+            <h5 id="status_gizi_informasi">0</h5>
             <h1>Tanda Vital</h1>
             <table class="table table-bordered" id="datatables_tanda_vital_modal_tanda_vital">
                 <thead>

@@ -570,12 +570,21 @@ function aksesmodal(response,modal,lokasi_fisik = null){
     if (modal == 'modalTandaVital') {
         $('#datatables_tanda_vital_modal_tanda_vital tbody').empty();
         $('#datatables_tanda_vital_modal_tanda_gizi tbody').empty();
+        let beratBadan = null;
+        let tinggiBadan = null;
         for (let i = 0; i < response.informasi_mcu.length; i++) {
             let no = i + 1;
             let item = response.informasi_mcu[i];
             let row = $('#datatables_tanda_vital_modal_tanda_vital tbody tr').filter(function() {
                 return $(this).find('td:eq(0)').text() == item.id_atribut_lv;
             });
+            if (item.id_atribut_lv == 5) {
+                beratBadan = parseFloat(item.nilai_tanda_vital);
+            }
+
+            if (item.id_atribut_lv == 6) {
+                tinggiBadan = parseFloat(item.nilai_tanda_vital);
+            }
             if (row.length === 0 && item.jenis_tanda_vital === 'tanda_vital') {
                 $('#datatables_tanda_vital_modal_tanda_vital tbody').append(`
                     <tr>
@@ -595,6 +604,28 @@ function aksesmodal(response,modal,lokasi_fisik = null){
                         <td>${item.keterangan_tanda_vital ? item.keterangan_tanda_vital : 'Tidak Ada Keterangan'}</td>
                     </tr>
                 `);
+            }
+            if (beratBadan !== null && tinggiBadan !== null && tinggiBadan > 0) {
+                let tinggiMeter = tinggiBadan / 100;
+                let bmi = beratBadan / (tinggiMeter * tinggiMeter);
+                bmi = bmi.toFixed(2);
+                let statusGizi = '';
+                let colorClass = '';
+                if (bmi < 18.5) {
+                    statusGizi = 'KEKURANGAN BERAT BADAN';
+                    colorClass = 'text-orange';
+                } else if (bmi < 25) {
+                    statusGizi = 'NORMAL';
+                    colorClass = 'text-green';
+                } else if (bmi < 29.9) {
+                    statusGizi = 'KELEBIHAN BERAT BADAN';
+                    colorClass = 'text-red';
+                } else {
+                    statusGizi = 'OBESITAS';
+                    colorClass = 'text-darkred';
+                }
+                $('#bmi_informasi').html("BMI : "+bmi + " IMT");
+                $('#status_gizi_informasi').removeClass('text-orange text-green text-red text-darkred').addClass(colorClass).html(`Saran Status Gizi: <strong>${statusGizi}</strong>`);
             }
         } 
     }
