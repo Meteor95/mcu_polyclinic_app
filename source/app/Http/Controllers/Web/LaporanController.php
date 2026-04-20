@@ -847,7 +847,7 @@ class LaporanController extends Controller
 
                 // Ambil lebar halaman agar posisi 'R' (Right) benar di Landscape maupun Potrait
                 $lebarHalaman = $this->GetPageWidth();
-                $this->SetX($lebarHalaman - 60); 
+                $this->SetX($lebarHalaman - 45); 
                 $this->Cell(50, 10, $teks, 0, 0, 'R');
 
                 // Logo-logo sertifikasi (Kiri) - Menggunakan posisi Y relatif
