@@ -386,9 +386,10 @@ class LaporanController extends Controller
                 parent::AliasNbPages($alias);
             }
             function _putpages() {
-                $total_sebenarnya = count($this->pages) - 1;
-                for($n=1; $n<=count($this->pages); $n++) {
-                    $this->pages[$n] = str_replace('{total_hal}', $total_sebenarnya, $this->pages[$n]);
+                $nb = $this->page;
+                $nb_tampilan = $nb - 2; 
+                for($n=1;$n<=$nb;$n++) {
+                    $this->pages[$n] = str_replace('{total_hal}', $nb_tampilan, $this->pages[$n]);
                 }
                 parent::_putpages();
             }
@@ -748,7 +749,6 @@ class LaporanController extends Controller
                 $this->SetTextColor(0);
             }
 
-
             function Header() {
                 if ($this->PageNo() == 1) return;
 
@@ -836,24 +836,33 @@ class LaporanController extends Controller
                 
                 parent::Close(); // Melanjutkan proses internal FPDF
             }
+            public $isLastPage = false;
             function Footer() {
-                if ($this->PageNo() == 1) return;
+                if ($this->PageNo() == 1 || $this->isLastPage) return;
 
-                // $this->SetAlpha(0.5);
-                // $this->Image(public_path('mofi/assets/images/logo/border_hasil_mcu_bawah.png'), 0, 256, 210);
-                // $this->SetAlpha(1);
+                // Ambil tinggi halaman saat ini (297 jika Potrait, 210 jika Landscape)
+                $hHalaman = $this->GetPageHeight();
 
-                $this->SetXY(0, 280);
+                // Letakkan footer sekitar 17mm dari bawah kertas
+                $posisiYFooter = $hHalaman - 17; 
+                $posisiYLogo = $hHalaman - 22; // Logo sedikit lebih naik
+
+                $this->SetXY(0, $posisiYFooter);
                 $this->SetFont('Times', '', 12);
+
                 $hal_sekarang = $this->PageNo() - 1;
-                $teks = $hal_sekarang . ' of {total_hal}';
-                $this->SetX(150); 
-                $this->Cell(50, 10, $teks, 0, 0, 'R');
                 
-                // Logo-logo sertifikasi (Kiri)
-                $this->Image(public_path('mofi/assets/images/logo/IASCB.png'), 10, 275, 15);
-                $this->Image(public_path('mofi/assets/images/logo/KEMENTAKER.png'), 25, 275, 15);
-                $this->Image(public_path('mofi/assets/images/logo/VRC.png'), 40, 278, 25);
+                $teks = $hal_sekarang . ' of {total_hal}';
+
+                // Ambil lebar halaman agar posisi 'R' (Right) benar di Landscape maupun Potrait
+                $lebarHalaman = $this->GetPageWidth();
+                $this->SetX($lebarHalaman - 60); 
+                $this->Cell(50, 10, $teks, 0, 0, 'R');
+
+                // Logo-logo sertifikasi (Kiri) - Menggunakan posisi Y relatif
+                $this->Image(public_path('mofi/assets/images/logo/IASCB.png'), 10, $posisiYLogo, 15);
+                $this->Image(public_path('mofi/assets/images/logo/KEMENTAKER.png'), 25, $posisiYLogo, 15);
+                $this->Image(public_path('mofi/assets/images/logo/VRC.png'), 40, $posisiYLogo + 3, 25);
             }
             /*section 1*/
             public function renderProfilPeserta() {
@@ -3040,7 +3049,7 @@ class LaporanController extends Controller
             }
 
         };
-        $fpdf->AliasNbPages();
+        $fpdf->AliasNbPages('{total_hal}');
         // 1. Halaman Cover
         $fpdf->AddPage('P');
         $fpdf->Image(public_path('mofi/assets/images/logo/compress_cover.jpg'), 0, 0, 210, 297);
@@ -3082,6 +3091,7 @@ class LaporanController extends Controller
         $fpdf->poliThreadmill();
         // 7. Penutup Cover
         $fpdf->AddPage('P');
+        $fpdf->isLastPage = true;
         $fpdf->SetFont('Times','B',16);
         $fpdf->SetXY(0, 0);
         $fpdf->Image(public_path('mofi/assets/images/logo/compress_cover_back.jpg'), 0, 0, 210, 297);
