@@ -3083,9 +3083,9 @@ class LaporanController extends Controller
         $fpdf->gantiPath($customFontPath);
         $fpdf->AddFont('SquadaOne', '', 'SquadaOne.php');
         $fpdf->SetFont('SquadaOne', '', 80);
-        $fpdf->SetDrawColor(255, 255, 0);       
-        $fpdf->SetTextColor(255, 87, 34);   
-        $fpdf->SetTextOutline(0.8);         
+        // $fpdf->SetDrawColor(255, 255, 0);       
+        // $fpdf->SetTextColor(255, 87, 34);   
+        // $fpdf->SetTextOutline(0.8);         
         $fpdf->SetTextColor(255, 87, 34);
         $tahunSekarang = date('Y');
         $fpdf->SetXY(15, 20);
