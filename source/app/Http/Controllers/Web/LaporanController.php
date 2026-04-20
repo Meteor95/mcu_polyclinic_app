@@ -2413,28 +2413,66 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 5, 'INTERPRETASI HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'C');
+                        $this->Cell(0, 5, 'INTERPRETASI HASIL RONTGEN LUMBOSACRAL', 0, 1, 'C');
                         // Tabel Interpretasi
                         $this->SetFont('Times', '', 11);
-                        $html = $firstItem->kesimpulan_citra_spirometri;
-                        $html = preg_replace('/<body[^>]*>/i', '', $html);
-                        $html = preg_replace('/<\/body>/i', '', $html);
-                        $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
-                        $this->WriteHTML($html);
+                        // $html = $firstItem->kesimpulan_citra_spirometri;
+                        // $html = preg_replace('/<body[^>]*>/i', '', $html);
+                        // $html = preg_replace('/<\/body>/i', '', $html);
+                        // $html = preg_replace('/<(p|br|li|ol|ul)[^>]*>/i', '<$1>', $html);
+                        // $this->WriteHTML($html);
                         $this->ln(5);
 
+                        // 1. Ambil data mentah
+                        $htmlRaw = $firstItem->kesimpulan_citra_spirometri;
+                        // 2. Bersihkan spasi dan tag "pembuka" hanya di awal string (^)
+                        // Ini menghapus spasi, &nbsp;, <br>, <p>, dan <div> yang muncul di depan
+                        $htmlClean = preg_replace('/^(\s|&nbsp;|<br\s*\/?>|<p[^>]*>|<div>)+/i', '', trim($htmlRaw));
+                        // 3. Bersihkan tag "penutup" yang menggantung di akhir string ($)
+                        // Agar tidak menyisakan ruang kosong di bawah tabel
+                        $htmlClean = preg_replace('/(<\/p>|<\/div>|<br\s*\/?>|\s)+$/i', '', $htmlClean);
+                        // 4. Decode entitas HTML (seperti &amp; menjadi &)
+                        $htmlClean = html_entity_decode($htmlClean);
+
                         $fields = [
-                            //'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            //'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            //'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            //'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
-                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
-                        ];
+                            'Resume'     => 'USE_HTML_CONTENT', 
+                            'Kesan'      => $firstItem->catatan_kaki ?? '-',
+                        ];                     
+                        $originalMargin = $this->lMargin;
 
                         foreach ($fields as $label => $value) {
-                            $this->Cell(60, 4, $label, 0, 0);
-                            $this->Cell(5, 4, ':', 0, 0);
-                            $this->MultiCell(0, 4, $value, 0, 'L');
+                            $startY = $this->GetY();
+                            
+                            // 1. Cetak Label & Titik Dua
+                            $this->SetFont('Times', 'B', 11);
+                            $this->Cell(60, 5, $label, 0, 0);
+                            $this->Cell(5, 5, ':', 0, 0);
+                            
+                            // Koordinat X setelah titik dua
+                            $xKolom3 = $this->GetX();
+                            $this->SetFont('Times', '', 11);
+
+                            // --- KUNCI AGAR LURUS (INDENTASI) ---
+                            // Atur margin kiri tepat di posisi kolom 3
+                            $this->SetLeftMargin($xKolom3); 
+                            // Kembalikan posisi Y ke baris yang sama dengan label
+                            $this->SetY($startY); 
+
+                            if ($value === 'USE_HTML_CONTENT') {
+                                // Sekarang baris 2, 3, dst akan otomatis lurus dengan baris 1
+                                $this->WriteHTML($htmlClean);
+                                $this->Ln(2); 
+                            } else {
+                                // MultiCell juga akan mengikuti margin baru ini
+                                $this->MultiCell(0, 5, $value, 0, 'L');
+                            }
+
+                            // --- KEMBALIKAN MARGIN ---
+                            $this->SetLeftMargin($originalMargin);
+                            
+                            // Pastikan Y baris berikutnya di bawah konten paling panjang
+                            $this->SetY(max($this->GetY(), $startY + 5)); 
+                            $this->SetX($originalMargin); 
                         }
 
                         // 3. TANDA TANGAN (Posisi Absolute Bawah)
