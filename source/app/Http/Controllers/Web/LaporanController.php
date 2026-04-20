@@ -2340,7 +2340,25 @@ class LaporanController extends Controller
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $nikPetugas = $firstItem->nik_petugas;
+                        $infoDokter = $this->data['pegawai_map'][$nikPetugas] ?? null;
+                        $posX = 140; 
+                        $posY = $this->GetY();
+
+                        if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
+                            $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
+                            if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
+                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                            } else {
+                                $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        } else {
+                            $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                            if (file_exists($logoPath)) {
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        }
                         $this->SetY($this->GetY() + 28);
                         $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
@@ -2424,19 +2442,37 @@ class LaporanController extends Controller
                         $yTtd = $this->GetY();
                         
                         // QR Code dan Nama Petugas (Kiri)
-                        $this->SetXY(10, $yTtd);
-                        $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
-                        $this->SetY($this->GetY() + 28);
-                        $this->SetFont('Times', 'BU', 11);
-                        $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
-                        $this->SetFont('Times', 'B', 11);
-                        $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
+                        // $this->SetXY(10, $yTtd);
+                        // $this->MultiCell(95, 5, "Petugas " . ucwords(str_replace('_', ' ', $jenis_poli)) . "\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
+                        // $this->Image('data:image/png;base64,' . $this->data['qrcode'], 45, $this->GetY() + 2, 25, 25, 'png');
+                        // $this->SetY($this->GetY() + 28);
+                        // $this->SetFont('Times', 'BU', 11);
+                        // $this->Cell(95, 5, $firstItem->nama_petugas, 0, 1, 'C');
+                        // $this->SetFont('Times', 'B', 11);
+                        // $this->Cell(95, 5, $firstItem->departemen_petugas, 0, 0, 'C');
 
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $nikPetugas = $firstItem->nik_petugas;
+                        $infoDokter = $this->data['pegawai_map'][$nikPetugas] ?? null;
+                        $posX = 140; 
+                        $posY = $this->GetY();
+
+                        if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
+                            $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
+                            if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
+                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                            } else {
+                                $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        } else {
+                            $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                            if (file_exists($logoPath)) {
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        }
                         $this->SetY($this->GetY() + 28);
                         $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
@@ -2534,7 +2570,25 @@ class LaporanController extends Controller
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $nikPetugas = $firstItem->nik_petugas;
+                        $infoDokter = $this->data['pegawai_map'][$nikPetugas] ?? null;
+                        $posX = 140; 
+                        $posY = $this->GetY();
+
+                        if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
+                            $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
+                            if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
+                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                            } else {
+                                $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        } else {
+                            $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                            if (file_exists($logoPath)) {
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        }
                         $this->SetY($this->GetY() + 28);
                         $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
@@ -2671,7 +2725,25 @@ class LaporanController extends Controller
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $nikPetugas = $firstItem->nik_petugas;
+                        $infoDokter = $this->data['pegawai_map'][$nikPetugas] ?? null;
+                        $posX = 140; 
+                        $posY = $this->GetY();
+
+                        if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
+                            $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
+                            if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
+                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                            } else {
+                                $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        } else {
+                            $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                            if (file_exists($logoPath)) {
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        }
                         $this->SetY($this->GetY() + 28);
                         $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
@@ -2772,7 +2844,25 @@ class LaporanController extends Controller
                         // QR Code dan Nama Dokter (Kanan)
                         $this->SetXY(105, $yTtd);
                         $this->MultiCell(95, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                        $this->Image('data:image/png;base64,' . $this->data['qrcode'], 140, $this->GetY() + 2, 25, 25, 'png');
+                        $nikPetugas = $firstItem->nik_petugas;
+                        $infoDokter = $this->data['pegawai_map'][$nikPetugas] ?? null;
+                        $posX = 140; 
+                        $posY = $this->GetY();
+
+                        if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
+                            $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
+                            if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
+                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                            } else {
+                                $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        } else {
+                            $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
+                            if (file_exists($logoPath)) {
+                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                            }
+                        }
                         $this->SetY($this->GetY() + 28);
                         $this->SetFont('Times', 'BU', 11);
                         $this->SetX(105);
