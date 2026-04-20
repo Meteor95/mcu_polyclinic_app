@@ -2368,9 +2368,10 @@ class LaporanController extends Controller
                         $this->Cell(95, 5, $firstItem->departemen, 0, 1, 'C');
                     }
                     if ($cek_poli === "POLI_RONTGEN_LUMBOSACRAL") {
-                        $this->AddPage();
+                        $this->AddPage('L', 'A4');
                         $this->drawHeaderMcuTable();
-                        $this->Line(10, $this->GetY(), 200, $this->GetY());
+                        $pageWidth = $this->GetPageWidth();
+                        $this->Line(10, $this->GetY(), $pageWidth - 10, $this->GetY());
                         $this->ln(2);
                         $y_awal = $this->GetY();$lebar_bg = 110;$tinggi_bg = 10;
                         $this->_out('q'); 
@@ -2380,7 +2381,7 @@ class LaporanController extends Controller
 
                         $this->SetTextColor(255, 255, 255);
                         $this->SetFont('Times', 'B', 14);
-                        $this->Cell(0, 10, 'HASIL ' . strtoupper(str_replace('_', ' ', $jenis_poli)), 0, 1, 'L');
+                        $this->Cell(0, 10, 'FOTO RONTGEN LUMBOSACRAL', 0, 1, 'L');
                         $this->SetTextColor(0, 0, 0);
                         // Render Semua Gambar dalam Poli ini
                         foreach ($dataPoli as $item) {
