@@ -146,7 +146,7 @@ class LaporanController extends Controller
             'items' => $items,
             'subkategori' => $subkategori
         ];
-    }
+    } 
     private function determineTableName($jenis_poli)
     {
         $tables = [
@@ -2348,15 +2348,15 @@ class LaporanController extends Controller
                         if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
                             $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
                             if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
-                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                                $this->Image($pathTTD, $posX, $posY, 25, 25); 
                             } else {
                                 $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         } else {
                             $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
                             if (file_exists($logoPath)) {
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         }
                         $this->SetY($this->GetY() + 28);
@@ -2501,15 +2501,15 @@ class LaporanController extends Controller
                         if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
                             $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
                             if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
-                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                                $this->Image($pathTTD, $posX, $posY, 25, 25); 
                             } else {
                                 $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         } else {
                             $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
                             if (file_exists($logoPath)) {
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         }
                         $this->SetY($this->GetY() + 28);
@@ -2617,15 +2617,15 @@ class LaporanController extends Controller
                         if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
                             $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
                             if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
-                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                                $this->Image($pathTTD, $posX, $posY, 25, 25); 
                             } else {
                                 $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         } else {
                             $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
                             if (file_exists($logoPath)) {
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         }
                         $this->SetY($this->GetY() + 28);
@@ -2772,15 +2772,15 @@ class LaporanController extends Controller
                         if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
                             $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
                             if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
-                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                                $this->Image($pathTTD, $posX, $posY, 25, 25); 
                             } else {
                                 $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         } else {
                             $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
                             if (file_exists($logoPath)) {
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         }
                         $this->SetY($this->GetY() + 28);
@@ -2891,15 +2891,15 @@ class LaporanController extends Controller
                         if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
                             $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
                             if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
-                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                                $this->Image($pathTTD, $posX, $posY, 25, 25); 
                             } else {
                                 $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         } else {
                             $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
                             if (file_exists($logoPath)) {
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27);
                             }
                         }
                         $this->SetY($this->GetY() + 28);
@@ -3011,15 +3011,15 @@ class LaporanController extends Controller
                         if ($infoDokter && isset($infoDokter['tanda_tangan_pegawai'])) {
                             $pathTTD = storage_path('app/public/user/ttd/' . $infoDokter['tanda_tangan_pegawai']);
                             if (!empty($infoDokter['tanda_tangan_pegawai']) && file_exists($pathTTD)) {
-                                $this->Image($pathTTD, $posX, $posY, 25, 25, 'PNG'); 
+                                $this->Image($pathTTD, $posX, $posY, 25, 25); 
                             } else {
                                 $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27); 
                             }
                         } else {
                             $logoPath = public_path('/mofi/assets/images/logo/qr_not_found.jpg');
                             if (file_exists($logoPath)) {
-                                $this->Image($logoPath, $posX, $posY, 25, 27, 'JPEG');
+                                $this->Image($logoPath, $posX, $posY, 25, 27); 
                             }
                         }
                         $this->SetY($this->GetY() + 28);
