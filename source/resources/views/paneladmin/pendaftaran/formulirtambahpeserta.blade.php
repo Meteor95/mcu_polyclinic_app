@@ -209,9 +209,11 @@
                         </div>
                         <div class="col-md-6">
                             <select class="form-select" id="tipe_mcu_peserta" name="tipe_mcu_peserta" required>
+                                <option value="Pre Employment">Pre Employment</option>
+                                <option value="New Hire">New Hire</option>
                                 <option value="Periodik">Periodik</option>
                                 <option value="Annual">Annual</option>
-                                <option value="Pensiunan">Pensiunan</option>
+                                <option value="Pensiun">Pensiun</option>
                             </select>
                         </div>
                     </div>
