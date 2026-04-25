@@ -388,6 +388,7 @@
                             <th>No</th>
                             <th>Group</th>
                             <th>Nama Tindakan Pemeriksaan</th>
+                            <th>Ada Data</th>
                             <th>Tampilkan</th>
                         </tr>
                         </thead>
@@ -396,153 +397,183 @@
                             <td>1</td>
                             <td rowspan="7" style="background-color:rgb(224, 99, 3);color:white;">Riwayat Informasi</td>
                             <td>Foto Data Diri</td>
+                            <td><span class="progress_fdd">FDD</span></td>
                             <td><button onclick="process_ajax('fdd','modalLihatFoto')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>2</td>
                             <td>Lingkungan Kerja</td>
+                            <td><span class="progress_lk">LK</span></td>
                             <td><button onclick="process_ajax('lk','modalLingkunganKerja')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>3</td>
                             <td>Kecelakaan Kerja</td>
+                            <td><span class="progress_kk">KK</span></td>
                             <td><button onclick="process_ajax('kk','modalKecelakaanKerja')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>4</td>
                             <td>Kebiasaan Hidup</td>
+                            <td><span class="progress_kh">KH</span></td>
                             <td><button onclick="process_ajax('kh','modalKebiasaanHidup')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>5</td>
                             <td>Penyakit Terdahulu</td>
+                            <td><span class="progress_pt">PT</span></td>
                             <td><button onclick="process_ajax('pt','modalPenyakitTerdahulu')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>6</td>
                             <td>Penyakit Keluarga</td>
+                            <td><span class="progress_pk">PK</span></td>
                             <td><button onclick="process_ajax('pk','modalPenyakitKeluarga')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>7</td>
                             <td>Imunisasi</td>
+                            <td><span class="progress_im">IM</span></td>
                             <td><button onclick="process_ajax('im','modalImunisasi')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>8</td>
                             <td rowspan="15" style="background-color:rgb(68, 227, 54);color:black;">Pemeriksaan Fisik</td>
                             <td>Tingkat Kesadaran</td >
+                            <td><span class="progress_tk">TK</span></td>
                             <td><button onclick="process_ajax('tk','modalTingkatKesadaran')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>9</td>
                             <td>Tanda Vital</td>
+                            <td><span class="progress_tv">TV</span></td>
                             <td><button onclick="process_ajax('tv','modalTandaVital')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>10</td>
                             <td>Penglihatan</td>
+                            <td><span class="progress_eye">EYE</span></td>
                             <td><button onclick="process_ajax('eye','modalPenglihatan')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>11</td>
                             <td>Kepala</td>
+                            <td><span class="progress_kp">KP</span></td>
                             <td><button onclick="process_ajax('kp','modalFisik','Kepala')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>12</td>
                             <td>Telinga</td>
+                            <td><span class="progress_tlg">TLG</span></td>
                             <td><button onclick="process_ajax('tlg','modalFisik','Telinga')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>13</td>
                             <td>Mata</td>
+                            <td><span class="progress_mt">MT</span></td>
                             <td><button onclick="process_ajax('mt','modalFisik','Mata')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>14</td>
                             <td>Tenggorokan</td>
+                            <td><span class="progress_tng">TNG</span></td>
                             <td><button onclick="process_ajax('tng','modalFisik','Tenggorokan')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>15</td>
                             <td>Mulut</td>
+                            <td><span class="progress_mlt">MLT</span></td>
                             <td><button onclick="process_ajax('mlt','modalFisik','Mulut')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>16</td>
                             <td>Gigi</td>
+                            <td><span class="progress_gg">GG</span></td>
                             <td><button onclick="process_ajax('gg','modalFisik','Gigi')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>17</td>
                             <td>Leher</td>
+                            <td><span class="progress_lhr">LHR</span></td>
                             <td><button onclick="process_ajax('lhr','modalFisik','Leher')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>18</td>
                             <td>Thorax</td>
+                            <td><span class="progress_thx">THX</span></td>
                             <td><button onclick="process_ajax('thx','modalFisik','Thorax')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>19</td>
                             <td>Abdomen Urogenital</td>
+                            <td><span class="progress_anu">AnU</span></td>
                             <td><button onclick="process_ajax('anu','modalFisik','Abdomen Urogenital')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>20</td>
                             <td>Anorectal Genital</td>
+                            <td><span class="progress_ang">AnG</span></td>
                             <td><button onclick="process_ajax('ang','modalFisik','Anorectal Genital')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>21</td>
                             <td>Ekstremitas</td>
+                            <td><span class="progress_etm">ETM</span></td>
                             <td><button onclick="process_ajax('etm','modalFisik','Ekstremitas')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>22</td>
                             <td>Neurologis</td>
+                            <td><span class="progress_nu">NU</span></td>
                             <td><button onclick="process_ajax('nu','modalFisik','Neurologis')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>23</td>
                             <td rowspan="8" style="background-color:rgb(1, 54, 171);color:white;">Poliklinik</td>
                             <td>Spirometri</td>
+                            <td><span class="progress_sp">SP</span></td>
                             <td><button onclick="process_ajax('sp','modalPoliklinik','Spirometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>24</td>
                             <td>EKG</td>
+                            <td><span class="progress_ekg">EKG</span></td>
                             <td><button onclick="process_ajax('ekg','modalPoliklinik','EKG')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>25</td>
                             <td>Treadmill</td>
+                            <td><span class="progress_tm">TM</span></td>
                             <td><button onclick="process_ajax('tm','modalPoliklinik','Threadmill')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>26</td>
                             <td>Rontgen Thorax</td>
+                            <td><span class="progress_rsn_thorax">RSN</span></td>
                             <td><button onclick="process_ajax('rsn_thorax','modalPoliklinik','Rontgen Thorax')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>27</td>
                             <td>Rontgen Lumbosacral</td>
+                            <td><span class="progress_rsn_lumbosacral">LBS</span></td>
                             <td><button onclick="process_ajax('rsn_lumbosacral','modalPoliklinik','Rontgen Lumbosacral')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>28</td>
                             <td>USG Abdomain</td>
+                            <td><span class="progress_usg_ubdomain">USG</span></td>
                             <td><button onclick="process_ajax('usg_ubdomain','modalPoliklinik','USG Abdomain')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>29</td>
                             <td>Farmingham Score</td>
+                            <td><span class="progress_farmingham_score">FS</span></td>
                             <td><button onclick="process_ajax('farmingham_score','modalPoliklinik','Farmingham Score')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         <tr>
                             <td>30</td>
                             <td>Audiometri</td>
+                            <td><span class="progress_au">AU</span></td>
                             <td><button onclick="process_ajax('au','modalPoliklinik','Audiometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         </tbody>
@@ -611,6 +642,9 @@
     width: 100%;
     height: 100%;
     border-radius: 4px;
+}
+.progress_fdd, .progress_lk, .progress_kk, .progress_kh, .progress_pt, .progress_pk, .progress_im, .progress_tk, .progress_tv, .progress_eye, .progress_kp, .progress_tlg, .progress_mt, .progress_tng, .progress_mlt, .progress_gg, .progress_lhr, .progress_thx, .progress_anu, .progress_ang, .progress_etm, .progress_nu, .progress_sp, .progress_ekg, .progress_tm, .progress_rsn, .progress_au, .progress_lab {
+  cursor: pointer;
 }
 </style>
 @endsection

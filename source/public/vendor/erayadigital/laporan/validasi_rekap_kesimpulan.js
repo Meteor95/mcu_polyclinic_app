@@ -82,6 +82,74 @@ $(document).ready(function() {
     });
     loadDataPasien();
 });
+function updateProgress(selector, condition, text, response = null) {
+    let detail_transaksi_code = '';
+    const icon = condition 
+        ? '<i style="color:green" class="fa-regular fa-thumbs-up fa-lg"></i>' 
+        : '<i style="color:red" class="fa-regular fa-thumbs-down fa-lg"></i>';
+    $(selector).html(icon + ' ' + text);
+    if (text == 'LAB') {
+        if (response.detail_informasi_user) {
+            detail_transaksi_code = encodeURIComponent(btoa(response.detail_informasi_user.id+'|'+response.detail_informasi_user.no_mcu+'|'+response.detail_informasi_user.nomor_identitas+'|'+response.detail_informasi_user.nama_peserta));
+            $(selector+"_bawah").html(`<a href="/laboratorium/tindakan?paramter_tindakan=${detail_transaksi_code}" target="_blank" class="btn btn-amc-orange w-100"><i class="fa fa-edit"></i> Buka Tindakan</a>`);
+        }
+    }
+}
+function load_data_document(no_mcu_js) {
+    $.get('/generate-csrf-token', function(response) {
+        $.ajax({
+            url: baseurlapi + '/laporan/validasi_mcu_nota',
+            type: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
+            },
+            data: {
+                _token: response.csrf_token,
+                no_nota: base64EncodeUnicode(no_mcu_js),
+            },
+            success: function(response) {
+                /* Riwayat Informasi */
+                updateProgress('.progress_fdd', response.jumlah_data_foto_data_diri > 0, 'FDD');
+                updateProgress('.progress_lk', response.jumlah_data_lingkungan_kerja > 0, 'LK');
+                updateProgress('.progress_kk', response.jumlah_data_kecelakaan_kerja > 0, 'KK');
+                updateProgress('.progress_kh', response.jumlah_data_kebiasaan_hidup > 0, 'KH');
+                updateProgress('.progress_pt', response.jumlah_data_penyakit_terdahulu > 0, 'PT');
+                updateProgress('.progress_pk', response.jumlah_data_penyakit_keluarga > 0, 'PK');
+                updateProgress('.progress_im', response.jumlah_data_imunisasi > 0, 'IM');
+                /* Pemeriksaan Fisik */
+                updateProgress('.progress_tk', response.jumlah_data_tingkat_kesehatan > 0, 'TK');
+                updateProgress('.progress_tv', response.jumlah_data_tanda_tanda_vital > 0, 'TV');
+                updateProgress('.progress_eye', response.jumlah_data_penglihatan > 0, 'EYE');
+                updateProgress('.progress_kp', response.jumlah_data_kepala > 0, 'KP');
+                updateProgress('.progress_tlg', response.jumlah_data_telinga > 0, 'TLG');
+                updateProgress('.progress_mt', response.jumlah_data_mata > 0, 'MT');
+                updateProgress('.progress_tng', response.jumlah_data_tenggorokan > 0, 'TNG');
+                updateProgress('.progress_mlt', response.jumlah_data_mulut > 0, 'MLT');
+                updateProgress('.progress_gg', response.jumlah_data_gigi > 0, 'GG');
+                updateProgress('.progress_lhr', response.jumlah_data_leher > 0, 'LHR');
+                updateProgress('.progress_thx', response.jumlah_data_thorax > 0, 'THX');
+                updateProgress('.progress_anu', response.jumlah_data_abdomen_urogenital > 0, 'AnU');
+                updateProgress('.progress_ang', response.jumlah_data_anorectal_genital > 0, 'AnG');
+                updateProgress('.progress_etm', response.jumlah_data_ekstremitas > 0, 'ETM');
+                updateProgress('.progress_nu', response.jumlah_data_neurologis > 0, 'NU');
+                /* Poliklinik */
+                updateProgress('.progress_sp', response.jumlah_data_spirometri > 0, 'SP');
+                updateProgress('.progress_ekg', response.jumlah_data_ekg > 0, 'EKG');
+                updateProgress('.progress_tm', response.jumlah_data_threadmill > 0, 'TM');
+                updateProgress('.progress_rsn_thorax', response.jumlah_data_rontgen_thorax > 0, 'THX');
+                updateProgress('.progress_rsn_lumbosacral', response.jumlah_data_rontgen_lumbosacral > 0, 'LBS');
+                updateProgress('.progress_usg_ubdomain', response.jumlah_data_usg_ubdomain > 0, 'USG');
+                updateProgress('.progress_farmingham_score', response.jumlah_data_farmingham_score > 0, 'FS');
+                updateProgress('.progress_au', response.jumlah_data_audiometri > 0, 'AU');
+                /* Lab */
+                updateProgress('.progress_lab', response.jumlah_data_lab > 0, 'LAB', response);
+            },
+            error: function(xhr, status, error) {
+                createToast('Kesalahan Penghapusan Data', 'top-right', error, 'error', 3000);
+            }
+        })
+    })
+}
 function aksi_onchange_tindakan_kesimpulan(kondisi, value, jenis_aksi) {
     const quillInstance = quillInstances[kondisi]; 
     if (quillInstance) {
@@ -286,6 +354,7 @@ function clear_pemeriksaan_kesimpulan() {
 function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
     id_mcu_let = id_mcu;
     nomor_mcu_let = no_transaksi;
+    load_data_document(nomor_mcu_let);
     $.get('/generate-csrf-token', function(response) {
         $.ajax({
             url: baseurlapi + '/laporan/validasi_rekap_kesimpulan',

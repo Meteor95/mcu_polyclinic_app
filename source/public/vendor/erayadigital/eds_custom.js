@@ -91,3 +91,8 @@ function onloadfromnavigation(param_nomor_identitas, param_nama_peserta){
         $("#pencarian_member_mcu").val(param_nomor_identitas).trigger('change');
     }
 }
+function base64EncodeUnicode(str) {
+  const bytes = new TextEncoder().encode(str);
+  const binString = String.fromCodePoint(...bytes);
+  return btoa(binString);
+}
