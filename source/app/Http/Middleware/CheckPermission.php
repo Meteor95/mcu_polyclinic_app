@@ -40,6 +40,7 @@ class CheckPermission
             'hasAccessTingkatKesadaran' => 'akses_pemeriksaan_fisik_tingkat_kesadaran',
             'hasAccessTandaVital' => 'akses_pemeriksaan_fisik_tanda_vital',
             'hasAccessPenglihatan' => 'akses_pemeriksaan_fisik_penglihatan',
+            'hasAccessKondisiFisikKulit' => 'akses_pemeriksaan_fisik_kondisi_fisik_kulit',
             'hasAccessKondisiFisikKepala' => 'akses_pemeriksaan_fisik_kondisi_fisik_kepala',
             'hasAccessKondisiFisikTelinga' => 'akses_pemeriksaan_fisik_kondisi_fisik_telinga',
             'hasAccessKondisiFisikMata' => 'akses_pemeriksaan_fisik_kondisi_fisik_mata',

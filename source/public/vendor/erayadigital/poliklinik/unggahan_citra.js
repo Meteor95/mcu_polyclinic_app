@@ -582,8 +582,8 @@ function ubah_informasi(id_trx_poli,nomor_identitas,nama_peserta){
                 dokter_citra_unggah_poli_pembaca.setChoiceByValue(response.data[0].pegawai_id_pembaca.toString());
                 dokter_citra_unggah_poli_perawat.setChoiceByValue(response.data[0].pegawai_id_perawat.toString());
                 $("#dokter_citra_unggah_poli").val(response.data[0].pegawai_id.toString());
-                $("#dokter_citra_unggah_poli_pembaca").val(response.data[0].pegawai_id_pembaca.toString());
-                $("#dokter_citra_unggah_poli_perawat").val(response.data[0].pegawai_id_perawat.toString());
+                $("#dokter_citra_unggah_poli_pembaca").val(response.data[0].pegawai_id_pembaca.toString() ?? '');
+                $("#dokter_citra_unggah_poli_perawat").val(response.data[0].pegawai_id_perawat.toString() ?? '');
                 quill.setContents(JSON.parse(response.data[0].detail_kesimpulan));
                 $("#catatan_kaki_citra_unggah_poli").val(response.data[0].catatan_kaki);
                 /* load gallery images */

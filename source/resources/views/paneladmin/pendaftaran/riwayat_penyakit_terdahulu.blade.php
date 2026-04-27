@@ -46,7 +46,7 @@
             @endif
         </div>
         <div class="card-footer">
-            <h1 class="mb-2 text-center">Daftar Riwayat Penyakit Keluarga</h1>
+            <h1 class="mb-2 text-center">Daftar Riwayat Penyakit Terdahulu</h1>
             <input type="text" class="form-control" id="kotak_pencarian_daftar_riwayat_penyakit_terdahulu" placeholder="Cari Nama Peserta">
             <div class="table-responsive theme-scrollbar">
               <table class="display" id="datatables_daftar_penyakit_terdahulu"></table>

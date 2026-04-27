@@ -118,7 +118,7 @@
             </ul>
           </li>
           @endif
-          @if ($hasAccessTingkatKesadaran || $hasAccessPenglihatan || $hasAccessKondisiFisikKepala || $hasAccessKondisiFisikTelinga || $hasAccessKondisiFisikMata || $hasAccessKondisiFisikTenggorokan || $hasAccessKondisiFisikMulut || $hasAccessKondisiFisikGigi || $hasAccessKondisiFisikLeher || $hasAccessKondisiFisikThorax || $hasAccessKondisiFisikAbdomenUrogenital || $hasAccessKondisiFisikAnorectalGenital || $hasAccessKondisiFisikEkstremitas || $hasAccessKondisiFisikNeurologis || $hasAccessTarifLaboratorium || $hasAccessKategoriLaboratorium || $hasAccessSatuanLaboratorium || $hasAccessRentangKenormalanLaboratorium || $hasAccessRentangTemplating)
+          @if ($hasAccessTingkatKesadaran || $hasAccessPenglihatan || $hasAccessKondisiFisikKulit || $hasAccessKondisiFisikKepala || $hasAccessKondisiFisikTelinga || $hasAccessKondisiFisikMata || $hasAccessKondisiFisikTenggorokan || $hasAccessKondisiFisikMulut || $hasAccessKondisiFisikGigi || $hasAccessKondisiFisikLeher || $hasAccessKondisiFisikThorax || $hasAccessKondisiFisikAbdomenUrogenital || $hasAccessKondisiFisikAnorectalGenital || $hasAccessKondisiFisikEkstremitas || $hasAccessKondisiFisikNeurologis || $hasAccessTarifLaboratorium || $hasAccessKategoriLaboratorium || $hasAccessSatuanLaboratorium || $hasAccessRentangKenormalanLaboratorium || $hasAccessRentangTemplating)
           <li class="sidebar-list">
             <i class="fa fa-thumb-tack"></i>
             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
@@ -144,6 +144,7 @@
                 </a>
                 <ul class="nav-sub-childmenu submenu-content">
                   @foreach([
+                      ['condition' => $hasAccessKondisiFisikKulit, 'url' => 'pemeriksaan_fisik/kondisi_fisik/kulit', 'label' => 'Kulit'],
                       ['condition' => $hasAccessKondisiFisikKepala, 'url' => 'pemeriksaan_fisik/kondisi_fisik/kepala', 'label' => 'Kepala'],
                       ['condition' => $hasAccessKondisiFisikTelinga, 'url' => 'pemeriksaan_fisik/kondisi_fisik/telinga', 'label' => 'Telinga'],
                       ['condition' => $hasAccessKondisiFisikMata, 'url' => 'pemeriksaan_fisik/kondisi_fisik/mata', 'label' => 'Mata'],
