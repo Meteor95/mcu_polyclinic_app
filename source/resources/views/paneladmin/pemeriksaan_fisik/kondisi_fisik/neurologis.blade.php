@@ -31,13 +31,13 @@
                                     <td>{{ $item->jenis_pemeriksaan }}</td>
                                     <td>
                                         <div class="form-check checkbox checkbox-primary mb-0">
-                                            <input class="form-check-input ab-normal-checkbox" onclick="cek_ab_normal({{ $item->id }},0)" id="ab_normal_{{ $item->id }}" type="checkbox">
+                                            <input class="form-check-input ab-normal-checkbox" onclick="cek_ab_normal({{ $item->id }},0,'{{ $item->jenis_pemeriksaan }}')" id="ab_normal_{{ $item->id }}" type="checkbox">
                                             <label class="form-check-label" for="ab_normal_{{ $item->id }}">Ab-Normal</label>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-check checkbox checkbox-primary mb-0">
-                                            <input class="form-check-input normal-checkbox" onclick="cek_ab_normal({{ $item->id }},1)" id="normal_{{ $item->id }}" type="checkbox">
+                                            <input class="form-check-input normal-checkbox" onclick="cek_ab_normal({{ $item->id }},1,'{{ $item->jenis_pemeriksaan }}')" id="normal_{{ $item->id }}" type="checkbox">
                                             <label class="form-check-label" for="normal_{{ $item->id }}">Normal</label>
                                         </div>
                                     </td>
