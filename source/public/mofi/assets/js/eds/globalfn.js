@@ -152,6 +152,8 @@ function izinkan_akses_tindakan(hak_akses,pathParts){
             cari_hak_akses = "kondisi_fisik_ekstremitas";
         } else if (pathParts[2] === "neurologis") {
             cari_hak_akses = "kondisi_fisik_neurologis";
+        } else if (pathParts[2] === "kulit") {
+            cari_hak_akses = "kondisi_fisik_kulit";
         }
     } else if (pathParts[1] === "spirometri"){
         cari_hak_akses = "poliklinik_spirometri";

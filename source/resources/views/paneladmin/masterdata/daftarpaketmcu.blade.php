@@ -110,6 +110,10 @@
                             <td><input type="checkbox" class="form-check-input" id="penglihatan" name="penglihatan"></td>
                         </tr>
                         <tr>
+                            <td>Kulit</td>
+                            <td><input type="checkbox" class="form-check-input" id="kondisi_fisik_kulit" name="kondisi_fisik_kulit"></td>
+                        </tr>
+                        <tr>
                             <td>Kepala</td>
                             <td><input type="checkbox" class="form-check-input" id="kondisi_fisik_kepala" name="kondisi_fisik_kepala"></td>
                         </tr>
