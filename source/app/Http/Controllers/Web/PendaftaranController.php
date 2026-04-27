@@ -175,7 +175,7 @@ class PendaftaranController extends Controller
             'Beranda' => route('admin.beranda'),
             'Kebiasaan Hidup Peserta MCU' => route('admin.pendaftaran.kebiasaan_hidup'),
         ]);
-        $data['dataNavigasi'] = $this->getNavigasi('Kecelakaan Kerja',route('admin.pendaftaran.kecelakaan_kerja', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Penyakit Terdahulu', route('admin.pendaftaran.penyakit_terdahulu', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), true, true);
+        $data['dataNavigasi'] = $this->getNavigasi('Kecelakaan Kerja',route('admin.pendaftaran.kecelakaan_kerja', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Penyakit Keluarga', route('admin.pendaftaran.penyakit_keluarga', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), true, true);
         $data['nomor_identitas'] = $req->nomor_identitas;
         $data['nama_peserta'] = $req->nama_peserta;
         $data['kebiasaan_hidup'] = KebiasaanHidup::where('status', '>', 0)->get();

@@ -8,7 +8,7 @@
         </div>
         <div class="card-body">
           <div class="row formulir_group">
-            <h1 class="mb-2 text-center">Formulir Riwayat Penyakit Keluarga</h1>
+            <h1 class="mb-2 text-center">Formulir Riwayat Penyakit Terdahulu</h1>
             <table class="table display" id="datatables_penyakit_terdahulu">
               <thead>
                 <tr>
