@@ -230,7 +230,7 @@ class LaporanController extends Controller
         $penglihatan = Penglihatan::where('transaksi_id', $id_mcu)->get();
         $transaksi_laboratorium = TransaksiLab::where('no_mcu', $id_mcu)->first();
         $kesimpulan_tindakan = Kesimpulan::join('lab_kesimpulan', 'lab_kesimpulan.id', '=', 'transaksi_kesimpulan.kesimpulan_keseluruhan')->where('transaksi_kesimpulan.id_mcu', $id_mcu)->first();
-        $kategori_pemeriksaan = ['kepala','telinga','mata','tenggorokan','mulut','gigi','leher','thorax','abdomen_urogenital','anorectal_genital','ekstremitas','neurologis'];
+        $kategori_pemeriksaan = ['kulit','kepala','telinga','mata','tenggorokan','mulut','gigi','leher','thorax','abdomen_urogenital','anorectal_genital','ekstremitas','neurologis'];
         $query_kondisi_fisik = "";
         $ada_lampiran_laboratorium_pdf = $transaksi_laboratorium?->lampirkan_berkas_pdf ?? '0';
         $total_tindakan = $transaksi_laboratorium?->total_tindakan ?? '0';
