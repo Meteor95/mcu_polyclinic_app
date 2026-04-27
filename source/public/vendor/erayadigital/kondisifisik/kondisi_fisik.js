@@ -61,35 +61,26 @@ function cek_ab_normal(id,kondisi,jenis_pemeriksaan) {
             status_atribut_pemeriksaan = 2;
             let ab = $('#ab_normal_' + id);
             let normal = $('#normal_' + id);
-
-            // toggle logic
             if (kondisi == 0) {
                 if (ab.data('checked')) {
-                    // klik kedua → uncheck
                     ab.prop('checked', false);
                     ab.data('checked', false);
                     status_atribut_pemeriksaan = 2;
                 } else {
-                    // klik pertama → pilih
                     ab.prop('checked', true);
                     normal.prop('checked', false).data('checked', false);
-
                     ab.data('checked', true);
                     status_atribut_pemeriksaan = 0;
                 }
             }
-
             if (kondisi == 1) {
                 if (normal.data('checked')) {
-                    // klik kedua → uncheck
                     normal.prop('checked', false);
                     normal.data('checked', false);
                     status_atribut_pemeriksaan = 2;
                 } else {
-                    // klik pertama → pilih
                     normal.prop('checked', true);
                     ab.prop('checked', false).data('checked', false);
-
                     normal.data('checked', true);
                     status_atribut_pemeriksaan = 1;
                 }

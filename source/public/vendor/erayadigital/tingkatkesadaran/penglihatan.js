@@ -296,8 +296,8 @@ function fill_detail_penglihatan(user_id,transaksi_id,nama_peserta,detail){
                     $("#visus_od_tanpa_kacamata_dekat").val(response.data.visus_od_tanpa_kacamata_dekat);
                     $("#visus_os_kacamata_dekat").val(response.data.visus_os_kacamata_dekat);
                     $("#visus_od_kacamata_dekat").val(response.data.visus_od_kacamata_dekat);
-                    $('#keterangan_pilihan_jauh').val(response.data.keterangan_jauh);
-                    $('#keterangan_pilihan_dekat').val(response.data.keterangan_dekat);
+                    $('#keterangan_pilihan_jauh').val(response.data.keterangan_dekat.trim());
+                    $('#keterangan_pilihan_dekat').val(response.data.keterangan_jauh.trim());
                     $('#buta_warna_total').prop('checked', response.data.buta_warna == 1 ? true : false);
                     $('#buta_warna_partial_red_green').prop('checked', response.data.buta_warna_red_green == 1 ? true : false);
                     $("#buta_warna_keterangan").val(response.data.buta_warna_keterangan);

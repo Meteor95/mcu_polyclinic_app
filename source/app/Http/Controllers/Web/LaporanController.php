@@ -1939,7 +1939,7 @@ class LaporanController extends Controller
                 $this->Cell(30, 8, $p->visus_od_kacamata_jauh ?? '-', 1, 0, 'C');
                 $this->Cell(30, 8, $p->visus_os_kacamata_jauh ?? '-', 1, 0, 'C');
                 // Kolom Keterangan Jauh (Ambil data normal/abnormal)
-                $this->Cell(45, 8, $p->keterangan_jauh ?? 'NORMAL', 1, 1, 'C'); 
+                $this->Cell(45, 8, $p->keterangan_dekat ?? 'NORMAL', 1, 1, 'C'); 
 
                 // Baris Dekat
                 $this->Cell(25, 8, ' Dekat', 1, 0, 'L');
@@ -1948,7 +1948,7 @@ class LaporanController extends Controller
                 $this->Cell(30, 8, $p->visus_od_kacamata_dekat ?? '-', 1, 0, 'C');
                 $this->Cell(30, 8, $p->visus_os_kacamata_dekat ?? '-', 1, 0, 'C');
                 // Kolom Keterangan Dekat
-                $this->Cell(45, 8, $p->keterangan_dekat ?? 'NORMAL', 1, 1, 'C');
+                $this->Cell(45, 8, $p->keterangan_jauh ?? 'NORMAL', 1, 1, 'C');
 
                 $this->SetFillColor(44, 148, 42);
                 $this->SetTextColor(255);
