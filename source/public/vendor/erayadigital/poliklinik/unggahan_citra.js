@@ -300,9 +300,12 @@ $("#simpan_foto_perserta").on('click', async function() {
     // if ($("#dokter_citra_unggah_poli").val() == null){
     //     return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan dokter yang bertugas terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     // }
-    // if ($("#pencarian_member_mcu").val() == null){
-    //     return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
-    // }
+    if ($("#pencarian_member_mcu").val() == null){
+         return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan peserta terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
+    }
+    if ($("#dokter_citra_unggah_poli_pembaca").val() == "" || $("#dokter_citra_unggah_poli").val() == "" || $("#dokter_citra_unggah_poli_perawat").val() == ""){
+        return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan DOKTER, PEMBACA, PERAWAT yang bertugas terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
+    }
     // if (jenis_poli.toLowerCase().replace(/ /g, "") !== "farmingham_score"){
     //     if ($("#pdf_file")[0].files[0] == null){
     //         if (croppedImages.length == 0 && (jenis_poli.toLowerCase().replace(/ /g, "") !== "farmingham_score")){
