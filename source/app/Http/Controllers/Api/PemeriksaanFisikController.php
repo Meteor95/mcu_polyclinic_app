@@ -320,6 +320,7 @@ class PemeriksaanFisikController extends Controller
     private function determineTableName($lokasiFisik)
     {
         $tables = [
+            'kulit' => 'mcu_pf_kulit',
             'kepala' => 'mcu_pf_kepala',
             'telinga' => 'mcu_pf_telinga',
             'mata' => 'mcu_pf_mata',

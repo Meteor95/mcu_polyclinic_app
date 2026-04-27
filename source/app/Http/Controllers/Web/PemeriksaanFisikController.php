@@ -44,7 +44,7 @@ class PemeriksaanFisikController extends Controller
             'Beranda' => route('admin.beranda'),
             'Penglihatan' => route('admin.pemeriksaan_fisik.penglihatan'),
         ]);
-        $data['dataNavigasi'] = $this->getNavigasi('Penyakit Terdahulu', route('admin.pendaftaran.penyakit_terdahulu', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Kepala', url('/pemeriksaan_fisik/kondisi_fisik/kepala?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
+        $data['dataNavigasi'] = $this->getNavigasi('Penyakit Terdahulu', route('admin.pendaftaran.penyakit_terdahulu', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Kulit', url('/pemeriksaan_fisik/kondisi_fisik/kulit?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
         $data['nomor_identitas'] = $req->nomor_identitas;
         $data['nama_peserta'] = $req->nama_peserta;
         return view('paneladmin.pemeriksaan_fisik.penglihatan', ['data' => $data]);
@@ -57,8 +57,12 @@ class PemeriksaanFisikController extends Controller
         $lokasi_fisik_navigasi_sebelumnya = route('admin.pemeriksaan_fisik.penglihatan', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]);
         $lokasi_fisik_navigasi = '';
         switch ($lokasi_fisik) {
+            case 'kulit':
+                $data['dataNavigasi'] = $this->getNavigasi('Penglihatan', route('admin.pemeriksaan_fisik.penglihatan', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Kepala', url('/pemeriksaan_fisik/kondisi_fisik/kepala?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
+                break;
             case 'kepala':
-                $data['dataNavigasi'] = $this->getNavigasi('Penglihatan', route('admin.pemeriksaan_fisik.penglihatan', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Telinga', url('/pemeriksaan_fisik/kondisi_fisik/telinga?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
+                $lokasi_fisik_navigasi_sebelumnya = 'kulit';
+                $lokasi_fisik_navigasi = 'telinga';
                 break;
             case 'telinga':
                 $lokasi_fisik_navigasi_sebelumnya = 'kepala';
@@ -108,7 +112,7 @@ class PemeriksaanFisikController extends Controller
                 $lokasi_fisik_navigasi = $lokasi_fisik;
                 break;
         }
-        if ($lokasi_fisik != 'kepala'){
+        if ($lokasi_fisik != 'kulit'){
             $data['dataNavigasi'] = $this->getNavigasi(ucwords(str_replace("_", " ", $lokasi_fisik_navigasi_sebelumnya)), $lokasi_fisik_navigasi_sebelumnya, ucwords(str_replace("_", " ", $lokasi_fisik_navigasi)), url('/pemeriksaan_fisik/kondisi_fisik/'.$lokasi_fisik_navigasi.'?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
         }
         $data['nomor_identitas'] = $req->nomor_identitas;

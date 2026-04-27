@@ -45,6 +45,7 @@ class KondisiFisik extends Model
         $lokasiFisik = strtolower($lokasiFisik);
 
         $lokasiFisikTables = [
+            'kulit' => 'mcu_pf_kulit',
             'kepala' => 'mcu_pf_kepala',
             'telinga' => 'mcu_pf_telinga',
             'mata' => 'mcu_pf_mata',
