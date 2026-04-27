@@ -13,7 +13,7 @@
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Riwayat Penyakit Keluarga</th>
+                  <th>Riwayat Penyakit Terdahulu</th>
                   <th>Status</th>
                   <th>Keterangan</th>
                 </tr>
