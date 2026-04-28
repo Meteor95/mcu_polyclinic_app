@@ -2022,7 +2022,7 @@ class LaporanController extends Controller
                 $this->Cell(25, 8, $p->lapang_pandang_temporal_od, 1, 0, 'C');
                 $this->Cell(25, 8, $p->lapang_pandang_nasal_od, 1, 0, 'C');
                 $this->Cell(60, 8, " " . $p->lapang_pandang_keterangan_od, 1, 1, 'L');
-                $this->Ln(2);
+                $this->Ln(4);
 
                 // --- JUDUL (Warna Biru Langit) ---
                 $this->SetFillColor(72, 171, 198); 
