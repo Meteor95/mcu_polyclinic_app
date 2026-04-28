@@ -1175,7 +1175,6 @@ class LaporanController extends Controller
                         $groupedItems[$normalized_status][] = $item;
                     }
                 }
-
                 $target_kesimpulan = strtoupper(trim($this->data['kesimpulan_hasil_medical_checkup']));
                 if (str_contains($target_kesimpulan, 'FIT_TO_WORK') || str_contains($target_kesimpulan, 'FIT_WITH_NOTE')) {
                     $target_kesimpulan = 'FIT';
@@ -1206,7 +1205,7 @@ class LaporanController extends Controller
                     $startY = $this->GetY();
 
                     // B. Cetak Kolom STATUS (Hanya 1x per grup)
-                    $isHighlightedGroup = ($normalized_status == $target_kesimpulan);
+                    $isHighlightedGroup = (str_replace('_', ' ', $normalized_status) == str_replace('_', ' ', $target_kesimpulan));
                     $this->SetFillColor($isHighlightedGroup ? $rgbTerpilih[0] : 255, $isHighlightedGroup ? $rgbTerpilih[1] : 255, $isHighlightedGroup ? $rgbTerpilih[2] : 255);
                     $this->Cell(40, $groupHeight, $normalized_status, 1, 0, 'C', true);
 
