@@ -101,7 +101,7 @@
                             <td><input type="checkbox" class="form-check-input" id="imunisasi" name="imunisasi"></td>
                         </tr>
                         <tr>
-                            <td rowspan="14">Pemeriksaan dan Kondisi Fisik</td>
+                            <td rowspan="15">Pemeriksaan dan Kondisi Fisik</td>
                             <td>Tingkat Kesadaran</td>
                             <td><input type="checkbox" class="form-check-input" id="tingkat_kesadaran" name="tingkat_kesadaran"></td>
                         </tr>
