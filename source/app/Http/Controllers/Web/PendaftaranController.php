@@ -113,6 +113,7 @@ class PendaftaranController extends Controller
                 'alamat_surel_temp' => $informasi_peserta->email,
             ] : null,
             'proses_kerja' => json_decode($datatransaksi->proses_kerja, true),
+            'tipe_mcu_peserta' => $datatransaksi->tipe_mcu_peserta,
         ]);
         return view('paneladmin.pendaftaran.formulirtambahpeserta', compact('data'));
     }

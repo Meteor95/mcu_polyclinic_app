@@ -347,6 +347,7 @@
         $("#nomor_identitas").val("{{ $data['peserta']->nomor_identitas }}");
         $("#nama_peserta").val("{{ $data['peserta']->nama_peserta }}");
         $("#tempat_lahir").val("{{ $data['peserta']->tempat_lahir }}");
+        $("#tipe_mcu_peserta").val("{{ $data['peserta']->tipe_mcu_peserta }}");
         $("#tanggal_lahir_peserta").val("{{ \Carbon\Carbon::parse($data['peserta']->tanggal_lahir)->format('d-m-Y') }}");
         $("#tipe_identitas").val("{{ $data['peserta']->tipe_identitas }}").trigger('change');
         $("#jenis_kelamin").val("{{ $data['peserta']->jenis_kelamin }}").trigger('change');
