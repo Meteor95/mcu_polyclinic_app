@@ -988,16 +988,16 @@ class LaporanController extends Controller
 
                         // Isi Data Jauh
                         $text_pakai_kacamata_tanpa = "(Tanpa Kacamata)";
-                        $nilaiJauhOD = $p->visus_os_tanpa_kacamata_jauh;
+                        $nilaiJauhOD = $p->visus_od_tanpa_kacamata_jauh;
                         $nilaiJauhOS = $p->visus_os_tanpa_kacamata_jauh;
-                        if (empty($p->visus_os_tanpa_kacamata_jauh) && empty($p->visus_os_tanpa_kacamata_jauh)) {
-                            $nilaiJauhOD = $p->visus_os_kacamata_jauh;
+                        if (empty($p->visus_od_tanpa_kacamata_jauh) && empty($p->visus_os_tanpa_kacamata_jauh)) {
+                            $nilaiJauhOD = $p->visus_od_kacamata_jauh;
                             $nilaiJauhOS = $p->visus_os_kacamata_jauh;
                         }
                         $text_pakai_kacamata = "(Dengan Kacamata)";
                         $nilaiDekatOD = $p->visus_od_tanpa_kacamata_dekat;
                         $nilaiDekatOS = $p->visus_os_tanpa_kacamata_dekat;
-                        if (empty($p->visus_os_tanpa_kacamata_dekat) && empty($p->visus_os_tanpa_kacamata_dekat)) {
+                        if (empty($p->visus_od_tanpa_kacamata_dekat) && empty($p->visus_os_tanpa_kacamata_dekat)) {
                             $nilaiDekatOD = $p->visus_od_kacamata_dekat;
                             $nilaiDekatOS = $p->visus_os_kacamata_dekat;
                         }
