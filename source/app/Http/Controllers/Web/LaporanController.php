@@ -988,23 +988,25 @@ class LaporanController extends Controller
 
                         // Isi Data Jauh
                         $text_pakai_kacamata_tanpa = "(Tanpa Kacamata)";
-                        $text_pakai_kacamata = "(Dengan Kacamata)";
-                        $nilaiJauhOD_tanpa = $p->visus_od_tanpa_kacamata_jauh;
-                        $nilaiJauhOS_tanpa = $p->visus_os_tanpa_kacamata_jauh;
-                        $nilaiDekatOD_tanpa = $p->visus_od_tanpa_kacamata_dekat;
-                        $nilaiDekatOS_tanpa = $p->visus_os_tanpa_kacamata_dekat;
-                        if (!empty($p->visus_od_kacamata_jauh) || !empty($p->visus_os_kacamata_jauh) || !empty($p->visus_od_kacamata_dekat) || !empty($p->visus_os_kacamata_dekat)) {
-                            
+                        $nilaiJauhOD = $p->visus_os_tanpa_kacamata_jauh;
+                        $nilaiJauhOS = $p->visus_os_tanpa_kacamata_jauh;
+                        if (empty($p->visus_os_tanpa_kacamata_jauh) && empty($p->visus_os_tanpa_kacamata_jauh)) {
+                            $nilaiJauhOD = $p->visus_os_kacamata_jauh;
+                            $nilaiJauhOS = $p->visus_os_kacamata_jauh;
                         }
-                        $nilaiJauhOD = $p->visus_od_kacamata_jauh;
-                        $nilaiJauhOS = $p->visus_os_kacamata_jauh;
-                        $nilaiDekatOD = $p->visus_od_kacamata_dekat;
-                        $nilaiDekatOS = $p->visus_os_kacamata_dekat;
+                        $text_pakai_kacamata = "(Dengan Kacamata)";
+                        $nilaiDekatOD = $p->visus_od_tanpa_kacamata_dekat;
+                        $nilaiDekatOS = $p->visus_os_tanpa_kacamata_dekat;
+                        if (empty($p->visus_os_tanpa_kacamata_dekat) && empty($p->visus_os_tanpa_kacamata_dekat)) {
+                            $nilaiDekatOD = $p->visus_od_kacamata_dekat;
+                            $nilaiDekatOS = $p->visus_os_kacamata_dekat;
+                        }
+                        
                         $this->Write(6, 'Jauh : ');
                         $this->SetFont('Times', 'B', 10); $this->Write(6, 'OD ');
-                        $this->SetFont('Times', '', 10);  $this->Write(6, ($nilaiJauhOD_tanpa ?? '-') . ' ');
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($nilaiJauhOD ?? '-') . ' ');
                         $this->SetFont('Times', 'B', 10); $this->Write(6, 'OS ');
-                        $this->SetFont('Times', '', 10);  $this->Write(6, ($nilaiJauhOS_tanpa ?? '-') . ' '.$text_pakai_kacamata_tanpa.' ');
+                        $this->SetFont('Times', '', 10);  $this->Write(6, ($nilaiJauhOS ?? '-') . ' '.$text_pakai_kacamata_tanpa.' ');
 
                         // Isi Data Dekat
                         $this->Write(6, 'Dekat : ');
