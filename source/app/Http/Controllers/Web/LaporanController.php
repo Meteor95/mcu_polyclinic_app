@@ -994,11 +994,12 @@ class LaporanController extends Controller
                         $nilaiDekatOD_tanpa = $p->visus_od_tanpa_kacamata_dekat;
                         $nilaiDekatOS_tanpa = $p->visus_os_tanpa_kacamata_dekat;
                         if (!empty($p->visus_od_kacamata_jauh) || !empty($p->visus_os_kacamata_jauh) || !empty($p->visus_od_kacamata_dekat) || !empty($p->visus_os_kacamata_dekat)) {
-                            $nilaiJauhOD = $p->visus_od_kacamata_jauh;
-                            $nilaiJauhOS = $p->visus_os_kacamata_jauh;
-                            $nilaiDekatOD = $p->visus_od_kacamata_dekat;
-                            $nilaiDekatOS = $p->visus_os_kacamata_dekat;
+                            
                         }
+                        $nilaiJauhOD = $p->visus_od_kacamata_jauh;
+                        $nilaiJauhOS = $p->visus_os_kacamata_jauh;
+                        $nilaiDekatOD = $p->visus_od_kacamata_dekat;
+                        $nilaiDekatOS = $p->visus_os_kacamata_dekat;
                         $this->Write(6, 'Jauh : ');
                         $this->SetFont('Times', 'B', 10); $this->Write(6, 'OD ');
                         $this->SetFont('Times', '', 10);  $this->Write(6, ($nilaiJauhOD_tanpa ?? '-') . ' ');
@@ -2309,7 +2310,7 @@ class LaporanController extends Controller
                             if ($value === 'USE_HTML_CONTENT') {
                                 // Sekarang baris 2, 3, dst akan otomatis lurus dengan baris 1
                                 $this->WriteHTML($htmlClean);
-                                $this->Ln(2); 
+                                $this->Ln(5); 
                             } else {
                                 // MultiCell juga akan mengikuti margin baru ini
                                 $this->MultiCell(0, 5, $value, 0, 'L');
@@ -2461,7 +2462,7 @@ class LaporanController extends Controller
                             if ($value === 'USE_HTML_CONTENT') {
                                 // Sekarang baris 2, 3, dst akan otomatis lurus dengan baris 1
                                 $this->WriteHTML($htmlClean);
-                                $this->Ln(2); 
+                                $this->Ln(5); 
                             } else {
                                 // MultiCell juga akan mengikuti margin baru ini
                                 $this->MultiCell(0, 5, $value, 0, 'L');
@@ -2971,7 +2972,7 @@ class LaporanController extends Controller
                             if ($value === 'USE_HTML_CONTENT') {
                                 // Sekarang baris 2, 3, dst akan otomatis lurus dengan baris 1
                                 $this->WriteHTML($htmlClean);
-                                $this->Ln(2); 
+                                $this->Ln(5); 
                             } else {
                                 // MultiCell juga akan mengikuti margin baru ini
                                 $this->MultiCell(0, 5, $value, 0, 'L');
