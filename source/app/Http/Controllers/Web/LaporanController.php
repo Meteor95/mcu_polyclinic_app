@@ -2324,6 +2324,7 @@ class LaporanController extends Controller
                             // Pastikan Y baris berikutnya di bawah konten paling panjang
                             $this->SetY(max($this->GetY(), $startY + 5)); 
                             $this->SetX($originalMargin); 
+                            $this->Ln(7);
                         }
                         // 3. TANDA TANGAN (Posisi Absolute Bawah)
                         $this->SetY(-80); // Set posisi dari bawah kertas
@@ -2476,6 +2477,7 @@ class LaporanController extends Controller
                             // Pastikan Y baris berikutnya di bawah konten paling panjang
                             $this->SetY(max($this->GetY(), $startY + 5)); 
                             $this->SetX($originalMargin); 
+                            $this->Ln(7);
                         }
 
                         // 3. TANDA TANGAN (Posisi Absolute Bawah)
@@ -2986,6 +2988,7 @@ class LaporanController extends Controller
                             // Pastikan Y baris berikutnya di bawah konten paling panjang
                             $this->SetY(max($this->GetY(), $startY + 5)); 
                             $this->SetX($originalMargin); 
+                            $this->Ln(7);
                         }
 
                         // 3. TANDA TANGAN (Posisi Absolute Bawah)
