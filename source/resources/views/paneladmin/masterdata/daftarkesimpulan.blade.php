@@ -15,17 +15,25 @@
             <div class="col-md-6">
               <select class="form-control" id="jenis_pemeriksaan_pencarian">
                   <option value="">PILIH JENIS TINDAKAN</option>
-                  <option value="pemeriksaan_audiometri">PEMERIKSAAN AUDIOMETRI</option>
-                  <option value="pemeriksaan_ekg">PEMERIKSAAN EKG</option>
-                  <option value="pemeriksaan_farmingham_score">PEMERIKSAAN FARMINGHAM SCORE</option>
-                  <option value="pemeriksaan_fisik">PEMERIKSAAN FISIK</option>
-                  <option value="pemeriksaan_laboratorium">PEMERIKSAAN LABORATORIUM</option>
-                  <option value="pemeriksaan_rontgen_lumbosacral">PEMERIKSAAN RONTGEN LUMBOSACRAL</option>
-                  <option value="pemeriksaan_rontgen_thorax">PEMERIKSAAN RONTGEN THORAX</option>
-                  <option value="pemeriksaan_spirometri">PEMERIKSAAN SPIROMETRI</option>
-                  <option value="pemeriksaan_threadmill">PEMERIKSAAN TREADMILL</option>
-                  <option value="pemeriksaan_usg_ubdomain">PEMERIKSAAN USG ABDOMAIN</option>
-                  <option value="saran">SARAN</option>
+                  <option value="pemeriksaan_audiometri">KESIMPULAN AUDIOMETRI</option>
+                  <option value="pemeriksaan_ekg">KESIMPULAN EKG</option>
+                  <option value="pemeriksaan_farmingham_score">KESIMPULAN FARMINGHAM SCORE</option>
+                  <option value="pemeriksaan_fisik">KESIMPULAN FISIK</option>
+                  <option value="pemeriksaan_laboratorium">KESIMPULAN LABORATORIUM</option>
+                  <option value="pemeriksaan_rontgen_lumbosacral">KESIMPULAN RONTGEN LUMBOSACRAL</option>
+                  <option value="pemeriksaan_rontgen_thorax">KESIMPULAN RONTGEN THORAX</option>
+                  <option value="pemeriksaan_spirometri">KESIMPULAN SPIROMETRI</option>
+                  <option value="pemeriksaan_threadmill">KESIMPULAN TREADMILL</option>
+                  <option value="pemeriksaan_usg_ubdomain">KESIMPULAN USG ABDOMAIN</option>
+                  <option value="saran">KESIMPULAN SARAN</option>
+                  <option value="poli_spirometri">PEMERIKSAAN POLI SPIROMETRI</option>
+                  <option value="poli_audiometri">PEMERIKSAAN POLI AUDIOMETRI</option>
+                  <option value="poli_ekg">PEMERIKSAAN POLI EKG</option>
+                  <option value="poli_threadmill">PEMERIKSAAN POLI TREADMILL</option>
+                  <option value="poli_rontgen_thorax">PEMERIKSAAN POLI RONTGEN</option>
+                  <option value="poli_rontgen_lumbosacral">PEMERIKSAAN POLI RONTGEN LUMBOSACRAL</option>
+                  <option value="poli_usg_ubdomain">PEMERIKSAAN POLI USG ABDOMEN</option>
+                  <option value="poli_farmingham_score">PEMERIKSAAN POLI FARMINGHAM SCORE</option>
               </select>
             </div>
           </div>
@@ -50,17 +58,25 @@
                 <label for="pilihjeniskesimpulan" class="form-label">Pilih Jenis Kesimpulan</label>
                 <select class="form-control" id="jenis_pemeriksaan">
                   <option value="">PILIH JENIS TINDAKAN</option>
-                  <option value="pemeriksaan_audiometri">PEMERIKSAAN AUDIOMETRI</option>
-                  <option value="pemeriksaan_ekg">PEMERIKSAAN EKG</option>
-                  <option value="pemeriksaan_farmingham_score">PEMERIKSAAN FARMINGHAM SCORE</option>
-                  <option value="pemeriksaan_fisik">PEMERIKSAAN FISIK</option>
-                  <option value="pemeriksaan_laboratorium">PEMERIKSAAN LABORATORIUM</option>
-                  <option value="pemeriksaan_rontgen_lumbosacral">PEMERIKSAAN RONTGEN LUMBOSACRAL</option>
-                  <option value="pemeriksaan_rontgen_thorax">PEMERIKSAAN RONTGEN THORAX</option>
-                  <option value="pemeriksaan_spirometri">PEMERIKSAAN SPIROMETRI</option>
-                  <option value="pemeriksaan_threadmill">PEMERIKSAAN TREADMILL</option>
-                  <option value="pemeriksaan_usg_ubdomain">PEMERIKSAAN USG ABDOMAIN</option>
-                  <option value="saran">SARAN</option>
+                  <option value="pemeriksaan_audiometri">KESIMPULAN AUDIOMETRI</option>
+                  <option value="pemeriksaan_ekg">KESIMPULAN EKG</option>
+                  <option value="pemeriksaan_farmingham_score">KESIMPULAN FARMINGHAM SCORE</option>
+                  <option value="pemeriksaan_fisik">KESIMPULAN FISIK</option>
+                  <option value="pemeriksaan_laboratorium">KESIMPULAN LABORATORIUM</option>
+                  <option value="pemeriksaan_rontgen_lumbosacral">KESIMPULAN RONTGEN LUMBOSACRAL</option>
+                  <option value="pemeriksaan_rontgen_thorax">KESIMPULAN RONTGEN THORAX</option>
+                  <option value="pemeriksaan_spirometri">KESIMPULAN SPIROMETRI</option>
+                  <option value="pemeriksaan_threadmill">KESIMPULAN TREADMILL</option>
+                  <option value="pemeriksaan_usg_ubdomain">KESIMPULAN USG ABDOMAIN</option>
+                  <option value="saran">KESIMPULAN SARAN</option>
+                  <option value="poli_spirometri">PEMERIKSAAN POLI SPIROMETRI</option>
+                  <option value="poli_audiometri">PEMERIKSAAN POLI AUDIOMETRI</option>
+                  <option value="poli_ekg">PEMERIKSAAN POLI EKG</option>
+                  <option value="poli_threadmill">PEMERIKSAAN POLI TREADMILL</option>
+                  <option value="poli_rontgen_thorax">PEMERIKSAAN POLI RONTGEN</option>
+                  <option value="poli_rontgen_lumbosacral">PEMERIKSAAN POLI RONTGEN LUMBOSACRAL</option>
+                  <option value="poli_usg_ubdomain">PEMERIKSAAN POLI USG ABDOMEN</option>
+                  <option value="poli_farmingham_score">PEMERIKSAAN POLI FARMINGHAM SCORE</option>
               </select>
               </div>
               <div class="mb-3">

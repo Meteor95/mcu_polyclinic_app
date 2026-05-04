@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{Perusahaan, PaketMCU};
 use App\Models\{User};
-use App\Models\Komponen\{Poli,Antrian};
+use App\Models\Komponen\{Poli,Antrian,PoliKesumpulan};
 use App\Models\Masterdata\{Jasalayanan, DepartemenPerusahaan, MemberMCU, DaftarBank, PartnerMCU, Kesimpulan};
 use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\Validator;
@@ -709,10 +709,17 @@ class MasterdataController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            Kesimpulan::create([
-                'jenis_kesimpulan' => $request->jenis_pemeriksaan,
-                'keterangan_kesimpulan' => $request->kesimpulantindakan,
-            ]);
+            if (str_contains($request->jenis_pemeriksaan, 'poli')) {
+                PoliKesumpulan::create([
+                    'jenis_poli' => $request->jenis_pemeriksaan,
+                    'keterangan_kesimpulan' => $request->kesimpulantindakan,
+                ]);
+            } else {
+                Kesimpulan::create([
+                    'jenis_kesimpulan' => $request->jenis_pemeriksaan,
+                    'keterangan_kesimpulan' => $request->kesimpulantindakan,
+                ]);
+            }
             return ResponseHelper::success("Informasi kesimpulan pada tindakan ".strtoupper(str_replace('_', ' ', $request->jenis_pemeriksaan))." berhasil disimpan. Silahkan lanjutkan transaksi jikalau membutuhkan rekam medis MCU.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
@@ -727,7 +734,11 @@ class MasterdataController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            Kesimpulan::where('id', $request->idkesimpulan)->delete();
+            if (str_contains($request->jenis_kesimpulan, 'poli')) {
+                PoliKesumpulan::where('id', $request->idkesimpulan)->delete();
+            }else{
+                Kesimpulan::where('id', $request->idkesimpulan)->delete();
+            }
             return ResponseHelper::success_delete("Informasi kesimpulan dengan Jenis " . strtoupper(str_replace('_', ' ', $request->jenis_kesimpulan)) . " dan Keterangan " . $request->keterangan_kesimpulan . " berhasil dihapus.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);
@@ -743,10 +754,18 @@ class MasterdataController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
-            Kesimpulan::where('id', $request->idkesimpulan)->update([
-                'jenis_kesimpulan' => $request->jenis_pemeriksaan,
-                'keterangan_kesimpulan' => $request->kesimpulantindakan,
-            ]);
+            if (str_contains($request->jenis_pemeriksaan, 'poli')) {
+                PoliKesumpulan::where('id', $request->idkesimpulan)->update([
+                    'jenis_poli' => $request->jenis_pemeriksaan,
+                    'keterangan_kesimpulan' => $request->kesimpulantindakan,
+                ]);
+            } else {
+                Kesimpulan::where('id', $request->idkesimpulan)->update([
+                    'jenis_kesimpulan' => $request->jenis_pemeriksaan,
+                    'keterangan_kesimpulan' => $request->kesimpulantindakan,
+                ]);
+            }
+            
             return ResponseHelper::success("Informasi kesimpulan dengan ID " . $request->idkesimpulan . " pada kategori " . strtoupper(str_replace('_', ' ', $request->jenis_pemeriksaan)) . " berhasil diubah.");
         } catch (\Throwable $th) {
             return ResponseHelper::error($th);

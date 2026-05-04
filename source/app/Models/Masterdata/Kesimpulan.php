@@ -4,6 +4,7 @@ namespace App\Models\Masterdata;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Kesimpulan extends Model
 {
@@ -14,19 +15,30 @@ class Kesimpulan extends Model
     {
         $parameterpencarian = $req->parameter_pencarian;
         $jenisKesimpulan = $req->jenis_kesimpulan;
-        $query = DB::table((new self())->getTable());
+        $kolom = "";
+        if (str_contains($jenisKesimpulan, 'poli')) {
+            $table = 'atribut_poli_kesimpulan';
+            $kolom = 'jenis_poli';
+            $kolomKeterangan = 'keterangan_kesimpulan';
+        }else{
+            $table = (new self())->getTable();
+            $kolom = 'jenis_kesimpulan';
+            $kolomKeterangan = 'keterangan_kesimpulan';
+        }
+        $query = DB::table($table);
         if (!empty($jenisKesimpulan)) {
-            $query->where('jenis_kesimpulan', '=', $jenisKesimpulan);
+            $query->where($kolom, '=', $jenisKesimpulan);
         }
+        $query->select("$kolom as jenis_kesimpulan","keterangan_kesimpulan","id");
         if (!empty($parameterpencarian)) {
-            $query->where('keterangan_kesimpulan', 'LIKE', '%' . $parameterpencarian . '%');
+            $query->where($kolomKeterangan, 'LIKE', '%' . $parameterpencarian . '%');
         }
+        $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
             ->skip($offset)
-            ->orderBy('jenis_kesimpulan', 'ASC')
-            ->orderBy('keterangan_kesimpulan', 'ASC')
+            ->orderBy($kolom, 'ASC')
+            ->orderBy($kolomKeterangan, 'ASC')
             ->get();
-        $jumlahdata = $query->count();
         return [
             'data' => $result,
             'total' => $jumlahdata

@@ -134,14 +134,14 @@
       </select>
   </div>
   @endif
-    <div class="col-md-12">
+    <!-- <div class="col-md-12">
       <label>Detail Penjelasan {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
       <select class="form-control" data-choices name="detail_penjelasan_citra_unggah_poli" id="detail_penjelasan_citra_unggah_poli">
         @foreach ($data['detail_kesimpulan'] as $item)
           <option value="{{$item->id}}">{{$item->keterangan}}</option>
         @endforeach
       </select>
-    </div>
+    </div> -->
     <div class="col-md-12 mt-1">
       <div id="editor_poliklinik_container">
         <div id="editor_poliklinik"></div>
