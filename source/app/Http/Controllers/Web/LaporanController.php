@@ -2271,6 +2271,7 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
+                        $this->Ln(3);
                         $this->Cell(0, 5, 'INTERPRETASI HASIL RONTGEN THORAX', 0, 1, 'C');
                         $this->Ln(4);
 
@@ -2417,6 +2418,7 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
+                        $this->Ln(3);
                         $this->Cell(0, 5, 'INTERPRETASI HASIL RONTGEN LUMBOSACRAL', 0, 1, 'C');
                         // Tabel Interpretasi
                         $this->SetFont('Times', '', 11);
@@ -2576,6 +2578,7 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
+                        $this->Ln(3);
                         $this->Cell(0, 5, 'INTERPRETASI HASIL ELEKTROKARDIOGRAFI', 0, 1, 'C');
                         // // Tabel Interpretasi
                         // $this->SetFont('Times', '', 11);
@@ -2691,6 +2694,7 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
+                        $this->Ln(3);
                         $this->Cell(0, 5, 'INTERPRETASI HASIL AUDIOMETRI', 0, 1, 'C');
                         // Tabel Interpretasi
                         $this->ln(5);
@@ -2846,6 +2850,7 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
+                        $this->Ln(3);
                         $this->Cell(0, 5, 'INTERPRETASI HASIL SPIROMETRI', 0, 1, 'C');
                         // Tabel Interpretasi
                         // $this->SetFont('Times', '', 11);
@@ -2928,6 +2933,7 @@ class LaporanController extends Controller
                         $firstItem = $dataPoli->first();
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont('Times', 'B', 14);
+                        $this->Ln(3);
                         $this->Cell(0, 5, 'INTERPRETASI HASIL THREADMILL TEST', 0, 1, 'C');
                         // Tabel Interpretasi
                         $this->SetFont('Times', '', 11);
