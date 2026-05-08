@@ -7,7 +7,7 @@
             <li class="nav-item"><a class="nav-link" href="{{'https://'.config('app.domains.pendaftaran_mandiri') }}" onclick="document.getElementById('formulir_mcu').scrollIntoView({ behavior: 'smooth' });">Formulir MCU</a></li>
             <!-- <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="document.getElementById('frameworks').scrollIntoView({ behavior: 'smooth' });">Alur Pendaftaran</a></li>
             <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="document.getElementById('feature').scrollIntoView({ behavior: 'smooth' });">Info MCU Terkini</a></li> -->
-            <li class="nav-item"><a class="nav-link" href="{{ env('APP_MAIN_URL')}}" target="_blank">Website</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://arthamedical.com/" target="_blank">Website</a></li>
             </ul>
         </div>
         </nav>
