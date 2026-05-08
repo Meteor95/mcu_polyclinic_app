@@ -331,12 +331,12 @@ $("#simpan_foto_perserta").on('click', async function() {
             if (quill) {
                 const quillContent = quill.getContents();
                 if (quillContent.ops.length === 1 && quillContent.ops[0].insert === '\n') {
-                    detail_kesimpulan = JSON.stringify([{ insert: "Tidak Ada Keterangan Riwayat Kecelakaan Kerja" }]);
+                    detail_kesimpulan = JSON.stringify([{ insert: "Tidak Ada Keterangan Mengenai Foto "+jenis_poli.replace(/_/g, " ").replace(/\b\w/g, char => char.toUpperCase()) }]);
                 } else {
                     detail_kesimpulan = JSON.stringify(quillContent.ops);
                 }
             } else {
-                detail_kesimpulan = JSON.stringify([{ insert: "Tidak Ada Keterangan Riwayat Kecelakaan Kerja" }]);
+                detail_kesimpulan = JSON.stringify([{ insert: "Tidak Ada Keterangan Mengenai Foto"+jenis_poli.replace(/_/g, " ").replace(/\b\w/g, char => char.toUpperCase()) }]);
             }
             formData.append('isedit', isedit);
             formData.append('pegawai_id', $("#dokter_citra_unggah_poli").val());
