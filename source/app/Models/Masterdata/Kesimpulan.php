@@ -15,30 +15,73 @@ class Kesimpulan extends Model
     {
         $parameterpencarian = $req->parameter_pencarian;
         $jenisKesimpulan = $req->jenis_kesimpulan;
-        $kolom = "";
-        if (str_contains($jenisKesimpulan, 'poli')) {
-            $table = 'atribut_poli_kesimpulan';
-            $kolom = 'jenis_poli';
-            $kolomKeterangan = 'keterangan_kesimpulan';
-        }else{
-            $table = (new self())->getTable();
-            $kolom = 'jenis_kesimpulan';
-            $kolomKeterangan = 'keterangan_kesimpulan';
-        }
-        $query = DB::table($table);
-        if (!empty($jenisKesimpulan)) {
+        if ($jenisKesimpulan == "") {
+            $queryPoli = DB::table('atribut_poli_kesimpulan')
+                ->select(
+                    'jenis_poli as jenis_kesimpulan',
+                    'keterangan_kesimpulan',
+                    'id'
+                );
+
+            if (!empty($parameterpencarian)) {
+                $queryPoli->where(
+                    'keterangan_kesimpulan',
+                    'LIKE',
+                    '%' . $parameterpencarian . '%'
+                );
+            }
+            $queryDefault = DB::table((new self())->getTable())
+                ->select(
+                    'jenis_kesimpulan',
+                    'keterangan_kesimpulan',
+                    'id'
+                );
+
+            if (!empty($parameterpencarian)) {
+                $queryDefault->where(
+                    'keterangan_kesimpulan',
+                    'LIKE',
+                    '%' . $parameterpencarian . '%'
+                );
+            }
+            $query = $queryPoli->unionAll($queryDefault);
+            $finalQuery = DB::query()->fromSub($query, 'x');
+            $jumlahdata = $finalQuery->count();
+            $result = $finalQuery
+                ->orderBy('jenis_kesimpulan', 'ASC')
+                ->orderBy('keterangan_kesimpulan', 'ASC')
+                ->offset($offset)
+                ->limit($perHalaman)
+                ->get();
+        } else {
+            if (str_contains($jenisKesimpulan, 'poli')) {
+                $table = 'atribut_poli_kesimpulan';
+                $kolom = 'jenis_poli';
+            } else {
+                $table = (new self())->getTable();
+                $kolom = 'jenis_kesimpulan';
+            }
+            $query = DB::table($table);
             $query->where($kolom, '=', $jenisKesimpulan);
+            $query->select(
+                "$kolom as jenis_kesimpulan",
+                "keterangan_kesimpulan",
+                "id"
+            );
+            if (!empty($parameterpencarian)) {
+                $query->where(
+                    'keterangan_kesimpulan',
+                    'LIKE',
+                    '%' . $parameterpencarian . '%'
+                );
+            }
+            $jumlahdata = $query->count();
+            $result = $query->orderBy($kolom, 'ASC')
+                ->orderBy('keterangan_kesimpulan', 'ASC')
+                ->offset($offset)
+                ->limit($perHalaman)
+                ->get();
         }
-        $query->select("$kolom as jenis_kesimpulan","keterangan_kesimpulan","id");
-        if (!empty($parameterpencarian)) {
-            $query->where($kolomKeterangan, 'LIKE', '%' . $parameterpencarian . '%');
-        }
-        $jumlahdata = $query->count();
-        $result = $query->take($perHalaman)
-            ->skip($offset)
-            ->orderBy($kolom, 'ASC')
-            ->orderBy($kolomKeterangan, 'ASC')
-            ->get();
         return [
             'data' => $result,
             'total' => $jumlahdata
