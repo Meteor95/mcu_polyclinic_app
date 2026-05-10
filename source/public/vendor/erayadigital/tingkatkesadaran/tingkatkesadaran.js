@@ -41,6 +41,7 @@ function onload_datatables_tingkat_kesadaran(){
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftar_riwayat_penyakit_terdahulu").val();
+                    d.length = 10;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

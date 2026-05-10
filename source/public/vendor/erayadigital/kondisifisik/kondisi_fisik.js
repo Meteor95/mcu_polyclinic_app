@@ -122,6 +122,7 @@ function onload_kondisi_fisik(){
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_kondisi_fisik").val();
                     d.lokasi_fisik = lokasi_fisik_let;
+                    d.length = 10;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

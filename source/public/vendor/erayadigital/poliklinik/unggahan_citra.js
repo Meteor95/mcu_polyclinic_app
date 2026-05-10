@@ -130,6 +130,7 @@ function onloaddatatables(){
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
                     d.jenis_poli = jenis_poli;
+                    d.length = 10;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

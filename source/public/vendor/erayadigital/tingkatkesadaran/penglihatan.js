@@ -29,6 +29,7 @@ function onload_datatables_penglihatan(){
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_penglihatan").val();
+                    d.length = 10;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
