@@ -38,7 +38,6 @@ function dafatarperusahaan(){
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $('#kotak_pencarian_perusahaan').val();
-                    d.start = 0;
                     d.length = 10;
                 },
                 "dataSrc": function(json) {
