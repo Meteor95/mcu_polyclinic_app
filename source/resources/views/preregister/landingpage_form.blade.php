@@ -37,7 +37,7 @@
                 <button class="btn btn-outline-primary step-indicator" data-step="2">Kecelakaan Kerja</button>
                 <button class="btn btn-outline-primary step-indicator" data-step="3">Kebiasaan Hidup</button>
                 <button class="btn btn-outline-primary step-indicator" data-step="4">Penyakit Terdahulu</button>
-                <button class="btn btn-outline-primary step-indicator" data-step="5">Penyakit Keluarga</button>
+                <!--<button class="btn btn-outline-primary step-indicator" data-step="5">Penyakit Keluarga</button>-->
                 <button class="btn btn-outline-primary step-indicator" data-step="6">Imunisasi</button>
               </div>
               <div class="steps">
