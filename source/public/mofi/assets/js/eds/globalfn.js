@@ -45,7 +45,7 @@ function callGlobalSelect2SearchByMember(namaid){
                     return {
                         results: $.map(data.data, function (item) {
                             return {
-                                text: `[${item.nomor_identitas}] - ${item.nama_peserta}`,
+                                text: `[${item.nomor_identitas}] - ${item.nama_peserta} [${item.nama_perusahaan}]`,
                                 id: `${item.nomor_identitas}`,
                             }
                         })

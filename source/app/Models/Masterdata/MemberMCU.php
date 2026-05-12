@@ -28,12 +28,10 @@ class MemberMCU extends Model
         if ($req->tipe == 1) {
             $query = MemberMCU::query();
         } else {
-            $query = MemberMCU::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
-                ->select('users_member.*')
-                ->selectRaw('
-                    TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur,
-                    DATE_FORMAT(' . $tablePrefix . 'users_member.created_at, "%d-%m-%Y %H:%i:%s") AS created_at
-                ');
+            $query = MemberMCU::join('mcu_transaksi_peserta','mcu_transaksi_peserta.user_id','=','users_member.id')
+                ->join('company','mcu_transaksi_peserta.perusahaan_id','=','company.id')
+                ->select('users_member.*','company.company_name as nama_perusahaan')
+                ->selectRaw("TIMESTAMPDIFF(YEAR,{$tablePrefix}users_member.tanggal_lahir,CURDATE()) AS umur,DATE_FORMAT({$tablePrefix}users_member.created_at,'%d-%m-%Y %H:%i:%s') AS created_at");
             $query->where('mcu_transaksi_peserta.status_peserta', '!=', 'selesai');
         }
         if (!empty($parameterpencarian)) {
