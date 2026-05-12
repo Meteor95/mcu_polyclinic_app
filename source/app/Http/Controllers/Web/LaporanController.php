@@ -947,10 +947,25 @@ class LaporanController extends Controller
 
                 // 2. Tabel Hasil Pemeriksaan
                 $this->SetFont('Times', '', 10);
-                
+                $items = collect($this->data['tanda_vital'])->values();
+                $BB = 0;
+                $TB = 0;
+                $nilaitekanandarah = "";
+                foreach ($items as $item) {
+                    $name = strtolower(str_replace(' ', '', $item->nama_atribut_saat_ini));
+                    if ($name === 'beratbadan') {
+                        $BB = $item->nilai_tanda_vital;
+                    } elseif ($name === 'tinggibadan') {
+                        $TB = $item->nilai_tanda_vital / 100;
+                    } else if ($name === 'tekanandarah'){
+                        $nilaitekanandarah = $item->nilai_tanda_vital;
+                    }
+                }
+                $BMI = $BB / ($TB * $TB);
+                $BMI_formatted = number_format(ceil($BMI * 100) / 100, 2);
                 $pemeriksaan = [
-                    ['label' => 'RIWAYAT MEDIS', 'data' => $this->data['quill_pemeriksaan_riwayat_medis']],
-                    ['label' => 'PEMERIKSAAN FISIK', 'data' => $this->data['quill_pemeriksaan_fisik']],
+                    // ['label' => 'RIWAYAT MEDIS', 'data' => $this->data['quill_pemeriksaan_riwayat_medis']],
+                    ['label' => 'PEMERIKSAAN FISIK', 'data' => "TD: ".$nilaitekanandarah." mmHg, BMI: ".$BMI_formatted],
                     ['label' => 'PEMERIKSAAN MATA', 'data' => $this->data['penglihatan'][0]],
                     ['label' => 'HASIL LABORATORIUM', 'data' => $this->data['quill_pemeriksaan_laboratorium']],
                     ['label' => 'RO THORAX', 'data' => $this->data['quill_pemeriksaan_rontgen_thorax']],
