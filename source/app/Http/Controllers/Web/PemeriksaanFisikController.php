@@ -44,21 +44,39 @@ class PemeriksaanFisikController extends Controller
             'Beranda' => route('admin.beranda'),
             'Penglihatan' => route('admin.pemeriksaan_fisik.penglihatan'),
         ]);
-        $data['dataNavigasi'] = $this->getNavigasi('Penyakit Terdahulu', route('admin.pendaftaran.penyakit_terdahulu', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Kulit', url('/pemeriksaan_fisik/kondisi_fisik/kulit?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
         $data['nomor_identitas'] = $req->nomor_identitas;
         $data['nama_peserta'] = $req->nama_peserta;
+        $data['dataNavigasi'] = $this->getNavigasi('Penyakit Terdahulu', route('admin.pendaftaran.penyakit_terdahulu', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Kulit', url('/pemeriksaan_fisik/kondisi_fisik/kulit?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
         return view('paneladmin.pemeriksaan_fisik.penglihatan', ['data' => $data]);
     }
-    public function kondisi_fisik(Request $req, $lokasi_fisik){
+   public function kondisi_fisik(Request $req, $lokasi_fisik){
         $data = $this->getData($req, 'Kondisi Fisik '.ucwords($lokasi_fisik), [
             'Beranda' => route('admin.beranda'),
-            'Kondisi Fisik '.ucwords($lokasi_fisik) => route('admin.pemeriksaan_fisik.kondisi_fisik', ['lokasi_fisik' => strtolower($lokasi_fisik)]),
+            'Kondisi Fisik '.ucwords($lokasi_fisik) => route('admin.pemeriksaan_fisik.kondisi_fisik', [
+                'lokasi_fisik' => strtolower($lokasi_fisik),
+                'nomor_identitas' => $req->nomor_identitas,
+                'nama_peserta' => $req->nama_peserta
+            ]),
         ]);
-        $lokasi_fisik_navigasi_sebelumnya = route('admin.pemeriksaan_fisik.penglihatan', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]);
+        $lokasi_fisik_navigasi_sebelumnya = '';
         $lokasi_fisik_navigasi = '';
         switch ($lokasi_fisik) {
             case 'kulit':
-                $data['dataNavigasi'] = $this->getNavigasi('Penglihatan', route('admin.pemeriksaan_fisik.penglihatan', ['nomor_identitas' => $req->nomor_identitas, 'nama_peserta' => $req->nama_peserta]), 'Kepala', url('/pemeriksaan_fisik/kondisi_fisik/kepala?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
+                $data['dataNavigasi'] = $this->getNavigasi(
+                    'Penglihatan',
+                    route('admin.pemeriksaan_fisik.penglihatan', [
+                        'nomor_identitas' => $req->nomor_identitas,
+                        'nama_peserta' => $req->nama_peserta
+                    ]),
+                    'Kepala',
+                    route('admin.pemeriksaan_fisik.kondisi_fisik', [
+                        'lokasi_fisik' => 'kepala',
+                        'nomor_identitas' => $req->nomor_identitas,
+                        'nama_peserta' => $req->nama_peserta
+                    ]),
+                    true,
+                    true
+                );
                 break;
             case 'kepala':
                 $lokasi_fisik_navigasi_sebelumnya = 'kulit';
@@ -112,14 +130,31 @@ class PemeriksaanFisikController extends Controller
                 $lokasi_fisik_navigasi = $lokasi_fisik;
                 break;
         }
-        if ($lokasi_fisik != 'kulit'){
-            $data['dataNavigasi'] = $this->getNavigasi(ucwords(str_replace("_", " ", $lokasi_fisik_navigasi_sebelumnya)), $lokasi_fisik_navigasi_sebelumnya, ucwords(str_replace("_", " ", $lokasi_fisik_navigasi)), url('/pemeriksaan_fisik/kondisi_fisik/'.$lokasi_fisik_navigasi.'?nomor_identitas='.$req->nomor_identitas.'&nama_peserta='.$req->nama_peserta), true, true);
+        if ($lokasi_fisik != 'kulit') {
+            $data['dataNavigasi'] = $this->getNavigasi(
+                ucwords(str_replace("_", " ", $lokasi_fisik_navigasi_sebelumnya)),
+                route('admin.pemeriksaan_fisik.kondisi_fisik', [
+                    'lokasi_fisik' => $lokasi_fisik_navigasi_sebelumnya,
+                    'nomor_identitas' => $req->nomor_identitas,
+                    'nama_peserta' => $req->nama_peserta
+                ]),
+                ucwords(str_replace("_", " ", $lokasi_fisik_navigasi)),
+                route('admin.pemeriksaan_fisik.kondisi_fisik', ['lokasi_fisik' => $lokasi_fisik_navigasi,'nomor_identitas' => $req->nomor_identitas,'nama_peserta' => $req->nama_peserta]),true,true
+            );
         }
         $data['nomor_identitas'] = $req->nomor_identitas;
         $data['nama_peserta'] = $req->nama_peserta;
-        $data['kondisi_fisik'] = KondisiFisik::where('status', 1)->where('nama_atribut_fisik', ucwords(str_replace("_", " & ", $lokasi_fisik)))->orderBy('kategori_lokasi_fisik', 'asc')->orderByRaw("CASE WHEN jenis_pemeriksaan = 'Lainnya' THEN 1 ELSE 0 END ASC")->orderBy('jenis_pemeriksaan', 'asc')->get();
+        $data['kondisi_fisik'] = KondisiFisik::where('status', 1)
+            ->where('nama_atribut_fisik', ucwords(str_replace("_", " & ", $lokasi_fisik)))
+            ->orderBy('kategori_lokasi_fisik', 'asc')
+            ->orderByRaw("CASE WHEN jenis_pemeriksaan = 'Lainnya' THEN 1 ELSE 0 END ASC")
+            ->orderBy('jenis_pemeriksaan', 'asc')
+            ->get();
         $data['lokasi_fisik'] = ucwords($lokasi_fisik);
-        return view('paneladmin.pemeriksaan_fisik.kondisi_fisik.'.strtolower($lokasi_fisik), ['data' => $data]);
+        return view(
+            'paneladmin.pemeriksaan_fisik.kondisi_fisik.'.strtolower($lokasi_fisik),
+            ['data' => $data]
+        );
     }
 }
 
