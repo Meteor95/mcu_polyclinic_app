@@ -263,11 +263,11 @@ function callselect2mcu(){
                 delay: 500,
                 data: function (params) {
                     return {
-                        _token: response.csrf_token,
-                        tipe: 1,
-                        parameter_pencarian: (typeof params.term === "undefined"? "": params.term),
-                        start: 0,
-                        length: 100,
+                        _token : response.csrf_token,
+                        parameter_pencarian : (typeof params.term === "undefined" ? "" : params.term),
+                        start : 0,
+                        length : 100,
+                        tipe: 0,
                     }
                 },
                 processResults: function (data) {
@@ -275,6 +275,7 @@ function callselect2mcu(){
                         results: $.map(data.data, function (item) {
                             return {
                                 id: item.nomor_identitas,
+                                text: `[${item.nomor_identitas}] - ${item.nama_peserta} [${item.nama_perusahaan}]`,
                                 nomor_identitas: item.nomor_identitas,
                                 nama_peserta: item.nama_peserta,
                                 nama_perusahaan: item.nama_perusahaan
@@ -294,11 +295,10 @@ function callselect2mcu(){
             },
             templateResult: function(item) {
                 if (!item.id) {return item.text;}
-                return $(`<div><strong>[${item.nomor_identitas}]</strong> - ${item.nama_peserta}<span class="select2-company">[${item.nama_perusahaan}]</span></div>`);
+                return $(`<div><strong>[${item.nomor_identitas}]</strong> - ${item.nama_peserta} <span class="select2-company"> [${item.nama_perusahaan}]</span></div>`);
             },
             templateSelection: function(item) {
-                if (!item.id) {return item.text;}
-                return `[${item.nomor_identitas}] - ${item.nama_peserta}`;
+                return item.text;
             },
             escapeMarkup: function(markup) {return markup;}
         }); 
