@@ -37,7 +37,7 @@
             <div class="row">
                 <div class="col-sm-8">
                     <table id="table_validasi_rekap_kesimpulan" class="table table-bordered table-striped table-padding-sm">
-                        <tr>
+                        <!-- <tr>
                             <th>Riwayat Medis</th>
                             <th>
                                 <div class="row">
@@ -69,7 +69,7 @@
                                     </div>
                                 </div>
                             </th>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <th>Tanda Vital dan Gizi</th>
                             <th>
