@@ -27,7 +27,7 @@ function onload_datatables(){
     rowGroup: {
         dataSrc: 1,
         startRender: function (rows, group) {
-            return $('<tr style="background-color: #f0f0f0; font-weight: bold;font-size: 16px;">').append("<td colspan='6'>Kategori Lokasi Fisik : " + group.toUpperCase() + "</td>").append('</tr>');
+            return $('<tr style="background-color: #f0f0f0; font-weight: bold;font-size: 16px;">').append("<td colspan='6'>Kategori Lokasi Fisik : " + group.replaceAll('_', ' ').toUpperCase() + "</td>").append('</tr>');
         },
     },
     }).on('key-focus', function(e, datatable, cell, originalEvent) {
