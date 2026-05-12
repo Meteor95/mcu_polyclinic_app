@@ -124,22 +124,20 @@ class PemeriksaanFisikController extends Controller
                 break;
             case 'neurologis':
                 $lokasi_fisik_navigasi_sebelumnya = 'ekstremitas';
-                $lokasi_fisik_navigasi = 'kepala';
+                $lokasi_fisik_navigasi = 'selesai';
                 break;
             default:
                 $lokasi_fisik_navigasi = $lokasi_fisik;
                 break;
         }
         if ($lokasi_fisik != 'kulit') {
+            $isLastPage = $lokasi_fisik_navigasi == 'selesai';
             $data['dataNavigasi'] = $this->getNavigasi(
                 ucwords(str_replace("_", " ", $lokasi_fisik_navigasi_sebelumnya)),
-                route('admin.pemeriksaan_fisik.kondisi_fisik', [
-                    'lokasi_fisik' => $lokasi_fisik_navigasi_sebelumnya,
-                    'nomor_identitas' => $req->nomor_identitas,
-                    'nama_peserta' => $req->nama_peserta
-                ]),
-                ucwords(str_replace("_", " ", $lokasi_fisik_navigasi)),
-                route('admin.pemeriksaan_fisik.kondisi_fisik', ['lokasi_fisik' => $lokasi_fisik_navigasi,'nomor_identitas' => $req->nomor_identitas,'nama_peserta' => $req->nama_peserta]),true,true
+                route('admin.pemeriksaan_fisik.kondisi_fisik', ['lokasi_fisik' => $lokasi_fisik_navigasi_sebelumnya,'nomor_identitas' => $req->nomor_identitas,'nama_peserta' => $req->nama_peserta]),
+                $isLastPage? '': ucwords(str_replace("_", " ", $lokasi_fisik_navigasi)),
+                $isLastPage? '': route('admin.pemeriksaan_fisik.kondisi_fisik', ['lokasi_fisik' => $lokasi_fisik_navigasi,'nomor_identitas' => $req->nomor_identitas,'nama_peserta' => $req->nama_peserta]),
+                true,!$isLastPage
             );
         }
         $data['nomor_identitas'] = $req->nomor_identitas;
