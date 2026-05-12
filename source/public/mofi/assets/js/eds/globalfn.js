@@ -28,7 +28,9 @@ function callGlobalSelect2SearchByMember(namaid){
             allowClear: true,
             ajax: {
                 url: baseurlapi + '/masterdata/daftarmembermcu',
-                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token_ajax')
+                },
                 method: 'GET',
                 dataType: 'json',
                 delay: 500,
@@ -45,17 +47,33 @@ function callGlobalSelect2SearchByMember(namaid){
                     return {
                         results: $.map(data.data, function (item) {
                             return {
+                                id: item.nomor_identitas,
                                 text: `[${item.nomor_identitas}] - ${item.nama_peserta} [${item.nama_perusahaan}]`,
-                                id: `${item.nomor_identitas}`,
+                                nomor_identitas: item.nomor_identitas,
+                                nama_peserta: item.nama_peserta,
+                                nama_perusahaan: item.nama_perusahaan
                             }
                         })
                     }
-                    
                 },
                 error: function(xhr, status, error) {
-                    return createToast('Kesalahan Penggunaan', 'top-right', xhr.responseJSON.message, 'error', 3000);
+                    return createToast(
+                        'Kesalahan Penggunaan',
+                        'top-right',
+                        xhr.responseJSON.message,
+                        'error',
+                        3000
+                    );
                 }
             },
+            templateResult: function(item) {
+                if (!item.id) {return item.text;}
+                return $(`<div><strong>[${item.nomor_identitas}]</strong> - ${item.nama_peserta} <span class="select2-company"> [${item.nama_perusahaan}]</span></div>`);
+            },
+            templateSelection: function(item) {
+                return item.text;
+            },
+            escapeMarkup: function(markup) {return markup;}
         }); 
     });  
 }

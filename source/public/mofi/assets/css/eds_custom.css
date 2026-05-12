@@ -124,3 +124,11 @@ body.dark-only .choices__list--dropdown .choices__item--selectable.is-highlighte
     -webkit-filter: blur(5px) grayscale(100%);
     filter: blur(5px) grayscale(100%);
 }
+.select2-company {
+    color: orange !important;
+    font-weight: bold;
+}
+
+.select2-results__option--highlighted .select2-company {
+    color: #ffd27f !important;
+}
