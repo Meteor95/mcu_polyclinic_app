@@ -12,19 +12,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{asset('mofi/assets/css/color-1.css')}}" media="screen" id="color" >
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/fonts/fontawesome-free-6.7.2/css/all.min.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/font-awesome.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/icofont.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/themify.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/flag-icon.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/feather-icon.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/slick.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/slick-theme.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/scrollbar.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/animate.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/datatables.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/vendors/bootstrap.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/style.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/responsive.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('mofi/assets/css/eds_custom.css')}}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/color-1.css') }}?v={{ filemtime(public_path('mofi/assets/css/color-1.css')) }}" media="screen" id="color">
+<link rel="stylesheet" href="{{ asset('mofi/assets/fonts/fontawesome-free-6.7.2/css/all.min.css') }}?v={{ filemtime(public_path('mofi/assets/fonts/fontawesome-free-6.7.2/css/all.min.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/font-awesome.css') }}?v={{ filemtime(public_path('mofi/assets/css/font-awesome.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/icofont.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/icofont.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/themify.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/themify.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/flag-icon.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/flag-icon.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/feather-icon.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/feather-icon.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/slick.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/slick.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/slick-theme.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/slick-theme.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/scrollbar.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/scrollbar.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/animate.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/animate.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/datatables.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/datatables.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/bootstrap.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/bootstrap.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/style.css') }}?v={{ filemtime(public_path('mofi/assets/css/style.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/responsive.css') }}?v={{ filemtime(public_path('mofi/assets/css/responsive.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/eds_custom.css') }}?v={{ filemtime(public_path('mofi/assets/css/eds_custom.css')) }}">
