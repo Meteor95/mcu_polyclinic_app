@@ -13,13 +13,14 @@
               <button id="ambil_dari_webcame" class="btn btn-warning mt-2 mb-2 w-100"><i class="fa fa-camera"></i> Ambil Dari Device</button>
               <input type="file" id="citra_pasien" class="form-control mt-3 mb-3" accept="image/*">
               <div id="cropper-container">
-                <div id="panggil_webcame" style="display:none">
-                  <video id="webcam-preview" autoplay playsinline></video>
-                  <button class="btn btn-primary w-100 mt-2 mb-2" id="tangkap_citra_cropper_js"> Tangkap Citra </button>
-                </div>
-                <div id="citra_proses_crop"><img src="/mofi/assets/images/logo/doc_not_found.jpg" id="tampilan_citra_unggahan" style="display: none;"></div>
+                  <div id="panggil_webcame" style="display:none">
+                      <video id="webcam-preview" autoplay playsinline></video>
+                      <button class="btn btn-secondary w-100 mt-2" id="ganti_kamera"><i class="fa fa-refresh"></i> Ganti Kamera</button>
+                      <button class="btn btn-primary w-100 mt-2 mb-2" id="tangkap_citra_cropper_js">Tangkap Citra</button>
+                  </div>
+                  <div id="citra_proses_crop"><img src="/mofi/assets/images/logo/doc_not_found.jpg" id="tampilan_citra_unggahan" style="display: none;"></div>
               </div>
-            </div>
+          </div>
             <div class="col-md-6">
               <h3>Citra Sesudah Dengan AR 1:1</h3>
               <button id="crop-btn" class="btn btn-primary w-100 mt-2 mb-2"> Potong Foto </button>

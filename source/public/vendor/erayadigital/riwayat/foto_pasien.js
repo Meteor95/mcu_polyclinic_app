@@ -2,6 +2,7 @@ const webcamButton = $('#ambil_dari_webcame');
 const webcamPreview = $('#webcam-preview');
 const tampil_canvas = $('#panggil_webcame');
 const tangkap_citra = $('#tangkap_citra_cropper_js');
+const tombol_ganti_kamera = $('#ganti_kamera');
 const fileInput = $('#citra_pasien');
 const citra_proses_crop = $('#citra_proses_crop');
 const image = $('#tampilan_citra_unggahan')                             ;
@@ -9,6 +10,8 @@ const cropButton = $('#crop-btn');
 const previewCanvas = $('#preview_citra_pasien');
 let cropper;
 let isDefaultImage = true;
+let stream = null;
+let currentFacingMode = 'environment';
 $(document).ready(function(){
     callGlobalSelect2SearchByMember('pencarian_member_mcu');
     onloadcropperjs();
@@ -175,21 +178,51 @@ function onloadcropperjs(){
         }
     });
 
-    webcamButton.on('click', () => {
+    // webcamButton.on('click', () => {
+    //     navigator.mediaDevices
+    //         .getUserMedia({ video: true })
+    //         .then((mediaStream) => {
+    //             stream = mediaStream;
+    //             webcamPreview[0].srcObject = stream;
+    //             webcamPreview.css('display', 'block');
+    //             citra_proses_crop.hide();
+    //             tampil_canvas.show();
+    //         })
+    //         .catch((err) => {
+    //             return createToast('Kesalahan Membaca Perangkat','top-right', err, 'error', 3000);
+    //         });
+    // });
+    function startCamera() {
+        if (stream) {stream.getTracks().forEach(track => track.stop());}
         navigator.mediaDevices
-            .getUserMedia({ video: true })
+            .getUserMedia({
+                video: {
+                    facingMode: currentFacingMode
+                }
+            })
             .then((mediaStream) => {
                 stream = mediaStream;
-                webcamPreview[0].srcObject = stream;
+                webcamPreview[0].srcObject = mediaStream;
                 webcamPreview.css('display', 'block');
                 citra_proses_crop.hide();
                 tampil_canvas.show();
             })
             .catch((err) => {
-                return createToast('Kesalahan Membaca Perangkat','top-right', err, 'error', 3000);
+                return createToast(
+                    'Kesalahan Membaca Perangkat',
+                    'top-right',
+                    err.message,
+                    'error',
+                    3000
+                );
             });
+    }
+    webcamButton.on('click', () => {startCamera();});
+    tombol_ganti_kamera.on('click', () => {
+        if (currentFacingMode === 'environment') {currentFacingMode = 'user';
+        } else {currentFacingMode = 'environment';}
+        startCamera();
     });
-
     tangkap_citra.on('click', () =>{
         if (stream) {
             const video = webcamPreview[0];
