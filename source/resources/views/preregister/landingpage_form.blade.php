@@ -235,7 +235,7 @@
                   <button class="btn btn-primary next-btn">Selanjutnya <i class="fa fa-arrow-right"></i> </button>
                 </div>
 
-                <!-- Step 5 -->
+                <!-- Step 5 
                 <div class="step overlay-locked" data-step="5">
                   <h5>Formulir Penyakit Terdahulu</h5>
                   <div class="row">
@@ -258,7 +258,7 @@
                   </div>
                   <button class="btn btn-secondary prev-btn"><i class="fa fa-arrow-left"></i> Sebelumnya</button>
                   <button class="btn btn-primary next-btn">Selanjutnya <i class="fa fa-arrow-right"></i> </button>
-                </div>
+                </div> -->
 
                 <!-- Step 6 -->
                 <div class="step" data-step="6">
