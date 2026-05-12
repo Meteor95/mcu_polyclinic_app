@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\DB;
+use App\Models\Pegawai;
 use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable implements JWTSubject
@@ -123,5 +124,13 @@ class User extends Authenticatable implements JWTSubject
             ->select('users.*', 'users_pegawai.*', 'roles.name as role_name', 'roles.id as id_role')
             ->where('users.id', '=', $request->id)
             ->first();
+    }
+    public function pegawai()
+    {
+        return $this->hasOne(
+            Pegawai::class,
+            'id', 
+            'id'
+        );
     }
 }
