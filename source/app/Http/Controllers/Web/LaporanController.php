@@ -1002,14 +1002,14 @@ class LaporanController extends Controller
                         $this->Cell(5, 6, ':', 0, 0, 'C');
 
                         // Isi Data Jauh
-                        $text_pakai_kacamata_tanpa = "(Tanpa Kacamata)";
+                        $text_pakai_kacamata_tanpa = "(Tnp Kacamata)";
                         $nilaiJauhOD = $p->visus_od_tanpa_kacamata_jauh;
                         $nilaiJauhOS = $p->visus_os_tanpa_kacamata_jauh;
                         if (empty($p->visus_od_tanpa_kacamata_jauh) && empty($p->visus_os_tanpa_kacamata_jauh)) {
                             $nilaiJauhOD = $p->visus_od_kacamata_jauh;
                             $nilaiJauhOS = $p->visus_os_kacamata_jauh;
                         }
-                        $text_pakai_kacamata = "(Dengan Kacamata)";
+                        $text_pakai_kacamata = "(Dgn Kacamata)";
                         $nilaiDekatOD = $p->visus_od_tanpa_kacamata_dekat;
                         $nilaiDekatOS = $p->visus_os_tanpa_kacamata_dekat;
                         if (empty($p->visus_od_tanpa_kacamata_dekat) && empty($p->visus_os_tanpa_kacamata_dekat)) {
@@ -1716,9 +1716,9 @@ class LaporanController extends Controller
                 $this->SetXY(110, $yFooter + 40);
                 $this->SetFont('Times', 'BU', 10);
                 $this->Cell(90, 5, $d1['nama_peserta'], 0, 1, 'C');
-                $this->SetX(110);
-                $this->SetFont('Times', 'B', 10);
-                $this->Cell(90, 5, $d1['nomor_identitas'], 0, 1, 'C');
+                //$this->SetX(110);
+                //$this->SetFont('Times', 'B', 10);
+                //$this->Cell(90, 5, $d1['nomor_identitas'], 0, 1, 'C');
             }
             /*section 5*/
             public function cetakPemeriksaanKondisiFisik() {
@@ -1897,7 +1897,8 @@ class LaporanController extends Controller
                         $this->SetFont('Times', '', 9);
                     } else {
                         // Sel Standar: Tambahkan spasi di awal string " $label" agar ada padding kiri
-                        $this->Cell($lebarKolom - 2, $tinggiSel, "  $label : $val $satuan", 1, 0, 'L');
+                        $text = utf8_decode("  $label : $val $satuan");
+                        $this->Cell($lebarKolom - 2, $tinggiSel, $text, 1, 0, 'L');
                     }
                 }
                 $this->SetY($startY + ($rowsPerCol * ($tinggiSel + 2)));

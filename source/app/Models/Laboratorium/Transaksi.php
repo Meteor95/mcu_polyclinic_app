@@ -46,6 +46,7 @@ class Transaksi extends Model
         ->join('users_member', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
         ->join('users','transaksi.id_kasir','=','users.id')
         ->select('transaksi.id as id_transaksi','transaksi.*','mcu_transaksi_peserta.*','users_member.*','users.*','mcu_transaksi_peserta.id as id_transaksi_mcu');
+        $query->whereBetween('transaksi.waktu_trx', [$tanggal_awal, $tanggal_akhir]);
         if (!empty($parameterpencarian)) {
             $query->where('transaksi.no_nota', 'LIKE', '%' . $parameterpencarian . '%')
             ->orWhere('transaksi.no_mcu', 'LIKE', '%' . $parameterpencarian . '%')
@@ -54,7 +55,6 @@ class Transaksi extends Model
             ->orWhere('users_member.nomor_identitas', 'LIKE', '%' . $parameterpencarian . '%')
             ->orWhere('users_member.nama_peserta', 'LIKE', '%' . $parameterpencarian . '%');
         }
-        $query->whereBetween('transaksi.waktu_trx', [$tanggal_awal, $tanggal_akhir]);
         if (!empty($status_pembayaran)) {
             $query->where('transaksi.status_pembayaran', $status_pembayaran);
         }
