@@ -2126,11 +2126,15 @@ class LaporanController extends Controller
                             }
 
                             // Kolom 3 & 4: Checkbox
-                            $this->drawCheckbox($this->GetX(), $this->GetY(), $hRow, $widths[2], ($item->status_atribut === 'abnormal'), $borderDetail);
+                           $this->drawCheckbox($this->GetX(), $this->GetY(), $hRow, $widths[2], ($item->status_atribut === 'abnormal'), $borderDetail);
                             $this->drawCheckbox($this->GetX(), $this->GetY(), $hRow, $widths[3], ($item->status_atribut === 'normal'), $borderDetail);
 
                             // Kolom 5: Keterangan
-                            $ket = $item->keterangan_atribut ?: 'Normal';
+                            if (!empty($item->keterangan_atribut)) {
+                                $ket = $item->keterangan_atribut;
+                            } else {
+                                $ket = ($item->status_atribut === 'abnormal') ? 'AbNormal' : 'Normal';
+                            }
                             $this->Cell($widths[4], $hRow, " " . $ket, $borderDetail, 1, 'L');
                         }
                     }
