@@ -20,7 +20,6 @@ class PoliklinikController extends Controller
                 'pegawai_id' => 'required',
                 'user_id' => 'required',
                 'transaksi_id' => 'required',
-                'judul_laporan' => 'required',
             ]);
             if ($validator->fails()) {
                 $dynamicAttributes = ['errors' => $validator->errors()];

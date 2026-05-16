@@ -298,6 +298,8 @@ $(document).on('click', '.btn-lihat', function () {
     $('#imageModal').modal('show');
 });
 $("#simpan_foto_perserta").on('click', async function() {
+    $keterangan_catatan_kaki = $("#catatan_kaki_citra_unggah_poli").val();
+    $judul_citra_unggah_poli = $("#judul_citra_unggah_poli").val();
     // if ($("#dokter_citra_unggah_poli").val() == null){
     //     return createToast('Kesalahan Unggahan', 'top-right', 'Silahkan tentukan dokter yang bertugas terlebih dahulu untuk dijadikan laporan MCU', 'error', 3000);
     // }
@@ -337,19 +339,25 @@ $("#simpan_foto_perserta").on('click', async function() {
                     detail_kesimpulan = JSON.stringify(quillContent.ops);
                 }
             } else {
-                detail_kesimpulan = JSON.stringify([{ insert: "Tidak Ada Keterangan Mengenai Foto"+jenis_poli.replace(/_/g, " ").replace(/\b\w/g, char => char.toUpperCase()) }]);
+                detail_kesimpulan = JSON.stringify([{ insert: "Tidak Ada Keterangan Mengenai Foto "+jenis_poli.replace(/_/g, " ").replace(/\b\w/g, char => char.toUpperCase()) }]);
+            }
+            if ($("#catatan_kaki_citra_unggah_poli").val() == ""){
+                $keterangan_catatan_kaki = "Tidak ada SARAN yang diberikan untuk peserta terkait dengan hasil foto "+jenis_poli.replace(/_/g, " ").replace(/\b\w/g, char => char.toUpperCase());
+            }
+            if ($("#judul_citra_unggah_poli").val() == ""){
+                $judul_citra_unggah_poli = "Tidak ada JUDUL terkait dengan hasil foto "+jenis_poli.replace(/_/g, " ").replace(/\b\w/g, char => char.toUpperCase());
             }
             formData.append('isedit', isedit);
             formData.append('pegawai_id', $("#dokter_citra_unggah_poli").val());
             formData.append('user_id', $("#user_id_temp").text());
             formData.append('transaksi_id', $("#id_transaksi_mcu").text());
-            formData.append('judul_laporan', $("#judul_citra_unggah_poli").val());
+            formData.append('judul_laporan', $judul_citra_unggah_poli);
             formData.append('id_kesimpulan', $('#kesimpulan_citra_unggah_poli').val());
             formData.append('kesimpulan', $('#kesimpulan_citra_unggah_poli option:selected').text());
             formData.append('id_kesimpulan2', $('#kesimpulan_citra_unggah_poli2').val());
             formData.append('kesimpulan2', $('#kesimpulan_citra_unggah_poli2 option:selected').text());
             formData.append('detail_kesimpulan', detail_kesimpulan);
-            formData.append('catatan_kaki', $("#catatan_kaki_citra_unggah_poli").val());
+            formData.append('catatan_kaki', $keterangan_catatan_kaki);
             formData.append('pegawai_id_pembaca', $("#dokter_citra_unggah_poli_pembaca").val());
             formData.append('pegawai_id_perawat', $("#dokter_citra_unggah_poli_perawat").val());
             
