@@ -7,7 +7,7 @@
             @include('komponen.information_user', ['title_card' => 'Kondisi Fisik '.ucwords($data['lokasi_fisik']), 'informasi_apa' => "informasi kondisi fisik ".strtolower($data['lokasi_fisik'])])
         </div>
         <div class="card-body">
-            <div class="row formulir_group">
+            <div class="row formulir_group" style="display: none;">
                 <div class="table table-responsive theme-scrollbar">
                     <table class="display" id="datatables_gigi">
                         <thead>

@@ -352,8 +352,17 @@ function lihat_berkas_mcu(no_transaksi, nama_peserta, id_mcu, button) {
                         }
                     }
                 }
-                quillInstances['editor_riwayat_kecelakaan_kerja'].setContents(JSON.parse(response.riwayat_kecelakaan_kerja[0].riwayat_kecelakaan_kerja));
-                /* riwayat kebiasaan hidup*/
+                let data = response.riwayat_kecelakaan_kerja[0].riwayat_kecelakaan_kerja;
+                try {
+                    let parsed = JSON.parse(data);
+                    if (!parsed || (Array.isArray(parsed) && parsed.length === 0)) {
+                        quillInstances['editor_riwayat_kecelakaan_kerja'].setText('TIDAK ADA');
+                    } else {
+                        quillInstances['editor_riwayat_kecelakaan_kerja'].setContents(parsed);
+                    }
+                } catch (e) {
+                    quillInstances['editor_riwayat_kecelakaan_kerja'].setText('TIDAK ADA');
+                }
                 $("#datatables_riwayat_kebiasaan_hidup_modal").show();
                 for (let i = 0; i < response.riwayat_kebiasaan_hidup.length; i++) {
                     let item = response.riwayat_kebiasaan_hidup[i];

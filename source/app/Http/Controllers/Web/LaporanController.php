@@ -813,7 +813,7 @@ class LaporanController extends Controller
                 // Baris 4
                 $this->Cell($wLabel1, $h, 'Jenis Kelamin', 0, 0);
                 $this->Cell($wValue1, $h, ': ' . $d['jenis_kelamin'], 0, 0);
-                $this->Cell($wLabel2, $h, 'Departemen', 0, 0);
+                $this->Cell($wLabel2, $h, 'Jabatan', 0, 0);
                 $this->Cell($wValue2, $h, ': ' . $d['nama_departemen'], 0, 1);
 
                 // Baris 5
@@ -2061,8 +2061,8 @@ class LaporanController extends Controller
                 $this->SetFont('Times', 'B', 12);
                 
                 $gap = 2;
-                $widths = [50, 65, 15, 15, 50];
-                $headers = ['PEMERIKSAAN', 'JENIS PEMERIKSAAN', 'AB', 'N', 'KETERANGAN'];
+                $widths = [48, 55, 30, 25, 35];
+                $headers = ['PEMERIKSAAN', 'JENIS PEMERIKSAAN', 'ABNORMAL', 'NORMAL', 'KETERANGAN'];
                 $totalWidth = array_sum($widths);
 
                 // Titik awal koordinat Y untuk border luar
@@ -2133,7 +2133,7 @@ class LaporanController extends Controller
                             if (!empty($item->keterangan_atribut)) {
                                 $ket = $item->keterangan_atribut;
                             } else {
-                                $ket = ($item->status_atribut === 'abnormal') ? 'AbNormal' : 'Normal';
+                                $ket = ($item->status_atribut === 'abnormal') ? 'AbNormal' : '-';
                             }
                             $this->Cell($widths[4], $hRow, " " . $ket, $borderDetail, 1, 'L');
                         }
