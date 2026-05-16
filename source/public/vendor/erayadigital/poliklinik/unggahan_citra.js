@@ -362,14 +362,16 @@ $("#simpan_foto_perserta").on('click', async function() {
             formData.append('pegawai_id_perawat', $("#dokter_citra_unggah_poli_perawat").val());
             
             if (jenis_poli.toLowerCase().replace(/ /g, "") !== "farmingham_score") {
-                // PDF
                 const pdfFile = $("#pdf_file")[0].files[0];
+                const hasCroppedImages = croppedImages.length > 0;
+
+                // 1. Upload PDF kalau ada
                 if (pdfFile) {
                     formData.append('citra_unggahan_poliklinik_pdf', pdfFile);
                 }
 
-                // Gambar
-                if (croppedImages.length > 0) {
+                // 2. Upload gambar kalau ada
+                if (hasCroppedImages) {
                     croppedImages.forEach((base64Image, index) => {
                         const isURL = (str) => /^(http|https):\/\/[^\s$.?#].[^\s]*$/.test(str);
                         if (!isURL(base64Image)) {
@@ -379,8 +381,10 @@ $("#simpan_foto_perserta").on('click', async function() {
                             formData.append('citra_unggahan_poliklinik[]', file);
                         }
                     });
-                } else {
-                    // Default image
+                }
+
+                // 3. Upload default image hanya jika PDF dan gambar kosong
+                if (!pdfFile && !hasCroppedImages) {
                     const res = await fetch('/mofi/assets/images/logo/error_gambar.png');
                     const blob = await res.blob();
                     const defaultFile = new File([blob], `default_image_${Date.now()}.png`, { type: 'image/png' });
