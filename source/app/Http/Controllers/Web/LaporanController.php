@@ -319,7 +319,7 @@ class LaporanController extends Controller
             'status_kesimpulan_lab' => $groupedData,
             'riwayat_penyakit_terdahulu' => $riwayat_penyakit_terdahulu,
             'riwayat_penyakit_keluarga' => $riwayat_penyakit_keluarga,
-            'riwayat_kecelakaan_kerja' => $riwayat_kecelakaan_kerja->riwayat_kecelakaan_kerja === "TIDAK ADA" ? "Tidak Ada Keterangan Mengenai Riwayat Kecelakaan Kerja" : QuillHelper::quillToHtml($riwayat_kecelakaan_kerja->riwayat_kecelakaan_kerja),
+            'riwayat_kecelakaan_kerja' => ($riwayat = $riwayat_kecelakaan_kerja->riwayat_kecelakaan_kerja) === "TIDAK ADA" || empty($riwayat) ? "Tidak Ada Keterangan Mengenai Riwayat Kecelakaan Kerja" : (json_decode($riwayat, true) !== null ? QuillHelper::quillToHtml($riwayat) : $riwayat),
             'riwayat_kebiasaan_hidup' => $riwayat_kebiasaan_hidup,
             'riwayat_imunisasi' => $riwayat_imunisasi,
             'riwayat_lingkungan_kerja' => $riwayat_lingkungan_kerja,
