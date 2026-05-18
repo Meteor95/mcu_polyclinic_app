@@ -781,7 +781,7 @@ class LaporanController extends Controller
                 $this->Cell($textWidth, 10, 'Klinik Artha Medical Centre', 0, 1, 'R');
                 $this->SetFont('Times', '', 12);
                 $this->SetX(60);
-                $this->MultiCell($textWidth, 4, "Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765\nE-Mail: amc.clinic.yhs@gmail.com | website: arthamedicalcentre.com\nContact Person: 0812-3456-7890 | 0812-3456-7890", 0, 'R');
+                $this->MultiCell($textWidth, 4, "Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765\nE-Mail: amc.clinic.yhs@gmail.com | website: www.arthamedical.com\nContact Person: 0823-4402-9902", 0, 'R');
             }
             function drawHeaderMcuTable() {
                 $this->ln(5);
