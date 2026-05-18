@@ -427,6 +427,19 @@ function validasi_rekap_kesimpulan(no_transaksi, nama_peserta, id_mcu) {
                     choice_pemeriksaan_kesimpulan_non_status_kesehatan_select.setChoiceByValue(response.data.kesimpulan_hasil_medical_checkup);
                     choice_pemeriksaan_kesimpulan_tanda_vital_dan_gizi_select.setChoiceByValue(response.data.kesimpulan_pemeriksaan_tanda_vital_dan_gizi);
                     quillInstances['pemeriksaan_tindakan_saran'].setContents(JSON.parse(response.data.saran_keseluruhan));
+                    const warnaDb = response.data.kesimpulan_warna;
+                    const selectedColor = document.getElementById('selectedColor');
+                    const favcolor = document.getElementById('favcolor');
+                    const options = document.querySelectorAll('#colorDropdown .option');
+                    options.forEach(option => {
+                        const color = option.dataset.color;
+                        if (color.toLowerCase() === warnaDb.toLowerCase()) {
+                            selectedColor.style.backgroundColor = color;
+                            favcolor.value = color;
+                            options.forEach(o => o.classList.remove('active'));
+                            option.classList.add('active');
+                        }
+                    });
                 }
                 $("#modal_validasi_rekap_kesimpulan_text").html('Validasi Kesimpulan Nama: '+nama_peserta+"<br>Nomor MCU: "+no_transaksi);
                 $("#modal_validasi_rekap_kesimpulan").modal('show');
