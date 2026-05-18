@@ -441,10 +441,15 @@ function detail_tindakan(id,parts,nama_peserta){
     });
     $('#modalDetailTindakan').modal('show');
 }
-$("#data_ditampilkan, #status_pembayaran, #jenis_layanan").change(function(){
+$("#data_ditampilkan").change(function(){
     $("#daftar_table_tindakan").DataTable().page.len($(this).val()).draw();
     $("#daftar_table_tindakan").DataTable().ajax.reload();
 });
+$("#status_pembayaran, #jenis_layanan").change(function(){
+    $("#daftar_table_tindakan").DataTable().page.len($("#data_ditampilkan").val()).draw();
+    $("#daftar_table_tindakan").DataTable().ajax.reload();
+});
+
 $("#kotak_pencarian").keyup(debounce(function(){
     $("#daftar_table_tindakan").DataTable().ajax.reload();
 }, 300));
