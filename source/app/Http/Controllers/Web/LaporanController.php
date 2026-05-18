@@ -222,7 +222,7 @@ class LaporanController extends Controller
             'nik_peserta' => $nik_peserta,
             'hash' => hash_hmac('sha256', "$id_mcu|$nomor_mcu|$nik_peserta", $secretKey)
         ];
-        $dataBase64 = base64_encode(json_encode($qrDataArray));
+        $dataBase64 = base64_encode(json_encode($qrDataArray, JSON_UNESCAPED_SLASHES));
         $validasiUrl = route('admin.laporan.validasi_berkas_mcu', ['data' => $dataBase64]);
         $qrcode_cek_dokumen = QrCode::format('png')
             ->size(200)
