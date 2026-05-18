@@ -37,8 +37,8 @@
                 <button class="btn btn-outline-primary step-indicator" data-step="2">Kecelakaan Kerja</button>
                 <button class="btn btn-outline-primary step-indicator" data-step="3">Kebiasaan Hidup</button>
                 <!-- <button class="btn btn-outline-primary step-indicator" data-step="4">Penyakit Terdahulu</button> -->
-                <button class="btn btn-outline-primary step-indicator" data-step="5">Penyakit Keluarga</button>
-                <button class="btn btn-outline-primary step-indicator" data-step="6">Imunisasi</button>
+                <button class="btn btn-outline-primary step-indicator" data-step="4">Penyakit Keluarga</button>
+                <button class="btn btn-outline-primary step-indicator" data-step="5">Imunisasi</button>
               </div>
               <div class="steps">
                 <!-- Step 1 -->
@@ -261,7 +261,7 @@
                 </div>-->
 
                 <!-- Step 6 -->
-                <div class="step" data-step="6">
+                <div class="step" data-step="5">
                   <h5>Formuilr Penyakit Keluarga</h5>
                   <div class="row">
                   @foreach ($data['penyakit_keluarga'] as $index => $pk)
@@ -286,7 +286,7 @@
                 </div>
 
                 <!-- Step 7 -->
-                <div class="step" data-step="7">
+                <div class="step" data-step="6">
                   <h5>Formuilr Imunisasi</h5>
                   <div class="row">
                   @foreach ($data['imunisasi'] as $index => $im)
