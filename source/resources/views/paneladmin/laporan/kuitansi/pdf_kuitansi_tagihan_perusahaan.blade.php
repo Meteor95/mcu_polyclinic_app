@@ -24,8 +24,8 @@
                         <p>
                             <span style="font-size: 25px; font-weight: bold;">KLINIK ARTHA MEDICAL CENTRE</span><br>
                             <span style="font-size: 15px;">Alamat: Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765</span><br>
-                            <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: arthamedicalcentre.com</span><br>
-                            <span style="font-size: 15px;">Contact Person: 0812-3456-7890 | 0812-3456-7890</span><br>
+                            <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: www.arthamedical.com</span><br>
+                            <span style="font-size: 15px;">Contact Person: 0813-4863-6100</span><br>
                             <span style="font-size: 20px;"><strong>'.$title.'</strong></span>
                         </p>
                     </td>
@@ -229,7 +229,7 @@
                     @endphp
                 @endif
                 @php
-                    $total = $item['harga_setelah_diskon'] * $item['jumlah_qty'];
+                    $total = $item['harga_setelah_diskon'] * $item['jumlah'];
                     $subtotal += $total;
                     if ($subtotal == 0) {
                         $subtotal = $item['total_transaksi'];
@@ -239,7 +239,7 @@
                 @endphp
                 <tr>
                     <td style="border: 2px solid #000;padding-left: 5px">{{ str_replace('_', ' ', $item['nama_item']) }}</td>
-                    <td style="text-align: center;border: 2px solid #000;">{{ $item['jumlah_qty'] }}</td>
+                    <td style="text-align: center;border: 2px solid #000;">{{ $item['jumlah'] }}</td>
                     <td style="text-align: right;border: 2px solid #000;padding-right: 5px">{{ number_format($item['harga_setelah_diskon'], 0, ',', '.') }}</td>
                     <td style="text-align: right;border: 2px solid #000;padding-right: 5px">{{ number_format($total, 0, ',', '.') }}</td>
                 </tr>
@@ -270,14 +270,18 @@
 
         <table style="width: 100%;">
             <tr>
-                {{-- <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
-                Pindai untuk periksa keaslian kuitansi<br>
+                <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
+                {{-- Pindai untuk periksa keaslian kuitansi<br>
                 Kuitansi ini tervalidasi dan dicetak secara otomatis<br>
-                <img src="data:image/png;base64,{{ $data['qrcode_no_nota'] }}">
-                </td> --}}
+                <img src="data:image/png;base64,{{ $data['qrcode_no_nota'] }}"> --}}
+                </td>
                 <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
                 Mengetahui<br>Sendawar, {{ $data['tanggal_cetak'] }}<br>
-                    <img src="data:image/png;base64,{{ $data['qrcode_dokter'] }}"><br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
                     <span style="font-size: 14px;font-weight: bold;"><u>{{ $data['nama_direktur_keuangan'] }}</u></span><br>
                     <span style="font-size: 14px;font-weight: bold;">Direktur Keuangan</span>
                 </td>

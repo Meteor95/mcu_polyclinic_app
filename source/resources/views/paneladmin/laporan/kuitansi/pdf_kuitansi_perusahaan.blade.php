@@ -34,13 +34,13 @@ table td, table th {
                         <img src="'.asset('mofi/assets/images/logo/Logo_AMC_Full.png').'" alt="Logo AMC" style="width: 100%;padding-top: 20px;">
                     </td>
                     <td style="width:70%; text-align: right;">
-                        <p>
+                       <p>
                             <span style="font-size: 25px; font-weight: bold;">KLINIK ARTHA MEDICAL CENTRE</span><br>
                             <span style="font-size: 15px;">Alamat: Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765</span><br>
-                            <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: arthamedicalcentre.com</span><br>
-                            <span style="font-size: 15px;">Contact Person: 0823-4402-9902</span><br>
-                            <span style="font-size: 20px;"><strong>'.$title.'</strong></span>
+                            <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: www.arthamedical.com</span><br>
+                            <span style="font-size: 15px;">Contact Person: 0813-4863-6100</span><br>
                         </p>
+                        <span style="font-size: 20px;"><strong>'.$title.'</strong></span>
                     </td>
                 </tr>
             </table>
@@ -325,13 +325,13 @@ table td, table th {
         <table style="width: 95%; margin: 10px auto;border-collapse: collapse;" cellpadding="0" cellspacing="0">
             <tr>
                 <td style="width: 35%; text-align: center; padding-left: 20px;font-size: 13px;">
-                Disajikan Oleh<br>
+                Disiapkan Oleh<br>
                 KLINIK ARTHA MEDICA CENTRE<br>
                 <img src="data:image/png;base64,{{ $data['qrcode_no_nota'] }}">
-                <br><u>RIZKY</u><br>ADMIN
+                <br><br><u>ADMIN</u>
                 </td>
                 <td style="width: 40%; text-align: center; padding-right: 20px; font-size: 13px;">
-                Dicek Oleh<br>{{ $data['nama_perusahaan'] }}<br>
+                Diperiksa Oleh<br>{{ $data['nama_perusahaan'] }}<br>
                     <br>
                     <br>
                     <br>
@@ -340,7 +340,7 @@ table td, table th {
                     <span style="font-weight: bold;"><u>{!! str_repeat('&nbsp;', 50) !!}</u></span><br>
                 </td>
                 <td style="width: 40%; text-align: center; padding-right: 20px; font-size: 13px;">
-                Diterima Oleh<br>{{ $data['nama_perusahaan'] }}<br>
+                Disetujui Oleh<br>{{ $data['nama_perusahaan'] }}<br>
                     <br>
                     <br>
                     <br>
