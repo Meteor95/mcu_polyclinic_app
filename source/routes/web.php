@@ -19,6 +19,7 @@ Route::get('/', function (Request $req) {
     $data = ['tipe_halaman' => 'login'];
     return view('login', ['data' => $data]);
 })->name('login');
+Route::get('laporan/validasi_berkas_mcu', [LaporanController::class,"validasi_berkas_mcu"])->name('admin.laporan.validasi_berkas_mcu');
 Route::group(['middleware' => ['jwt.cookie']], function () {
     Route::get('pintukeluar', [AuthController::class, "logout"]);
     Route::prefix('akun')->group(function () {
@@ -81,7 +82,6 @@ Route::group(['middleware' => ['jwt.cookie']], function () {
     });
     Route::prefix('laporan')->group(function () {
         Route::get('validasi_mcu', [LaporanController::class,"validasi_mcu"])->middleware('permission_cache:akses_validasi_mcu')->name('admin.laporan.validasi_mcu');
-        Route::get('validasi_berkas_mcu', [LaporanController::class,"validasi_berkas_mcu"])->name('admin.laporan.validasi_berkas_mcu');
         Route::get('validasi_mcu/nota/{no_nota}', [LaporanController::class,"validasi_mcu_nota"])->middleware('permission_cache:akses_validasi_mcu')->name('admin.laporan.validasi_mcu_nota');
         Route::get('validasi_rekap_kesimpulan', [LaporanController::class,"validasi_rekap_kesimpulan"])->middleware('permission_cache:akses_validasi_kesimpulan')->name('admin.laporan.validasi_rekap_kesimpulan');
         Route::prefix('berkas')->group(function () {
