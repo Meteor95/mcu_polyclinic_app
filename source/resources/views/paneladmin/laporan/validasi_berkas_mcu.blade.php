@@ -341,7 +341,7 @@
                                 <div class="verdict-asli">Dokumen Asli dan Terdaftar</div>
                                 <div class="verdict-sub">
                                     Berkas ini telah terverifikasi dan dinyatakan <b style="color: red">SAH</b> oleh
-                                    Artha Medical Centre. Pastikan informasi yang ada dokumentasi ini sesuai dengan dasar
+                                    Artha Medical Centre. Pastikan informasi pada BERKAS MCU yang anda terima sesuai dengan dasar
                                     informasi yang kami berikan
                                 </div>
                             </div>
