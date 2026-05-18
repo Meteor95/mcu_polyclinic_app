@@ -10,7 +10,7 @@ use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, Riwaya
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\{Kesimpulan as KesimpulanLabStatus, Transaksi as TransaksiLab, Kategori, TransaksiDetail};
-use App\Models\Laporan\{Kesimpulan,EdsStatusCekKesimpulan};
+use App\Models\Laporan\{Kesimpulan,EdsStatusCekKesimpulan,ValidasiBerkas};
 use App\Helpers\QuillHelper;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Helpers\GlobalHelper;
@@ -199,6 +199,8 @@ class LaporanController extends Controller
         $id_mcu = $dataparameter['id_mcu'];
         $nomor_mcu = $dataparameter['nomor_mcu'];
         $nik_peserta = $dataparameter['nik_peserta'];
+        $secretKey = env('HASH_SECRET', 'P4nFn4kBja9nKost4n3sNoEnv');
+        $record = ValidasiBerkas::insertIfNotExists($id_mcu, $nomor_mcu, $nik_peserta, $secretKey);
         $tablePrefix = config('database.connections.mysql.prefix');
         $riwayat_informasi_foto = UnggahCitra::where('transaksi_id', $id_mcu)->first();
         $status_kesimpulan_lab = KesimpulanLabStatus::all();
@@ -214,11 +216,19 @@ class LaporanController extends Controller
         $riwayat_informasi_foto->data_foto = url(env('APP_VERSI_API')."/file/unduh_foto?file_name=" . $riwayat_informasi_foto->lokasi_gambar);
         $riwayat_informasi_foto->data_signature = url(env('APP_VERSI_API')."/file/unduh_foto_signature?file_name=" . $riwayat_informasi_foto->signature);
         $logoPath = public_path('mofi/assets/images/logo/Logo_AMC_Full.png');
-        $qrcode = base64_encode(QrCode::format('png')
-                    ->size(200)
-                    ->margin(1)
-                    ->merge($logoPath, 0.2, true)
-                    ->generate($informasi_data_diri->nomor_identitas));
+        $qrDataArray = [
+            'id_mcu' => $id_mcu,
+            'nomor_mcu' => $nomor_mcu,
+            'nik_peserta' => $nik_peserta,
+            'hash' => hash_hmac('sha256', "$id_mcu|$nomor_mcu|$nik_peserta", $secretKey)
+        ];
+        $dataBase64 = base64_encode(json_encode($qrDataArray));
+        $validasiUrl = route('admin.laporan.validasi_berkas_mcu', ['data' => $dataBase64]);
+        $qrcode_cek_dokumen = QrCode::format('png')
+            ->size(200)
+            ->margin(1)
+            ->merge($logoPath, 0.2, true)
+            ->generate($validasiUrl);
         $riwayat_penyakit_terdahulu = RiwayatPenyakitTerdahulu::where('transaksi_id', $id_mcu)->get();
         $riwayat_penyakit_keluarga = RiwayatPenyakitKeluarga::where('transaksi_id', $id_mcu)->get();
         $riwayat_kecelakaan_kerja = RiwayatKecelakaanKerja::where('transaksi_id', $id_mcu)->first();
@@ -294,7 +304,7 @@ class LaporanController extends Controller
             'ada_lampiran_laboratorium_pdf' => $ada_lampiran_laboratorium_pdf,
             'total_tindakan' => $total_tindakan ,
             'tanggal_cetak' => $tanggal_cetak,
-            'qrcode' => $qrcode,
+            'qrcode' => $qrcode_cek_dokumen,
             'pegawai_map' => $pegawaiMap,
             'riwayat_informasi_foto' => $riwayat_informasi_foto,
             'informasi_data_diri' => $informasi_data_diri,
@@ -1144,16 +1154,18 @@ class LaporanController extends Controller
                 $this->SetFont('Times', '', 10);
                 $this->SetXY(10, $ySkg);
                 $this->MultiCell(90, 4, "Pindai untuk periksa keaslian dokumen\nDokumen ini tervalidasi dan dicetak secara otomatis", 0, 'C');
+                $tmpFile = tempnam(sys_get_temp_dir(), 'qrcode') . '.png';
+                file_put_contents($tmpFile, $this->data['qrcode']);
                 if($this->data['qrcode']) {
-                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 40, $this->GetY(), 25, 25, 'PNG');
+                    $this->Image($tmpFile, 40, $this->GetY(), 25, 25, 'PNG');
                 }
-
                 // // Sisi Kanan (Dokter)
                 $this->SetXY(110, $ySkg);
                 $this->MultiCell(90, 4, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
                 if($this->data['qrcode']) {
-                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY(), 25, 25, 'PNG');
+                    $this->Image($tmpFile, 40, $this->GetY(), 25, 25, 'PNG');
                 }
+                unlink($tmpFile);
                 $this->SetXY(110, 265);
                 
                 // Nama Dokter (Gunakan posisi absolut agar tidak terdorong tinggi QR yang dinamis)
@@ -1311,8 +1323,7 @@ class LaporanController extends Controller
                 $this->MultiCell(90, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
 
                 if($this->data['qrcode']) {
-                    // Posisi QR di tengah kolom kanan
-                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY() + 2, 25, 25, 'PNG');
+                    //$this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY() + 2, 25, 25, 'PNG');
                 }
 
                 $this->SetXY(110, $yFooter + 40);
@@ -2150,14 +2161,14 @@ class LaporanController extends Controller
                 $this->SetXY(10, $ySkg);
                 $this->MultiCell(90, 4, "Pindai untuk periksa keaslian dokumen\nDokumen ini tervalidasi dan dicetak secara otomatis", 0, 'C');
                 if($this->data['qrcode']) {
-                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 40, $this->GetY(), 25, 25, 'PNG');
+                    //$this->Image('data://text/plain;base64,' . $this->data['qrcode'], 40, $this->GetY(), 25, 25, 'PNG');
                 }
 
                 // // Sisi Kanan (Dokter)
                 $this->SetXY(110, $ySkg);
                 $this->MultiCell(90, 4, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
                 if($this->data['qrcode']) {
-                    $this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY(), 25, 25, 'PNG');
+                    //$this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY(), 25, 25, 'PNG');
                 }
                 $this->SetXY(110, 265);
                 // Nama Dokter (Gunakan posisi absolut agar tidak terdorong tinggi QR yang dinamis)
@@ -3663,5 +3674,31 @@ class LaporanController extends Controller
     public function laporan_rekap_farmingham_score(Request $req){
         return $this->laporanRekap($req, 'farmingham_score');
     }
+    public function validasi_berkas_mcu(Request $req){
+        $dataParam = $request->query('data');
+        if (!$dataParam) {
+            return response()->json(['valid' => false, 'message' => 'Data tidak ditemukan']);
+        }
+        $decodedJson = base64_decode($dataParam);
+        if (!$decodedJson) {
+            return response()->json(['valid' => false, 'message' => 'Data tidak valid']);
+        }
 
+        $data = json_decode($decodedJson, true);
+        if (!$data || !isset($data['id_mcu'], $data['nomor_mcu'], $data['nik_peserta'])) {
+            return response()->json(['valid' => false, 'message' => 'Data tidak lengkap']);
+        }
+        $secretKey = env('HASH_SECRET', 'P4nFn4kBja9nKost4n3sNoEnv');
+        $isValid = ValidasiBerkas::cekHash(
+            $data['id_mcu'],
+            $data['nomor_mcu'],
+            $data['nik_peserta'],
+            $secretKey
+        );
+        if ($isValid) {
+            return response()->json(['valid' => true, 'message' => 'Dokumen asli']);
+        } else {
+            return response()->json(['valid' => false, 'message' => 'Dokumen tidak valid']);
+        }
+    }
 }
