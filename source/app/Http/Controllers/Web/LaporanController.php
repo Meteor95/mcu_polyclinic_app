@@ -3726,6 +3726,10 @@ class LaporanController extends Controller
         return $this->laporanRekap($req, 'farmingham_score');
     }
     public function validasi_berkas_mcu(Request $req){
+        $title = 'Validasi Berkas MCU';
+        $data = $this->getData($req, $title, [
+            'Beranda'       => route('admin.beranda'),
+        ]);
         $dataParam = $req->query('data');
         if (!$dataParam) {
             return response()->json(['valid' => false, 'message' => 'Data tidak ditemukan']);
@@ -3746,10 +3750,13 @@ class LaporanController extends Controller
             $data['nik_peserta'],
             $secretKey
         );
-        if ($isValid) {
-            return response()->json(['valid' => true, 'message' => 'Dokumen asli untuk nomor MCU ' . $data['nomor_mcu']]);
-        } else {
-            return response()->json(['valid' => false, 'message' => 'Dokumen tidak valid']);
-        }
+        $tablePrefix = config('database.connections.mysql.prefix');
+        $informasi_data_diri = Transaksi::join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+            ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')
+            ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
+            ->select('users_member.nama_peserta', 'users_member.nomor_identitas', 'users_member.tempat_lahir', 'users_member.tanggal_lahir', 'users_member.jenis_kelamin', 'users_member.alamat', 'company.company_name', 'departemen_peserta.nama_departemen', 'mcu_transaksi_peserta.tanggal_transaksi as tanggal_mcu', 'mcu_transaksi_peserta.jenis_transaksi_pendaftaran','mcu_transaksi_peserta.tipe_mcu_peserta')
+            ->selectRaw('TIMESTAMPDIFF(YEAR, ' . $tablePrefix . 'users_member.tanggal_lahir, CURDATE()) AS umur')
+            ->where('mcu_transaksi_peserta.id', $data['id_mcu'])->first();
+        return view("paneladmin.laporan.validasi_berkas_mcu", ['isValid'  => $isValid, 'informasi_data_diri' => $informasi_data_diri, 'nomor_mcu' => $data['nomor_mcu']]);
     }
 }
