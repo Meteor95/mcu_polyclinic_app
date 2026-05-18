@@ -324,7 +324,7 @@
             <div class="topbar">
                 <div class="logo">
                     <div class="logo-box">AMC</div>
-                    <div class="logo-txt">Arta <span>Medica</span> Centre</div>
+                    <div class="logo-txt">Artha <span>Medical</span> Centre</div>
                 </div>
                 <div class="scan-tag">📷 Hasil Scan QR</div>
             </div>
@@ -341,7 +341,7 @@
                                 <div class="verdict-asli">Dokumen Asli dan Terdaftar</div>
                                 <div class="verdict-sub">
                                     Berkas ini telah terverifikasi dan dinyatakan <b style="color: red">SAH</b> oleh
-                                    Arta Medica Centre. Pastikan informasi yang ada dokumentasi ini sesuai dengan dasar
+                                    Artha Medical Centre. Pastikan informasi yang ada dokumentasi ini sesuai dengan dasar
                                     informasi yang kami berikan
                                 </div>
                             </div>
@@ -419,7 +419,7 @@
                                 <div class="verdict-sub">
                                     Berkas ini dinyatakan
                                     <b>tidak lolos verifikasi</b>
-                                    oleh Arta Medica Centre.
+                                    oleh Artha Medical Centre.
                                 </div>
                             </div>
                         </div>
@@ -431,7 +431,7 @@
                                 ⛔
                                 <span>
                                     Dokumen tidak ditemukan, telah dimodifikasi, atau hash verifikasi tidak sesuai
-                                    dengan data resmi pada sistem Arta Medica Centre.
+                                    dengan data resmi pada sistem Artha Medical Centre.
                                 </span>
                             </div>
                             <br />
@@ -472,7 +472,7 @@
                         <div class="stamp-row">
                             <div class="stamp-left">
                                 <b>Sistem Verifikasi AMC</b><br />
-                                Dokumen ini tidak terdaftar pada sistem resmi Arta Medica Centre.
+                                Dokumen ini tidak terdaftar pada sistem resmi Artha Medical Centre.
                             </div>
 
                             <div class="stamp-qr">INVALID</div>
@@ -482,7 +482,7 @@
 
                 {{-- FOOTER --}}
                 <div class="footer">
-                    Arta Medica Centre · Portal Resmi Verifikasi Berkas MCU
+                    Artha Medical Centre · Portal Resmi Verifikasi Berkas MCU
                     <br />
                     Hubungi kami: support@arthamedical.com · 0823-4402-9902
                 </div>
