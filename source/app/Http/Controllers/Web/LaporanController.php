@@ -2902,17 +2902,59 @@ class LaporanController extends Controller
                         $this->ln(5);
                         $this->SetFont('Times', '', 11);
                         $fields = [
-                            // 'Dokter Yang Bertugas' => $firstItem->nama_pegawai ?? '-',
-                            // 'Petugas Poliklinik'   => $firstItem->nama_petugas ?? '-',
-                            // 'Judul Interpretasi'   => $firstItem->judul_laporan ?? '-',
-                            // 'Catatan Kaki'         => $firstItem->catatan_kaki ?? '-',
-                            'Kesimpulan'           => $firstItem->kesimpulan ?? '-',
+                            'Kesimpulan' => [
+                                'Restreksi' => $firstItem->kesimpulan ?? '-',
+                                'Obstruksi'  => $firstItem->kesimpulan2 ?? '-',
+                            ],
                         ];
 
-                        foreach ($fields as $label => $value) {
-                            $this->Cell(60, 4, $label, 0, 0);
-                            $this->Cell(5, 4, ':', 0, 0);
-                            $this->MultiCell(0, 4, $value, 0, 'L');
+                        foreach ($fields as $label => $subValues) {
+                            $startY = $this->GetY();
+                            $originalMargin = $this->lMargin;
+
+                            // 1. Cetak Label Utama (Kesimpulan)
+                            $this->SetFont('Times', 'B', 11);
+                            $this->Cell(30, 5, $label, 0, 0); 
+                            
+                            // Simpan posisi X setelah kolom "Kesimpulan" untuk baris-baris sub-nilai
+                            $xSubLabel = $this->GetX(); 
+
+                            if (is_array($subValues)) {
+                                $isFirst = true;
+                                foreach ($subValues as $subLabel => $text) {
+                                    if (!$isFirst) {
+                                        // Beri jarak sedikit untuk baris kedua (Kiri)
+                                        $this->SetX($xSubLabel); 
+                                    }
+
+                                    // 2. Cetak Sub-Label (Kanan / Kiri)
+                                    $this->SetFont('Times', '', 11);
+                                    $this->Cell(20, 5, $subLabel, 0, 0); // Lebar 20mm cukup untuk kata "Kanan"
+                                    
+                                    // 3. Cetak Titik Dua
+                                    $this->Cell(5, 5, ':', 0, 0);
+                                    
+                                    // 4. Cetak Isinya (Normal / dsb)
+                                    $xValue = $this->GetX();
+                                    
+                                    // Set margin kiri sementara agar jika teks "Normal" sangat panjang, dia ngetab lurus
+                                    $this->SetLeftMargin($xValue);
+                                    $this->SetY($this->GetY()); 
+                                    
+                                    $this->MultiCell(0, 5, $text, 0, 'L');
+                                    
+                                    // Kembalikan margin ke posisi kolom sub-label untuk baris berikutnya
+                                    $this->SetLeftMargin($originalMargin);
+                                    $isFirst = false;
+                                }
+                            } else {
+                                // Jika teks biasa (bukan array Kanan/Kiri)
+                                $this->Cell(5, 5, ':', 0, 0);
+                                $this->MultiCell(0, 5, $subValues, 0, 'L');
+                            }
+
+                            $this->Ln(2);
+                            $this->SetX($originalMargin);
                         }
 
                         // 3. TANDA TANGAN (Posisi Absolute Bawah)
