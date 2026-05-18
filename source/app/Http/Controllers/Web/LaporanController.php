@@ -222,7 +222,7 @@ class LaporanController extends Controller
             'nik_peserta' => $nik_peserta,
             'hash' => hash_hmac('sha256', "$id_mcu|$nomor_mcu|$nik_peserta", $secretKey)
         ];
-        $dataBase64 = base64_encode(json_encode($qrDataArray, JSON_UNESCAPED_SLASHES));
+        $dataBase64 = base64_encode(json_encode($qrDataArray));
         $validasiUrl = route('admin.laporan.validasi_berkas_mcu', ['data' => $dataBase64]);
         $qrcode_cek_dokumen = QrCode::format('png')
             ->size(200)
@@ -3675,7 +3675,7 @@ class LaporanController extends Controller
         return $this->laporanRekap($req, 'farmingham_score');
     }
     public function validasi_berkas_mcu(Request $req){
-        $dataParam = $request->query('data');
+        $dataParam = $req->query('data');
         if (!$dataParam) {
             return response()->json(['valid' => false, 'message' => 'Data tidak ditemukan']);
         }
@@ -3696,7 +3696,7 @@ class LaporanController extends Controller
             $secretKey
         );
         if ($isValid) {
-            return response()->json(['valid' => true, 'message' => 'Dokumen asli']);
+            return response()->json(['valid' => true, 'message' => 'Dokumen asli untuk nomor MCU ' . $data['nomor_mcu']]);
         } else {
             return response()->json(['valid' => false, 'message' => 'Dokumen tidak valid']);
         }
