@@ -209,6 +209,7 @@ function report_show_modal(jenis_laporan,id_tombol) {
                     d.jenis_transaksi = jenis_transaksi;
                     d.tanggal_awal = tanggal_awal_nilai;
                     d.tanggal_akhir = tanggal_akhir_nilai;
+                    d.length = $("#select_page_length_transaksi_tindakan").val();
                 },
                 "dataSrc": function(json) {
                     return json.data;
@@ -305,12 +306,11 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
                     id_mcu: param1,
                     nomor_mcu: param2,
                     nik_peserta: param3,
-                    jenis_kuitansi:
-                    jenis_kuitansi,
+                    jenis_kuitansi:jenis_kuitansi,
                     keterangan: param6,
                     id_direktur_keuangan: $('#direktur_keuangan').val(),
                     nama_direktur_keuangan: $('#direktur_keuangan').find('option:selected').text(),
-                    nomor_surat: $('#nomor_surat').val()
+                    nomor_surat: $('#nomor_surat').val(),
                 }));
                 window.open(baseurl + '/laporan/kuitansi/personal/cetak?data='+dataparameter,'_blank');
             }else if (jenis_kuitansi == "kuitansi_perusahaan" || jenis_kuitansi == "tagihan_perusahaan") {
@@ -325,7 +325,8 @@ function cetak_kuitansi(jenis_kuitansi, param1 = null, param2 = null, param3 = n
                     status_pembayaran: $("#status_pembayaran").val(),
                     nomor_surat: param6,
                     id_direktur_keuangan: $('#direktur_keuangan').val(),
-                    nama_direktur_keuangan: $('#direktur_keuangan').find('option:selected').text()
+                    nama_direktur_keuangan: $('#direktur_keuangan').find('option:selected').text(),
+                    nomortagihan: param5
                 }));
                 if (jenis_kuitansi == "kuitansi_perusahaan") {
                     window.open(baseurl + '/laporan/kuitansi/perusahaan/cetak?data='+dataparameter,'_blank');  

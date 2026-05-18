@@ -38,7 +38,7 @@ table td, table th {
                             <span style="font-size: 25px; font-weight: bold;">KLINIK ARTHA MEDICAL CENTRE</span><br>
                             <span style="font-size: 15px;">Alamat: Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765</span><br>
                             <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: arthamedicalcentre.com</span><br>
-                            <span style="font-size: 15px;">Contact Person: 0812-3456-7890 | 0812-3456-7890</span><br>
+                            <span style="font-size: 15px;">Contact Person: 0823-4402-9902</span><br>
                             <span style="font-size: 20px;"><strong>'.$title.'</strong></span>
                         </p>
                     </td>
@@ -78,38 +78,42 @@ table td, table th {
             </thead>
            <tbody>
                 @php
+                    $grouped = collect($data['inv_resume_mcu_peserta'])->groupBy(function ($item) {
+                        return $item->jenis_transaksi_pendaftaran . '|' . $item->total_transaksi;
+                    });
                     $subTotalQty = 0;
                     $grandTotal = 0;
                 @endphp
 
-                @foreach ($data['inv_resume_mcu_peserta'] as $item)
+                @foreach ($grouped as $group)
                     @php
-                        $qty = $item->total_tindakan == 0 ? 1 : $item->total_tindakan;
-                        $jumlah = $qty * $item->total_transaksi;
-
+                        $first = $group->first();
+                        $qty = $group->count();
+                        $harga = $first->total_transaksi;
+                        $jumlah = $qty * $harga;
                         $subTotalQty += $qty;
                         $grandTotal += $jumlah;
                     @endphp
-
                     <tr style="font-weight: bold;">
                         <td style="border:1px solid #000; text-align:center;">{{ $loop->iteration }}</td>
-                        <td style="border:1px solid #000;">{{ str_replace('_', ' ', $item->jenis_transaksi_pendaftaran) }}</td>
-                        <td style="border:1px solid #000; text-align:center;">
-                            {{ number_format($qty, 0, '.', '.') }}
-                        </td>
+                        <td style="border:1px solid #000;">{{ str_replace('_', ' ', $first->jenis_transaksi_pendaftaran) }}</td>
+                        <td style="border:1px solid #000; text-align:center;">{{ number_format($qty, 0, '.', '.') }}</td>
                         <td style="border:1px solid #000; text-align:right;">
-                            <span style="float: left;">Rp</span>
-                            <span style="float: right;">{{ number_format($item->total_transaksi, 0, '.', '.') }}</span>
+                            <span style="float:left;">Rp</span>
+                            <span style="float:right;">
+                                {{ number_format($harga, 0, '.', '.') }}
+                            </span>
                             <div style="clear: both;"></div>
                         </td>
                         <td style="border:1px solid #000; text-align:right;">
-                            <span style="float: left;">Rp</span>
-                            <span style="float: right;">{{ number_format($jumlah, 0, '.', '.') }}</span>
+                            <span style="float:left;">Rp</span>
+                            <span style="float:right;">
+                                {{ number_format($jumlah, 0, '.', '.') }}
+                            </span>
                             <div style="clear: both;"></div>
                         </td>
                     </tr>
                 @endforeach
-
                 {{-- SUB TOTAL --}}
                 <tr style="font-weight:bold; background:#F8CBAD;">
                     <td colspan="2" style="border:1px solid #000; text-align:right;">
@@ -141,9 +145,9 @@ table td, table th {
         <table style="width: 80%; margin: 10px auto;border-collapse: collapse;" cellpadding="0" cellspacing="0">
             <tr>
                 <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
-                Pindai untuk periksa keaslian kuitansi<br>
+                {{-- Pindai untuk periksa keaslian kuitansi<br>
                 Kuitansi ini tervalidasi dan dicetak secara otomatis<br>
-                <img src="data:image/png;base64,{{ $data['qrcode_no_nota'] }}">
+                <img src="data:image/png;base64,{{ $data['qrcode_no_nota'] }}"> --}}
                 </td>
                 <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
                 Mengetahui<br>Sendawar, {{ $data['tanggal_cetak'] }}<br>

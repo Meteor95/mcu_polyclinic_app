@@ -270,11 +270,11 @@
 
         <table style="width: 100%;">
             <tr>
-                <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
+                {{-- <td style="width: 50%; text-align: center; padding-left: 20px;font-size: 13px;">
                 Pindai untuk periksa keaslian kuitansi<br>
                 Kuitansi ini tervalidasi dan dicetak secara otomatis<br>
                 <img src="data:image/png;base64,{{ $data['qrcode_no_nota'] }}">
-                </td>
+                </td> --}}
                 <td style="width: 50%; text-align: center; padding-right: 20px; font-size: 13px;">
                 Mengetahui<br>Sendawar, {{ $data['tanggal_cetak'] }}<br>
                     <img src="data:image/png;base64,{{ $data['qrcode_dokter'] }}"><br>

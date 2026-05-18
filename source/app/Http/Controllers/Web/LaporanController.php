@@ -10,7 +10,7 @@ use App\Models\Transaksi\{Transaksi, UnggahCitra, LingkunganKerjaPeserta, Riwaya
 use App\Models\PemeriksaanFisik\{TingkatKesadaran, TandaVital, Penglihatan};
 use App\Models\PemeriksaanFisik\KondisiFisik\{KondisiFisik, Gigi};
 use App\Models\Laboratorium\{Kesimpulan as KesimpulanLabStatus, Transaksi as TransaksiLab, Kategori, TransaksiDetail};
-use App\Models\Laporan\{Kesimpulan,EdsStatusCekKesimpulan,ValidasiBerkas};
+use App\Models\Laporan\{Kesimpulan,EdsStatusCekKesimpulan,ValidasiBerkas,Tagihan};
 use App\Helpers\QuillHelper;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Helpers\GlobalHelper;
@@ -3520,9 +3520,9 @@ class LaporanController extends Controller
             ->size(75)
             ->margin(1)
             ->generate("0000"));
-        $inv_resume_mcu_peserta = TransaksiLab::join('mcu_transaksi_peserta','transaksi.no_mcu','=','mcu_transaksi_peserta.id')
-            ->join('users_member','users_member.id','=','mcu_transaksi_peserta.user_id')
-            ->join('departemen_peserta','departemen_peserta.id','=','mcu_transaksi_peserta.departemen_id')
+        $inv_resume_mcu_peserta = Tagihan::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi_tagihan.array_mcu_peserta_id')
+            ->join('transaksi', 'transaksi.no_mcu', '=', 'transaksi_tagihan.array_mcu_peserta_id')
+            ->join('company', 'company.id', '=', 'transaksi_tagihan.id_perusahaan')
             ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
             ->get();
         $data = [
@@ -3565,11 +3565,14 @@ class LaporanController extends Controller
         $jenis_transaksi = $dataparameter['jenis_transaksi'];
         $jenis_layanan = $dataparameter['jenis_layanan'];
         $status_pembayaran = $dataparameter['status_pembayaran'];
+        $nomortagihan = $dataparameter['nomortagihan'];
         $tablePrefix = config('database.connections.mysql.prefix');
-        $inv_resume_mcu_peserta = TransaksiLab::join('mcu_transaksi_peserta','transaksi.no_mcu','=','mcu_transaksi_peserta.id')
-            ->join('users_member','users_member.id','=','mcu_transaksi_peserta.user_id')
-            ->join('departemen_peserta','departemen_peserta.id','=','mcu_transaksi_peserta.departemen_id')
-            ->where('mcu_transaksi_peserta.perusahaan_id', $id_perusahaan)
+        $inv_resume_mcu_peserta = Tagihan::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi_tagihan.array_mcu_peserta_id')
+            ->join('transaksi', 'transaksi.no_mcu', '=', 'transaksi_tagihan.array_mcu_peserta_id')
+            ->join('company', 'company.id', '=', 'transaksi_tagihan.id_perusahaan')
+            ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+            ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
+            ->where('transaksi_tagihan.nomor_tagihan', $nomortagihan)
             ->get();
         $qrcode_no_nota = base64_encode(QrCode::format('svg')
             ->size(75)
