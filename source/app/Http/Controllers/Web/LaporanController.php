@@ -1159,20 +1159,18 @@ class LaporanController extends Controller
                 if($this->data['qrcode']) {
                     $this->Image($tmpFile, 40, $this->GetY(), 25, 25, 'PNG');
                 }
-                // // Sisi Kanan (Dokter)
+                // Sisi Kanan (Tanda Tangan Digital)
                 $this->SetXY(110, $ySkg);
                 $this->MultiCell(90, 4, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                if($this->data['qrcode']) {
-                    $this->Image($tmpFile, 40, $this->GetY(), 25, 25, 'PNG');
-                }
-                unlink($tmpFile);
                 $this->SetXY(110, 265);
-                
                 // Nama Dokter (Gunakan posisi absolut agar tidak terdorong tinggi QR yang dinamis)
                 $this->SetFont('Times', 'BU', 10);
                 $this->SetXY(110, $ySkg + 35); // Letakkan tepat di bawah QR TTD (25 + margin 2)
                 $this->MultiCell(90, 4, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 'C');
-
+                $ttdPath = storage_path('app/public/user/ttd/d85263d0-bf27-4cca-b9e8-48eddb1be6f7_dr_taufiq_jpg_1776757844.8289.jpg');
+                $qrY = $ySkg + 9;
+                $qrSize = 25;
+                $this->Image($ttdPath, 143, $qrY, $qrSize, $qrSize, 'JPG');
                 // SIP Dokter (Tanpa Bold/Underline)
                 $this->SetFont('Times', 'B', 10);
                 $this->SetX(110); 
@@ -1320,18 +1318,27 @@ class LaporanController extends Controller
                 // Kanan: QR & Pengesahan
                 $this->SetXY(110, $yFooter);
                 $this->SetFont('Times', '', 10);
-                $this->MultiCell(90, 5, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
 
-                if($this->data['qrcode']) {
-                    //$this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY() + 2, 25, 25, 'PNG');
-                }
+                // Header tanda tangan
+                $this->MultiCell(90,5,"Mengetahui\nSendawar, " . $this->data['tanggal_cetak'],0,'C');
+                // Path TTD
+                $ttdPath = storage_path('app/public/user/ttd/d85263d0-bf27-4cca-b9e8-48eddb1be6f7_dr_taufiq_jpg_1776757844.8289.jpg');
+                // Posisi TTD
+                $ttdY = $yFooter + 12;
+                $ttdSize = 25;
 
-                $this->SetXY(110, $yFooter + 40);
+                // Gambar TTD
+                if (file_exists($ttdPath)) {$this->Image($ttdPath, 142, $ttdY, $ttdSize, $ttdSize, 'JPG');}
+
+                // Nama dokter
+                $this->SetXY(110, $ttdY + $ttdSize + 2);
                 $this->SetFont('Times', 'BU', 10);
-                $this->Cell(90, 5, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 1, 'C');
+                $this->Cell(90,5,'dr. Muhammad Taufiq Amrullah, S.Ked',0,1,'C');
+
+                // SIP
                 $this->SetX(110);
                 $this->SetFont('Times', 'B', 10);
-                $this->Cell(90, 5, '440.007.2/127/SIP-DINKES/XI/2023', 0, 1, 'C');
+                $this->Cell(90,5,'440.007.2/127/SIP-DINKES/XI/2023',0,1,'C');
             }
             /*section 4*/
             public function cetakRiwayat() {
@@ -2160,22 +2167,24 @@ class LaporanController extends Controller
                 $this->SetFont('Times', '', 10);
                 $this->SetXY(10, $ySkg);
                 $this->MultiCell(90, 4, "Pindai untuk periksa keaslian dokumen\nDokumen ini tervalidasi dan dicetak secara otomatis", 0, 'C');
+                $tmpFile = tempnam(sys_get_temp_dir(), 'qrcode') . '.png';
+                file_put_contents($tmpFile, $this->data['qrcode']);
                 if($this->data['qrcode']) {
-                    //$this->Image('data://text/plain;base64,' . $this->data['qrcode'], 40, $this->GetY(), 25, 25, 'PNG');
+                    $this->Image($tmpFile, 40, $this->GetY(), 25, 25, 'PNG');
                 }
 
-                // // Sisi Kanan (Dokter)
+                // Sisi Kanan (Dokter)
                 $this->SetXY(110, $ySkg);
                 $this->MultiCell(90, 4, "Mengetahui\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
-                if($this->data['qrcode']) {
-                    //$this->Image('data://text/plain;base64,' . $this->data['qrcode'], 142, $this->GetY(), 25, 25, 'PNG');
-                }
                 $this->SetXY(110, 265);
                 // Nama Dokter (Gunakan posisi absolut agar tidak terdorong tinggi QR yang dinamis)
                 $this->SetFont('Times', 'BU', 10);
                 $this->SetXY(110, $ySkg + 35); // Letakkan tepat di bawah QR TTD (25 + margin 2)
                 $this->MultiCell(90, 4, 'dr. Muhammad Taufiq Amrullah, S.Ked', 0, 'C');
-
+                $ttdPath = storage_path('app/public/user/ttd/d85263d0-bf27-4cca-b9e8-48eddb1be6f7_dr_taufiq_jpg_1776757844.8289.jpg');
+                $qrY = $ySkg + 9;
+                $qrSize = 25;
+                $this->Image($ttdPath, 143, $qrY, $qrSize, $qrSize, 'JPG');
                 // SIP Dokter (Tanpa Bold/Underline)
                 $this->SetFont('Times', 'B', 10);
                 $this->SetX(110); 
