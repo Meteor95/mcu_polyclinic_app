@@ -37,7 +37,7 @@ class MemberMCU extends Model
         if (!empty($parameterpencarian)) {
             $query->where('nomor_identitas', 'LIKE', '%' . $parameterpencarian . '%')
                   ->orWhere('nama_peserta', 'LIKE', '%' . $parameterpencarian . '%')
-                  ->orWhere('id', '=', $parameterpencarian);
+                  ->orWhere('users_member.id', '=', $parameterpencarian);
         }        
         $jumlahdata = $query->count();
         $result = $query->take($perHalaman)
