@@ -184,7 +184,8 @@
                 ['condition' => $hasAccessRontgenThorax, 'url' => 'poli/rontgen_thorax', 'label' => 'Rontgen Thorax'],
                 ['condition' => $hasAccessRontgenLumbosacral, 'url' => 'poli/rontgen_lumbosacral', 'label' => 'Rontgen Lumbosacral'],
                 ['condition' => $hasAccessUSGUbdomain, 'url' => 'poli/usg_ubdomain', 'label' => 'USG Abdomain'],
-                ['condition' => $hasAccessFarminghamScore, 'url' => 'poli/farmingham_score', 'label' => 'Farmingham Score']
+                ['condition' => $hasAccessFarminghamScore, 'url' => 'poli/farmingham_score', 'label' => 'Farmingham Score'],
+                ['condition' => $hasAccessTindakanLaboratorium, 'url' => 'laboratorium/daftar_tindakan', 'label' => 'Tindakan']
               ] as $menuItem)
                 <li><a href="{{ url($menuItem['url']) }}">{{ $menuItem['label'] }}</a></li>
               @endforeach

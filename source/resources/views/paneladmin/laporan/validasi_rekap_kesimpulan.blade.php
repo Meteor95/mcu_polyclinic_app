@@ -529,7 +529,7 @@
                         </tr>
                         <tr>
                             <td>23</td>
-                            <td rowspan="8" style="background-color:rgb(1, 54, 171);color:white;">Poliklinik</td>
+                            <td rowspan="9" style="background-color:rgb(1, 54, 171);color:white;">Poliklinik</td>
                             <td>Spirometri</td>
                             <td><span class="progress_sp">SP</span></td>
                             <td><button onclick="process_ajax('sp','modalPoliklinik','Spirometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
@@ -575,6 +575,12 @@
                             <td>Audiometri</td>
                             <td><span class="progress_au">AU</span></td>
                             <td><button onclick="process_ajax('au','modalPoliklinik','Audiometri')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                        </tr>
+                        <tr>
+                            <td>31</td>
+                            <td>Laboratorium</td>
+                            <td><span class="progress_lab">LAB</span></td>
+                            <td><button onclick="process_ajax('lab','modalPoliklinik','Laboratorium')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         </tbody>
                     </table>

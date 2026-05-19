@@ -332,7 +332,7 @@ function fill_form_tanda_vital_tabel(user_id,transaksi_id,nama_peserta,detail){
                         colorClass = 'text-darkred';
                     }
                     $('#bmi_informasi').html("BMI : "+bmi + " IMT");
-                    $('#status_gizi_informasi').removeClass('text-orange text-green text-red text-darkred').addClass(colorClass).html(`Status Gizi : <strong>${statusGizi}</strong>`);
+                    $('#status_gizi_informasi').removeClass('text-orange text-green text-red text-darkred').addClass(colorClass).html(`Status Gizi : <strong>${statusGizi}</strong><br>Dokter Menyimpulkan : </strong>${statusGizi}</strong>`);
                 }                  
                     $("#modalLihatParameter").modal('show');
                 }else{
