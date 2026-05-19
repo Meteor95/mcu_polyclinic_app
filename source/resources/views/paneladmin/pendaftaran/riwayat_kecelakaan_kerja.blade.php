@@ -21,7 +21,7 @@
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Kecelakaan Kerja</h1>
-            <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data...">
+            <input type="text" class="form-control" id="kotak_pencarian_daftarpeserta" placeholder="Ketikan No MCU atau Nama Peserta">
             <div class="table-responsive theme-scrollbar">
               <table class="display" id="datatables_daftar_kecelakaan_kerja"></table>
             </div>

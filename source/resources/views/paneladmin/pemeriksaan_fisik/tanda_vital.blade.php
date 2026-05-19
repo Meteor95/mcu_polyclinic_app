@@ -75,7 +75,7 @@
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Pemeriksaan Tanda Vital</h1>
-            <input type="text" class="form-control" id="kotak_pencarian_tanda_vital" placeholder="Cari Informasi Tanda Vital">
+            <input type="text" class="form-control" id="kotak_pencarian_tanda_vital" placeholder="Ketikan No MCU atau Nama Peserta">
             <div class="table-responsive theme-scrollbar">
               <table id="datatables_tanda_vital_list"></table>
             </div>

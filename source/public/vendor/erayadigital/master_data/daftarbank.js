@@ -30,6 +30,8 @@ function daftarbank(){
             bPaginate: true,
             bProcessing: true,
             serverSide: true,
+            pageLength: 10,
+            lengthChange: true,
             ajax: {
                 "url": baseurlapi + '/masterdata/daftarbank',
                 "type": "GET",
@@ -39,7 +41,6 @@ function daftarbank(){
                 "data": function(d) {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftarmembermcu").val();
-                    d.length = 10;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

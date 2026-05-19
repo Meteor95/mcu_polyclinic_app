@@ -34,6 +34,8 @@ function daftarmembermcu() {
             bPaginate: true,
             bProcessing: true,
             serverSide: true,
+            pageLength: 10,
+            lengthChange: true,
             ajax: {
                 "url": baseurlapi + '/masterdata/daftarmembermcu',
                 "type": "GET",
@@ -44,7 +46,6 @@ function daftarmembermcu() {
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_daftarmembermcu").val();
                     d.tipe = 1;
-                    d.length = 10;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

@@ -26,9 +26,9 @@ function onload_datatables(){
         }
     });  
 }
-$("#kotak_pencarian_daftar_bahaya_riwayat_lingkungan_kerja").on('keyup', debounce(function() {
+$("#kotak_pencarian_daftarpeserta").on('keyup', debounce(function() {
     $("#datatables_daftar_bahaya_riwayat_lingkungan_kerja").DataTable().ajax.reload();
-}, 300));
+}, 500));
 function applyAutoNumeric() {
     $('#datatables_riwayat_lingkungan_kerja input[id^="jam_hari"]').each(function() {
         if (!$(this).data('autoNumeric')) {
@@ -230,6 +230,8 @@ function onload_datatables_daftar_bahaya_riwayat_lingkungan_kerja(){
             bProcessing: true,
             serverSide: true,
             pagingType: "full_numbers",
+            pageLength: 20,
+            lengthChange: true,
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -246,7 +248,7 @@ function onload_datatables_daftar_bahaya_riwayat_lingkungan_kerja(){
                 },
                 "data": function(d) {
                     d._token = response.csrf_token;
-                    d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
+                    d.parameter_pencarian = $("#kotak_pencarian_daftarpeserta").val();
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -263,7 +265,7 @@ function onload_datatables_daftar_bahaya_riwayat_lingkungan_kerja(){
                 if (typeof settings.json !== "undefined") {
                     const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                     const recordsFiltered = settings.json.recordsFiltered;
-                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Dari Total : ' + recordsFiltered + ' Data';
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 20 + ' Dari Total : ' + recordsFiltered + ' Data';
                     return infoString;
                 }
             },

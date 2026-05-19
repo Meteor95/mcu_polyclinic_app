@@ -40,6 +40,8 @@ function onloaddatatables(){
             bProcessing: true,
             serverSide: true,
             pagingType: "full_numbers",
+            pageLength: 20,
+            lengthChange: true,
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -56,7 +58,7 @@ function onloaddatatables(){
                 },
                 "data": function(d) {
                     d._token = response.csrf_token;
-                    d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
+                    d.parameter_pencarian = $("#kotak_pencarian_daftarpeserta").val();
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -73,7 +75,7 @@ function onloaddatatables(){
                 if (typeof settings.json !== "undefined") {
                     const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                     const recordsFiltered = settings.json.recordsFiltered;
-                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Dari Total : ' + recordsFiltered + ' Data';
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 20 + ' Dari Total : ' + recordsFiltered + ' Data';
                     return infoString;
                 }
             },

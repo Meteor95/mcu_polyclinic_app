@@ -47,7 +47,7 @@
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Riwayat Penyakit Keluarga</h1>
-            <input type="text" class="form-control" id="kotak_pencarian_daftar_riwayat_penyakit_keluarga" placeholder="Cari Nama Peserta">
+            <input type="text" class="form-control" id="kotak_pencarian_daftarpeserta" placeholder="Ketikan No MCU atau Nama Peserta">
             <div class="table-responsive theme-scrollbar">
               <table class="display" id="datatables_daftar_riwayat_penyakit_keluarga"></table>
             </div>

@@ -53,8 +53,8 @@ function onload_datatables_tanda_vital(){
                 },
                 "data": function(d) {
                     d._token = response.csrf_token;
-                    d.parameter_pencarian = $("#kotak_pencarian_daftar_imunisasi").val();
-                    d.length = 10;
+                    d.parameter_pencarian = $("#kotak_pencarian_tanda_vital").val();
+                    d.length = 20;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -71,7 +71,7 @@ function onload_datatables_tanda_vital(){
                 if (typeof settings.json !== "undefined") {
                     const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                     const recordsFiltered = settings.json.recordsFiltered;
-                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Dari Total : ' + recordsFiltered + ' Data';
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 20 + ' Dari Total : ' + recordsFiltered + ' Data';
                     return infoString;
                 }
             },
@@ -156,6 +156,10 @@ function clear_tanda_vital(){
         $(this).val('');
     });
 }
+$("#kotak_pencarian_tanda_vital").on("input",debounce(function () {
+        $("#datatables_tanda_vital_list").DataTable().ajax.reload();
+    },500)
+);
 $("#bersihkan_tanda_vital").on('click', function() {
     clear_tanda_vital();
 });

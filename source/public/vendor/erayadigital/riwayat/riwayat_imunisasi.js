@@ -23,6 +23,9 @@ function onload_datatables(){
         }
     });  
 }
+$("#kotak_pencarian_daftarpeserta").on('keyup', debounce(function() {
+    $("#datatables_daftar_imunisasi").DataTable().ajax.reload();
+}, 500));
 function onload_datatables_imunisasi(){
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_daftar_imunisasi").DataTable({
@@ -30,6 +33,8 @@ function onload_datatables_imunisasi(){
             bProcessing: true,
             serverSide: true,
             pagingType: "full_numbers",
+            pageLength: 20,
+            lengthChange: true,
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -46,7 +51,7 @@ function onload_datatables_imunisasi(){
                 },
                 "data": function(d) {
                     d._token = response.csrf_token;
-                    d.parameter_pencarian = $("#kotak_pencarian_daftar_imunisasi").val();
+                    d.parameter_pencarian = $("#kotak_pencarian_daftarpeserta").val();
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -63,7 +68,7 @@ function onload_datatables_imunisasi(){
                 if (typeof settings.json !== "undefined") {
                     const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                     const recordsFiltered = settings.json.recordsFiltered;
-                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Dari Total : ' + recordsFiltered + ' Data';
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 20 + ' Dari Total : ' + recordsFiltered + ' Data';
                     return infoString;
                 }
             },

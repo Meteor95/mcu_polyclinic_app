@@ -16,6 +16,7 @@ function listJasaPelayanan(){
             bFilter: false,
             bProcessing: true,
             serverSide: true,
+            lengthChange: true,
             scrollX: $(window).width() < 768 ? true : false,
             pageLength: $('#data_ditampilkan').val(),
             pagingType: "full_numbers",
@@ -41,7 +42,6 @@ function listJasaPelayanan(){
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $('#kotak_pencarian').val();
                     d.kategori_layanan = $('#kategori_layanan').val();
-                    d.length = $('#data_ditampilkan').val();
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

@@ -13,7 +13,8 @@ function daftarkesimpulan(){
             serverSide: true,
             scrollX: $(window).width() < 768 ? true : false,
             pagingType: "full_numbers",
-            pageLength: 1000,
+            pageLength: 10,
+            lengthChange: true,
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -32,7 +33,6 @@ function daftarkesimpulan(){
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_kesimpulan").val();
                     d.jenis_kesimpulan = $("#jenis_pemeriksaan_pencarian").val();
-                    d.length = 10;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

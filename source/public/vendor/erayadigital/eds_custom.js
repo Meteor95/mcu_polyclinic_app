@@ -96,3 +96,13 @@ function base64EncodeUnicode(str) {
   const binString = String.fromCodePoint(...bytes);
   return btoa(binString);
 }
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, wait);
+    };
+}
