@@ -40,7 +40,7 @@ table td, table th {
                             <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: www.arthamedical.com</span><br>
                             <span style="font-size: 15px;">Contact Person: 0813-4863-6100</span><br>
                         </p>
-                        <span style="font-size: 20px;"><strong>'.$title.'</strong></span>
+                        <span style="font-size: 20px;color:rgb(237, 112, 45)"><strong>'.$title.'</strong></span>
                     </td>
                 </tr>
             </table>

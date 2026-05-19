@@ -26,8 +26,8 @@
                             <span style="font-size: 15px;">Alamat: Jl. Sendawar Raya RT 029 Kel. Melak Ulu Kec. Melak, Kutai Barat 75765</span><br>
                             <span style="font-size: 15px;">E-Mail: amc.clinic.yhs@gmail.com | website: www.arthamedical.com</span><br>
                             <span style="font-size: 15px;">Contact Person: 0813-4863-6100</span><br>
-                            <span style="font-size: 20px;"><strong>'.$title.'</strong></span>
                         </p>
+                        <span style="font-size: 20px;"><strong>'.$title.'</strong></span>
                     </td>
                 </tr>
             </table>

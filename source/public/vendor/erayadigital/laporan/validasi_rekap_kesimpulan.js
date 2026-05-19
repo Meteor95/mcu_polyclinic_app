@@ -594,6 +594,7 @@ function process_ajax(kondisi,modal,lokasi_fisik = null){
                     });
 
                     const galleryContainer = document.getElementById('laboratoriumGallery');
+                    galleryContainer.innerHTML = '';
                     response.berkas_laboratorium.forEach((item, index) => {
                         const col = document.createElement('div');
                         col.className = 'col-md-3 mb-3';
@@ -603,6 +604,7 @@ function process_ajax(kondisi,modal,lokasi_fisik = null){
                         img.src = item.data_foto;
                         img.className = 'card-img-top';
                         img.alt = `Gambar ${index + 1}`;
+                        img.loading = 'lazy';
                         const cardBody = document.createElement('div');
                         cardBody.className = 'card-body p-2 text-center';
                         cardBody.innerText = item.nama_file;

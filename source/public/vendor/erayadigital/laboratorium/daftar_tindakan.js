@@ -303,6 +303,7 @@ function detail_tindakan(id,parts,nama_peserta){
                 });
 
                 const galleryContainer = document.getElementById('laboratoriumGallery');
+                galleryContainer.innerHTML = '';
                 response.berkas_laboratorium.forEach((item, index) => {
                     const col = document.createElement('div');
                     col.className = 'col-md-3 mb-3';
@@ -312,6 +313,7 @@ function detail_tindakan(id,parts,nama_peserta){
                     img.src = item.data_foto;
                     img.className = 'card-img-top';
                     img.alt = `Gambar ${index + 1}`;
+                    img.loading = 'lazy';
                     const cardBody = document.createElement('div');
                     cardBody.className = 'card-body p-2 text-center';
                     cardBody.innerText = item.nama_file;
