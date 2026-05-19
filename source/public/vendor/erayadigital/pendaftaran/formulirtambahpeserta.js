@@ -42,7 +42,39 @@ $("#btnKonfirmasiPendaftaran").on("click", function(event) {
         }
     }
     Swal.fire({
-        html: '<div class="mt-3 text-center"><dotlottie-player src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json" background="transparent" speed="1" style="width:150px;height:150px;margin:0 auto" direction="1" playMode="normal" loop autoplay></dotlottie-player><div><h4>Konfirmasi Formulir Pendaftaran Peserta</h4><p class="text-muted mx-4 mb-0">Apakah anda yakin ingin menyimpan formulir informasi Pendaftaran Peserta dengan atas nama : <strong>' + $("#nama_peserta").val() + '</strong> ?</p></div></div>',
+        html: `
+            <div class="mt-3 text-center">
+                <dotlottie-player 
+                    src="https://lottie.host/53c357e2-68f2-4954-abff-939a52e6a61a/PB4F7KPq65.json"
+                    background="transparent"
+                    speed="1"
+                    style="width:150px;height:150px;margin:0 auto"
+                    direction="1"
+                    playMode="normal"
+                    loop
+                    autoplay>
+                </dotlottie-player>
+
+                <div>
+                    <h4>
+                        ${
+                            isedit
+                                ? 'Konfirmasi Ubah Formulir Peserta'
+                                : 'Konfirmasi Formulir Pendaftaran Peserta'
+                        }
+                    </h4>
+
+                    <p class="text-muted mx-4 mb-0">
+                        ${
+                            isedit
+                                ? 'Apakah anda yakin ingin mengubah formulir informasi Pendaftaran Peserta atas nama :'
+                                : 'Apakah anda yakin ingin menyimpan formulir informasi Pendaftaran Peserta atas nama :'
+                        }
+                        <strong>${$("#nama_peserta").val()}</strong> ?
+                    </p>
+                </div>
+            </div>
+            `,
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: 'orange',

@@ -23,7 +23,6 @@ class Transaksi extends Model
     ];
     public static function listPasienTabel($request, $perHalaman, $offset)
     {
-        Log::info($request->jenis_laporan);
         $parameterpencarian = $request->parameter_pencarian;
         $status_peserta = $request->status_peserta;
         $parameterpencarianstatuspasien = $request->status_pasien;

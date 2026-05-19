@@ -4,11 +4,9 @@ namespace App\Models\Laboratorium;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaksi extends Model
 {
-    use SoftDeletes;
     protected $table = 'transaksi';
     protected $fillable = [
         'no_mcu',
