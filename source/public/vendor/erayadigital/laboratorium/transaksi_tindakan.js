@@ -480,7 +480,8 @@ $("#pencarian_member_mcu").on('change', function(){
             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
             data: {
                 _token : response.csrf_token,
-                nomor_identitas : $("#pencarian_member_mcu").val() == '' ? code.split('|')[2] : $("#pencarian_member_mcu").val()
+                nomor_identitas : $("#pencarian_member_mcu").val() == '' ? code.split('|')[2] : $("#pencarian_member_mcu").val(),
+                is_edit_transaksi : is_edit_transaksi,
             },
             success: function(response) {
                 if (!response.success) {
