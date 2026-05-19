@@ -30,6 +30,7 @@ const choicesConfig = [
     { id_quill: 'pemeriksaan_restriksi', kondisi: 'pemeriksaan_restriksi', id: 'pemeriksaan_restriksi_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Restriksi' },
     { id_quill: 'pemeriksaan_obstruksi', kondisi: 'pemeriksaan_obstruksi', id: 'pemeriksaan_obstruksi_select', placeholder: 'Pilih Kesimpulan Untuk Pemeriksaan Obstruksi' },
 ];
+let daftar_table_tindakan_modal, daftar_table_fee_modal,daftar_table_berkas_apotek;
 let id_mcu_let = '', nomor_mcu_let = '';
 let pemeriksaan_laboratorium_kondisi_select_id = document.getElementById('pemeriksaan_laboratorium_kondisi_select');
 let pemeriksaan_kesimpulan_non_status_kesehatan_select_id = document.getElementById('pemeriksaan_kesimpulan_non_status_kesehatan_select');
@@ -81,7 +82,35 @@ $(document).ready(function() {
         }
     });
     loadDataPasien();
+    daftar_table_tindakan_modal = initDataTable("#table_tindakan_lab_modal");
+    daftar_table_fee_modal = initDataTable("#table_fee_lab_modal");
+    daftar_table_berkas_apotek = initDataTable("#daftar_table_berkas_apotek");
 });
+function initDataTable(selector, options = {}) {
+    const defaultOptions = {
+        searching: false,
+        lengthChange: false,
+        ordering: false,
+        bFilter: false,
+        scrollX: $(window).width() < 768 ? true : false,
+        pagingType: "full_numbers",
+        pageLength: 15,
+        columnDefs: [{
+            defaultContent: "-",
+            targets: "_all"
+        }],
+        language: {
+            "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            "paginate": {
+                "first": '<i class="fa fa-angle-double-left"></i>',
+                "last": '<i class="fa fa-angle-double-right"></i>',
+                "next": '<i class="fa fa-angle-right"></i>',
+                "previous": '<i class="fa fa-angle-left"></i>',
+            },
+        },
+    };
+    return $(selector).DataTable($.extend(true, {}, defaultOptions, options));
+}
 function updateProgress(selector, condition, text, response = null) {
     let detail_transaksi_code = '';
     const icon = condition 
@@ -502,27 +531,116 @@ $("#konfirmasi_validasi_rekap_kesimpulan").on('click', function() {
     });
 });
 function process_ajax(kondisi,modal,lokasi_fisik = null){
-    $.get('/generate-csrf-token', function(response) {
-        $.ajax({
-            url: baseurlapi + '/laporan/validasi_mcu_modal',
-            type: 'GET',
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
-            },
-            data: {
-                _token: response.csrf_token,
-                no_nota: btoa(nomor_mcu_let),
-                kondisi: kondisi,
-            },
-            success: function(response) {
-                if (response.informasi_mcu) return aksesmodal(response,modal,lokasi_fisik);
-                return createToast('Terjadi Kesalahan', 'top-right', 'Petugas belum menmasukan informasi pada pasien ini. Silahkan masukan informasi terlebih dahulu '+lokasi_fisik, 'error', 3000);;
-            },
-            error: function(xhr, status, error) {
-                createToast('Kesalahan Penghapusan Data', 'top-right', error, 'error', 3000);
-            }
+    if (modal == 'modalLaboratorium') {
+        $.get('/generate-csrf-token', function(response) {
+            $.ajax({
+                url: baseurlapi + '/laboratorium/detail_tindakan',
+                type: 'GET',
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token_ajax') },
+                data: {
+                    _token:response.csrf_token,
+                    id_transaksi:0,
+                    nomor_mcu:nomor_mcu_let,
+                },
+                success: function(response) {
+                    let detail_transaksi_code = encodeURIComponent(btoa(response.transaksi[0].id_transaksi+'|'+response.transaksi[0].no_mcu+'|'+response.transaksi[0].nomor_identitas+'|'+response.transaksi[0].nama_peserta));
+                    let parts = response.transaksi[0].no_nota.split('/');
+                    let no_trx = parts.slice(0, 3).join('/');
+                    let no_mcu = parts.slice(3).join('/');
+                    $("#no_trx").html(no_trx);
+                    $("#total_pendapatan").html((response.transaksi[0].total_transaksi + response.transaksi[0].nominal_apotek).toLocaleString('id-ID'));
+                    $("#total_pendapatan_apotek_keterangan").html("Laboratorium : "+response.transaksi[0].total_transaksi.toLocaleString('id-ID')+"<br>Apotek : "+response.transaksi[0].nominal_apotek.toLocaleString('id-ID'));
+                    $("#no_mcu_label").html(no_mcu);
+                    $("#waktu_transaksi_label").html(moment(response.transaksi[0].waktu_trx).format('DD-MM-YYYY HH:mm:ss'));
+                    $("#waktu_sample_label").html(moment(response.transaksi[0].waktu_trx_sample).format('DD-MM-YYYY HH:mm:ss'));
+                    $("#dibuat_tanggal_label").html(moment(response.transaksi[0].created_at).format('DD-MM-YYYY HH:mm:ss'));
+                    $("#nama_dokter_label").html(response.transaksi[0].nama_dokter);
+                    $("#nama_penanggung_jawab_label").html(response.transaksi[0].nama_pj);
+                    if (response.transaksi[0].is_paket_mcu == 1){
+                        $("#nama_paket_label").html("Terhubung Paket MCU : "+response.transaksi[0].nama_paket_mcu);  
+                    }else if (response.transaksi[0].is_paket_mcu == 0 && response.transaksi[0].nama_paket_mcu == 0){
+                        $("#nama_paket_label").html("Tidak Terhubung Paket MCU");
+                    }else{
+                        $("#nama_paket_label").html("Template Tindakan : "+response.transaksi[0].nama_paket_mcu);
+                    }
+                    if (response.transaksi[0].nama_file_surat_pengantar == ""){
+                        $("#surat_pengantaran_label").html("Tidak Ada Surat Pengantaran / Unggahan");
+                    }else{
+                        $("#surat_pengantaran_label").html("<a href='"+baseurlapi+"/file/unduh_surat_pengantar?file_name="+response.transaksi[0].nama_file_surat_pengantar+"' target='_blank'><i class='fa fa-download'></i> Unduh Berkas</a>");
+                    }
+                    daftar_table_tindakan_modal.rows().clear().draw();
+                    daftar_table_fee_modal.rows().clear().draw();
+                    response.transaksi.forEach((item, index) => {
+                        daftar_table_tindakan_modal.row.add([
+                            `<div class="text-center">${index + 1}</div>`,
+                            item.kode_item,
+                            item.nama_item,
+                            `<div class="text-end">${item.harga.toLocaleString('id-ID')}</div>`,
+                            `<div class="text-end">${item.diskon.toLocaleString('id-ID')}</div>`,
+                            `<div class="text-end">${item.harga_setelah_diskon.toLocaleString('id-ID')}</div>`,
+                            `<div class="text-end">${item.jumlah.toLocaleString('id-ID')}</div>`,
+                            `<div class="text-end">${(item.harga_setelah_diskon * item.jumlah).toLocaleString('id-ID')}</div>`,
+                        ]).draw();
+                    });
+                    response.transaksi_fee.forEach((item, index) => {
+                        daftar_table_fee_modal.row.add([
+                            index + 1,
+                            item.nama_tindakan,
+                            item.kode_jasa,
+                            item.nama_petugas,
+                            `<div class="text-end">${item.nominal_fee.toLocaleString('id-ID')}</div>`,
+                            `<div class="text-end">${item.besaran_fee.toLocaleString('id-ID')}</div>`,
+                        ]).draw();
+                    });
+
+                    const galleryContainer = document.getElementById('laboratoriumGallery');
+                    response.berkas_laboratorium.forEach((item, index) => {
+                        const col = document.createElement('div');
+                        col.className = 'col-md-3 mb-3';
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        const img = document.createElement('img');
+                        img.src = item.data_foto;
+                        img.className = 'card-img-top';
+                        img.alt = `Gambar ${index + 1}`;
+                        const cardBody = document.createElement('div');
+                        cardBody.className = 'card-body p-2 text-center';
+                        cardBody.innerText = item.nama_file;
+                        card.appendChild(img);
+                        card.appendChild(cardBody);
+                        col.appendChild(card);
+                        galleryContainer.appendChild(col);
+                    });
+                    return aksesmodal(response,modal,lokasi_fisik);
+                },
+                error: function(xhr, status, error) {
+                    return createToast('Kesalahan Penyimpanan', 'top-right', error, 'error', 3000);
+                },
+            });
+        });
+    }else{
+        $.get('/generate-csrf-token', function(response) {
+            $.ajax({
+                url: baseurlapi + '/laporan/validasi_mcu_modal',
+                type: 'GET',
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('token_ajax'));
+                },
+                data: {
+                    _token: response.csrf_token,
+                    no_nota: btoa(nomor_mcu_let),
+                    kondisi: kondisi,
+                },
+                success: function(response) {
+                    if (response.informasi_mcu) return aksesmodal(response,modal,lokasi_fisik);
+                    return createToast('Terjadi Kesalahan', 'top-right', 'Petugas belum menmasukan informasi pada pasien ini. Silahkan masukan informasi terlebih dahulu '+lokasi_fisik, 'error', 3000);;
+                },
+                error: function(xhr, status, error) {
+                    createToast('Kesalahan Penghapusan Data', 'top-right', error, 'error', 3000);
+                }
+            })
         })
-    })
+    }
 }
 function aksesmodal(response,modal,lokasi_fisik = null){
     if (modal == 'modalLihatFoto') {
@@ -787,9 +905,6 @@ function aksesmodal(response,modal,lokasi_fisik = null){
         $("#judul_laporan_informasi").html(response.informasi_mcu.judul_laporan);
         $("#kesimpulan_informasi").html(response.informasi_mcu.kesimpulan);
         quill_informasi.setContents(JSON.parse(response.informasi_mcu.detail_kesimpulan));
-    }
-    if (modal == 'modalLaboratorium') {
-        
     }
     $("#"+modal).modal('show');
 }
