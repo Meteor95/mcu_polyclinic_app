@@ -103,6 +103,14 @@ class TransaksiController extends Controller
                 $dynamicAttributes = ['errors' => $validator->errors()];
                 return ResponseHelper::error_validation(__('auth.eds_required_data'), $dynamicAttributes);
             }
+            $cek_sudah_transaksi_tapi_pending = TransaksiLab::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.id', '=', 'transaksi.no_mcu')
+                ->join('users_member', 'users_member.id', '=', 'mcu_transaksi_peserta.user_id')
+                ->where('users_member.nomor_identitas', $request->nomor_identitas)
+                ->where('transaksi.status_pembayaran', '=', 'process')
+                ->first();
+            if ($cek_sudah_transaksi_tapi_pending) {
+                return ResponseHelper::data_not_found('Informasi Pasien MCU dengan Nomor Identitas ' . $request->nomor_identitas . ' sudah terdaftar dengan status PEMBAYARAN PROCESS. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya');
+            }
             $data = MemberMCU::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
                 ->join('departemen_peserta', 'departemen_peserta.id', '=', 'mcu_transaksi_peserta.departemen_id')
                 ->join('company', 'company.id', '=', 'mcu_transaksi_peserta.perusahaan_id')

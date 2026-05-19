@@ -484,8 +484,9 @@ $("#pencarian_member_mcu").on('change', function(){
             },
             success: function(response) {
                 if (!response.success) {
-                    clear_tanda_vital();
-                    return createToast('Data tidak ditemukan', 'top-right', response.message, 'error', 3000);
+                    $("#pencarian_member_mcu").val(null).trigger('change');
+                    clear_keranjang_tindakan();
+                    return createToast('Kesalahan', 'top-right', response.message, 'error', 3000);
                 }
                 $("#nomor_transaksi_mcu").text(response.data.no_transaksi);
                 $("#nomor_identitas_mcu").text(response.data.nomor_identitas);
