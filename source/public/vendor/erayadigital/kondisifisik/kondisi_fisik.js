@@ -97,6 +97,9 @@ function cek_ab_normal(id,kondisi,jenis_pemeriksaan) {
         }
     }
 }
+$("#kotak_pencarian_kondisi_fisik").on('keyup', debounce(function() {
+    $("#datatables_kondisi_fisik_log").DataTable().ajax.reload();
+}, 500));
 function onload_kondisi_fisik(){
     $.get('/generate-csrf-token', function(response) {
         $("#datatables_kondisi_fisik_log").DataTable({
@@ -104,6 +107,8 @@ function onload_kondisi_fisik(){
             bProcessing: true,
             serverSide: true,
             pagingType: "full_numbers",
+            pageLength: 20,
+            lengthChange: true,
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -122,7 +127,6 @@ function onload_kondisi_fisik(){
                     d._token = response.csrf_token;
                     d.parameter_pencarian = $("#kotak_pencarian_kondisi_fisik").val();
                     d.lokasi_fisik = lokasi_fisik_let;
-                    d.length = 10;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -139,7 +143,7 @@ function onload_kondisi_fisik(){
                 if (typeof settings.json !== "undefined") {
                     const currentPage = Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1;
                     const recordsFiltered = settings.json.recordsFiltered;
-                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 10 + ' Dari Total : ' + recordsFiltered + ' Data';
+                    const infoString = 'Hal Ke: ' + currentPage + ' Ditampilkan: ' + 20 + ' Dari Total : ' + recordsFiltered + ' Data';
                     return infoString;
                 }
             },

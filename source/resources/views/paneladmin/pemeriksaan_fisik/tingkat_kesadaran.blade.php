@@ -63,7 +63,7 @@
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Pemeriksaan Tingkat Kesadaran</h1>
-            <input type="text" class="form-control" id="kotak_pencarian_tingkat_kesadaran" placeholder="Cari Informasi Tingkat Kesadaran">
+            <input type="text" class="form-control" id="kotak_pencarian_daftarpeserta" placeholder="Ketikan No MCU atau Nama Peserta">
             <div class="table-responsive theme-scrollbar">
               <table id="datatables_tingkat_kesadaran"></table>
             </div>

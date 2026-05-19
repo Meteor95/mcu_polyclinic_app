@@ -125,7 +125,7 @@
         </div>
         <div class="card-footer">
             <h1 class="mb-2 text-center">Daftar Pemeriksaan Pengelihatan</h1>
-            <input type="text" class="form-control" id="kotak_pencarian_penglihatan" placeholder="Cari Informasi Pengelihatan">
+            <input type="text" class="form-control" id="kotak_pencarian_daftarpeserta" placeholder="Ketikan No MCU atau Nama Peserta">
             <div class="table-responsive theme-scrollbar">
               <table id="datatables_penglihatan"></table>
             </div>

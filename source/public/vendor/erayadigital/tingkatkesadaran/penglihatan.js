@@ -12,6 +12,8 @@ function onload_datatables_penglihatan(){
             bProcessing: true,
             serverSide: true,
             pagingType: "full_numbers",
+            pageLength: 20,
+            lengthChange: true,
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -28,8 +30,7 @@ function onload_datatables_penglihatan(){
                 },
                 "data": function(d) {
                     d._token = response.csrf_token;
-                    d.parameter_pencarian = $("#kotak_pencarian_penglihatan").val();
-                    d.length = 10;
+                    d.parameter_pencarian = $("#kotak_pencarian_daftarpeserta").val();
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;
@@ -111,6 +112,9 @@ function onload_datatables_penglihatan(){
         });
     });
 }
+$("#kotak_pencarian_daftarpeserta").on('keyup', debounce(function() {
+    $("#datatables_penglihatan").DataTable().ajax.reload();
+}, 500));
 $("#simpan_penglihatan").on('click', function(){
     if ($("#pencarian_member_mcu").val() == null) {
         return createToast('Kesalahan Penyimpanan','top-right','Silahkan tentukan peserta MCU terlebih dahulu sebelum menyimpan data atas formulir bahaya riwayat lingkungan kerja diatas','error',3000);
