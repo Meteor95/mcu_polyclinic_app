@@ -348,8 +348,8 @@
 <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-<link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('mofi/assets/css/vendors/tagify.css') }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/flatpickr/flatpickr.min.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/flatpickr/flatpickr.min.css')) }}">
+<link rel="stylesheet" href="{{ asset('mofi/assets/css/vendors/tagify.css') }}?v={{ filemtime(public_path('mofi/assets/css/vendors/tagify.css')) }}">
 <style>
 .card {
   display: flex;
@@ -446,10 +446,10 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.datatables.net/keytable/2.12.1/js/dataTables.keyTable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-<script src="{{ asset('mofi/assets/js/select2/tagify.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/select2/tagify.polyfills.min.js') }}"></script>
-<script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}"></script>
-<script src="{{ asset('vendor/erayadigital/laboratorium/transaksi_tindakan.js') }}"></script>
+<script src="{{ asset('mofi/assets/js/select2/tagify.js') }}?v={{ filemtime(public_path('mofi/assets/js/select2/tagify.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/select2/tagify.polyfills.min.js') }}?v={{ filemtime(public_path('mofi/assets/js/select2/tagify.polyfills.min.js')) }}"></script>
+<script src="{{ asset('mofi/assets/js/flat-pickr/flatpickr.js') }}?v={{ filemtime(public_path('mofi/assets/js/flat-pickr/flatpickr.js')) }}"></script>
+<script src="{{ asset('vendor/erayadigital/laboratorium/transaksi_tindakan.js') }}?v={{ filemtime(public_path('vendor/erayadigital/laboratorium/transaksi_tindakan.js')) }}"></script>
 <script> var hasAtribut = {{ $hasVisiblePrice ? 'true' : 'false' }}; 
 document.getElementById("pdf_file_laboratorium").addEventListener("change", function(){
     const fileName = this.files[0] ? this.files[0].name : "";
