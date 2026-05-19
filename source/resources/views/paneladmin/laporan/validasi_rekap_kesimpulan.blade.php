@@ -580,7 +580,7 @@
                             <td>31</td>
                             <td>Laboratorium</td>
                             <td><span class="progress_lab">LAB</span></td>
-                            <td><button onclick="process_ajax('lab','modalPoliklinik','Laboratorium')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
+                            <td><button onclick="process_ajax('lab','modalLaboratorium','Laboratorium')" class="btn btn-primary"><i class="fa fa-folder-open"></i> Lihat Data</button></td>
                         </tr>
                         </tbody>
                     </table>

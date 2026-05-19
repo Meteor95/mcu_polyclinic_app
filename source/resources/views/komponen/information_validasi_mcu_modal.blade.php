@@ -524,3 +524,98 @@
       </div>
   </div>
 </div>
+<div class="modal fade" id="modalLaboratorium" tabindex="-1" role="dialog" aria-labelledby="modalLaboratoriumLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-fullscreen" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modalLaboratoriumLabel">Detail Transaksi Laboratorium <span id="no_trx"></span></h5>
+              <i class="fa fa-times" data-bs-dismiss="modal" style="cursor: pointer;"></i>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="f-w-600">No MCU</h6>
+                <p id="no_mcu_label"></p>
+              </div>
+              <div class="col-sm-3">
+                <h6 class="f-w-600">Waktu Transaksi</h6>
+                <p id="waktu_transaksi_label"></p>
+              </div>
+              <div class="col-sm-3">
+                <h6 class="f-w-600">Waktu Sample</h6>
+                <p id="waktu_sample_label"></p>
+              </div>
+              <div class="col-sm-3">
+                <h6 class="f-w-600">Dibuat Tanggal</h6>
+                <p id="dibuat_tanggal_label"></p>
+              </div>
+              <div class="col-sm-3">
+                <h6 class="f-w-600">Nama Dokter</h6>
+                <p id="nama_dokter_label"></p>
+              </div>
+              <div class="col-sm-3">
+                <h6 class="f-w-600">Nama Penanggung Jawab</h6>
+                <p id="nama_penanggung_jawab_label"></p>
+              </div>
+              <div class="col-sm-3">
+                <h6 class="f-w-600">Nama Paket</h6>
+                <p id="nama_paket_label"></p>
+              </div>
+              <div class="col-sm-3">
+                <h6 class="f-w-600">Surat Pengantaran</h6>
+                <p id="surat_pengantaran_label"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div id="total_pendapatan_text">Total TRX</div>
+              </div>
+              <div class="col-md-6 text-end">
+                <div id="total_pendapatan">0</div>
+                <div id="total_pendapatan_apotek_keterangan">0</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h1 style="text-align: center;">Daftar Tindakan</h1>
+                <table id="table_tindakan_lab_modal" class="table table-striped table-bordered table-hover table-padding-sm">
+                    <thead>
+                      <tr style="text-align: center;">
+                        <th>No</th>
+                        <th>Kode Tindakan</th>
+                        <th>Nama Tindakan</th>
+                        <th>Harga</th>
+                        <th>Diskon</th>
+                        <th>Setelah Diskon</th>
+                        <th>Jumlah</th>
+                        <th>Sub Total</th>
+                      </tr>
+                    </thead>
+                </table>
+              </div>
+              <div class="col-md-12">
+                <h1 style="text-align: center;">Daftar Fee</h1>
+                <table id="table_fee_lab_modal" class="table table-striped table-bordered table-hover table-padding-sm">
+                    <thead>
+                      <tr style="text-align: center;">
+                        <th>No</th>
+                        <th>Nama Tindakan</th>
+                        <th>Jenis Fee</th>
+                        <th>Penerima Fee</th>
+                        <th>Diterima</th>
+                        <th>Besaran Fee</th>
+                      </tr>
+                    </thead>
+                </table>
+              </div>
+              <div class="col-md-12">
+                <h1 style="text-align: center;">Berkas Laboratorium</h1>
+                <div class="row" id="laboratoriumGallery"></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+          </div>
+      </div>
+  </div>
+</div>

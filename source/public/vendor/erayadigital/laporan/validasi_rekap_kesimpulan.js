@@ -788,7 +788,7 @@ function aksesmodal(response,modal,lokasi_fisik = null){
         $("#kesimpulan_informasi").html(response.informasi_mcu.kesimpulan);
         quill_informasi.setContents(JSON.parse(response.informasi_mcu.detail_kesimpulan));
     }
-    if (modal == 'modalLab') {
+    if (modal == 'modalLaboratorium') {
         
     }
     $("#"+modal).modal('show');
