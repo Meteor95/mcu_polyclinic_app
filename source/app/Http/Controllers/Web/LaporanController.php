@@ -902,7 +902,7 @@ class LaporanController extends Controller
                     ['TEMPAT TGL LAHIR / UMUR', ': ' . $d['tempat_lahir'] . ', ' . date('d-m-Y', strtotime($d['tanggal_lahir'])) . ' / ' . $d['umur'] . ' Tahun'],
                     ['JENIS KELAMIN', ': ' . $d['jenis_kelamin']],
                     ['PERUSAHAAN', ': ' . $d['company_name']],
-                    ['DEPARTEMEN JABATAN', ': ' . $d['nama_departemen']],
+                    ['JABATAN', ': ' . $d['nama_departemen']],
                     ['ALAMAT', ': ' . $d['alamat']],
                     ['TANGGAL MCU / TIPE MCU', ': ' . date('d-m-Y', strtotime($d['tanggal_mcu'])) . ' / ' . $d['tipe_mcu_peserta']],
                 ];
