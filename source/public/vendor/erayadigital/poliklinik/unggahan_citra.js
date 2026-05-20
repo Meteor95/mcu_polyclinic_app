@@ -100,6 +100,9 @@ $('#detail_penjelasan_citra_unggah_poli').on('change', function () {
     const selectedText = $(this).find('option:selected').text();
     quill.insertText(quill.getLength(), `${selectedText}\n`, 'list', 'ordered');
 });
+$("#kotak_pencarian_daftarpeserta").on('keyup', debounce(function() {
+    $("#datatables_daftarpeserta_unggah_citra").DataTable().ajax.reload();
+}, 500));
 function onloaddatatables(){
     $.get('/generate-csrf-token', function(response) {
         switch(jenis_poli){
@@ -112,6 +115,8 @@ function onloaddatatables(){
             bProcessing: true,
             serverSide: true,
             pagingType: "full_numbers",
+            pageLength: 20,
+            lengthChange: true,
             language: {
                 "paginate": {
                     "first": '<i class="fa fa-angle-double-left"></i>',
@@ -128,9 +133,8 @@ function onloaddatatables(){
                 },
                 "data": function(d) {
                     d._token = response.csrf_token;
-                    d.parameter_pencarian = $("#kotak_pencarian_daftarpasien").val();
+                    d.parameter_pencarian = $("#kotak_pencarian_daftarpeserta").val();
                     d.jenis_poli = jenis_poli;
-                    d.length = 10;
                 },
                 "dataSrc": function(json) {
                     let detailData = json.data;

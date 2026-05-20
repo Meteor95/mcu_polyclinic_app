@@ -10,7 +10,7 @@
              @include('komponen.unggah_image_poli', ['unggahan_citra_aktif' => $data['unggahan_citra_aktif']])
         </div>
         <div class="card-footer">
-          <input type="text" class="form-control" id="kotak_pencarian_daftarpasien" placeholder="Cari data berdasarkan nama peserta">
+          <input type="text" class="form-control" id="kotak_pencarian_daftarpeserta" placeholder="Ketikan No MCU atau Nama Peserta">
           <div class="table">
             <table class="table display" id="datatables_daftarpeserta_unggah_citra"></table>
           </div>
