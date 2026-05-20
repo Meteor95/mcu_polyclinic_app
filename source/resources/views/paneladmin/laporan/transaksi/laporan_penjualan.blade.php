@@ -125,7 +125,7 @@
                   </select>
               </div>
               <div class="col-md-6 mb-2">
-                <input type="text" id="searchInput_transaksi_tindakan" name="searchInput_transaksi_penjualan" class="form-control" placeholder="Ketikan: Nomor Invoice, Nama Kasir, Nama Pelanggan">
+                <input type="text" id="searchInput_transaksi_tindakan" name="searchInput_transaksi_penjualan" class="form-control" placeholder="Ketikan: No MCU, No Tindakan, Nama Pasien">
               </div>
               <div class="col-md-2">
                 <select id="status_pembayaran" class="form-select">
@@ -162,9 +162,14 @@
                       <i class="fas fa-search"></i> Proses Saring
                   </button>
               </div>
-              <div class="col-sm-12 col-md-12 col-lg-2">
+              <div class="col-sm-12 col-md-12 col-lg-1">
                   <button disabled id="modal_cetak_pdf_transaksi_tindakan" class="btn btn-danger w-100">
-                      <i class="fas fa-file-pdf-o"></i> Cetak PDF
+                      <i class="fas fa-file-pdf-o"></i> PDF
+                  </button>
+              </div>
+              <div class="col-sm-12 col-md-12 col-lg-1">
+                  <button disabled id="modal_cetak_xls_transaksi_tindakan" class="btn btn-success w-100">
+                      <i class="fas fa-file-excel"></i> XLS
                   </button>
               </div>
               <div class="col-sm-12 col-md-12 col-lg-2">
@@ -173,7 +178,7 @@
                   </button>
               </div>
           </div>
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col-12">
                     <table id="datatables_laporan_tindakan" class="table table-bordered table-striped table-hover table-padding-sm"></table>
                 </div>

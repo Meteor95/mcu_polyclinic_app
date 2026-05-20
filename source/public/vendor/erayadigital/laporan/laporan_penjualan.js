@@ -241,6 +241,7 @@ function report_show_modal(jenis_laporan,id_tombol) {
             bProcessing: true,
             serverSide: true,
             pageLength: ditampilkan == 0 ? 0 : ditampilkan,
+            pagechange: true,
             pagingType: "full_numbers",
             columnDefs: [{
                 defaultContent: "-",
