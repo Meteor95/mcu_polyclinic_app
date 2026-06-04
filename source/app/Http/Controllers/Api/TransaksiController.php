@@ -108,7 +108,7 @@ class TransaksiController extends Controller
                 ->where('users_member.nomor_identitas', $request->nomor_identitas)
                 ->where('transaksi.status_pembayaran', '=', 'process')
                 ->first();
-            if ($cek_sudah_transaksi_tapi_pending && !filter_var($request->is_edit_transaksi, FILTER_VALIDATE_BOOLEAN)) {
+            if ($cek_sudah_transaksi_tapi_pending && filter_var($request->is_edit_transaksi, FILTER_VALIDATE_BOOLEAN)) {
                 return ResponseHelper::data_not_found('Informasi Pasien MCU dengan Nomor Identitas ' . $request->nomor_identitas . ' sudah terdaftar dengan status PEMBAYARAN PROCESS. Silahkan cek kembali pada menu pasien atau pilih peserta lainnya');
             }
             $data = MemberMCU::join('mcu_transaksi_peserta', 'mcu_transaksi_peserta.user_id', '=', 'users_member.id')
