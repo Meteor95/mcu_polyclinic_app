@@ -1734,15 +1734,15 @@ class LaporanController extends Controller
                 $this->SetFont('Times', '', 10);
                 $this->MultiCell(90, 5, "MENYETUJUI\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
 
-                $fotoUrl = $this->data['riwayat_informasi_foto']['data_foto'] ?? null;
-                if ($fotoUrl) {
-                    $headers = @get_headers($fotoUrl);
+                $fotoUrlSignature = $this->data['riwayat_informasi_foto']['data_foto'] ?? null;
+                if ($fotoUrlSignature) {
+                    $headers = @get_headers($fotoUrlSignature);
                     if ($headers === false) {
-                        $fotoUrl = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
+                        $fotoUrlSignature = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
                     } else {
                         $status = end($headers);
                         if (!preg_match('/^HTTP\/\d+\.\d+\s+200\b/', $status)) {
-                            $fotoUrl = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
+                            $fotoUrlSignature = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
                         }
                     }
                 }
