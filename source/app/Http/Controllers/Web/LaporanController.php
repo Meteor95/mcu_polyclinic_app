@@ -880,10 +880,19 @@ class LaporanController extends Controller
 
                 // 2. Foto Peserta (Sesuai img height: 250px)
                 // Kita posisikan di tengah secara manual
-                $fotoUrl = $this->data['riwayat_informasi_foto']['data_foto']?? null;
-                if ($fotoUrl && @get_headers($fotoUrl)[0] == 'HTTP/1.1 404 Not Found') {
-                    // Jika 404, ganti dengan gambar placeholder transparan atau default
-                    $fotoUrl = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
+                $fotoUrl = $this->data['riwayat_informasi_foto']['data_foto'] ?? null;
+                if ($fotoUrl) {
+                    $headers = @get_headers($fotoUrl);
+                
+                    if ($headers === false) {
+                        $fotoUrl = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
+                    } else {
+                        $status = end($headers);
+                
+                        if (!preg_match('/^HTTP\/\d+\.\d+\s+200\b/', $status)) {
+                            $fotoUrl = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
+                        }
+                    }
                 }
                 $xCenter = (210 - 50) / 2; // (Lebar kertas - lebar foto) / 2
                 $this->Image($fotoUrl, $xCenter, $this->GetY(), 50, 65); 
@@ -1725,9 +1734,17 @@ class LaporanController extends Controller
                 $this->SetFont('Times', '', 10);
                 $this->MultiCell(90, 5, "MENYETUJUI\nSendawar, " . $this->data['tanggal_cetak'], 0, 'C');
 
-                $fotoUrlSignature = $this->data['riwayat_informasi_foto']['data_signature']?? null;
-                if ($fotoUrlSignature && @get_headers($fotoUrlSignature)[0] == 'HTTP/1.1 404 Not Found') {
-                    $fotoUrlSignature = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
+                $fotoUrl = $this->data['riwayat_informasi_foto']['data_foto'] ?? null;
+                if ($fotoUrl) {
+                    $headers = @get_headers($fotoUrl);
+                    if ($headers === false) {
+                        $fotoUrl = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
+                    } else {
+                        $status = end($headers);
+                        if (!preg_match('/^HTTP\/\d+\.\d+\s+200\b/', $status)) {
+                            $fotoUrl = public_path('/mofi/assets/images/logo/Logo_AMC_Full.png');
+                        }
+                    }
                 }
                 $this->Image($fotoUrlSignature, 130, $this->GetY() + 2, 50, 25, 'PNG'); 
                 $d1 = $this->data['informasi_data_diri'];

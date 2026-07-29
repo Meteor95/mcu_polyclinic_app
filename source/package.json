@@ -15,7 +15,8 @@
         "vite": "^5.0"
     },
     "dependencies": {
-        "chokidar": "^4.0.3"
+        "chokidar": "^4.0.3",
+        "chokidar-cli": "^3.0.0"
     },
     "name": "source",
     "version": "1.0.0",
