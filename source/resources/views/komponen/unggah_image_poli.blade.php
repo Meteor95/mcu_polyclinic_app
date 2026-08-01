@@ -90,67 +90,86 @@
         <label>Judul Citra {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
         <input type="text" id="judul_citra_unggah_poli" class="form-control" value="Hasil scan citra {{$data['title']}} pasien MCU" placeholder="Hasil scan citra {{$data['title']}} pasien MCU">
     </div>
-  @if ($data['jenis_poli_terpilih'] == "spirometri")
-  <div class="col-md-12">
-      <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }} Restriksi</label>
-      <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli" id="kesimpulan_citra_unggah_poli">
-        @foreach ($data['kesimpulan'] as $item)
-          <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
-        @endforeach
-      </select>
-  </div>
-  <div class="col-md-12">
-      <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }} Obstruksi</label>
-      <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli2" id="kesimpulan_citra_unggah_poli2">
-        @foreach ($data['kesimpulan'] as $item)
-          <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
-        @endforeach
-      </select>
-  </div>
-  @elseif ($data['jenis_poli_terpilih'] == "audiometri")
-  <div class="col-md-12">
-      <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }} Kiri</label>
-      <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli" id="kesimpulan_citra_unggah_poli">
-        @foreach ($data['kesimpulan'] as $item)
-          <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
-        @endforeach
-      </select>
-  </div>
-  <div class="col-md-12">
-      <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }} Kanan</label>
-      <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli2" id="kesimpulan_citra_unggah_poli2">
-        @foreach ($data['kesimpulan'] as $item)
-          <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
-        @endforeach
-      </select>
-  </div>
-  @else
-  <div class="col-md-12">
-      <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
-      <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli" id="kesimpulan_citra_unggah_poli">
-        @foreach ($data['kesimpulan'] as $item)
-          <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
-        @endforeach
-      </select>
-  </div>
-  @endif
-    <!-- <div class="col-md-12">
-      <label>Detail Penjelasan {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
-      <select class="form-control" data-choices name="detail_penjelasan_citra_unggah_poli" id="detail_penjelasan_citra_unggah_poli">
-        @foreach ($data['detail_kesimpulan'] as $item)
-          <option value="{{$item->id}}">{{$item->keterangan}}</option>
-        @endforeach
-      </select>
-    </div> -->
+  @if ($data['jenis_poli_terpilih'] == "rontgen_thorax")
     <div class="col-md-12 mt-1">
-      <div id="editor_poliklinik_container">
-        <div id="editor_poliklinik"></div>
-      </div>
+        <div id="editor_poliklinik_container"><div id="editor_poliklinik"></div></div>
+    </div>
+    <div class="col-md-12">
+        <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
+        <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli" id="kesimpulan_citra_unggah_poli">
+          @foreach ($data['kesimpulan'] as $item)
+            <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
+          @endforeach
+        </select>
     </div>
     <div class="col-md-12">
       <label>Saran / Kesan Untuk Pasien {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
       <textarea class="form-control" id="catatan_kaki_citra_unggah_poli" placeholder="Isikan saran / kesan untuk pasien pada laporan {{$data['title']}} jika memungkinkan">{{$data['catatan_kaki']}}</textarea>
     </div>
+  @else
+  @if ($data['jenis_poli_terpilih'] == "spirometri")
+    <div class="col-md-12">
+        <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }} Restriksi</label>
+        <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli" id="kesimpulan_citra_unggah_poli">
+          @foreach ($data['kesimpulan'] as $item)
+            <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
+          @endforeach
+        </select>
+    </div>
+    <div class="col-md-12">
+        <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }} Obstruksi</label>
+        <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli2" id="kesimpulan_citra_unggah_poli2">
+          @foreach ($data['kesimpulan'] as $item)
+            <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
+          @endforeach
+        </select>
+    </div>
+    @elseif ($data['jenis_poli_terpilih'] == "audiometri")
+    <div class="col-md-12">
+        <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }} Kiri</label>
+        <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli" id="kesimpulan_citra_unggah_poli">
+          @foreach ($data['kesimpulan'] as $item)
+            <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
+          @endforeach
+        </select>
+    </div>
+    <div class="col-md-12">
+        <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }} Kanan</label>
+        <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli2" id="kesimpulan_citra_unggah_poli2">
+          @foreach ($data['kesimpulan'] as $item)
+            <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
+          @endforeach
+        </select>
+    </div>
+    @else
+    <div class="col-md-12">
+        <label>Kesimpulan {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
+        <select class="form-control" data-choices name="kesimpulan_citra_unggah_poli" id="kesimpulan_citra_unggah_poli">
+          @foreach ($data['kesimpulan'] as $item)
+            <option value="{{$item->id}}">{{$item->keterangan_kesimpulan}}</option>
+          @endforeach
+        </select>
+    </div>
+    @endif
+      <!-- <div class="col-md-12">
+        <label>Detail Penjelasan {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
+        <select class="form-control" data-choices name="detail_penjelasan_citra_unggah_poli" id="detail_penjelasan_citra_unggah_poli">
+          @foreach ($data['detail_kesimpulan'] as $item)
+            <option value="{{$item->id}}">{{$item->keterangan}}</option>
+          @endforeach
+        </select>
+      </div> -->
+      <div class="col-md-12 mt-1">
+        <div id="editor_poliklinik_container">
+          <div id="editor_poliklinik"></div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <label>Saran / Kesan Untuk Pasien {{ucwords(str_replace('_', ' ', $data['title']))  }}</label>
+        <textarea class="form-control" id="catatan_kaki_citra_unggah_poli" placeholder="Isikan saran / kesan untuk pasien pada laporan {{$data['title']}} jika memungkinkan">{{$data['catatan_kaki']}}</textarea>
+      </div>
+  @endif
+  
 @endif
 </div>
 <div class="row">
