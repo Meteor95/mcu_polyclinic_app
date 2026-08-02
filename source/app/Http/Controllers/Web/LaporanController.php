@@ -652,6 +652,108 @@ class LaporanController extends Controller
                     }
                 }
             }
+            function WriteQuillAsTable($rawHtml, $labelWidth = 60, $colonWidth = 5) {
+                // 1. Ambil teks murni dari HTML/Quill
+                $text = strip_tags($rawHtml);
+                $lines = explode("\n", trim($text));
+
+                $originalMargin = $this->lMargin;
+
+                foreach ($lines as $line) {
+                    if (trim($line) === '') continue;
+
+                    // Cek apakah baris memiliki titik dua (:)
+                    if (strpos($line, ':') !== false) {
+                        // Pecah berdasarkan titik dua pertama
+                        $parts = explode(':', $line, 2);
+                        $label = trim(str_replace("\t", '', $parts[0]));
+                        $value = trim($parts[1]);
+
+                        $startY = $this->GetY();
+
+                        // --- KOLOM 1: Label (Lebar persis 60) ---
+                        $this->SetFont('Times', 'B', 11);
+                        $this->Cell($labelWidth, 5, $label, 0, 0, 'L');
+
+                        // --- KOLOM 2: Titik Dua (Lebar persis 5) ---
+                        $this->Cell($colonWidth, 5, ':', 0, 0, 'C');
+
+                        // --- KOLOM 3: Isi / Value (Otomatis menyesuaikan sisa halaman) ---
+                        $xKolom3 = $originalMargin + $labelWidth + $colonWidth;
+                        
+                        $this->SetLeftMargin($xKolom3);
+                        $this->SetX($xKolom3);
+                        $this->SetY($startY); // Pastikan Sejajar Baris
+                        $this->SetFont('Times', '', 11);
+
+                        // Cetak isi (MultiCell agar kalau panjang otomatis ter-indent rapi)
+                        $this->MultiCell(0, 5, $value, 0, 'L');
+
+                        // Hitung Y akhir untuk baris selanjutnya
+                        $endY = $this->GetY();
+
+                        // Reset Margin Kiri ke Semula
+                        $this->SetLeftMargin($originalMargin);
+                        $this->SetY(max($endY, $startY + 5));
+                        $this->SetX($originalMargin);
+
+                    } else {
+                        // Jika baris biasa (tanpa titik dua)
+                        $this->SetFont('Times', '', 11);
+                        $this->MultiCell(0, 5, trim($line), 0, 'L');
+                    }
+                }
+            }
+            function WriteHTMLWithTabNEnter($html){
+                // 1. Ganti TAB (\t) dengan 4 SPASI BIASA (bukan &nbsp; agar tidak jadi karakter Â)
+                $html = str_replace("\t", '    ', $html);
+
+                // 2. Ubah \n menjadi tag <br>
+                $html = nl2br($html);
+
+                // 3. Parser HTML
+                $html = strip_tags($html, "<b><u><i><a><img><p><br><strong><em><font><tr><blockquote><ol><li>"); 
+
+                $a = preg_split('/<(.*)>/U', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+                
+                foreach($a as $i => $e)
+                {
+                    if($i % 2 == 0)
+                    {
+                        // Text
+                        if($this->HREF) {
+                            $this->PutLink($this->HREF, $e);
+                        } else {
+                            // Konversi HTML entities sederhana tanpa merusak encoding spasi
+                            $this->Write(5, $this->txtentities($e));
+                        }
+                    }
+                    else
+                    {
+                        // Tag
+                        if($e[0] == '/') {
+                            $this->CloseTag(strtoupper(substr($e, 1)));
+                        } else {
+                            // Extract attributes
+                            $a2 = explode(' ', $e);
+                            $tag = strtoupper(array_shift($a2));
+                            $attr = array();
+                            foreach($a2 as $v)
+                            {
+                                if(preg_match('/([^=]*)=["\']?([^"\']*)/', $v, $a3))
+                                    $attr[strtoupper($a3[1])] = $a3[2];
+                            }
+
+                            // Cukup gunakan Ln() standar untuk tag BR agar jarak enter pas
+                            if ($tag == 'BR') {
+                                $this->Ln(1); // Sesuaikan nilai 4 atau 5 ini untuk mengatur kerapatan enter
+                            } else {
+                                $this->OpenTag($tag, $attr);
+                            }
+                        }
+                    }
+                }
+            }
             function OpenTag($tag, $attr){
                 //Opening tag
                 switch($tag){
@@ -2343,9 +2445,56 @@ class LaporanController extends Controller
                         // 4. Decode entitas HTML (seperti &amp; menjadi &)
                         $htmlClean = html_entity_decode($htmlClean);
 
+                        // $fields = [
+                        //     'Foto Thorax'     => 'USE_HTML_CONTENT', 
+                        //     'Kesan'      => $firstItem->catatan_kaki ?? '-',
+                        // ];                     
+                        // $originalMargin = $this->lMargin;
+
+                        // foreach ($fields as $label => $value) {
+                        //     $startY = $this->GetY();
+                            
+                        //     // 1. Cetak Label & Titik Dua
+                        //     $this->SetFont('Times', 'B', 11);
+                        //     $this->Cell(60, 5, $label, 0, 0);
+                        //     $this->Cell(5, 5, ':', 0, 0);
+                            
+                        //     // Koordinat X setelah titik dua
+                        //     $xKolom3 = $this->GetX();
+                        //     $this->SetFont('Times', '', 11);
+
+                        //     // --- KUNCI AGAR LURUS (INDENTASI) ---
+                        //     // Atur margin kiri tepat di posisi kolom 3
+                        //     $this->SetLeftMargin($xKolom3); 
+                        //     // Kembalikan posisi Y ke baris yang sama dengan label
+                        //     $this->SetY($startY); 
+
+                        //     if ($value === 'USE_HTML_CONTENT') {
+                        //         // Sekarang baris 2, 3, dst akan otomatis lurus dengan baris 1
+                        //         $this->WriteHTML($htmlClean);
+                        //         $this->Ln(5); 
+                        //     } else {
+                        //         // MultiCell juga akan mengikuti margin baru ini
+                        //         $this->MultiCell(0, 5, $value, 0, 'L');
+                        //     }
+
+                        //     // --- KEMBALIKAN MARGIN ---
+                        //     $this->SetLeftMargin($originalMargin);
+                            
+                        //     // Pastikan Y baris berikutnya di bawah konten paling panjang
+                        //     $this->SetY(max($this->GetY(), $startY + 5)); 
+                        //     $this->SetX($originalMargin); 
+                        //     $this->Ln(7);
+                        // }
+                        $originalMargin = $this->lMargin;
+                        // 1. Cetak Hasil Foto Thorax (HTML Content)
+                        $this->SetLeftMargin($originalMargin);
+                        $this->SetFont('Times', '', 11);
+                        $this->WriteQuillAsTable($htmlClean);
+                        $this->Ln(5); 
+
                         $fields = [
-                            'Foto Thorax'     => 'USE_HTML_CONTENT', 
-                            'Kesan'      => $firstItem->catatan_kaki ?? '-',
+                            'Kesimpulan'      => $firstItem->kesimpulan ?? '-',
                         ];                     
                         $originalMargin = $this->lMargin;
 
@@ -2384,6 +2533,7 @@ class LaporanController extends Controller
                             $this->SetX($originalMargin); 
                             $this->Ln(7);
                         }
+                        $this->Ln(7);
                         // 3. TANDA TANGAN (Posisi Absolute Bawah)
                         $this->SetY(-80); // Set posisi dari bawah kertas
                         $yTtd = $this->GetY();

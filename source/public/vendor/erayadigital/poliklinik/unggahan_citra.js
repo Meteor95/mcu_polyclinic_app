@@ -67,9 +67,33 @@ $(document).ready(function(){
     });
 
     // --- Inisialisasi Quill ---
+    // 1. Opsi Toolbar (termasuk tombol Indent / Outdent)
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['clean']
+    ];
+
+    // 2. Inisialisasi Quill Editor dengan Fitur Tombol Tab Keyboard
     quill = initQuill('#editor_poliklinik', {
         placeholder: 'Berikan keterangan secara jelas mengenai hasil scan citra pada poliklinik ini',
-        modules: { toolbar: { container: toolbarOptions } },
+        modules: { 
+            toolbar: { container: toolbarOptions },
+            keyboard: {
+                bindings: {
+                    tab: {
+                        key: 9, // KeyCode untuk tombol Tab
+                        handler: function(range) {
+                            // Menyisipkan 4 spasi tepat di titik kursor aktif
+                            this.quill.insertText(range.index, '    ');
+                            // Memindahkan posisi kursor maju 4 langkah ke depan
+                            this.quill.setSelection(range.index + 4);
+                            return false; // Mencegah kursor pindah/focus out ke elemen HTML lain
+                        }
+                    }
+                }
+            }
+        },
         theme: 'snow'
     });
 
